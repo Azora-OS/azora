@@ -68,8 +68,8 @@ export class GradebookService extends EventEmitter {
   /**
    * Get complete gradebook for a course
    */
-  getCourseGradebook(courseId: string, courseName?: string): CourseGradebook {
-    const entries = gradingEngine.getGradebook(courseId);
+  async getCourseGradebook(courseId: string, courseName?: string): Promise<CourseGradebook> {
+    const entries = await gradingEngine.getGradebook(courseId);
     const statistics = this.calculateStatistics(entries);
 
     return {
@@ -83,8 +83,8 @@ export class GradebookService extends EventEmitter {
   /**
    * Get student transcript
    */
-  getStudentTranscript(studentId: string, studentNumber: string): StudentTranscript {
-    const entries = gradingEngine.getStudentGradebook(studentId);
+  async getStudentTranscript(studentId: string, studentNumber: string): Promise<StudentTranscript> {
+    const entries = await gradingEngine.getStudentGradebook(studentId);
     
     const courses: CourseTranscript[] = entries.map(entry => ({
       courseId: entry.courseId,
@@ -176,8 +176,8 @@ export class GradebookService extends EventEmitter {
   /**
    * Export gradebook to CSV
    */
-  exportToCSV(courseId: string): string {
-    const gradebook = this.getCourseGradebook(courseId);
+  async exportToCSV(courseId: string): Promise<string> {
+    const gradebook = await this.getCourseGradebook(courseId);
     const headers = ['Student Number', 'Student ID', 'Final Grade', 'Letter Grade', 'GPA'];
     
     // Add assessment columns

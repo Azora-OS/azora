@@ -44,27 +44,39 @@ app.post('/api/courses', async (req, res) => {
   }
 });
 
-app.get('/api/courses', (req, res) => {
-  const { status } = req.query;
-  const courses = contentManagementSystem.getAllCourses(status as Course['status']);
-  res.json({ courses });
+app.get('/api/courses', async (req, res) => {
+  try {
+    const { status } = req.query;
+    const courses = await contentManagementSystem.getAllCourses(status as Course['status']);
+    res.json({ courses });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.get('/api/courses/search', (req, res) => {
-  const { q } = req.query;
-  if (!q) {
-    return res.status(400).json({ error: 'Query parameter required' });
+app.get('/api/courses/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) {
+      return res.status(400).json({ error: 'Query parameter required' });
+    }
+    const courses = await contentManagementSystem.searchCourses(q as string);
+    res.json({ courses });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-  const courses = contentManagementSystem.searchCourses(q as string);
-  res.json({ courses });
 });
 
-app.get('/api/courses/:id', (req, res) => {
-  const course = contentManagementSystem.getCourse(req.params.id);
-  if (!course) {
-    return res.status(404).json({ error: 'Course not found' });
+app.get('/api/courses/:id', async (req, res) => {
+  try {
+    const course = await contentManagementSystem.getCourse(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+    res.json(course);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(course);
 });
 
 app.put('/api/courses/:id', async (req, res) => {
@@ -119,24 +131,36 @@ app.post('/api/resources', async (req, res) => {
   }
 });
 
-app.get('/api/resources', (req, res) => {
-  const resources = contentManagementSystem.getAllResources();
-  res.json({ resources });
+app.get('/api/resources', async (req, res) => {
+  try {
+    const resources = await contentManagementSystem.getAllResources();
+    res.json({ resources });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.get('/api/resources/:id', (req, res) => {
-  const resource = contentManagementSystem.getResource(req.params.id);
-  if (!resource) {
-    return res.status(404).json({ error: 'Resource not found' });
+app.get('/api/resources/:id', async (req, res) => {
+  try {
+    const resource = await contentManagementSystem.getResource(req.params.id);
+    if (!resource) {
+      return res.status(404).json({ error: 'Resource not found' });
+    }
+    res.json(resource);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(resource);
 });
 
 // ========== CONTENT LIBRARY ==========
 
-app.get('/api/library', (req, res) => {
-  const library = contentManagementSystem.getContentLibrary();
-  res.json(library);
+app.get('/api/library', async (req, res) => {
+  try {
+    const library = await contentManagementSystem.getContentLibrary();
+    res.json(library);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ========== VETTING ==========
