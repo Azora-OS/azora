@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="256" cy="256" r="240" fill="url(#library-gradient)"/>
+  
+  <!-- Open Book -->
+  <path d="M256 206C256 206 226 196 196 196C166 196 146 206 146 236V316C146 316 166 306 196 306C226 306 256 316 256 316V206Z" fill="#92400E"/>
+  <path d="M256 206C256 206 286 196 316 196C346 196 366 206 366 236V316C366 316 346 306 316 306C286 306 256 316 256 316V206Z" fill="#B45309"/>
+  
+  <!-- Book Pages -->
+  <path d="M256 216V306" stroke="white" stroke-width="2" opacity="0.3"/>
+  <path d="M166 226H236M166 246H236M166 266H236" stroke="white" stroke-width="2" opacity="0.5"/>
+  <path d="M276 226H346M276 246H346M276 266H346" stroke="white" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Digital Elements (Cloud) -->
+  <path d="M336 166C336 166 326 156 316 156C306 156 296 161 291 171C286 166 279 163 271 163C259 163 249 173 249 185C249 186 249 187 249 188C241 191 236 199 236 208C236 219 245 228 256 228H341C350 228 357 221 357 212C357 205 352 199 346 196C346 186 342 177 336 166Z" fill="#3B82F6" opacity="0.8"/>
+  
+  <!-- Download Icon -->
+  <path d="M256 186V216M246 206L256 216L266 206" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Text -->
+  <text x="256" y="380" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#0A0E27" text-anchor="middle">AZORA</text>
+  <text x="256" y="415" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="26" fill="#92400E" text-anchor="middle">LIBRARY</text>
+  <text x="256" y="440" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="18" fill="#64748B" text-anchor="middle">Digital Knowledge Hub</text>
+  
+  <defs>
+    <linearGradient id="library-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+</svg>
