@@ -161,6 +161,35 @@ async function initializeServices() {
       'http://localhost:3005'
     ]);
 
+    // Register Education Services
+    await serviceRegistry.registerService('education-assessment', [
+      `http://localhost:${process.env.ASSESSMENT_PORT || 4202}`
+    ]);
+
+    await serviceRegistry.registerService('education-content', [
+      `http://localhost:${process.env.CONTENT_PORT || 4203}`
+    ]);
+
+    await serviceRegistry.registerService('education-analytics', [
+      `http://localhost:${process.env.ANALYTICS_PORT || 4204}`
+    ]);
+
+    await serviceRegistry.registerService('education-credentials', [
+      `http://localhost:${process.env.CREDENTIALS_PORT || 4205}`
+    ]);
+
+    await serviceRegistry.registerService('education-collaboration', [
+      `http://localhost:${process.env.COLLABORATION_PORT || 4206}`
+    ]);
+
+    await serviceRegistry.registerService('education-payments', [
+      `http://localhost:${process.env.PAYMENTS_PORT || 4207}`
+    ]);
+
+    await serviceRegistry.registerService('education-media', [
+      `http://localhost:${process.env.MEDIA_PORT || 4208}`
+    ]);
+
     logger.info('Service registry initialized');
   } catch (error) {
     logger.error('Failed to initialize service registry', { error: error.message });
@@ -385,6 +414,24 @@ app.use('/api/auth', authenticateToken, createServiceProxy('auth'));
 app.use('/api/compliance', authenticateToken, createServiceProxy('compliance'));
 app.use('/api/ai-security-monitoring', authenticateToken, createServiceProxy('ai-security-monitoring'));
 app.use('/api/event-bus', authenticateToken, createServiceProxy('event-bus'));
+
+// Education Services Routes
+app.use('/api/education/assessment', authenticateToken, createServiceProxy('education-assessment'));
+app.use('/api/education/content', authenticateToken, createServiceProxy('education-content'));
+app.use('/api/education/analytics', authenticateToken, createServiceProxy('education-analytics'));
+app.use('/api/education/credentials', authenticateToken, createServiceProxy('education-credentials'));
+app.use('/api/education/collaboration', authenticateToken, createServiceProxy('education-collaboration'));
+app.use('/api/education/payments', authenticateToken, createServiceProxy('education-payments'));
+app.use('/api/education/media', authenticateToken, createServiceProxy('education-media'));
+
+// Public education endpoints (no auth required for health checks)
+app.use('/api/education/assessment/health', createServiceProxy('education-assessment'));
+app.use('/api/education/content/health', createServiceProxy('education-content'));
+app.use('/api/education/analytics/health', createServiceProxy('education-analytics'));
+app.use('/api/education/credentials/health', createServiceProxy('education-credentials'));
+app.use('/api/education/collaboration/health', createServiceProxy('education-collaboration'));
+app.use('/api/education/payments/health', createServiceProxy('education-payments'));
+app.use('/api/education/media/health', createServiceProxy('education-media'));
 
 // GraphQL federation endpoint (future)
 app.use('/graphql', (req, res) => {

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: azora-education
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  assessment:
+    build: ./azora-assessment
+    ports:
+      - "4202:4202"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+    depends_on:
+      - mongodb
+
+  content:
+    build: ./azora-content
+    ports:
+      - "4203:4203"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+    depends_on:
+      - mongodb
+
+  analytics:
+    build: ./azora-analytics
+    ports:
+      - "4204:4204"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+    depends_on:
+      - mongodb
+
+  credentials:
+    build: ./azora-credentials
+    ports:
+      - "4205:4205"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+    depends_on:
+      - mongodb
+
+  collaboration:
+    build: ./azora-collaboration
+    ports:
+      - "4206:4206"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - mongodb
+      - redis
+
+  payments:
+    build: ./azora-education-payments
+    ports:
+      - "4207:4207"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+    depends_on:
+      - mongodb
+
+  media:
+    build: ./azora-media
+    ports:
+      - "4208:4208"
+    environment:
+      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo-data:
