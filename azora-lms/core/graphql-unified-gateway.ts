@@ -124,10 +124,6 @@ export const typeDefs = `
     courses(limit: Int, offset: Int): [Course!]!
     myCourses: [Course!]!
 
-    # Project queries
-    projects(limit: Int, offset: Int): [Project!]!
-    myPortfolio: [Project!]!
-
     # User queries
     user(id: ID!): User
     me: User
@@ -433,15 +429,6 @@ export class GraphQLResolvers {
           return await lmsDatabase.getProgress(context.userId, courseId);
         },
 
-        projects: async (_: any, { limit = 10, offset = 0 }: { limit?: number; offset?: number }) => {
-          return await lmsDatabase.getProjects(limit, offset);
-        },
-
-        myPortfolio: async (_: any, __: any, context: GraphQLContext) => {
-          if (!context.userId) throw new Error('Unauthorized');
-          return await lmsDatabase.getUserPortfolio(context.userId);
-        },
-
         contentVetting: async (_: any, { contentId }: { contentId: string }) => {
           return await this.cla.vetContent(contentId);
         },
@@ -565,20 +552,4 @@ export class DataStore extends EventEmitter {
 }
 
 export default GraphQLResolvers;
-
-
-type Project {
-  id: ID!
-  title: String!
-  description: String!
-  status: String!
-  pivcReward: Int!
-  requiredSkills: [String!]!
-  deadline: String
-}
-
-type Subscription {
-  progressUpdated(userId: ID!): Progress!
-  pivcAwarded(userId: ID!): PIVCAward!
-}
 

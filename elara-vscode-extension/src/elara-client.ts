@@ -31,15 +31,29 @@ export interface CompletionItem {
 export class ElaraClient {
   private baseUrl: string;
 
-  constructor(port: number = 3001) {
+  constructor(port: number = 4000) {
     this.baseUrl = `http://localhost:${port}`;
   }
 
   async getCompletion(prefix: string, language: string): Promise<CompletionItem[]> {
     try {
+      const query = `
+        query GetCodeCompletion($prefix: String!, $language: String!) {
+          codeCompletion(prefix: $prefix, language: $language) {
+            text
+            kind
+            detail
+            documentation
+          }
+        }
+      `;
+
       const response: AxiosResponse<ElaraResponse<CompletionItem[]>> = await axios.post(
-        `${this.baseUrl}/api/completion`,
-        { prefix, language },
+        `${this.baseUrl}/graphql`,
+        {
+          query,
+          variables: { prefix, language }
+        },
         { timeout: 5000 }
       );
 
@@ -55,9 +69,24 @@ export class ElaraClient {
 
   async getCodeAnalysis(code: string, language: string): Promise<ElaraResponse<CodeAnalysis>> {
     try {
+      const query = `
+        query AnalyzeCode($code: String!, $language: String!) {
+          codeAnalysis(code: $code, language: $language) {
+            explanation
+            suggestions
+            review
+            complexity
+            issues
+          }
+        }
+      `;
+
       const response: AxiosResponse<ElaraResponse<CodeAnalysis>> = await axios.post(
-        `${this.baseUrl}/api/analyze`,
-        { code, language },
+        `${this.baseUrl}/graphql`,
+        {
+          query,
+          variables: { code, language }
+        },
         { timeout: 10000 }
       );
 
@@ -70,9 +99,18 @@ export class ElaraClient {
 
   async getSuggestions(query: string): Promise<string[]> {
     try {
+      const gqlQuery = `
+        query GetSuggestions($query: String!) {
+          suggestions(query: $query)
+        }
+      `;
+
       const response: AxiosResponse<ElaraResponse<string[]>> = await axios.post(
-        `${this.baseUrl}/api/suggestions`,
-        { query },
+        `${this.baseUrl}/graphql`,
+        {
+          query: gqlQuery,
+          variables: { query }
+        },
         { timeout: 10000 }
       );
 
@@ -88,8 +126,13 @@ export class ElaraClient {
 
   async isConnected(): Promise<boolean> {
     try {
-      const response = await axios.get(`${this.baseUrl}/api/health`, { timeout: 2000 });
-      return response.status === 200;
+      const query = `
+        query HealthCheck {
+          health
+        }
+      `;
+      const response = await axios.post(`${this.baseUrl}/graphql`, { query }, { timeout: 2000 });
+      return response.status === 200 && response.data?.data?.health === true;
     } catch (error) {
       return false;
     }
@@ -102,8 +145,8 @@ export class ElaraCompletionProvider implements vscode.InlineCompletionItemProvi
   async provideInlineCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
-    context: vscode.InlineCompletionContext,
-    token: vscode.CancellationToken
+    _context: vscode.InlineCompletionContext,
+    _token: vscode.CancellationToken
   ): Promise<vscode.InlineCompletionItem[]> {
     const linePrefix = document.lineAt(position).text.substr(0, position.character);
 

@@ -67,7 +67,7 @@ async function main() {
   console.log('Press Ctrl+C to stop\n');
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 

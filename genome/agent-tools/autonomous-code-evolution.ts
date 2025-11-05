@@ -1,11 +1,11 @@
-/* 
-AZORA PROPRIETARY LICENSE 
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved. 
-See LICENSE file for details. 
-*/ 
+/*
+AZORA PROPRIETARY LICENSE
+Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+See LICENSE file for details.
+*/
 /**
  * Autonomous Code Evolution System
- * 
+ *
  * Self-improving code that learns and evolves based on:
  * - TensorFlow's optimization algorithms
  * - PyTorch's dynamic computation
@@ -150,16 +150,16 @@ export class CodeEvolutionEngine extends EventEmitter {
   private async generateVariant(code: string, _language: string): Promise<string> {
     // Generate slight variations of the original code
     const variations = [
-      code.replace(/const /g, 'let '),
-      code.replace(/function /g, 'const '),
-      code.replace(/\n\n/g, '\n'),
+      code.replace(/const /g, 'let ') || code,
+      code.replace(/function /g, 'const ') || code,
+      code.replace(/\n\n/g, '\n') || code,
       code,
     ];
     return variations[Math.floor(Math.random() * variations.length)];
   }
 
   private async evaluatePopulation(): Promise<void> {
-    for (const genome of this.population.values()) {
+    for (const genome of Array.from(this.population.values())) {
       genome.metrics = await this.evaluateCode(genome.code, genome.language);
       genome.fitness = this.calculateFitness(genome.metrics);
 
@@ -217,12 +217,12 @@ export class CodeEvolutionEngine extends EventEmitter {
 
     for (let i = 0; i < targetSize; i++) {
       if (Math.random() < this.config.crossoverRate && parents.length >= 2) {
-        const parent1 = parents[Math.floor(Math.random() * parents.length)];
-        const parent2 = parents[Math.floor(Math.random() * parents.length)];
+        const parent1 = parents[Math.floor(Math.random() * parents.length)]!;
+        const parent2 = parents[Math.floor(Math.random() * parents.length)]!;
         const child = await this.crossoverGenomes(parent1, parent2);
         offspring.push(child);
       } else {
-        const parent = parents[Math.floor(Math.random() * parents.length)];
+        const parent = parents[Math.floor(Math.random() * parents.length)]!;
         offspring.push({ ...parent, id: `genome-${Date.now()}-${i}` });
       }
     }
@@ -276,7 +276,7 @@ export class CodeEvolutionEngine extends EventEmitter {
 
   private selectMutationType(): Mutation['type'] {
     const types: Mutation['type'][] = ['refactor', 'optimize', 'fix', 'enhance', 'simplify'];
-    return types[Math.floor(Math.random() * types.length)];
+    return types[Math.floor(Math.random() * types.length)]!;
   }
 
   private async applyMutation(code: string, type: Mutation['type']): Promise<string> {

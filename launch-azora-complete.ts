@@ -188,7 +188,7 @@ class AzoraLauncher {
     try {
       console.log('  🛡️ Starting Sovereign Ingestion Engine...');
 
-      const _engine = SovereignIngestionEngine.getInstance();
+      SovereignIngestionEngine.getInstance();
 
       console.log('     Aegis Vetter: READY');
       console.log('     Forge Engine: READY');
@@ -208,6 +208,11 @@ class AzoraLauncher {
 
     try {
       console.log('  🌐 Starting GraphQL Unified Gateway...');
+
+      // Import and start the GraphQL server
+      const { startGraphQLServer } = await import('./graphql-server');
+      await startGraphQLServer();
+
       console.log('     Port: 4000');
       console.log('     Endpoint: http://localhost:4000/graphql');
 
@@ -216,6 +221,7 @@ class AzoraLauncher {
     } catch (error) {
       this.updateServiceStatus(serviceKey, 'error');
       console.error('  ❌ Failed to start GraphQL Gateway:', error);
+      throw error;
     }
   }
 
@@ -339,7 +345,9 @@ async function main() {
 }
 
 // Run if executed directly
-if (require.main === module) {
+import { pathToFileURL } from 'url';
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  console.log('🚀 Starting Azora OS Launch Script...');
   main().catch(console.error);
 }
 

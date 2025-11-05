@@ -88,7 +88,7 @@ async function main() {
   console.log('   • Copilot: Integrated in IDE\n');
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 

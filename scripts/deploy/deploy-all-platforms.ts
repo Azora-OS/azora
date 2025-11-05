@@ -202,12 +202,12 @@ class UniversalDeploymentOrchestrator {
             target.status = 'completed';
             target.endTime = new Date();
             console.log(`   ✅ ${target.name} deployment configured`);
-          } catch (error) {
+          } catch (error: unknown) {
             // For cloud deployments, we provide manual instructions instead of failing
             console.log(`   📝 ${target.name} requires manual setup (see instructions above)`);
             target.status = 'completed'; // Mark as completed since instructions are provided
             target.endTime = new Date();
-            target.error = `Manual setup required: ${error.message}`;
+            target.error = `Manual setup required: ${error instanceof Error ? error.message : String(error)}`;
           }
           break;
       }
@@ -224,11 +224,11 @@ class UniversalDeploymentOrchestrator {
       }
       console.log('');
 
-    } catch (error) {
+    } catch (error: unknown) {
       target.status = 'failed';
-      target.error = error.message;
+      target.error = error instanceof Error ? error.message : String(error);
       target.endTime = new Date();
-      console.error(`   ❌ ${target.name} deployment failed: ${error.message}\n`);
+      console.error(`   ❌ ${target.name} deployment failed: ${target.error}\n`);
     }
   }
 

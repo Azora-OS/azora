@@ -1,17 +1,18 @@
-/* 
-AZORA PROPRIETARY LICENSE 
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved. 
-See LICENSE file for details. 
-*/ 
 #!/usr/bin/env ts-node
+
+/*
+AZORA PROPRIETARY LICENSE
+Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+See LICENSE file for details.
+*/
 /**
  * Azora Sovereign Ingestion - Start Script
- * 
+ *
  * Begin ingesting external code through the Sovereign Ingestion Engine
  */
 
-import { SovereignIngestionEngine } from './genome/sovereign-ingestion-engine';
 import type { CodeArtifact } from './genome/sovereign-ingestion-engine';
+import { SovereignIngestionEngine } from './genome/sovereign-ingestion-engine';
 
 console.log('╔════════════════════════════════════════════════════════════╗');
 console.log('║        AZORA SOVEREIGN INGESTION ENGINE - ACTIVE           ║');
@@ -26,22 +27,22 @@ const targets = [
     repository: 'facebook/react',
     path: 'packages/react/src/React.js',
     license: 'MIT',
-    expectedPath: 'baptism'
+    expectedPath: 'baptism',
   },
   {
     name: 'TensorFlow Utils (Apache-2.0)',
     repository: 'tensorflow/tensorflow',
     path: 'tensorflow/python/util/util.py',
     license: 'Apache-2.0',
-    expectedPath: 'baptism'
+    expectedPath: 'baptism',
   },
   {
     name: 'Linux Kernel Module (GPL-2.0)',
     repository: 'torvalds/linux',
     path: 'kernel/sched/core.c',
     license: 'GPL-2.0',
-    expectedPath: 'transmutation'
-  }
+    expectedPath: 'transmutation',
+  },
 ];
 
 async function main() {
@@ -67,12 +68,15 @@ async function main() {
       repository: target.repository,
       path: target.path,
       content: `// Sample code from ${target.repository}\n// License: ${target.license}`,
-      language: target.path.endsWith('.py') ? 'python' : 
-                target.path.endsWith('.c') ? 'c' : 'javascript',
+      language: target.path.endsWith('.py')
+        ? 'python'
+        : target.path.endsWith('.c')
+          ? 'c'
+          : 'javascript',
       license: target.license,
       dependencies: [],
       metadata: {
-        author: target.repository.split('/')[0],
+        author: target.repository?.split('/')[0] || 'unknown',
         created: Date.now() - 365 * 24 * 60 * 60 * 1000,
         updated: Date.now(),
         stars: 50000,
@@ -96,8 +100,12 @@ async function main() {
         console.log('\n🔮 TRANSMUTATION COMPLETE');
         console.log(`   Concept Abstracted: ${result.concept.purpose}`);
         console.log(`   Algorithm: ${result.concept.algorithm}`);
-        console.log(`   Verification: ${result.verification.approved ? '✅ PASSED' : '❌ FAILED'}`);
-        console.log(`   Constitutional Score: ${result.verification.constitutionalScore}`);
+        console.log(
+          `   Verification: ${result.verification.approved ? '✅ PASSED' : '❌ FAILED'}`
+        );
+        console.log(
+          `   Constitutional Score: ${result.verification.constitutionalScore}`
+        );
       }
 
       console.log('\n🎉 Ingestion successful!');
@@ -108,13 +116,17 @@ async function main() {
     await delay(1000);
   }
 
-  console.log('\n\n╔════════════════════════════════════════════════════════════╗');
+  console.log(
+    '\n\n╔════════════════════════════════════════════════════════════╗'
+  );
   console.log('║              INGESTION SESSION COMPLETE                    ║');
   console.log('╠════════════════════════════════════════════════════════════╣');
   console.log('║ ✅ All targets processed                                   ║');
   console.log('║ 🛡️ Zero sovereign debt incurred                           ║');
   console.log('║ 📊 Constitutional alignment maintained                     ║');
-  console.log('╚════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╚════════════════════════════════════════════════════════════╝\n'
+  );
 
   console.log('💡 Next steps:');
   console.log('   1. Review ingested code in azora-ingested/');
@@ -126,6 +138,6 @@ function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
