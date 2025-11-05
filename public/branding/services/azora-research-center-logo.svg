@@ -1,0 +1,51 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="256" cy="256" r="240" fill="url(#research-gradient)"/>
+  
+  <!-- Microscope Base -->
+  <rect x="206" y="316" width="100" height="20" rx="5" fill="#64748B"/>
+  
+  <!-- Microscope Body -->
+  <path d="M236 316V236C236 225 245 216 256 216C267 216 276 225 276 236V316" fill="#7C3AED"/>
+  
+  <!-- Microscope Eyepiece -->
+  <circle cx="256" cy="206" r="15" fill="#9333EA"/>
+  <circle cx="256" cy="206" r="8" fill="white" opacity="0.7"/>
+  
+  <!-- Microscope Stage -->
+  <rect x="226" y="266" width="60" height="8" rx="2" fill="#64748B"/>
+  <rect x="236" y="274" width="40" height="4" rx="1" fill="#94A3B8"/>
+  
+  <!-- Microscope Objective -->
+  <circle cx="256" cy="236" r="12" fill="#9333EA"/>
+  
+  <!-- Atom Symbol (Science) -->
+  <g transform="translate(336, 216)">
+    <circle cx="0" cy="0" r="6" fill="#06B6D4"/>
+    <ellipse cx="0" cy="0" rx="30" ry="12" stroke="#06B6D4" stroke-width="2" fill="none"/>
+    <ellipse cx="0" cy="0" rx="30" ry="12" stroke="#06B6D4" stroke-width="2" fill="none" transform="rotate(60)"/>
+    <ellipse cx="0" cy="0" rx="30" ry="12" stroke="#06B6D4" stroke-width="2" fill="none" transform="rotate(120)"/>
+    <circle cx="25" cy="0" r="4" fill="#06B6D4"/>
+    <circle cx="-25" cy="0" r="4" fill="#06B6D4"/>
+    <circle cx="0" cy="10" r="4" fill="#06B6D4"/>
+  </g>
+  
+  <!-- DNA Helix (Right side) -->
+  <path d="M166 226C176 216 186 216 196 226C206 236 216 236 226 226" stroke="#9333EA" stroke-width="3" fill="none"/>
+  <path d="M166 256C176 246 186 246 196 256C206 266 216 266 226 256" stroke="#9333EA" stroke-width="3" fill="none"/>
+  <line x1="171" y1="226" x2="171" y2="256" stroke="#9333EA" stroke-width="2"/>
+  <line x1="191" y1="226" x2="191" y2="256" stroke="#9333EA" stroke-width="2"/>
+  <line x1="211" y1="226" x2="211" y2="256" stroke="#9333EA" stroke-width="2"/>
+  
+  <!-- Text -->
+  <text x="256" y="380" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#0A0E27" text-anchor="middle">AZORA</text>
+  <text x="256" y="410" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="22" fill="#7C3AED" text-anchor="middle">RESEARCH CENTER</text>
+  <text x="256" y="435" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="18" fill="#64748B" text-anchor="middle">Discover Tomorrow</text>
+  
+  <defs>
+    <linearGradient id="research-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#EDE9FE"/>
+      <stop offset="100%" stop-color="#DDD6FE"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rocket Icon -->
+  <circle cx="32" cy="32" r="30" fill="#FEF3C7"/>
+  <circle cx="32" cy="32" r="28" fill="#FDE68A"/>
+  <!-- Rocket -->
+  <path d="M32 16L38 32H26L32 16Z" fill="#F59E0B"/>
+  <path d="M26 32H38V40C38 43.3137 35.3137 46 32 46C28.6863 46 26 43.3137 26 40V32Z" fill="#F59E0B"/>
+  <circle cx="32" cy="36" r="3" fill="white" opacity="0.8"/>
+  <!-- Flames -->
+  <path d="M30 46C30 48 31 50 32 52C33 50 34 48 34 46H30Z" fill="#FBBF24"/>
+  <!-- Text -->
+  <text x="32" y="58" font-family="Inter, sans-serif" font-weight="600" font-size="10" fill="#F59E0B" text-anchor="middle">TURBO</text>
+  <text x="32" y="64" font-family="Inter, sans-serif" font-weight="400" font-size="7" fill="#D97706" text-anchor="middle">50-75% CPU</text>
+</svg>
