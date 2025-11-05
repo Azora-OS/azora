@@ -1,0 +1,36 @@
+{
+  "name": "@azora/classroom",
+  "version": "1.0.0",
+  "description": "Live lecture and virtual classroom system for Azora Education",
+  "main": "live-lecture-system.js",
+  "types": "live-lecture-system.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn live-lecture-system.ts",
+    "start": "node dist/live-lecture-system.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "virtual-classroom",
+    "live-lecture",
+    "video-conferencing",
+    "webrtc",
+    "education",
+    "azora"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.0",
+    "uuid": "^9.0.1",
+    "simple-peer": "^9.11.1",
+    "jitsi-meet-api": "^0.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3",
+    "ts-node-dev": "^2.0.0"
+  }
+}
