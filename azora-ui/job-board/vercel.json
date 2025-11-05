@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "name": "azora-job-board",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@api_url",
+    "NEXT_PUBLIC_CAREERS_API": "@careers_api_url",
+    "NEXT_PUBLIC_FORGE_API": "@forge_api_url"
+  }
+}
