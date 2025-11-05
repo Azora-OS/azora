@@ -1,7 +1,7 @@
 {
-  "name": "@azora/library",
+  "name": "@azora/research-center",
   "version": "1.0.0",
-  "description": "Azora Digital Library - 20M+ Books, 200M+ Papers",
+  "description": "Azora Research Center - Innovation & Curriculum Recommendations",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts",
@@ -16,10 +16,7 @@
     "dotenv": "^16.3.1",
     "uuid": "^9.0.1",
     "axios": "^1.6.2",
-    "cheerio": "^1.0.0-rc.12",
-    "elasticsearch": "^16.7.3",
-    "pdf-parse": "^1.1.1",
-    "epub-parser": "^0.2.7",
+    "date-fns": "^2.30.0",
     "express-rate-limit": "^7.1.5",
     "compression": "^1.7.4"
   },
@@ -33,7 +30,7 @@
     "ts-node": "^10.9.2",
     "nodemon": "^3.0.2"
   },
-  "keywords": ["azora", "library", "digital-library", "books", "research"],
+  "keywords": ["azora", "research", "innovation", "curriculum"],
   "author": "Azora ES (Pty) Ltd",
   "license": "PROPRIETARY"
 }
