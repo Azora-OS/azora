@@ -17,6 +17,8 @@ See LICENSE file for details.
 
 import { EventEmitter } from 'events';
 import crypto from 'crypto';
+import { Course, Resource } from '../shared/database/models';
+import { azoraDatabase } from '../shared/database/connection';
 
 export interface Course {
   id: string;
@@ -102,8 +104,6 @@ export interface ContentLibrary {
 
 export class ContentManagementSystem extends EventEmitter {
   private static instance: ContentManagementSystem;
-  private courses: Map<string, Course> = new Map();
-  private resources: Map<string, Resource> = new Map();
   private versions: Map<string, ContentVersion[]> = new Map(); // contentId -> versions
   private vettingResults: Map<string, ContentVettingResult> = new Map();
 
@@ -119,53 +119,64 @@ export class ContentManagementSystem extends EventEmitter {
   }
 
   /**
-   * Create a new course
+   * Create a new course (MongoDB)
    */
   async createCourse(course: Omit<Course, 'id' | 'createdAt' | 'updatedAt' | 'version'>): Promise<Course> {
-    const newCourse: Course = {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+
+    const newCourse = new Course({
       ...course,
       id: crypto.randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
       version: 1,
       modules: course.modules || [],
-    };
+      status: course.status || 'draft',
+    });
 
-    this.courses.set(newCourse.id, newCourse);
-    this.saveVersion(newCourse.id, newCourse, 'Initial creation', course.instructorId);
+    await newCourse.save();
+    this.saveVersion(newCourse.id, newCourse.toObject(), 'Initial creation', course.instructorId);
 
-    this.emit('course:created', newCourse);
-    return newCourse;
+    this.emit('course:created', newCourse.toObject());
+    return newCourse.toObject();
   }
 
   /**
-   * Update course
+   * Update course (MongoDB)
    */
   async updateCourse(courseId: string, updates: Partial<Course>, updatedBy: string, changes?: string[]): Promise<Course> {
-    const course = this.courses.get(courseId);
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+
+    const course = await Course.findOne({ id: courseId });
     if (!course) {
       throw new Error('Course not found');
     }
 
-    const updatedCourse: Course = {
-      ...course,
-      ...updates,
+    Object.assign(course, updates, {
       updatedAt: new Date(),
       version: course.version + 1,
-    };
+    });
 
-    this.courses.set(courseId, updatedCourse);
-    this.saveVersion(courseId, updatedCourse, changes?.join(', ') || 'Updated', updatedBy);
+    await course.save();
+    this.saveVersion(courseId, course.toObject(), changes?.join(', ') || 'Updated', updatedBy);
 
-    this.emit('course:updated', updatedCourse);
-    return updatedCourse;
+    this.emit('course:updated', course.toObject());
+    return course.toObject();
   }
 
   /**
-   * Add module to course
+   * Add module to course (MongoDB)
    */
   async addModule(courseId: string, module: Omit<Module, 'id' | 'courseId'>): Promise<Module> {
-    const course = this.courses.get(courseId);
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+
+    const course = await Course.findOne({ id: courseId });
     if (!course) {
       throw new Error('Course not found');
     }
@@ -181,18 +192,22 @@ export class ContentManagementSystem extends EventEmitter {
     course.updatedAt = new Date();
     course.version += 1;
 
-    this.courses.set(courseId, course);
-    this.saveVersion(courseId, course, `Added module: ${newModule.title}`, course.instructorId);
+    await course.save();
+    this.saveVersion(courseId, course.toObject(), `Added module: ${newModule.title}`, course.instructorId);
 
     this.emit('module:added', { courseId, module: newModule });
     return newModule;
   }
 
   /**
-   * Publish course
+   * Publish course (MongoDB)
    */
   async publishCourse(courseId: string, publishedBy: string): Promise<Course> {
-    const course = this.courses.get(courseId);
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+
+    const course = await Course.findOne({ id: courseId });
     if (!course) {
       throw new Error('Course not found');
     }
@@ -207,38 +222,44 @@ export class ContentManagementSystem extends EventEmitter {
     course.publishedAt = new Date();
     course.constitutionalScore = vettingResult.constitutionalScore;
 
-    this.courses.set(courseId, course);
-    this.emit('course:published', course);
+    await course.save();
+    this.emit('course:published', course.toObject());
 
-    return course;
+    return course.toObject();
   }
 
   /**
-   * Add resource to library
+   * Add resource to library (MongoDB)
    */
   async addResource(resource: Omit<Resource, 'id'>): Promise<Resource> {
-    const newResource: Resource = {
-      ...resource,
-      id: crypto.randomUUID(),
-    };
-
-    // Auto-vet resource
-    if (!resource.constitutionallyVetted) {
-      const vettingResult = await this.vetResource(newResource);
-      newResource.constitutionallyVetted = vettingResult.approved;
-      if (vettingResult.approved) {
-        newResource.vettedAt = new Date();
-      }
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
     }
 
-    this.resources.set(newResource.id, newResource);
-    this.emit('resource:added', newResource);
+    // Auto-vet resource
+    let vettingResult: ContentVettingResult | undefined;
+    if (!resource.constitutionallyVetted) {
+      vettingResult = await this.vetResource({
+        ...resource,
+        id: crypto.randomUUID(),
+      });
+    }
 
-    return newResource;
+    const newResource = new Resource({
+      ...resource,
+      id: crypto.randomUUID(),
+      constitutionallyVetted: vettingResult?.approved || resource.constitutionallyVetted,
+      vettedAt: vettingResult?.approved ? new Date() : resource.vettedAt,
+    });
+
+    await newResource.save();
+    this.emit('resource:added', newResource.toObject());
+
+    return newResource.toObject();
   }
 
   /**
-   * Vet content for constitutional alignment
+   * Vet content for constitutional alignment (MongoDB)
    */
   async vetContent(contentId: string, type: 'course' | 'module'): Promise<ContentVettingResult> {
     // Check cache
@@ -248,12 +269,14 @@ export class ContentManagementSystem extends EventEmitter {
     }
 
     const content = type === 'course' 
-      ? this.courses.get(contentId)
-      : this.findModuleInCourses(contentId);
+      ? await Course.findOne({ id: contentId })
+      : await this.findModuleInCourses(contentId);
 
     if (!content) {
       throw new Error('Content not found');
     }
+
+    const contentObj = content.toObject ? content.toObject() : content;
 
     // Simple vetting logic (can be enhanced with AI)
     let score = 100;
@@ -261,14 +284,14 @@ export class ContentManagementSystem extends EventEmitter {
     const recommendations: string[] = [];
 
     // Check title
-    if (!content.title || content.title.length < 5) {
+    if (!contentObj.title || contentObj.title.length < 5) {
       score -= 10;
       issues.push('Title too short');
       recommendations.push('Add a descriptive title');
     }
 
     // Check description
-    if (!content.description || content.description.length < 20) {
+    if (!contentObj.description || contentObj.description.length < 20) {
       score -= 15;
       issues.push('Description too short');
       recommendations.push('Add a detailed description');
@@ -276,7 +299,7 @@ export class ContentManagementSystem extends EventEmitter {
 
     // Check learning objectives (for courses)
     if (type === 'course') {
-      const course = content as Course;
+      const course = contentObj as Course;
       if (!course.learningObjectives || course.learningObjectives.length === 0) {
         score -= 20;
         issues.push('No learning objectives');
@@ -286,7 +309,7 @@ export class ContentManagementSystem extends EventEmitter {
 
     // Check modules (for courses)
     if (type === 'course') {
-      const course = content as Course;
+      const course = contentObj as Course;
       if (!course.modules || course.modules.length === 0) {
         score -= 25;
         issues.push('No modules');
@@ -317,11 +340,16 @@ export class ContentManagementSystem extends EventEmitter {
   }
 
   /**
-   * Find module in any course
+   * Find module in any course (MongoDB)
    */
-  private findModuleInCourses(moduleId: string): Module | undefined {
-    for (const course of this.courses.values()) {
-      const module = course.modules.find(m => m.id === moduleId);
+  private async findModuleInCourses(moduleId: string): Promise<Module | undefined> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      return undefined;
+    }
+
+    const courses = await Course.find({});
+    for (const course of courses) {
+      const module = course.modules.find((m: Module) => m.id === moduleId);
       if (module) return module;
     }
     return undefined;
@@ -388,62 +416,87 @@ export class ContentManagementSystem extends EventEmitter {
   }
 
   /**
-   * Get course by ID
+   * Get course by ID (MongoDB)
    */
-  getCourse(courseId: string): Course | undefined {
-    return this.courses.get(courseId);
+  async getCourse(courseId: string): Promise<Course | undefined> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+    const course = await Course.findOne({ id: courseId });
+    return course ? course.toObject() : undefined;
   }
 
   /**
-   * Get all courses
+   * Get all courses (MongoDB)
    */
-  getAllCourses(status?: Course['status']): Course[] {
-    const courses = Array.from(this.courses.values());
-    return status ? courses.filter(c => c.status === status) : courses;
+  async getAllCourses(status?: Course['status']): Promise<Course[]> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+    const query = status ? { status } : {};
+    const courses = await Course.find(query);
+    return courses.map(c => c.toObject());
   }
 
   /**
-   * Search courses
+   * Search courses (MongoDB)
    */
-  searchCourses(query: string): Course[] {
+  async searchCourses(query: string): Promise<Course[]> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
     const q = query.toLowerCase();
-    return Array.from(this.courses.values()).filter(course =>
-      course.title.toLowerCase().includes(q) ||
-      course.description.toLowerCase().includes(q) ||
-      course.code.toLowerCase().includes(q) ||
-      course.category.toLowerCase().includes(q)
-    );
+    const courses = await Course.find({
+      $or: [
+        { title: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
+        { code: { $regex: q, $options: 'i' } },
+        { category: { $regex: q, $options: 'i' } },
+      ],
+    });
+    return courses.map(c => c.toObject());
   }
 
   /**
-   * Get content library
+   * Get content library (MongoDB)
    */
-  getContentLibrary(): ContentLibrary {
-    const courses = Array.from(this.courses.values());
-    const resources = Array.from(this.resources.values());
-    const categories = [...new Set(courses.map(c => c.category))];
+  async getContentLibrary(): Promise<ContentLibrary> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+    const courses = await Course.find({});
+    const resources = await Resource.find({});
+    const categories = [...new Set(courses.map(c => c.category).filter(Boolean))];
     const tags: string[] = []; // TODO: Extract tags from courses
 
     return {
-      courses,
-      resources,
+      courses: courses.map(c => c.toObject()),
+      resources: resources.map(r => r.toObject()),
       categories,
       tags,
     };
   }
 
   /**
-   * Get resource by ID
+   * Get resource by ID (MongoDB)
    */
-  getResource(resourceId: string): Resource | undefined {
-    return this.resources.get(resourceId);
+  async getResource(resourceId: string): Promise<Resource | undefined> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+    const resource = await Resource.findOne({ id: resourceId });
+    return resource ? resource.toObject() : undefined;
   }
 
   /**
-   * Get all resources
+   * Get all resources (MongoDB)
    */
-  getAllResources(): Resource[] {
-    return Array.from(this.resources.values());
+  async getAllResources(): Promise<Resource[]> {
+    if (!azoraDatabase.isDatabaseConnected()) {
+      throw new Error('Database not connected');
+    }
+    const resources = await Resource.find({});
+    return resources.map(r => r.toObject());
   }
 }
 

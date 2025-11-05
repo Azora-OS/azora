@@ -59,10 +59,10 @@ app.get('/api/analytics/:studentId', (req, res) => {
   res.json(analytics);
 });
 
-app.post('/api/analytics/:studentId/gap-analysis', (req, res) => {
+app.post('/api/analytics/:studentId/gap-analysis', async (req, res) => {
   try {
     const { requiredSkills } = req.body;
-    const analysis = analyticsEngine.performGapAnalysis(req.params.studentId, requiredSkills);
+    const analysis = await analyticsEngine.performGapAnalysis(req.params.studentId, requiredSkills);
     res.json(analysis);
   } catch (error: any) {
     res.status(400).json({ error: error.message });

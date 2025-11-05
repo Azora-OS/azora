@@ -45,12 +45,16 @@ app.post('/api/assessments', async (req, res) => {
   }
 });
 
-app.get('/api/assessments/:id', (req, res) => {
-  const assessment = gradingEngine.getAssessment(req.params.id);
-  if (!assessment) {
-    return res.status(404).json({ error: 'Assessment not found' });
+app.get('/api/assessments/:id', async (req, res) => {
+  try {
+    const assessment = await gradingEngine.getAssessment(req.params.id);
+    if (!assessment) {
+      return res.status(404).json({ error: 'Assessment not found' });
+    }
+    res.json(assessment);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(assessment);
 });
 
 // ========== SUBMISSIONS ==========
@@ -64,12 +68,16 @@ app.post('/api/submissions', async (req, res) => {
   }
 });
 
-app.get('/api/submissions/:id', (req, res) => {
-  const submission = gradingEngine.getSubmission(req.params.id);
-  if (!submission) {
-    return res.status(404).json({ error: 'Submission not found' });
+app.get('/api/submissions/:id', async (req, res) => {
+  try {
+    const submission = await gradingEngine.getSubmission(req.params.id);
+    if (!submission) {
+      return res.status(404).json({ error: 'Submission not found' });
+    }
+    res.json(submission);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(submission);
 });
 
 // ========== GRADING ==========
@@ -99,45 +107,65 @@ app.post('/api/submissions/:id/manual-grade', async (req, res) => {
   }
 });
 
-app.get('/api/grades/:id', (req, res) => {
-  const grade = gradingEngine.getGrade(req.params.id);
-  if (!grade) {
-    return res.status(404).json({ error: 'Grade not found' });
+app.get('/api/grades/:id', async (req, res) => {
+  try {
+    const grade = await gradingEngine.getGrade(req.params.id);
+    if (!grade) {
+      return res.status(404).json({ error: 'Grade not found' });
+    }
+    res.json(grade);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(grade);
 });
 
-app.get('/api/students/:studentId/grades', (req, res) => {
-  const { courseId } = req.query;
-  const grades = gradingEngine.getStudentGrades(req.params.studentId, courseId as string);
-  res.json({ grades });
+app.get('/api/students/:studentId/grades', async (req, res) => {
+  try {
+    const { courseId } = req.query;
+    const grades = await gradingEngine.getStudentGrades(req.params.studentId, courseId as string);
+    res.json({ grades });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ========== GRADEBOOK ==========
 
-app.get('/api/courses/:courseId/gradebook', (req, res) => {
-  const { courseName } = req.query;
-  const gradebook = gradebookService.getCourseGradebook(
-    req.params.courseId,
-    courseName as string
-  );
-  res.json(gradebook);
+app.get('/api/courses/:courseId/gradebook', async (req, res) => {
+  try {
+    const { courseName } = req.query;
+    const gradebook = await gradebookService.getCourseGradebook(
+      req.params.courseId,
+      courseName as string
+    );
+    res.json(gradebook);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.get('/api/students/:studentId/transcript', (req, res) => {
-  const { studentNumber } = req.query;
-  const transcript = gradebookService.getStudentTranscript(
-    req.params.studentId,
-    studentNumber as string || req.params.studentId
-  );
-  res.json(transcript);
+app.get('/api/students/:studentId/transcript', async (req, res) => {
+  try {
+    const { studentNumber } = req.query;
+    const transcript = await gradebookService.getStudentTranscript(
+      req.params.studentId,
+      studentNumber as string || req.params.studentId
+    );
+    res.json(transcript);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.get('/api/courses/:courseId/gradebook/export', (req, res) => {
-  const csv = gradebookService.exportToCSV(req.params.courseId);
-  res.setHeader('Content-Type', 'text/csv');
-  res.setHeader('Content-Disposition', `attachment; filename="gradebook-${req.params.courseId}.csv"`);
-  res.send(csv);
+app.get('/api/courses/:courseId/gradebook/export', async (req, res) => {
+  try {
+    const csv = await gradebookService.exportToCSV(req.params.courseId);
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="gradebook-${req.params.courseId}.csv"`);
+    res.send(csv);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ========== START SERVER ==========
