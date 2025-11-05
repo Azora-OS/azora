@@ -1,44 +1,46 @@
 {
   "version": 2,
   "name": "azora-os",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["iad1"],
+  "builds": [
+    {
+      "src": "app/**",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
   "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_NAME": "Azora OS",
-    "NEXT_PUBLIC_APP_URL": "https://azora-os.vercel.app"
+    "NODE_ENV": "production"
   },
   "build": {
     "env": {
-      "NEXT_PUBLIC_APP_NAME": "Azora OS"
+      "NEXT_PUBLIC_APP_URL": "@azora-app-url",
+      "NEXT_PUBLIC_API_URL": "@azora-api-url"
     }
   },
-  "functions": {
-    "app/api/**/*.ts": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/sapiens/:path*",
-      "destination": "/app/sapiens/:path*"
-    },
-    {
-      "source": "/campus/:path*",
-      "destination": "/app/campus/:path*"
-    }
-  ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
       "headers": [
         {
-          "key": "X-Powered-By",
-          "value": "Azora OS"
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
         },
         {
           "key": "X-Content-Type-Options",
@@ -47,8 +49,31 @@
         {
           "key": "X-Frame-Options",
           "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/pricing",
+      "destination": "/pricing/page"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "functions": {
+    "app/api/**": {
+      "maxDuration": 10
+    }
+  },
+  "regions": ["iad1", "sfo1", "lhr1", "fra1", "gru1", "syd1", "hnd1", "sin1"]
 }

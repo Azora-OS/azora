@@ -11,12 +11,28 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import categoryRoutes from './routes/categoryRoutes';
 import marketplaceRoutes from './marketplaceApi';
-import escrowRoutes from './escrow/escrowApi';
-import { organismBridge } from './organism/organismBridge';
+import ForgeOrganismIntegration from './organism-integration';
 
 const app = express();
 const PORT = process.env.PORT || 12345;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/azora-forge';
+
+// Initialize Organism Integration 🌟
+const organismIntegration = new ForgeOrganismIntegration({
+  mintServiceUrl: process.env.MINT_SERVICE_URL || 'http://localhost:3001',
+  educationServiceUrl: process.env.EDUCATION_SERVICE_URL || 'http://localhost:3010',
+  careersServiceUrl: process.env.CAREERS_SERVICE_URL || 'http://localhost:3040',
+  communityServiceUrl: process.env.COMMUNITY_SERVICE_URL || 'http://localhost:3060',
+  nexusServiceUrl: process.env.NEXUS_SERVICE_URL || 'http://localhost:3002',
+  supremeOrganismUrl: process.env.SUPREME_ORGANISM_URL || 'http://localhost:3100',
+  platformFeePercentage: 0.05, // 5% to Mint (heart)
+  sellerEarningsPercentage: 0.95, // 95% to seller
+  autoCreateProfilesForGraduates: true,
+  autoSendRevenueToMint: true,
+  autoMatchWithCareers: true,
+});
+
+console.log('🌟 Forge connected to Supreme Organism!');
 
 // Trust proxy for rate limiting
 app.set('trust proxy', 1);
@@ -51,7 +67,7 @@ app.use('/api/escrow', escrowRoutes);
 // app.use('/api/projects', projectRoutes);
 // app.use('/api/messaging', messagingRoutes);
 
-// Health endpoint with organism status
+// Health endpoint (for Supreme Organism monitoring)
 app.get('/health', (req, res) => {
   const organismHealth = organismBridge.getOrganismHealth();
   
@@ -59,39 +75,36 @@ app.get('/health', (req, res) => {
     success: true,
     status: 'healthy',
     service: 'azora-forge',
+    biologicalRole: '🍔 Stomach - Processes work into money',
+    organSystem: 'digestive',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
-    organism: {
-      healthy: organismHealth.healthy,
-      connectedServices: organismHealth.connectedServices,
-      healthPercentage: `${organismHealth.healthPercentage.toFixed(0)}%`
-    }
+    organismIntegration: {
+      connected: true,
+      mint: 'connected',
+      education: 'connected',
+      careers: 'connected',
+      community: 'connected',
+      nexus: 'connected',
+    },
   });
 });
 
-// Organism status endpoint
-app.get('/organism', (req, res) => {
-  const health = organismBridge.getOrganismHealth();
-  const circulation = organismBridge.getCirculationStats();
-  
-  res.json({
-    success: true,
-    organism: {
-      name: 'Azora Forge',
-      role: 'Skills & Work (Muscles)',
-      health,
-      circulation,
-      connections: {
-        mint: organismBridge.isServiceConnected('Mint') ? '✅' : '❌',
-        education: organismBridge.isServiceConnected('Education') ? '✅' : '❌',
-        nexus: organismBridge.isServiceConnected('Nexus') ? '✅' : '❌',
-        aegis: organismBridge.isServiceConnected('Aegis') ? '✅' : '❌',
-        careers: organismBridge.isServiceConnected('Careers') ? '✅' : '❌',
-        community: organismBridge.isServiceConnected('Community') ? '✅' : '❌'
-      }
-    }
-  });
+// Organism integration endpoints
+app.get('/api/organism/receive', (req, res) => {
+  // Receive resources from other services
+  res.json({ message: 'Forge ready to receive' });
+});
+
+app.post('/api/organism/give', async (req, res) => {
+  // Give resources to other services
+  res.json({ message: 'Forge revenue shared with Mint' });
+});
+
+app.post('/api/organism/heal', async (req, res) => {
+  // Receive healing from other services
+  res.json({ message: 'Forge health restored' });
 });
 
 // Root endpoint

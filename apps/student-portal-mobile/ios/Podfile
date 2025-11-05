@@ -1,0 +1,87 @@
+# Azora Student Portal - iOS Podfile
+# Minimum iOS version: 13.0
+
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '13.0'
+install! 'cocoapods', :deterministic_uuids => false
+
+# Flipper configuration (debugging)
+flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+
+target 'AzoraStudentPortal' do
+  config = use_native_modules!
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # Hermes is now enabled by default. Disable by setting this flag to false.
+    :hermes_enabled => true,
+    :fabric_enabled => false,
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  # ===== CORE DEPENDENCIES =====
+
+  # Image handling
+  pod 'SDWebImage', '~> 5.0'
+  
+  # Networking
+  pod 'AFNetworking', '~> 4.0'
+  
+  # Crypto & Security
+  pod 'CryptoSwift', '~> 1.8'
+  
+  # Keychain (secure storage)
+  pod 'KeychainAccess', '~> 4.2'
+  
+  # WebRTC (video calls)
+  pod 'GoogleWebRTC', '~> 1.1'
+  
+  # Blockchain
+  pod 'web3swift', '~> 3.2'
+  
+  # ===== FIREBASE (Analytics, Crashlytics, Push Notifications) =====
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics'
+  pod 'Firebase/Messaging'
+  
+  # ===== UTILITIES =====
+  pod 'SwiftLint'
+  pod 'Alamofire', '~> 5.8'
+  
+  # ===== TESTING =====
+  target 'AzoraStudentPortalTests' do
+    inherit! :complete
+    # Pods for testing
+  end
+
+  # ===== FLIPPER (Development) =====
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+    
+    # Flipper setup
+    flipper_post_install(installer) if flipper_config.flipper_enabled
+
+    # Fix deployment targets
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+      end
+    end
+
+    # Disable warning flags for third-party pods
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+        config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+      end
+    end
+  end
+end

@@ -1,39 +1,44 @@
 {
-  "name": "azora-careers",
+  "name": "@azora/careers",
   "version": "1.0.0",
-  "description": "Azora Careers - Complete job-landing toolkit",
-  "main": "src/index.ts",
+  "description": "Complete career services and employment ecosystem for Azora Education",
+  "main": "career-services.js",
+  "types": "career-services.d.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
-    "test": "jest"
+    "dev": "ts-node-dev --respawn career-services.ts",
+    "start": "node dist/career-services.js",
+    "test": "jest",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [
     "careers",
-    "jobs",
-    "resume",
-    "cv",
-    "interview",
-    "salary",
-    "negotiation",
-    "career-pathways"
+    "employment",
+    "job-board",
+    "resume-builder",
+    "skills-matching",
+    "freelance",
+    "internships",
+    "azora"
   ],
   "author": "Azora ES (Pty) Ltd",
   "license": "PROPRIETARY",
   "dependencies": {
     "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "mongoose": "^7.0.0"
+    "uuid": "^9.0.1",
+    "date-fns": "^2.30.0",
+    "natural": "^6.10.0",
+    "string-similarity": "^4.0.4",
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^21.6.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.17",
-    "@types/cors": "^2.8.13",
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.1",
-    "nodemon": "^3.0.0",
-    "jest": "^29.0.0"
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.3.3",
+    "ts-node-dev": "^2.0.0",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.11"
   }
 }
