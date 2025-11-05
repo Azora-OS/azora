@@ -231,14 +231,41 @@ export class GradingEngine extends EventEmitter {
       throw new Error('Database not connected');
     }
 
+    // Input validation
+    if (!submission.assessmentId) {
+      throw new Error('Assessment ID is required');
+    }
+    if (!submission.studentId) {
+      throw new Error('Student ID is required');
+    }
+    if (!submission.studentNumber) {
+      throw new Error('Student number is required');
+    }
+    if (!Array.isArray(submission.answers)) {
+      throw new Error('Answers must be an array');
+    }
+
     // Check if assessment exists
     const assessment = await Assessment.findOne({ id: submission.assessmentId });
     if (!assessment) {
       throw new Error('Assessment not found');
     }
 
+    // Check if student already submitted (prevent duplicate submissions)
+    const existingSubmission = await Submission.findOne({
+      assessmentId: submission.assessmentId,
+      studentId: submission.studentId,
+      status: { $in: ['submitted', 'graded'] }
+    });
+    if (existingSubmission && !this.defaultGradingConfig.allowResubmission) {
+      throw new Error('Assessment already submitted. Resubmission not allowed.');
+    }
+
     // Check due date
     const isLate = assessment.dueDate && new Date() > assessment.dueDate;
+    if (isLate && !this.defaultGradingConfig.allowLateSubmission) {
+      throw new Error('Assessment due date has passed. Late submission not allowed.');
+    }
 
     const newSubmission = new Submission({
       ...submission,
@@ -251,7 +278,11 @@ export class GradingEngine extends EventEmitter {
 
     // Auto-grade if enabled and assessment type allows
     if (this.defaultGradingConfig.autoGradeEnabled && this.canAutoGrade(assessment)) {
-      await this.autoGrade(newSubmission.id);
+      // Don't await to allow async processing
+      this.autoGrade(newSubmission.id).catch(err => {
+        console.error('Auto-grading failed:', err);
+        this.emit('grading:error', { submissionId: newSubmission.id, error: err });
+      });
     }
 
     this.emit('submission:created', newSubmission.toObject());
@@ -350,31 +381,70 @@ export class GradingEngine extends EventEmitter {
   }
 
   /**
-   * Grade a question
+   * Grade a question with improved accuracy
    */
   private gradeQuestion(question: Question, answer: string | string[] | File): { points: number; feedback?: string } {
+    // Handle empty answers
+    if (!answer || (typeof answer === 'string' && answer.trim().length === 0)) {
+      return {
+        points: 0,
+        feedback: 'No answer provided',
+      };
+    }
+
     if (question.type === 'multiple-choice' || question.type === 'true-false') {
       if (typeof answer === 'string') {
-        const isCorrect = answer.toLowerCase().trim() === question.correctAnswer?.toLowerCase().trim();
+        const normalizedAnswer = answer.toLowerCase().trim();
+        const normalizedCorrect = question.correctAnswer?.toString().toLowerCase().trim();
+        const isCorrect = normalizedAnswer === normalizedCorrect;
+        
         return {
           points: isCorrect ? question.points : 0,
-          feedback: isCorrect ? question.feedback || 'Correct!' : `Incorrect. Correct answer: ${question.correctAnswer}`,
+          feedback: isCorrect 
+            ? (question.feedback || 'Correct!') 
+            : `Incorrect. Correct answer: ${question.correctAnswer}`,
         };
       }
     }
 
     if (question.type === 'short-answer') {
       if (typeof answer === 'string') {
-        // Simple keyword matching (can be enhanced with AI)
-        const answerLower = answer.toLowerCase();
-        const correctLower = question.correctAnswer?.toLowerCase() || '';
-        const matches = correctLower.split(',').some(keyword => 
-          answerLower.includes(keyword.trim())
+        // Enhanced keyword matching with multiple correct answers support
+        const answerLower = answer.toLowerCase().trim();
+        const correctAnswers = (question.correctAnswer?.toString() || '').toLowerCase().split(',').map(a => a.trim());
+        
+        // Check for exact match first
+        const exactMatch = correctAnswers.some(correct => answerLower === correct);
+        if (exactMatch) {
+          return {
+            points: question.points,
+            feedback: 'Correct!',
+          };
+        }
+        
+        // Check for keyword matches
+        const keywordMatch = correctAnswers.some(correct => {
+          const keywords = correct.split(/\s+/);
+          return keywords.every(keyword => answerLower.includes(keyword));
+        });
+        
+        if (keywordMatch) {
+          return {
+            points: question.points * 0.8, // Partial credit for keyword match
+            feedback: 'Mostly correct. Consider reviewing key terms.',
+          };
+        }
+        
+        // Check for partial matches
+        const partialMatch = correctAnswers.some(correct => 
+          answerLower.includes(correct) || correct.includes(answerLower)
         );
         
         return {
-          points: matches ? question.points : question.points * 0.5,
-          feedback: matches ? 'Correct!' : 'Partially correct. Check spelling and key terms.',
+          points: partialMatch ? question.points * 0.5 : 0,
+          feedback: partialMatch 
+            ? 'Partially correct. Check spelling and key terms.' 
+            : 'Incorrect. Review the learning materials.',
         };
       }
     }
