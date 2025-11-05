@@ -123,7 +123,7 @@ A production-ready operating system that:
 - 📱 Cell: +27 73 234 7232
 
 **Technical Consultation:**
-- 📧 Email: sizwe@azora.world
+- 📧 Email: sizwe.ngwenya@azora.world
 
 ### For Networking
 **Professional:**
@@ -198,7 +198,7 @@ Whether you're an investor, partner, customer, or fellow developer—there's a p
 
 **Ready to talk?**
 - 📱 Call/WhatsApp: +27 73 234 7232
-- 📧 Email: sizwe@azora.world
+- 📧 Email: sizwe.ngwenya@azora.world
 - 💼 LinkedIn: [Let's connect](https://www.linkedin.com/in/sizwe-ngwenya-518314146/)
 
 ---
