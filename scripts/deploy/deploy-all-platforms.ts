@@ -1,11 +1,10 @@
-/* 
-AZORA PROPRIETARY LICENSE 
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved. 
-See LICENSE file for details. 
-*/ 
 #!/usr/bin/env tsx
 
-/**
+/*
+AZORA PROPRIETARY LICENSE
+Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+See LICENSE file for details.
+*//**
  * AZORA OS - UNIVERSAL DEPLOYMENT ORCHESTRATOR
  *
  * Deploys Azora OS to all platforms simultaneously:
