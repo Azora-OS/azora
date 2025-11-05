@@ -12,6 +12,8 @@ See LICENSE file for details.
 
 import { EventEmitter } from 'events';
 import { gradingEngine, Grade, GradebookEntry } from '../azora-assessment/grading-engine';
+import { ProgressData as DbProgressData } from '../shared/database/models';
+import { azoraDatabase } from '../shared/database/connection';
 
 export interface ProgressData {
   studentId: string;
@@ -139,8 +141,8 @@ export class AnalyticsEngine extends EventEmitter {
    */
   private async updateAnalytics(studentId: string): Promise<void> {
     const progress = this.progressData.get(studentId) || [];
-    const grades = gradingEngine.getStudentGrades(studentId);
-    const gradebookEntries = gradingEngine.getStudentGradebook(studentId);
+    const grades = await gradingEngine.getStudentGrades(studentId);
+    const gradebookEntries = await gradingEngine.getStudentGradebook(studentId);
 
     const courseAnalytics: CourseAnalytics[] = [];
 
@@ -236,9 +238,9 @@ export class AnalyticsEngine extends EventEmitter {
   /**
    * Perform gap analysis
    */
-  performGapAnalysis(studentId: string, requiredSkills: Array<{ skill: string; level: number }>): GapAnalysis {
+  async performGapAnalysis(studentId: string, requiredSkills: Array<{ skill: string; level: number }>): Promise<GapAnalysis> {
     const analytics = this.analytics.get(studentId);
-    const grades = gradingEngine.getStudentGrades(studentId);
+    const grades = await gradingEngine.getStudentGrades(studentId);
 
     if (!analytics) {
       throw new Error('Analytics not found for student');
