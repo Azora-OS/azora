@@ -1,0 +1,99 @@
+{
+  "language": {
+    "code": "xx",
+    "name": "Template Language",
+    "nativeName": "Template Language Name",
+    "direction": "ltr",
+    "region": "Template Region",
+    "contributors": [
+      {
+        "name": "Your Name",
+        "email": "your.email@example.com",
+        "role": "translator"
+      }
+    ],
+    "version": "1.0.0",
+    "lastUpdated": "2025-10-26",
+    "license": "CC-BY-SA-4.0",
+    "audioSupport": true,
+    "textToSpeech": true,
+    "offlineReady": true
+  },
+  "strings": {
+    "common": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "add": "Add",
+      "search": "Search",
+      "loading": "Loading...",
+      "error": "Error",
+      "success": "Success",
+      "welcome": "Welcome",
+      "logout": "Logout",
+      "settings": "Settings"
+    },
+    "navigation": {
+      "home": "Home",
+      "dashboard": "Dashboard",
+      "curriculum": "Curriculum",
+      "assessments": "Assessments",
+      "progress": "Progress",
+      "students": "Students",
+      "reports": "Reports"
+    },
+    "education": {
+      "lesson": "Lesson",
+      "assignment": "Assignment",
+      "grade": "Grade",
+      "subject": "Subject",
+      "mathematics": "Mathematics",
+      "science": "Science",
+      "history": "History",
+      "language": "Language",
+      "complete": "Complete",
+      "incomplete": "Incomplete"
+    },
+    "freedomCharter": {
+      "title": "Freedom Charter",
+      "principle1": "The People Shall Govern",
+      "principle2": "All National Groups Shall Have Equal Rights",
+      "principle3": "The People Shall Share in the Country's Wealth",
+      "principle4": "All Shall Be Equal Before the Law",
+      "principle5": "All Shall Enjoy Equal Human Rights",
+      "principle6": "There Shall Be Work and Security",
+      "principle7": "The Land Shall Be Shared Among Those Who Work It",
+      "principle8": "All Shall Be Free of the Shackles of Poverty",
+      "principle9": "All Shall Enjoy a Full and Free Education",
+      "principle10": "There Shall Be Houses, Security and Comfort"
+    }
+  },
+  "audio": {
+    "enabled": true,
+    "format": "mp3",
+    "quality": "64kbps",
+    "files": [
+      "welcome.mp3",
+      "lesson-complete.mp3",
+      "error-occurred.mp3"
+    ]
+  },
+  "cultural": {
+    "examples": {
+      "mathematics": [
+        {
+          "context": "market_trading",
+          "description": "Using local market prices for word problems"
+        }
+      ]
+    },
+    "holidays": [
+      {
+        "name": "Local Holiday",
+        "date": "MM-DD",
+        "description": "Description of cultural significance"
+      }
+    ]
+  }
+}

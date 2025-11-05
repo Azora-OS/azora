@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#grad1)" opacity="0.1"/>
+  
+  <!-- Modern "A" shape with neural network style -->
+  <!-- Left side of A -->
+  <path d="M 180 380 L 230 180 L 250 180 L 200 380 Z" fill="url(#grad1)"/>
+  
+  <!-- Right side of A -->
+  <path d="M 262 180 L 312 380 L 332 380 L 282 180 Z" fill="url(#grad1)"/>
+  
+  <!-- Crossbar of A with glow -->
+  <rect x="210" y="280" width="92" height="20" rx="10" fill="url(#grad2)"/>
+  
+  <!-- Neural network nodes -->
+  <circle cx="256" cy="140" r="12" fill="#ec4899"/>
+  <circle cx="200" cy="360" r="10" fill="#8b5cf6"/>
+  <circle cx="312" cy="360" r="10" fill="#06b6d4"/>
+  
+  <!-- Connection lines (subtle) -->
+  <line x1="256" y1="140" x2="240" y2="180" stroke="#8b5cf6" stroke-width="2" opacity="0.3"/>
+  <line x1="256" y1="140" x2="272" y2="180" stroke="#ec4899" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Orbit ring -->
+  <circle cx="256" cy="256" r="200" stroke="url(#grad2)" stroke-width="3" fill="none" opacity="0.3"/>
+  
+  <!-- Small decorative dots -->
+  <circle cx="256" cy="56" r="6" fill="#06b6d4"/>
+  <circle cx="456" cy="256" r="6" fill="#ec4899"/>
+  <circle cx="256" cy="456" r="6" fill="#8b5cf6"/>
+  <circle cx="56" cy="256" r="6" fill="#8b5cf6"/>
+</svg>
+

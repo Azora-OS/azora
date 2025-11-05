@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Trade {
+  id          String   @id @default(cuid())
+  symbol      String
+  type        String
+  amount      Float
+  price       Float
+  userId      String?
+  strategyId  String?
+  strategy    Strategy? @relation(fields: [strategyId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  auditLogs   AuditLog[]
+}
+
+model Strategy {
+  id          String   @id @default(cuid())
+  name        String
+  parameters  Json
+  performance Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  trades      Trade[]
+  auditLogs   AuditLog[]
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String
+  entityId    String
+  entityType  String
+  details     Json?
+  userId      String?
+  timestamp   DateTime @default(now())
+  tradeId     String?
+  trade       Trade? @relation(fields: [tradeId], references: [id])
+  strategyId  String?
+  strategy    Strategy? @relation(fields: [strategyId], references: [id])
+}

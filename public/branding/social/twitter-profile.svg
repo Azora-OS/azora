@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="twitterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <circle cx="200" cy="200" r="200" fill="#0f172a"/>
+  <circle cx="200" cy="200" r="200" fill="url(#twitterGrad)" opacity="0.1"/>
+  
+  <g transform="translate(200, 200)">
+    <path d="M -50,80 L -25,-80 L 5,-80 L -20,80 Z" fill="url(#twitterGrad)"/>
+    <path d="M 25,-80 L 50,80 L 20,80 L -5,-80 Z" fill="url(#twitterGrad)"/>
+    <rect x="-30" y="8" width="60" height="15" rx="7" fill="#06b6d4"/>
+    <circle cx="0" cy="-95" r="8" fill="#ec4899"/>
+    <circle cx="0" cy="0" r="130" stroke="#06b6d4" stroke-width="3" fill="none" opacity="0.3"/>
+  </g>
+</svg>
+

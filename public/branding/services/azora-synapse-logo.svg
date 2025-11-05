@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="synapseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="synapseAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Interface bridge + African communication symbols -->
+  <g transform="translate(120, 120)">
+    <!-- Central synapse connection -->
+    <circle cx="-40" cy="0" r="25" fill="url(#synapseGrad)" opacity="0.3"/>
+    <circle cx="-40" cy="0" r="25" stroke="url(#synapseGrad)" stroke-width="3" fill="none"/>
+    <circle cx="40" cy="0" r="25" fill="url(#synapseAccent)" opacity="0.3"/>
+    <circle cx="40" cy="0" r="25" stroke="url(#synapseAccent)" stroke-width="3" fill="none"/>
+    
+    <!-- Signal transmission (talking drum pattern) -->
+    <g>
+      <path d="M -15,0 L 15,0" stroke="url(#synapseGrad)" stroke-width="4"/>
+      <circle cx="-15" cy="0" r="8" fill="#06b6d4"/>
+      <circle cx="0" cy="0" r="6" fill="#8b5cf6">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="15" cy="0" r="8" fill="#ec4899"/>
+      
+      <!-- Signal waves -->
+      <g opacity="0.4">
+        <path d="M -25,-10 Q -20,-15 -15,-10" stroke="#06b6d4" stroke-width="2" fill="none"/>
+        <path d="M -25,10 Q -20,15 -15,10" stroke="#06b6d4" stroke-width="2" fill="none"/>
+        <path d="M 25,-10 Q 20,-15 15,-10" stroke="#ec4899" stroke-width="2" fill="none"/>
+        <path d="M 25,10 Q 20,15 15,10" stroke="#ec4899" stroke-width="2" fill="none"/>
+      </g>
+    </g>
+    
+    <!-- Interface nodes -->
+    <g opacity="0.6">
+      <circle cx="-70" cy="-25" r="8" fill="url(#synapseGrad)"/>
+      <circle cx="-70" cy="25" r="8" fill="url(#synapseGrad)"/>
+      <circle cx="70" cy="-25" r="8" fill="url(#synapseAccent)"/>
+      <circle cx="70" cy="25" r="8" fill="url(#synapseAccent)"/>
+      
+      <line x1="-40" y1="-20" x2="-70" y2="-25" stroke="url(#synapseGrad)" stroke-width="2" opacity="0.5"/>
+      <line x1="-40" y1="20" x2="-70" y2="25" stroke="url(#synapseGrad)" stroke-width="2" opacity="0.5"/>
+      <line x1="40" y1="-20" x2="70" y2="-25" stroke="url(#synapseAccent)" stroke-width="2" opacity="0.5"/>
+      <line x1="40" y1="20" x2="70" y2="25" stroke="url(#synapseAccent)" stroke-width="2" opacity="0.5"/>
+    </g>
+    
+    <!-- Communication orbit -->
+    <ellipse cx="0" cy="0" rx="80" ry="50" stroke="url(#synapseGrad)" stroke-width="2" fill="none" opacity="0.2" stroke-dasharray="6,3"/>
+    
+    <!-- African talking drum dots -->
+    <g transform="translate(0, -70)" opacity="0.5">
+      <circle cx="-8" cy="0" r="3" fill="#06b6d4"/>
+      <circle cx="0" cy="0" r="3" fill="#8b5cf6"/>
+      <circle cx="8" cy="0" r="3" fill="#ec4899"/>
+    </g>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="65" 
+          font-weight="700" 
+          fill="url(#synapseAccent)">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#synapseGrad)">Synapse</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Interface • Connection • Experience</text>
+  </g>
+</svg>
+

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="oracleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="oracleAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: All-seeing eye + African divination symbols -->
+  <g transform="translate(120, 120)">
+    <!-- Outer eye shape -->
+    <ellipse cx="0" cy="0" rx="70" ry="40" fill="none" stroke="url(#oracleGrad)" stroke-width="3"/>
+    
+    <!-- Inner eye -->
+    <circle cx="0" cy="0" r="30" fill="url(#oracleGrad)" opacity="0.2"/>
+    <circle cx="0" cy="0" r="30" stroke="url(#oracleGrad)" stroke-width="2.5" fill="none"/>
+    
+    <!-- Pupil with data streams -->
+    <circle cx="0" cy="0" r="15" fill="url(#oracleAccent)"/>
+    <circle cx="0" cy="0" r="8" fill="#1e293b"/>
+    <circle cx="-3" cy="-3" r="3" fill="url(#oracleAccent)" opacity="0.8"/>
+    
+    <!-- African divination cowrie shell pattern -->
+    <g opacity="0.4">
+      <ellipse cx="-45" cy="-25" rx="8" ry="12" fill="#a855f7" transform="rotate(-30,-45,-25)"/>
+      <ellipse cx="45" cy="-25" rx="8" ry="12" fill="#a855f7" transform="rotate(30,45,-25)"/>
+      <ellipse cx="-45" cy="25" rx="8" ry="12" fill="#06b6d4" transform="rotate(30,-45,25)"/>
+      <ellipse cx="45" cy="25" rx="8" ry="12" fill="#06b6d4" transform="rotate(-30,45,25)"/>
+    </g>
+    
+    <!-- Data insight rays -->
+    <g opacity="0.5">
+      <line x1="0" y1="0" x2="-60" y2="-35" stroke="url(#oracleAccent)" stroke-width="2"/>
+      <line x1="0" y1="0" x2="60" y2="-35" stroke="url(#oracleAccent)" stroke-width="2"/>
+      <line x1="0" y1="0" x2="-60" y2="35" stroke="url(#oracleAccent)" stroke-width="2"/>
+      <line x1="0" y1="0" x2="60" y2="35" stroke="url(#oracleAccent)" stroke-width="2"/>
+    </g>
+    
+    <!-- Insight nodes -->
+    <circle cx="-60" cy="-35" r="5" fill="#8b5cf6"/>
+    <circle cx="60" cy="-35" r="5" fill="#06b6d4"/>
+    <circle cx="-60" cy="35" r="5" fill="#06b6d4"/>
+    <circle cx="60" cy="35" r="5" fill="#8b5cf6"/>
+    
+    <!-- Vision rings -->
+    <circle cx="0" cy="0" r="55" stroke="url(#oracleGrad)" stroke-width="1.5" fill="none" opacity="0.3" stroke-dasharray="3,3">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="20s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="65" 
+          font-weight="700" 
+          fill="url(#oracleAccent)">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#oracleGrad)">Oracle</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Analytics • Insights • Foresight</text>
+  </g>
+</svg>
+

@@ -1,0 +1,70 @@
+# Optimize Vercel deployment - exclude unnecessary files
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build artifacts  
+.next
+out
+build
+dist
+
+# Large directories
+services/*
+organs/*
+infrastructure/*
+genome/*/node_modules
+synapse/*/node_modules
+ui/*/node_modules
+
+# Documentation (deploy separately if needed)
+docs/archive
+codex/archive
+marketing
+
+# Testing
+coverage
+test
+tests
+e2e
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# Development
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env.local
+.env*.local
+secrets
+
+# Large files
+*.exe
+*.apk
+*.ipa
+*.dmg
+*.iso
+build/iso
+
+# Mining
+mining-engine
+mining-config
+
+# Misc
+reflexes
+examples
+templates
+mobile
+os-build
+archive
+branding/archive

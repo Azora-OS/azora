@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="voiceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="voiceAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Voice waveform with African drum pattern -->
+  <g transform="translate(120, 120)">
+    <!-- Central microphone/voice icon -->
+    <ellipse cx="0" cy="0" rx="35" ry="50" fill="url(#voiceGrad)" opacity="0.3"/>
+    <ellipse cx="0" cy="0" rx="35" ry="50" stroke="url(#voiceGrad)" stroke-width="3" fill="none"/>
+    
+    <!-- Microphone stand -->
+    <line x1="0" y1="50" x2="0" y2="70" stroke="url(#voiceGrad)" stroke-width="4"/>
+    <ellipse cx="0" cy="73" rx="20" ry="5" fill="url(#voiceGrad)"/>
+    
+    <!-- Sound waves (animated) -->
+    <g opacity="0.7">
+      <!-- Left waves -->
+      <path d="M -50,0 Q -55,-15 -60,0 Q -55,15 -50,0" stroke="url(#voiceAccent)" stroke-width="3" fill="none">
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M -70,0 Q -75,-25 -80,0 Q -75,25 -70,0" stroke="url(#voiceAccent)" stroke-width="2.5" fill="none">
+        <animate attributeName="opacity" values="0.2;0.7;0.2" dur="1.5s" begin="0.2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M -90,0 Q -95,-35 -100,0 Q -95,35 -90,0" stroke="url(#voiceAccent)" stroke-width="2" fill="none">
+        <animate attributeName="opacity" values="0.1;0.6;0.1" dur="1.5s" begin="0.4s" repeatCount="indefinite"/>
+      </path>
+      
+      <!-- Right waves -->
+      <path d="M 50,0 Q 55,-15 60,0 Q 55,15 50,0" stroke="url(#voiceGrad)" stroke-width="3" fill="none">
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 70,0 Q 75,-25 80,0 Q 75,25 70,0" stroke="url(#voiceGrad)" stroke-width="2.5" fill="none">
+        <animate attributeName="opacity" values="0.2;0.7;0.2" dur="1.5s" begin="0.2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 90,0 Q 95,-35 100,0 Q 95,35 90,0" stroke="url(#voiceGrad)" stroke-width="2" fill="none">
+        <animate attributeName="opacity" values="0.1;0.6;0.1" dur="1.5s" begin="0.4s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    
+    <!-- African talking drum pattern nodes -->
+    <g>
+      <circle cx="-60" cy="-40" r="5" fill="#f59e0b">
+        <animate attributeName="r" values="5;7;5" dur="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-80" cy="0" r="6" fill="#ec4899">
+        <animate attributeName="r" values="6;8;6" dur="1.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-60" cy="40" r="5" fill="#8b5cf6">
+        <animate attributeName="r" values="5;7;5" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      
+      <circle cx="60" cy="-40" r="5" fill="#06b6d4">
+        <animate attributeName="r" values="5;7;5" dur="1.3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="80" cy="0" r="6" fill="#8b5cf6">
+        <animate attributeName="r" values="6;8;6" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="60" cy="40" r="5" fill="#ec4899">
+        <animate attributeName="r" values="5;7;5" dur="1.7s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- Sound frequency indicator -->
+    <g transform="translate(0, -90)" opacity="0.5">
+      <rect x="-4" y="0" width="3" height="15" rx="1.5" fill="#f59e0b">
+        <animate attributeName="height" values="15;25;15" dur="0.8s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="-12" y="5" width="3" height="10" rx="1.5" fill="#ec4899">
+        <animate attributeName="height" values="10;20;10" dur="0.9s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="4" y="5" width="3" height="10" rx="1.5" fill="#8b5cf6">
+        <animate attributeName="height" values="10;18;10" dur="0.7s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="12" y="8" width="3" height="7" rx="1.5" fill="#06b6d4">
+        <animate attributeName="height" values="7;15;7" dur="1s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="-20" y="8" width="3" height="7" rx="1.5" fill="#fbbf24">
+        <animate attributeName="height" values="7;13;7" dur="1.1s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+    
+    <!-- Resonance circle -->
+    <circle cx="0" cy="0" r="110" stroke="url(#voiceGrad)" stroke-width="2" fill="none" opacity="0.2" stroke-dasharray="6,4">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="15s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="75" 
+          font-weight="700" 
+          fill="url(#voiceAccent)">
+      <tspan font-weight="700">E</tspan><tspan font-weight="500" opacity="0.9">lara</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#voiceGrad)">Voice</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Speech • Assistant • Natural</text>
+  </g>
+</svg>
+

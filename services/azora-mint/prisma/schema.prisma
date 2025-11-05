@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  tier      String   @default("free_citizen")
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscription")
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+
+  @@map("invoice")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   Json
+  timestamp DateTime @default(now())
+
+  @@map("audit_log")
+}
+
+// Proof-of-Knowledge Economic System Models
+model User {
+  id            String   @id @default(cuid())
+  azoraId       String   @unique
+  walletAddress String   @unique
+  kycStatus     KycStatus @default(PENDING)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  balances      UserBalance[]
+  rewards       KnowledgeReward[]
+
+  @@map("users")
+}
+
+model UserBalance {
+  id           String  @id @default(cuid())
+  userId       String
+  currencyCode String
+  amount       Float
+
+  // Relations
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, currencyCode])
+  @@map("user_balances")
+}
+
+model KnowledgeReward {
+  id                 String           @id @default(cuid())
+  userId             String
+  rewardAmount       Float
+  currencyCode       String
+  sourceTrxId        String           @unique
+  achievement        String?
+  transactionHash    String?
+  status             RewardStatus     @default(PENDING)
+  createdAt          DateTime         @default(now())
+  processedAt        DateTime?
+
+  // Relations
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("knowledge_rewards")
+}
+
+enum KycStatus {
+  PENDING
+  VERIFIED
+  FLAGGED
+  REJECTED
+}
+
+enum RewardStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

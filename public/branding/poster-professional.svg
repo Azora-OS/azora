@@ -1,0 +1,149 @@
+<!-- Azora OS Professional Marketing Poster -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" fill="none">
+  <defs>
+    <!-- Professional Background -->
+    <linearGradient id="proBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Premium Brand Gradient -->
+    <linearGradient id="proGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Accent Gradient -->
+    <linearGradient id="proAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Premium Glow -->
+    <radialGradient id="proGlow" cx="50%" cy="30%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="url(#proBg)"/>
+  
+  <!-- Atmospheric glow -->
+  <ellipse cx="540" cy="500" rx="600" ry="500" fill="url(#proGlow)"/>
+  
+  <!-- Sophisticated grid -->
+  <defs>
+    <pattern id="proGrid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#8b5cf6" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#proGrid)" opacity="0.3"/>
+  
+  <!-- Premium Icon -->
+  <g transform="translate(290, 280)">
+    <!-- Outer ring -->
+    <circle cx="250" cy="250" r="240" stroke="url(#proAccent)" stroke-width="2" fill="none" opacity="0.2"/>
+    
+    <!-- Background -->
+    <circle cx="250" cy="250" r="230" fill="url(#proGrad)" opacity="0.1"/>
+    
+    <!-- Main A letterform -->
+    <path d="M 160 400 L 225 140 L 275 140 L 210 400 Z" fill="url(#proGrad)"/>
+    <path d="M 275 140 L 340 400 L 290 400 L 225 140 Z" fill="url(#proGrad)"/>
+    <rect x="190" y="270" width="120" height="20" rx="10" fill="url(#proAccent)"/>
+    
+    <!-- Neural nodes -->
+    <circle cx="250" cy="110" r="16" fill="url(#proAccent)"/>
+    <circle cx="185" cy="385" r="12" fill="url(#proGrad)"/>
+    <circle cx="315" cy="385" r="12" fill="url(#proGrad)"/>
+    
+    <!-- Connection lines -->
+    <line x1="250" y1="110" x2="238" y2="140" stroke="url(#proAccent)" stroke-width="2" opacity="0.3" stroke-linecap="round"/>
+    <line x1="250" y1="110" x2="262" y2="140" stroke="url(#proAccent)" stroke-width="2" opacity="0.3" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Premium Typography -->
+  <g>
+    <text x="540" y="950" 
+          font-family="'SF Pro Display', 'Inter', sans-serif" 
+          font-size="130" 
+          font-weight="800" 
+          text-anchor="middle"
+          letter-spacing="-0.03em"
+          fill="white">
+      <tspan font-weight="800">A</tspan><tspan font-weight="500" opacity="0.75">zora </tspan><tspan font-weight="400" opacity="0.6" font-size="100">OS</tspan>
+    </text>
+  </g>
+  
+  <!-- Professional Tagline -->
+  <text x="540" y="1050" 
+        font-family="'SF Pro Display', 'Inter', sans-serif" 
+        font-size="44" 
+        font-weight="600" 
+        text-anchor="middle"
+        fill="url(#proGrad)">Universal Human Infrastructure</text>
+  
+  <!-- Value Proposition -->
+  <text x="540" y="1160" 
+        font-family="'SF Pro Text', 'Inter', sans-serif" 
+        font-size="34" 
+        font-weight="500" 
+        text-anchor="middle"
+        fill="#94a3b8">Quantum-Secure AI Ecosystem</text>
+  
+  <!-- Key Features -->
+  <g transform="translate(140, 1280)">
+    <!-- Feature 1 -->
+    <circle cx="20" cy="0" r="8" fill="url(#proAccent)"/>
+    <text x="50" y="8" font-family="'SF Pro Text', 'Inter', sans-serif" font-size="28" font-weight="500" fill="#cbd5e1">AI-Powered Education Platform</text>
+    
+    <!-- Feature 2 -->
+    <circle cx="20" cy="70" r="8" fill="url(#proAccent)"/>
+    <text x="50" y="78" font-family="'SF Pro Text', 'Inter', sans-serif" font-size="28" font-weight="500" fill="#cbd5e1">Quantum-Resistant Security</text>
+    
+    <!-- Feature 3 -->
+    <circle cx="20" cy="140" r="8" fill="url(#proAccent)"/>
+    <text x="50" y="148" font-family="'SF Pro Text', 'Inter', sans-serif" font-size="28" font-weight="500" fill="#cbd5e1">Constitutional AI Governance</text>
+    
+    <!-- Feature 4 -->
+    <circle cx="20" cy="210" r="8" fill="url(#proAccent)"/>
+    <text x="50" y="218" font-family="'SF Pro Text', 'Inter', sans-serif" font-size="28" font-weight="500" fill="#cbd5e1">Open Source & Transparent</text>
+  </g>
+  
+  <!-- Call to Action -->
+  <rect x="340" y="1620" width="400" height="70" rx="35" fill="url(#proGrad)"/>
+  <text x="540" y="1665" 
+        font-family="'SF Pro Text', 'Inter', sans-serif" 
+        font-size="30" 
+        font-weight="600" 
+        text-anchor="middle"
+        fill="white">Explore on GitHub</text>
+  
+  <!-- GitHub Link -->
+  <text x="540" y="1740" 
+        font-family="'SF Mono', 'JetBrains Mono', monospace" 
+        font-size="26" 
+        font-weight="500" 
+        text-anchor="middle"
+        fill="url(#proAccent)">github.com/Azora-OS-AI/azora-os</text>
+  
+  <!-- Contact -->
+  <text x="540" y="1810" 
+        font-family="'SF Pro Text', 'Inter', sans-serif" 
+        font-size="24" 
+        font-weight="500" 
+        text-anchor="middle"
+        fill="#64748b">sizwe.ngwenya@azora.world</text>
+  
+  <!-- Copyright -->
+  <text x="540" y="1870" 
+        font-family="'SF Pro Text', 'Inter', sans-serif" 
+        font-size="20" 
+        font-weight="400" 
+        text-anchor="middle"
+        fill="#475569">© 2025 Azora ES (Pty) Ltd. All Rights Reserved.</text>
+</svg>
+

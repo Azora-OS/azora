@@ -1,0 +1,70 @@
+// Prisma schema for Aegis Citadel Database
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model NationGrant {
+  id                    String   @id @default(cuid())
+  nationName            String
+  founderId             String
+  initialCapital        Float
+  constitution          String
+  status                String   // pending, processing, completed, failed
+  elaraApproval         Boolean  @default(false)
+  sovereignTokenAddress String?
+  nationId              String?  // Reference to Nation after creation
+  createdAt             DateTime
+  completedAt           DateTime?
+
+  nation Nation? @relation(fields: [nationId], references: [id])
+
+  @@map("nation_grants")
+}
+
+model SovereignTrigger {
+  id           String   @id @default(cuid())
+  triggerType  String   // economic-stimulus, sovereign-defense, constitutional-amendment
+  nationId     String
+  parameters   String   // JSON string
+  justification String
+  status       String   // queued, executing, executed, failed
+  elaraApproval Boolean  @default(false)
+  createdAt    DateTime
+  executedAt   DateTime?
+
+  nation Nation @relation(fields: [nationId], references: [id])
+
+  @@map("sovereign_triggers")
+}
+
+model Nation {
+  id                    String   @id @default(cuid())
+  name                  String
+  founderId             String
+  sovereignTokenAddress String
+  initialCapital        Float
+  status                String   // active, suspended, dissolved
+  createdAt             DateTime
+  updatedAt             DateTime @updatedAt
+
+  grants  NationGrant[]
+  triggers SovereignTrigger[]
+
+  @@map("nations")
+}
+
+model ConstitutionalAudit {
+  id          String   @id @default(cuid())
+  action      String
+  context     String   // JSON string
+  decision    String   // APPROVED, DENIED
+  reason      String
+  timestamp   DateTime @default(now())
+
+  @@map("constitutional_audits")
+}

@@ -1,0 +1,48 @@
+# AZR Mining Engine Configuration
+# Cloud GPU and Autonomous Operation Settings
+
+[GENERAL]
+# Autonomous operation settings
+autonomous_days = 365
+Xfree_electricity = true
+electricity_cost_kwh = 0.0
+lcd /workspaces/azora-os/mining-engine && chmod +x ultra_system_optimize.sh start_ultra_mining.sh
+og_level = INFO
+health_check_interval = 60
+
+[CLOUD_GPUS]
+# AWS Settings
+aws_region = us-east-1
+aws_instance_type = p4d.24xlarge
+aws_max_instances = 3
+
+# Google Cloud Settings
+gcp_project = azora-mining
+gcp_zone = us-central1-a
+gcp_machine_type = a2-highgpu-1g
+gcp_max_instances = 2
+
+# Vast.ai Settings
+vast_api_key = YOUR_VAST_API_KEY_HERE
+vast_max_instances = 5
+vast_min_profit_threshold = 0.01
+
+[MINING]
+# Coin mining priorities (highest profit first)
+coin_priorities = ETH, BTC, RVN, ERG, CFX
+min_profit_threshold = 0.001
+switch_coins_automatically = true
+
+[MONITORING]
+# Dashboard settings
+dashboard_port = 3000
+api_port = 8000
+enable_telemetry = true
+daily_reports = true
+
+[OPTIMIZATION]
+# AI optimization settings
+enable_ai_optimization = true
+optimization_interval = 3600
+cloud_scaling_enabled = true
+auto_restart_on_failure = true

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ddff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)"/>
+  
+  <!-- Stylized "A" for Azora -->
+  <path d="M 256 140 L 350 380 L 310 380 L 290 330 L 222 330 L 202 380 L 162 380 Z M 256 200 L 235 270 L 277 270 Z" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="4" stroke-linejoin="round"/>
+  
+  <!-- Orbit rings (representing the living organism/system) -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#0a0a0a" stroke-width="3" opacity="0.3"/>
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#0a0a0a" stroke-width="2" opacity="0.2"/>
+  
+  <!-- Neural network dots (AI representation) -->
+  <circle cx="180" cy="180" r="6" fill="#0a0a0a" opacity="0.6"/>
+  <circle cx="332" cy="180" r="6" fill="#0a0a0a" opacity="0.6"/>
+  <circle cx="180" cy="332" r="6" fill="#0a0a0a" opacity="0.6"/>
+  <circle cx="332" cy="332" r="6" fill="#0a0a0a" opacity="0.6"/>
+  
+  <!-- Glow effect -->
+  <circle cx="256" cy="256" r="240" fill="url(#glow)" opacity="0.5"/>
+</svg>

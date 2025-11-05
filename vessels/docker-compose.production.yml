@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL (Primary)
+  postgres-primary:
+    image: postgres:15-alpine
+    container_name: azora-postgres-primary
+    environment:
+      POSTGRES_DB: azora_production
+      POSTGRES_USER: azora_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_MAX_CONNECTIONS: 500
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/database-schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "5432:5432"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+
+  # All services from previous configurations...
+  # (Include all services from docker-compose.autonomous.yml)
+
+  # Withdrawal Service
+  withdrawal-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: azora-withdrawal
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - MINIMUM_WITHDRAWAL=50
+      - WITHDRAWAL_SERVICE_PORT=5003
+      - WORKER_ENABLED=true
+    ports:
+      - "5003:5003"
+    restart: always
+    depends_on:
+      - postgres-primary
+      - redis
+    command: node /app/services/withdrawal-service/withdrawal-manager.js
+
+  # AI Treasury
+  ai-treasury:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - AI_REINVESTMENT_PERCENTAGE=1
+      - AI_TREASURY_PORT=5004
+    ports:
+      - "5004:5004"
+    restart: always
+    depends_on:
+      - postgres-primary
+      - redis
+    command: node /app/services/ai-treasury/ai-reinvestment.js
+
+volumes:
+  postgres-data:
+  mongodb-data:
+  redis-data:
+  elasticsearch-data:
+
+networks:
+  default:
+    name: azora-production
+    driver: bridge

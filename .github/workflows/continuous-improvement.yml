@@ -1,0 +1,41 @@
+name: 💡 Continuous Improvement
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sunday
+  workflow_dispatch:
+
+jobs:
+  research-improvements:
+    name: 🔬 Research Improvements
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Analyze codebase
+        run: |
+          echo "🔬 Researching improvement opportunities..."
+          npx madge --circular --extensions ts,tsx . || true
+      
+      - name: Check for code duplication
+        run: |
+          echo "🔍 Detecting code duplication..."
+          npx jscpd . || true
+      
+      - name: Create improvement PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: '💡 Auto-improve: Weekly code improvements'
+          title: '💡 Weekly: Automated improvements'
+          body: |
+            ## 💡 Automated Weekly Improvements
+            
+            Analysis complete. Suggested improvements ready.
+            
+            Part of continuous learning system.
+          branch: auto-improve/weekly
+          delete-branch: true

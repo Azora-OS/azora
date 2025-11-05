@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="dreamGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dreamAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="dreamGlow">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Icon: Moon + stars + creative sparks -->
+  <g transform="translate(120, 120)">
+    <!-- Dream glow -->
+    <circle cx="0" cy="0" r="100" fill="url(#dreamGlow)"/>
+    
+    <!-- Crescent moon -->
+    <path d="M -20,-60 A 50 50 0 1 1 -20,60 A 40 40 0 1 0 -20,-60 Z" 
+          fill="url(#dreamGrad)" opacity="0.3"/>
+    <path d="M -20,-60 A 50 50 0 1 1 -20,60 A 40 40 0 1 0 -20,-60 Z" 
+          stroke="url(#dreamGrad)" stroke-width="4" fill="none"/>
+    
+    <!-- Stars (imagination, creativity) -->
+    <g>
+      <path d="M 40,-50 L 45,-40 L 56,-40 L 47,-33 L 50,-22 L 40,-30 L 30,-22 L 33,-33 L 24,-40 L 35,-40 Z" 
+            fill="url(#dreamAccent)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+      </path>
+      
+      <path d="M 60,20 L 63,26 L 70,26 L 64,30 L 66,37 L 60,32 L 54,37 L 56,30 L 50,26 L 57,26 Z" 
+            fill="#fbbf24">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite"/>
+      </path>
+      
+      <path d="M -60,-20 L -57,-14 L -50,-14 L -56,-10 L -54,-3 L -60,-8 L -66,-3 L -64,-10 L -70,-14 L -63,-14 Z" 
+            fill="#f59e0b">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    
+    <!-- Creative sparkles -->
+    <g>
+      <circle cx="70" cy="-30" r="4" fill="#a855f7">
+        <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-70" cy="30" r="5" fill="#8b5cf6">
+        <animate attributeName="r" values="5;7;5" dur="1.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="50" cy="60" r="4" fill="#6366f1">
+        <animate attributeName="r" values="4;6;4" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- Dream waves -->
+    <g opacity="0.3">
+      <path d="M -90,0 Q -80,-10 -70,0 T -50,0" stroke="url(#dreamAccent)" stroke-width="2" fill="none">
+        <animate attributeName="opacity" values="0.2;0.5;0.2" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 50,0 Q 60,-10 70,0 T 90,0" stroke="url(#dreamAccent)" stroke-width="2" fill="none">
+        <animate attributeName="opacity" values="0.2;0.5;0.2" dur="3s" begin="1s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    
+    <!-- Imagination orbit -->
+    <circle cx="0" cy="0" r="85" stroke="url(#dreamGrad)" stroke-width="2" fill="none" opacity="0.2" stroke-dasharray="8,4">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="30s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="75" font-weight="700" fill="url(#dreamAccent)">
+      <tspan font-weight="700">E</tspan><tspan font-weight="500" opacity="0.9">lara</tspan>
+    </text>
+    <text x="0" y="50" font-family="'Inter', sans-serif" font-size="55" font-weight="600" fill="url(#dreamGrad)">Dreams</text>
+    <text x="0" y="85" font-family="'Inter', sans-serif" font-size="18" font-weight="400" fill="#94a3b8">Creativity • Generation • Imagination</text>
+  </g>
+</svg>
+

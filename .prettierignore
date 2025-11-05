@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+package-lock.json
+yarn.lock
+
+# Build outputs
+.next
+out
+dist
+build
+coverage
+
+# Git
+.git
+
+# Environment
+.env.local
+.env*.local
+
+# Archives
+.archive
+
+# Generated files
+*.min.js
+*.min.css
+
+# Documentation (preserve formatting)
+CHANGELOG.md
+
+# Config files that should not be formatted
+.github

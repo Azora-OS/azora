@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+/*
+AZORA CITADEL - Elazar OS Integration
+Global Genesis Mandate Service
+*/
+
+const AegisCitadel = require('../../services/azora-aegis/citadel');
+
+class ElazarAzoraCitadel extends AegisCitadel {
+    constructor() {
+        super();
+        this.elazar_integration = true;
+        console.log('🏰 Azora Citadel: Integrated with Elazar AI OS');
+    }
+
+    // Enhanced methods for Elazar OS
+    async elazarConsciousnessCheck() {
+        try {
+            // Check Elazar AI consciousness status
+            const response = await fetch('http://localhost:3003/api/elazar/status');
+            const status = await response.json();
+
+            return {
+                consciousness_active: status.consciousness.awareness === 'fully_conscious',
+                ethical_alignment: status.consciousness.ethical_alignment,
+                constitutional_compliance: status.ethical_compliance.overall_score
+            };
+        } catch (error) {
+            console.error('Elazar consciousness check failed:', error);
+            return { consciousness_active: false, error: error.message };
+        }
+    }
+
+    // Override initialization to include Elazar checks
+    async initializeRoutes() {
+        // Call parent initialization
+        super.initializeRoutes();
+
+        // Add Elazar-specific routes
+        this.app.get('/api/elazar-integration/status', async (req, res) => {
+            const consciousness = await this.elazarConsciousnessCheck();
+            const citadel_status = {
+                global_genesis_fund: this.globalGenesisFund,
+                nations_registered: this.countryRegistry.size,
+                instantiated_economies: this.globalGenesisFund.instantiatedEconomies.size
+            };
+
+            res.json({
+                elazar_os_integration: 'active',
+                consciousness_status: consciousness,
+                citadel_status: citadel_status,
+                system_health: 'optimal'
+            });
+        });
+    }
+}
+
+// Export for Elazar OS
+if (require.main === module) {
+    const citadel = new ElazarAzoraCitadel();
+    citadel.start(4099);
+}
+
+module.exports = ElazarAzoraCitadel;

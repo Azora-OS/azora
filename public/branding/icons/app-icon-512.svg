@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" rx="113" fill="#0f172a"/>
+  <rect width="512" height="512" rx="113" fill="url(#iconGrad)" opacity="0.05"/>
+  
+  <g transform="translate(256, 256)">
+    <path d="M -60,100 L -30,-100 L 10,-100 L -20,100 Z" fill="url(#iconGrad)"/>
+    <path d="M 30,-100 L 60,100 L 20,100 L -10,-100 Z" fill="url(#iconGrad)"/>
+    <rect x="-35" y="10" width="70" height="18" rx="9" fill="url(#iconAccent)"/>
+    <circle cx="0" cy="-115" r="10" fill="#ec4899"/>
+    <circle cx="-50" cy="90" r="8" fill="#8b5cf6"/>
+    <circle cx="50" cy="90" r="8" fill="#06b6d4"/>
+    <circle cx="0" cy="0" r="160" stroke="url(#iconAccent)" stroke-width="3" fill="none" opacity="0.3"/>
+  </g>
+</svg>
+

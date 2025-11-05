@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#grad1)"/>
+  
+  <!-- Modern "A" shape -->
+  <path d="M 180 400 L 230 200 L 270 200 L 220 400 Z" fill="white" opacity="0.95"/>
+  <path d="M 282 200 L 332 400 L 292 400 L 242 200 Z" fill="white" opacity="0.95"/>
+  <rect x="210" y="300" width="92" height="20" rx="10" fill="white" opacity="0.9"/>
+  
+  <!-- Neural network nodes -->
+  <circle cx="256" cy="160" r="14" fill="white" opacity="0.9"/>
+  <circle cx="200" cy="380" r="12" fill="white" opacity="0.8"/>
+  <circle cx="312" cy="380" r="12" fill="white" opacity="0.8"/>
+</svg>
+

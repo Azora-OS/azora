@@ -1,0 +1,39 @@
+{
+    "name": "azora-ai-system-monitor",
+    "version": "1.0.0",
+    "description": "AI-driven auto-diagnosis and self-healing system for Azora OS",
+    "main": "ai_monitor.js",
+    "scripts": {
+        "start": "node ai_monitor.js start",
+        "stop": "node ai_monitor.js stop",
+        "status": "node ai_monitor.js status",
+        "diagnose": "node ai_monitor.js diagnose",
+        "report": "node ai_monitor.js report",
+        "heal": "node ai_monitor.js heal",
+        "dev": "node ai_monitor.js start"
+    },
+    "keywords": [
+        "ai",
+        "monitoring",
+        "diagnostics",
+        "self-healing",
+        "system-health",
+        "azora-os"
+    ],
+    "author": "Azora OS",
+    "license": "MIT",
+    "dependencies": {
+        "node-fetch": "^2.6.7"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/azora-os/ai-system-monitor.git"
+    },
+    "bugs": {
+        "url": "https://github.com/azora-os/ai-system-monitor/issues"
+    },
+    "homepage": "https://azora-os.github.io/ai-system-monitor"
+}

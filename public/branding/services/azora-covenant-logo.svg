@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="covenantGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="covenantAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Shield + African Adinkra symbol for justice -->
+  <g transform="translate(120, 120)">
+    <!-- Constitutional shield -->
+    <path d="M 0,-70 L 50,-50 L 60,-20 Q 60,30 0,70 Q -60,30 -60,-20 L -50,-50 Z" 
+          fill="url(#covenantGrad)" 
+          opacity="0.2"/>
+    <path d="M 0,-70 L 50,-50 L 60,-20 Q 60,30 0,70 Q -60,30 -60,-20 L -50,-50 Z" 
+          stroke="url(#covenantGrad)" 
+          stroke-width="3" 
+          fill="none"/>
+    
+    <!-- Scales of justice (balance) -->
+    <g transform="translate(0, -10)">
+      <line x1="-40" y1="0" x2="40" y2="0" stroke="url(#covenantAccent)" stroke-width="3"/>
+      <circle cx="0" cy="-25" r="6" fill="#06b6d4"/>
+      <line x1="0" y1="-19" x2="0" y2="0" stroke="#06b6d4" stroke-width="2"/>
+      
+      <!-- Left scale -->
+      <rect x="-40" y="0" width="20" height="3" rx="1" fill="url(#covenantAccent)"/>
+      <line x1="-30" y1="3" x2="-35" y2="15" stroke="url(#covenantAccent)" stroke-width="1.5"/>
+      <line x1="-30" y1="3" x2="-25" y2="15" stroke="url(#covenantAccent)" stroke-width="1.5"/>
+      <rect x="-40" y="15" width="20" height="8" rx="2" fill="url(#covenantAccent)" opacity="0.6"/>
+      
+      <!-- Right scale -->
+      <rect x="20" y="0" width="20" height="3" rx="1" fill="url(#covenantAccent)"/>
+      <line x1="30" y1="3" x2="25" y2="15" stroke="url(#covenantAccent)" stroke-width="1.5"/>
+      <line x1="30" y1="3" x2="35" y2="15" stroke="url(#covenantAccent)" stroke-width="1.5"/>
+      <rect x="20" y="15" width="20" height="8" rx="2" fill="url(#covenantAccent)" opacity="0.6"/>
+    </g>
+    
+    <!-- African unity symbol -->
+    <g transform="translate(0, 35)" opacity="0.4">
+      <circle cx="0" cy="0" r="12" stroke="#8b5cf6" stroke-width="2" fill="none"/>
+      <circle cx="-10" cy="0" r="3" fill="#8b5cf6"/>
+      <circle cx="10" cy="0" r="3" fill="#8b5cf6"/>
+      <circle cx="0" cy="-8" r="3" fill="#8b5cf6"/>
+      <circle cx="0" cy="8" r="3" fill="#8b5cf6"/>
+    </g>
+    
+    <!-- Protection aura -->
+    <circle cx="0" cy="0" r="85" stroke="url(#covenantGrad)" stroke-width="2" fill="none" opacity="0.2"/>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="65" 
+          font-weight="700" 
+          fill="url(#covenantAccent)">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#covenantGrad)">Covenant</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Legal • Compliance • Justice</text>
+  </g>
+</svg>
+

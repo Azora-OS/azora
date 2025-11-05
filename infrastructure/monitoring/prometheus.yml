@@ -1,0 +1,217 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'ai-ml-engine'
+    static_configs:
+      - targets: ['ai-ml-engine:4055']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'ai-orchestrator'
+    static_configs:
+      - targets: ['ai-orchestrator:4001']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'neural-context-engine'
+    static_configs:
+      - targets: ['neural-context-engine:4005']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth:4004']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'store-service'
+    static_configs:
+      - targets: ['store:4002']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'quantum-microservice'
+    static_configs:
+      - targets: ['quantum_microservice:5000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'shield-service'
+    static_configs:
+      - targets: ['shield_service:5001']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'main-app'
+    static_configs:
+      - targets: ['main-app:5175']
+    scrape_interval: 10s
+    metrics_path: '/metrics'
+
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['backend:3000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:3000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'email-service'
+    static_configs:
+      - targets: ['email-service:3000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'messaging-service'
+    static_configs:
+      - targets: ['messaging-service:4200']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'chamber-of-ghosts'
+    static_configs:
+      - targets: ['chamber-of-ghosts:3005']
+    scrape_interval: 10s
+    metrics_path: '/metrics'
+
+  # Azora Nexus Services
+  - job_name: 'azora-nexus-wallet'
+    static_configs:
+      - targets: ['wallet:4100']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-blockchain'
+    static_configs:
+      - targets: ['blockchain:4101']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-ai-trading'
+    static_configs:
+      - targets: ['ai-trading:4102']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-ai-valuation'
+    static_configs:
+      - targets: ['ai-valuation:4103']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-backed-valuation'
+    static_configs:
+      - targets: ['backed-valuation:4104']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-compliance'
+    static_configs:
+      - targets: ['compliance:4105']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-dashboard'
+    static_configs:
+      - targets: ['dashboard:4106']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-defi'
+    static_configs:
+      - targets: ['defi:4107']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-global-adoption'
+    static_configs:
+      - targets: ['global-adoption:4108']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-guardian'
+    static_configs:
+      - targets: ['guardian:4109']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-identity'
+    static_configs:
+      - targets: ['identity:4110']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-ledger'
+    static_configs:
+      - targets: ['ledger:4111']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-liquidity'
+    static_configs:
+      - targets: ['liquidity:4112']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-marketplace'
+    static_configs:
+      - targets: ['marketplace:4113']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-nft'
+    static_configs:
+      - targets: ['nft:4114']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-partnerships'
+    static_configs:
+      - targets: ['partnerships:4115']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-reporting'
+    static_configs:
+      - targets: ['reporting:4116']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-revenue'
+    static_configs:
+      - targets: ['revenue:4117']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-staking'
+    static_configs:
+      - targets: ['staking:4118']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-user-growth'
+    static_configs:
+      - targets: ['user-growth:4119']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'azora-nexus-subscription'
+    static_configs:
+      - targets: ['subscription:4129']
+    scrape_interval: 5s
+    metrics_path: '/metrics'

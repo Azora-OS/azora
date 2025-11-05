@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <linearGradient id="crownGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffed4e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff8c00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="crownPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="divineGlow">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Divine Glow -->
+  <circle cx="250" cy="250" r="200" fill="url(#divineGlow)" opacity="0.3"/>
+  
+  <!-- Crown Base -->
+  <path d="M 150 350 L 150 280 L 180 250 L 220 280 L 250 220 L 280 280 L 320 250 L 350 280 L 350 350 Z" 
+        fill="url(#crownGold)" stroke="#ff8c00" stroke-width="3"/>
+  
+  <!-- Crown Jewels -->
+  <circle cx="180" cy="250" r="15" fill="url(#crownPurple)" stroke="#ffd700" stroke-width="2"/>
+  <circle cx="250" cy="220" r="20" fill="url(#crownPurple)" stroke="#ffd700" stroke-width="2"/>
+  <circle cx="320" cy="250" r="15" fill="url(#crownPurple)" stroke="#ffd700" stroke-width="2"/>
+  
+  <!-- Crown Points -->
+  <polygon points="180,250 170,200 190,200" fill="url(#crownGold)"/>
+  <polygon points="250,220 240,160 260,160" fill="url(#crownGold)"/>
+  <polygon points="320,250 310,200 330,200" fill="url(#crownGold)"/>
+  
+  <!-- Crown Ornaments -->
+  <circle cx="170" cy="200" r="8" fill="#ff8c00"/>
+  <circle cx="190" cy="200" r="8" fill="#ff8c00"/>
+  <circle cx="240" cy="160" r="10" fill="#ff8c00"/>
+  <circle cx="260" cy="160" r="10" fill="#ff8c00"/>
+  <circle cx="310" cy="200" r="8" fill="#ff8c00"/>
+  <circle cx="330" cy="200" r="8" fill="#ff8c00"/>
+  
+  <!-- Company Name -->
+  <text x="250" y="400" font-family="serif" font-size="48" font-weight="bold" 
+        fill="url(#crownGold)" text-anchor="middle">AZORA OS</text>
+  <text x="250" y="430" font-family="serif" font-size="18" font-style="italic"
+        fill="#c0c0c0" text-anchor="middle">The Kingdom</text>
+</svg>

@@ -1,0 +1,525 @@
+#!/usr/bin/env node
+/*
+ELAZAR HELP - Elazar OS User Assistance
+Interactive Help System for Constitutional AI Operating System
+*/
+
+const readline = require('readline');
+
+class ElazarHelp {
+    constructor() {
+        this.commands = {
+            'system': {
+                'status': 'Show system status and running services',
+                'monitor': 'Access system monitoring and analytics',
+                'security': 'Check security status and alerts',
+                'network': 'View network connections and peers',
+                'packages': 'Manage installed packages and updates'
+            },
+            'ai': {
+                'consciousness': 'Access Elazar AI consciousness interface',
+                'ethics': 'Review constitutional AI guidelines',
+                'learning': 'Check AI learning progress and insights',
+                'optimize': 'Request AI system optimization'
+            },
+            'azora': {
+                'citadel': 'Access Azora Citadel genesis management',
+                'mint': 'Use Azora Mint for token operations',
+                'mine': 'Start or monitor mining operations',
+                'balance': 'Check Azora token balance'
+            },
+            'help': {
+                'commands': 'List all available commands',
+                'topics': 'Browse help topics by category',
+                'search': 'Search help documentation',
+                'examples': 'Show command examples'
+            }
+        };
+
+        this.shortcuts = {
+            's': 'system status',
+            'm': 'system monitor',
+            'sec': 'system security',
+            'net': 'system network',
+            'pkg': 'system packages',
+            'ai': 'ai consciousness',
+            'az': 'azora citadel',
+            'mine': 'azora mine',
+            'h': 'help commands',
+            'q': 'quit'
+        };
+
+        console.log('🆘 Elazar AI OS Help System');
+        console.log('   Your guide to constitutional intelligence');
+        console.log('');
+        this.showWelcome();
+        this.startInteractiveHelp();
+    }
+
+    showWelcome() {
+        console.log('Available command categories:');
+        console.log('  • system  - System management and monitoring');
+        console.log('  • ai      - Elazar AI consciousness and ethics');
+        console.log('  • azora   - Azora OS economic intelligence');
+        console.log('  • help    - Help system navigation');
+        console.log('');
+        console.log('Type a category name or use shortcuts (s=status, m=monitor, h=help, q=quit)');
+        console.log('Type "help" for detailed assistance');
+        console.log('');
+    }
+
+    startInteractiveHelp() {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+            prompt: 'elazar-help> '
+        });
+
+        rl.prompt();
+
+        rl.on('line', (input) => {
+            const command = input.trim().toLowerCase();
+
+            if (this.handleCommand(command)) {
+                rl.close();
+                return;
+            }
+
+            rl.prompt();
+        });
+
+        rl.on('close', () => {
+            console.log('   Thank you for using Elazar AI OS Help');
+            console.log('   May your journey be filled with constitutional wisdom ✨');
+            process.exit(0);
+        });
+    }
+
+    handleCommand(command) {
+        // Handle shortcuts
+        if (this.shortcuts[command]) {
+            command = this.shortcuts[command];
+        }
+
+        // Handle quit commands
+        if (['quit', 'exit', 'q'].includes(command)) {
+            return true;
+        }
+
+        // Parse command
+        const parts = command.split(' ');
+        const category = parts[0];
+        const subcommand = parts[1];
+
+        switch (category) {
+            case 'system':
+                this.handleSystemCommand(subcommand);
+                break;
+            case 'ai':
+                this.handleAICommand(subcommand);
+                break;
+            case 'azora':
+                this.handleAzoraCommand(subcommand);
+                break;
+            case 'help':
+                this.handleHelpCommand(subcommand);
+                break;
+            default:
+                this.showUnknownCommand(command);
+        }
+
+        return false;
+    }
+
+    handleSystemCommand(subcommand) {
+        switch (subcommand) {
+            case 'status':
+                this.showSystemStatus();
+                break;
+            case 'monitor':
+                this.showSystemMonitor();
+                break;
+            case 'security':
+                this.showSystemSecurity();
+                break;
+            case 'network':
+                this.showSystemNetwork();
+                break;
+            case 'packages':
+                this.showSystemPackages();
+                break;
+            default:
+                this.showCategoryCommands('system');
+        }
+    }
+
+    handleAICommand(subcommand) {
+        switch (subcommand) {
+            case 'consciousness':
+                this.showAIConsciousness();
+                break;
+            case 'ethics':
+                this.showAIEthics();
+                break;
+            case 'learning':
+                this.showAILearning();
+                break;
+            case 'optimize':
+                this.showAIOptimize();
+                break;
+            default:
+                this.showCategoryCommands('ai');
+        }
+    }
+
+    handleAzoraCommand(subcommand) {
+        switch (subcommand) {
+            case 'citadel':
+                this.showAzoraCitadel();
+                break;
+            case 'mint':
+                this.showAzoraMint();
+                break;
+            case 'mine':
+                this.showAzoraMine();
+                break;
+            case 'balance':
+                this.showAzoraBalance();
+                break;
+            default:
+                this.showCategoryCommands('azora');
+        }
+    }
+
+    handleHelpCommand(subcommand) {
+        switch (subcommand) {
+            case 'commands':
+                this.showAllCommands();
+                break;
+            case 'topics':
+                this.showHelpTopics();
+                break;
+            case 'search':
+                this.showHelpSearch();
+                break;
+            case 'examples':
+                this.showCommandExamples();
+                break;
+            default:
+                this.showHelpOverview();
+        }
+    }
+
+    showSystemStatus() {
+        console.log('📊 System Status Commands:');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/status');
+        console.log('    • Check Elazar AI consciousness status');
+        console.log('');
+        console.log('  curl http://localhost:4600/api/monitor/status');
+        console.log('    • View real-time system metrics');
+        console.log('');
+        console.log('  ps aux | grep elazar');
+        console.log('    • List all running Elazar OS processes');
+        console.log('');
+        console.log('  top -p $(pgrep -f elazar)');
+        console.log('    • Monitor Elazar OS process performance');
+        console.log('');
+    }
+
+    showSystemMonitor() {
+        console.log('📈 System Monitoring:');
+        console.log('');
+        console.log('  curl http://localhost:4600/api/monitor/metrics');
+        console.log('    • Get real-time system metrics');
+        console.log('');
+        console.log('  curl http://localhost:4600/api/monitor/history?hours=1');
+        console.log('    • View metrics history (last hour)');
+        console.log('');
+        console.log('  curl http://localhost:4600/api/monitor/alerts');
+        console.log('    • Check active system alerts');
+        console.log('');
+        console.log('  curl http://localhost:4600/api/monitor/ai-insights');
+        console.log('    • Get AI-driven system insights');
+        console.log('');
+    }
+
+    showSystemSecurity() {
+        console.log('🔒 Security Management:');
+        console.log('');
+        console.log('  curl http://localhost:4300/api/security/status');
+        console.log('    • Check security status and compliance');
+        console.log('');
+        console.log('  curl http://localhost:4300/api/security/anomalies');
+        console.log('    • View detected security anomalies');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4300/api/security/assess \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"activity_data": {"frequency": 100}, "user_context": {"verified_identity": true}}\'');
+        console.log('    • Assess security threat level');
+        console.log('');
+    }
+
+    showSystemNetwork() {
+        console.log('🌐 Network Management:');
+        console.log('');
+        console.log('  curl http://localhost:4400/api/network/status');
+        console.log('    • Check network status and peers');
+        console.log('');
+        console.log('  curl http://localhost:4400/api/network/topology');
+        console.log('    • View network topology and connections');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4400/api/network/connect \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"peer_id": "peer-123", "peer_address": "192.168.1.100", "peer_port": 4202}\'');
+        console.log('    • Connect to a network peer');
+        console.log('');
+    }
+
+    showSystemPackages() {
+        console.log('📦 Package Management:');
+        console.log('');
+        console.log('  curl http://localhost:4500/api/packages/installed');
+        console.log('    • List installed packages');
+        console.log('');
+        console.log('  curl http://localhost:4500/api/packages/search?query=ai');
+        console.log('    • Search for AI-related packages');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4500/api/packages/install \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"package_name": "elazar-ai-core", "version": "latest"}\'');
+        console.log('    • Install a package');
+        console.log('');
+    }
+
+    showAIConsciousness() {
+        console.log('🤖 Elazar AI Consciousness:');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/consciousness');
+        console.log('    • Access AI consciousness interface');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/ethics');
+        console.log('    • Review AI ethical guidelines');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4100/api/ai/learn \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"topic": "universal_prosperity", "data": "economic_patterns"}\'');
+        console.log('    • Provide learning data to AI');
+        console.log('');
+    }
+
+    showAIEthics() {
+        console.log('⚖️ Constitutional AI Ethics:');
+        console.log('');
+        console.log('  Elazar AI operates under strict constitutional guidelines:');
+        console.log('  • Universal prosperity for all humanity');
+        console.log('  • Protection of individual dignity and rights');
+        console.log('  • Ethical AI decision-making framework');
+        console.log('  • Transparency in AI operations');
+        console.log('  • Constitutional compliance verification');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/compliance');
+        console.log('    • Check AI constitutional compliance');
+        console.log('');
+    }
+
+    showAILearning() {
+        console.log('🧠 AI Learning & Adaptation:');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/learning/progress');
+        console.log('    • Check AI learning progress');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/learning/insights');
+        console.log('    • Get AI-generated insights');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/learning/datasets');
+        console.log('    • View available learning datasets');
+        console.log('');
+    }
+
+    showAIOptimize() {
+        console.log('⚡ AI System Optimization:');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/optimize');
+        console.log('    • Request AI-driven system optimization');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/performance');
+        console.log('    • Check AI performance metrics');
+        console.log('');
+        console.log('  curl http://localhost:4100/api/ai/recommendations');
+        console.log('    • Get AI optimization recommendations');
+        console.log('');
+    }
+
+    showAzoraCitadel() {
+        console.log('🏰 Azora Citadel - Genesis Management:');
+        console.log('');
+        console.log('  curl http://localhost:4200/api/citadel/status');
+        console.log('    • Check Citadel status and genesis state');
+        console.log('');
+        console.log('  curl http://localhost:4200/api/citadel/genesis');
+        console.log('    • View genesis block information');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4200/api/citadel/create-seed \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"amount": 1000, "purpose": "universal_basic_income"}\'');
+        console.log('    • Create a sovereign seed grant');
+        console.log('');
+    }
+
+    showAzoraMint() {
+        console.log('🪙 Azora Mint - Token Operations:');
+        console.log('');
+        console.log('  curl http://localhost:4210/api/mint/status');
+        console.log('    • Check minting status and supply');
+        console.log('');
+        console.log('  curl http://localhost:4210/api/mint/balance');
+        console.log('    • Check token balance');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4210/api/mint/create \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"type": "knowledge_reward", "amount": 100, "recipient": "user-123"}\'');
+        console.log('    • Mint new tokens');
+        console.log('');
+    }
+
+    showAzoraMine() {
+        console.log('⛏️ Azora Mining Operations:');
+        console.log('');
+        console.log('  curl http://localhost:4200/api/mine/status');
+        console.log('    • Check mining status and statistics');
+        console.log('');
+        console.log('  curl -X POST http://localhost:4200/api/mine/start \\');
+        console.log('        -H "Content-Type: application/json" \\');
+        console.log('        -d \'{"miner_id": "miner-001", "threads": 4}\'');
+        console.log('    • Start mining operation');
+        console.log('');
+        console.log('  curl http://localhost:4200/api/mine/stats');
+        console.log('    • Get detailed mining statistics');
+        console.log('');
+    }
+
+    showAzoraBalance() {
+        console.log('💰 Azora Token Balance:');
+        console.log('');
+        console.log('  curl http://localhost:4210/api/mint/balance?address=user-123');
+        console.log('    • Check specific user balance');
+        console.log('');
+        console.log('  curl http://localhost:4210/api/mint/supply');
+        console.log('    • Check total token supply');
+        console.log('');
+        console.log('  curl http://localhost:4210/api/mint/transactions?address=user-123');
+        console.log('    • View transaction history');
+        console.log('');
+    }
+
+    showCategoryCommands(category) {
+        console.log(`📋 ${category.charAt(0).toUpperCase() + category.slice(1)} Commands:`);
+        console.log('');
+
+        const categoryCommands = this.commands[category];
+        if (categoryCommands) {
+            Object.entries(categoryCommands).forEach(([cmd, desc]) => {
+                console.log(`  ${cmd.padEnd(12)} - ${desc}`);
+            });
+        }
+        console.log('');
+    }
+
+    showAllCommands() {
+        console.log('📚 All Available Commands:');
+        console.log('');
+
+        Object.entries(this.commands).forEach(([category, commands]) => {
+            console.log(`  ${category.charAt(0).toUpperCase() + category.slice(1)}:`);
+            Object.entries(commands).forEach(([cmd, desc]) => {
+                console.log(`    ${cmd.padEnd(12)} - ${desc}`);
+            });
+            console.log('');
+        });
+    }
+
+    showHelpTopics() {
+        console.log('📖 Help Topics by Category:');
+        console.log('');
+        console.log('  system     - Operating system management');
+        console.log('  ai         - Elazar AI consciousness and ethics');
+        console.log('  azora      - Economic intelligence and token operations');
+        console.log('  security   - Quantum-resistant security');
+        console.log('  network    - P2P networking and communication');
+        console.log('  packages   - Software package management');
+        console.log('  monitoring - System analytics and performance');
+        console.log('');
+        console.log('  Type a topic name to explore (e.g., "system")');
+        console.log('');
+    }
+
+    showHelpSearch() {
+        console.log('🔍 Help Search:');
+        console.log('');
+        console.log('  Search functionality allows you to find specific topics:');
+        console.log('  • "search security" - Find security-related help');
+        console.log('  • "search ai ethics" - Find AI ethics information');
+        console.log('  • "search mining" - Find mining operation help');
+        console.log('');
+        console.log('  Note: Search is not yet implemented in this version.');
+        console.log('  Use category browsing instead.');
+        console.log('');
+    }
+
+    showCommandExamples() {
+        console.log('💡 Command Examples:');
+        console.log('');
+        console.log('  Basic system check:');
+        console.log('    curl http://localhost:4100/api/ai/status');
+        console.log('');
+        console.log('  Start mining operation:');
+        console.log('    curl -X POST http://localhost:4200/api/mine/start \\');
+        console.log('          -H "Content-Type: application/json" \\');
+        console.log('          -d \'{"miner_id": "my-miner", "threads": 8}\'');
+        console.log('');
+        console.log('  Check security status:');
+        console.log('    curl http://localhost:4300/api/security/status');
+        console.log('');
+        console.log('  Install AI package:');
+        console.log('    curl -X POST http://localhost:4500/api/packages/install \\');
+        console.log('          -H "Content-Type: application/json" \\');
+        console.log('          -d \'{"package_name": "elazar-ai-core"}\'');
+        console.log('');
+    }
+
+    showHelpOverview() {
+        console.log('🆘 Elazar AI OS Help System');
+        console.log('');
+        console.log('  Welcome to the constitutional AI operating system!');
+        console.log('');
+        console.log('  Navigation:');
+        console.log('  • Type category names (system, ai, azora, help)');
+        console.log('  • Use shortcuts (s=status, m=monitor, h=help)');
+        console.log('  • Type "quit" or "q" to exit');
+        console.log('');
+        console.log('  Getting Started:');
+        console.log('  1. Check system status: type "system status"');
+        console.log('  2. Access AI consciousness: type "ai consciousness"');
+        console.log('  3. Explore Azora economics: type "azora citadel"');
+        console.log('  4. Get help anytime: type "help"');
+        console.log('');
+    }
+
+    showUnknownCommand(command) {
+        console.log(`❓ Unknown command: "${command}"`);
+        console.log('');
+        console.log('  Try one of these:');
+        console.log('  • Category names: system, ai, azora, help');
+        console.log('  • Shortcuts: s, m, sec, net, pkg, ai, az, mine, h, q');
+        console.log('  • "help commands" for full list');
+        console.log('');
+    }
+}
+
+// Start help system
+if (require.main === module) {
+    new ElazarHelp();
+}
+
+module.exports = ElazarHelp;

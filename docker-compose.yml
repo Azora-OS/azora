@@ -1,0 +1,142 @@
+# ?? AZORA OS - DOCKER COMPOSE
+# For local development and testing
+
+version: '3.8'
+
+services:
+  # Frontend - Next.js Application
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: azora-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - CONSTITUTIONAL_AI=enabled
+      - BIBLE_INTEGRATION=active
+    depends_on:
+      - nexus-agi
+      - bible-service
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nexus AGI - Constitutional AI Backend
+  nexus-agi:
+    image: azora-os/nexus-agi:latest
+    container_name: azora-nexus
+    ports:
+      - "8000:8000"
+    environment:
+      - CONSTITUTIONAL_AI=enabled
+      - TEN_COMMANDMENTS=immutable
+      - DATABASE_URL=postgresql://azora:azora@database:5432/azora_agi
+    volumes:
+      - nexus-models:/models
+      - nexus-data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  # Bible Service - Scripture & Wisdom System
+  bible-service:
+    image: azora-os/bible-service:latest
+    container_name: azora-bible
+    ports:
+      - "5000:5000"
+    environment:
+      - SCRIPTURE_MODE=active
+      - DATABASE_URL=postgresql://azora:azora@database:5432/azora_bible
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  database:
+    image: postgres:16-alpine
+    container_name: azora-database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=azora
+      - POSTGRES_PASSWORD=azora
+      - POSTGRES_DB=azora_os
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: azora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: azora-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  nexus-models:
+    driver: local
+  nexus-data:
+    driver: local
+
+networks:
+  azora-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

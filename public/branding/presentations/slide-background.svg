@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    <linearGradient id="slideBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="slideAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0.3" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1920" height="1080" fill="url(#slideBg)"/>
+  
+  <!-- Subtle network pattern -->
+  <g opacity="0.1">
+    <circle cx="200" cy="200" r="40" fill="#8b5cf6"/>
+    <circle cx="500" cy="150" r="35" fill="#06b6d4"/>
+    <circle cx="800" cy="250" r="45" fill="#ec4899"/>
+    <circle cx="1100" cy="180" r="38" fill="#8b5cf6"/>
+    <circle cx="1400" cy="220" r="42" fill="#06b6d4"/>
+    <circle cx="1700" cy="160" r="36" fill="#ec4899"/>
+    
+    <circle cx="250" cy="900" r="38" fill="#06b6d4"/>
+    <circle cx="600" cy="880" r="40" fill="#8b5cf6"/>
+    <circle cx="950" cy="920" r="35" fill="#ec4899"/>
+    <circle cx="1300" cy="890" r="42" fill="#06b6d4"/>
+    <circle cx="1650" cy="910" r="37" fill="#8b5cf6"/>
+    
+    <line x1="200" y1="200" x2="500" y2="150" stroke="#8b5cf6" stroke-width="2"/>
+    <line x1="500" y1="150" x2="800" y2="250" stroke="#06b6d4" stroke-width="2"/>
+    <line x1="800" y1="250" x2="1100" y2="180" stroke="#ec4899" stroke-width="2"/>
+    <line x1="1100" y1="180" x2="1400" y2="220" stroke="#8b5cf6" stroke-width="2"/>
+    <line x1="1400" y1="220" x2="1700" y2="160" stroke="#06b6d4" stroke-width="2"/>
+  </g>
+  
+  <!-- Top gradient bar -->
+  <rect x="0" y="0" width="1920" height="8" fill="url(#slideAccent)"/>
+  
+  <!-- Bottom gradient bar -->
+  <rect x="0" y="1072" width="1920" height="8" fill="url(#slideAccent)"/>
+  
+  <!-- Small logo in corner -->
+  <g transform="translate(120, 950)">
+    <path d="M -20,34 L -10,-34 L 4,-34 L -6,34 Z" fill="#8b5cf6" opacity="0.6"/>
+    <path d="M 10,-34 L 20,34 L 6,34 L -4,-34 Z" fill="#ec4899" opacity="0.6"/>
+    <rect x="-12" y="4" width="24" height="6" rx="3" fill="#06b6d4" opacity="0.6"/>
+  </g>
+  
+  <!-- Footer text -->
+  <text x="180" y="965" font-family="'Inter', sans-serif" font-size="20" font-weight="500" fill="#94a3b8" opacity="0.6">
+    Azora OS • Universal Human Infrastructure
+  </text>
+  
+  <!-- Page number placeholder -->
+  <text x="1850" y="965" font-family="'Inter', sans-serif" font-size="20" font-weight="500" fill="#94a3b8" opacity="0.6" text-anchor="end">
+    azora-os.ai
+  </text>
+</svg>
+

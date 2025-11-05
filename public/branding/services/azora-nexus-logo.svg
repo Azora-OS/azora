@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="nexusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="nexusAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Neural network + African connection symbols -->
+  <g transform="translate(120, 120)">
+    <!-- Central AI core -->
+    <circle cx="0" cy="0" r="20" fill="url(#nexusGrad)"/>
+    <circle cx="0" cy="0" r="15" fill="#1e293b"/>
+    <circle cx="0" cy="0" r="10" fill="url(#nexusAccent)">
+      <animate attributeName="r" values="10;12;10" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Neural nodes (forming African continent shape suggestion) -->
+    <circle cx="-50" cy="-30" r="10" fill="url(#nexusGrad)" opacity="0.8"/>
+    <circle cx="50" cy="-30" r="10" fill="url(#nexusGrad)" opacity="0.8"/>
+    <circle cx="-60" cy="20" r="10" fill="url(#nexusAccent)" opacity="0.8"/>
+    <circle cx="60" cy="20" r="10" fill="url(#nexusAccent)" opacity="0.8"/>
+    <circle cx="-30" cy="55" r="10" fill="#ec4899" opacity="0.8"/>
+    <circle cx="30" cy="55" r="10" fill="#06b6d4" opacity="0.8"/>
+    <circle cx="0" cy="-60" r="10" fill="#8b5cf6" opacity="0.8"/>
+    <circle cx="0" cy="70" r="10" fill="#ec4899" opacity="0.8"/>
+    
+    <!-- Connection lines (neural pathways) -->
+    <g opacity="0.4" stroke="url(#nexusAccent)" stroke-width="2">
+      <line x1="0" y1="0" x2="-50" y2="-30"/>
+      <line x1="0" y1="0" x2="50" y2="-30"/>
+      <line x1="0" y1="0" x2="-60" y2="20"/>
+      <line x1="0" y1="0" x2="60" y2="20"/>
+      <line x1="0" y1="0" x2="-30" y2="55"/>
+      <line x1="0" y1="0" x2="30" y2="55"/>
+      <line x1="0" y1="0" x2="0" y2="-60"/>
+      <line x1="0" y1="0" x2="0" y2="70"/>
+    </g>
+    
+    <!-- Data pulses -->
+    <circle cx="-25" cy="-15" r="3" fill="#06b6d4">
+      <animateMotion path="M 0,0 L -25,-15" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Intelligence rings -->
+    <circle cx="0" cy="0" r="80" stroke="url(#nexusGrad)" stroke-width="2" fill="none" opacity="0.3">
+      <animate attributeName="r" values="80;85;80" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="65" stroke="url(#nexusAccent)" stroke-width="1.5" fill="none" opacity="0.2" stroke-dasharray="5,5">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="15s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="65" 
+          font-weight="700" 
+          fill="url(#nexusAccent)">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#nexusGrad)">Nexus</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">AI Services • Intelligence • Connection</text>
+  </g>
+</svg>
+

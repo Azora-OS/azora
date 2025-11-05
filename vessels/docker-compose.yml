@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  main-app:
+    build: ./apps/main-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_BASE=http://localhost
+    depends_on:
+      - ai-personalization
+      - ai-sentiment
+      - ai-chatbot
+      - ai-vision
+      # ...add all service keys here
+
+  ai-personalization:
+    build: ./services/ai-personalization
+    ports: [ "3010:3010" ]
+  ai-sentiment:
+    build: ./services/ai-sentiment
+    ports: [ "3011:3011" ]
+  ai-chatbot:
+    build: ./services/ai-chatbot
+    ports: [ "3012:3012" ]
+  ai-vision:
+    build: ./services/ai-vision
+    ports: [ "3013:3013" ]
+  # ...repeat for all 100+ services, incrementing port number

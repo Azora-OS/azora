@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f43f5e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="heartAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="heartGlow">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Icon: Heart with emotional intelligence waves -->
+  <g transform="translate(120, 120)">
+    <!-- Glow -->
+    <circle cx="0" cy="0" r="90" fill="url(#heartGlow)"/>
+    
+    <!-- Heart shape -->
+    <path d="M 0,20 C -40,-10 -70,-10 -70,20 C -70,50 0,80 0,80 C 0,80 70,50 70,20 C 70,-10 40,-10 0,20 Z" 
+          fill="url(#heartGrad)" opacity="0.3"/>
+    <path d="M 0,20 C -40,-10 -70,-10 -70,20 C -70,50 0,80 0,80 C 0,80 70,50 70,20 C 70,-10 40,-10 0,20 Z" 
+          stroke="url(#heartGrad)" stroke-width="4" fill="none"/>
+    
+    <!-- Heartbeat line -->
+    <path d="M -90,0 L -60,0 L -50,-20 L -40,20 L -30,0 L 0,0" 
+          stroke="url(#heartAccent)" stroke-width="3" fill="none" opacity="0.7">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M 0,0 L 30,0 L 40,-20 L 50,20 L 60,0 L 90,0" 
+          stroke="url(#heartAccent)" stroke-width="3" fill="none" opacity="0.7">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    
+    <!-- Emotional nodes (empathy, compassion, understanding) -->
+    <g>
+      <circle cx="-85" cy="-40" r="8" fill="#f43f5e">
+        <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="85" cy="-40" r="8" fill="#ec4899">
+        <animate attributeName="r" values="8;10;8" dur="2.3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="0" cy="-80" r="8" fill="#a855f7">
+        <animate attributeName="r" values="8;10;8" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- Care rays -->
+    <g opacity="0.4">
+      <line x1="0" y1="0" x2="-70" y2="-50" stroke="#fbbf24" stroke-width="2"/>
+      <line x1="0" y1="0" x2="70" y2="-50" stroke="#fbbf24" stroke-width="2"/>
+      <line x1="0" y1="0" x2="0" y2="-70" stroke="#fbbf24" stroke-width="2"/>
+    </g>
+    
+    <!-- Pulse ring -->
+    <circle cx="0" cy="10" r="95" stroke="url(#heartGrad)" stroke-width="2" fill="none" opacity="0.2">
+      <animate attributeName="r" values="95;100;95" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="75" font-weight="700" fill="url(#heartAccent)">
+      <tspan font-weight="700">E</tspan><tspan font-weight="500" opacity="0.9">lara</tspan>
+    </text>
+    <text x="0" y="50" font-family="'Inter', sans-serif" font-size="55" font-weight="600" fill="url(#heartGrad)">Heart</text>
+    <text x="0" y="85" font-family="'Inter', sans-serif" font-size="18" font-weight="400" fill="#94a3b8">Emotion • Empathy • Wellbeing</text>
+  </g>
+</svg>
+

@@ -1,0 +1,970 @@
+openapi: 3.1.0
+info:
+  title: Azorahub REST API
+  description: |
+    The Azorahub REST API provides comprehensive access to the Living Operating System ecosystem.
+    
+    ## Features
+    
+    - **Repository Management**: Create, read, update, and delete repositories
+    - **User Management**: Handle user authentication, profiles, and permissions
+    - **Project Management**: Manage projects, issues, and pull requests
+    - **CI/CD Integration**: Build, test, and deployment pipelines
+    - **Analytics**: Comprehensive metrics and insights
+    - **AI Services**: Integrated AI-powered development tools
+    - **Security**: Advanced security features and vulnerability management
+    
+    ## Authentication
+    
+    Azorahub uses OAuth 2.0 for authentication. Include your access token in the Authorization header:
+    
+    ```
+    Authorization: Bearer YOUR_ACCESS_TOKEN
+    ```
+    
+    ## Rate Limiting
+    
+    API requests are rate-limited to 5,000 requests per hour for authenticated users.
+    
+    ## SDKs
+    
+    Official SDKs are available for:
+    - JavaScript/TypeScript
+    - Python
+    - Go
+    - Rust
+    - Java
+    
+  version: 1.0.0
+  contact:
+    name: Azorahub API Support
+    url: https://support.azorahub.com
+    email: api-support@azorahub.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.azorahub.com/v1
+    description: Production server
+  - url: https://staging-api.azorahub.com/v1
+    description: Staging server
+  - url: http://localhost:3000/v1
+    description: Development server
+
+paths:
+  # User Management
+  /user:
+    get:
+      tags:
+        - User
+      summary: Get the authenticated user
+      description: Returns the authenticated user's profile information
+      operationId: getAuthenticatedUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /user/{username}:
+    get:
+      tags:
+        - User
+      summary: Get a user by username
+      description: Returns public information about a user
+      operationId: getUserByUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The username to lookup
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicUser'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Repository Management
+  /repos:
+    get:
+      tags:
+        - Repositories
+      summary: List repositories
+      description: List repositories accessible to the authenticated user
+      operationId: listRepositories
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [all, owner, member]
+            default: all
+          description: Filter repositories by type
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created, updated, pushed, full_name]
+            default: created
+          description: Sort repositories by
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort direction
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+          description: Results per page
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Repository'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Repositories
+      summary: Create a repository
+      description: Create a new repository for the authenticated user
+      operationId: createRepository
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Repository name
+                  example: "azorahub-docs"
+                description:
+                  type: string
+                  description: Repository description
+                  example: "Azorahub documentation system"
+                private:
+                  type: boolean
+                  description: Whether the repository is private
+                  default: false
+                auto_init:
+                  type: boolean
+                  description: Initialize with README
+                  default: true
+                gitignore_template:
+                  type: string
+                  description: Gitignore template
+                  example: "Node"
+                license_template:
+                  type: string
+                  description: License template
+                  example: "mit"
+      responses:
+        '201':
+          description: Repository created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /repos/{owner}/{repo}:
+    get:
+      tags:
+        - Repositories
+      summary: Get a repository
+      description: Get detailed information about a repository
+      operationId: getRepository
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository owner
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Repositories
+      summary: Update a repository
+      description: Update repository metadata
+      operationId: updateRepository
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                private:
+                  type: boolean
+                default_branch:
+                  type: string
+      responses:
+        '200':
+          description: Repository updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags:
+        - Repositories
+      summary: Delete a repository
+      description: Delete a repository
+      operationId: deleteRepository
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Repository deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # Issues and Pull Requests
+  /repos/{owner}/{repo}/issues:
+    get:
+      tags:
+        - Issues
+      summary: List issues
+      description: List issues in a repository
+      operationId: listIssues
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+            enum: [open, closed, all]
+            default: open
+        - name: labels
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of label names
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created, updated, comments]
+            default: created
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Issue'
+
+    post:
+      tags:
+        - Issues
+      summary: Create an issue
+      description: Create a new issue
+      operationId: createIssue
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  description: Issue title
+                body:
+                  type: string
+                  description: Issue body content
+                labels:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of label names
+                assignees:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of usernames to assign
+      responses:
+        '201':
+          description: Issue created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+
+  # AI Services
+  /ai/complete:
+    post:
+      tags:
+        - AI Services
+      summary: Code completion
+      description: Get AI-powered code completion suggestions
+      operationId: codeCompletion
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - prompt
+              properties:
+                prompt:
+                  type: string
+                  description: Code context for completion
+                language:
+                  type: string
+                  description: Programming language
+                  example: "typescript"
+                max_tokens:
+                  type: integer
+                  minimum: 1
+                  maximum: 2048
+                  default: 256
+                  description: Maximum number of tokens to generate
+                temperature:
+                  type: number
+                  minimum: 0
+                  maximum: 2
+                  default: 0.7
+                  description: Sampling temperature
+      responses:
+        '200':
+          description: Completion generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  completions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                        confidence:
+                          type: number
+                          minimum: 0
+                          maximum: 1
+
+  /ai/explain:
+    post:
+      tags:
+        - AI Services
+      summary: Explain code
+      description: Get AI-powered explanation of code
+      operationId: explainCode
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+                  description: Code to explain
+                language:
+                  type: string
+                  description: Programming language
+                detail_level:
+                  type: string
+                  enum: [brief, detailed, comprehensive]
+                  default: detailed
+      responses:
+        '200':
+          description: Code explained
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  explanation:
+                    type: string
+                  complexity:
+                    type: string
+                    enum: [low, medium, high]
+                  suggestions:
+                    type: array
+                    items:
+                      type: string
+
+  # Analytics
+  /analytics/repos/{owner}/{repo}:
+    get:
+      tags:
+        - Analytics
+      summary: Get repository analytics
+      description: Get comprehensive analytics for a repository
+      operationId: getRepositoryAnalytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [day, week, month, year]
+            default: month
+          description: Time period for analytics
+      responses:
+        '200':
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryAnalytics'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        login:
+          type: string
+          example: "azorahub-user"
+        name:
+          type: string
+          example: "Azorahub Developer"
+        email:
+          type: string
+          format: email
+          example: "dev@azorahub.com"
+        bio:
+          type: string
+          example: "Developer building the future of OS"
+        company:
+          type: string
+          example: "Azorahub Inc."
+        location:
+          type: string
+          example: "San Francisco, CA"
+        website:
+          type: string
+          format: uri
+          example: "https://azorahub.com"
+        avatar_url:
+          type: string
+          format: uri
+          example: "https://avatars.azorahub.com/u/1"
+        public_repos:
+          type: integer
+          example: 42
+        followers:
+          type: integer
+          example: 123
+        following:
+          type: integer
+          example: 45
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-12-01T00:00:00Z"
+
+    PublicUser:
+      type: object
+      properties:
+        login:
+          type: string
+          example: "azorahub-user"
+        name:
+          type: string
+          example: "Azorahub Developer"
+        bio:
+          type: string
+          example: "Developer building the future of OS"
+        company:
+          type: string
+          example: "Azorahub Inc."
+        location:
+          type: string
+          example: "San Francisco, CA"
+        website:
+          type: string
+          format: uri
+          example: "https://azorahub.com"
+        avatar_url:
+          type: string
+          format: uri
+          example: "https://avatars.azorahub.com/u/1"
+        public_repos:
+          type: integer
+          example: 42
+        followers:
+          type: integer
+          example: 123
+        following:
+          type: integer
+          example: 45
+
+    Repository:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "azorahub-docs"
+        full_name:
+          type: string
+          example: "azorahub/azorahub-docs"
+        description:
+          type: string
+          example: "Azorahub documentation system"
+        private:
+          type: boolean
+          example: false
+        fork:
+          type: boolean
+          example: false
+        html_url:
+          type: string
+          format: uri
+          example: "https://azorahub.com/azorahub/azorahub-docs"
+        clone_url:
+          type: string
+          format: uri
+          example: "https://azorahub.com/azorahub/azorahub-docs.git"
+        ssh_url:
+          type: string
+          example: "git@azorahub.com:azorahub/azorahub-docs.git"
+        default_branch:
+          type: string
+          example: "main"
+        language:
+          type: string
+          example: "TypeScript"
+        languages_url:
+          type: string
+          format: uri
+          example: "https://api.azorahub.com/repos/azorahub/azorahub-docs/languages"
+        stargazers_count:
+          type: integer
+          example: 1234
+        watchers_count:
+          type: integer
+          example: 1234
+        forks_count:
+          type: integer
+          example: 56
+        open_issues_count:
+          type: integer
+          example: 12
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-12-01T00:00:00Z"
+        pushed_at:
+          type: string
+          format: date-time
+          example: "2023-12-01T12:00:00Z"
+        owner:
+          $ref: '#/components/schemas/PublicUser'
+
+    Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        number:
+          type: integer
+          example: 42
+        title:
+          type: string
+          example: "Add authentication to API"
+        body:
+          type: string
+          example: "We need to add OAuth authentication to the REST API"
+        state:
+          type: string
+          enum: [open, closed]
+          example: "open"
+        locked:
+          type: boolean
+          example: false
+        comments:
+          type: integer
+          example: 5
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-12-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-12-01T12:00:00Z"
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+        user:
+          $ref: '#/components/schemas/PublicUser'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
+        assignees:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicUser'
+
+    Label:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "enhancement"
+        color:
+          type: string
+          example: "a2eeef"
+        description:
+          type: string
+          nullable: true
+
+    RepositoryAnalytics:
+      type: object
+      properties:
+        repository:
+          $ref: '#/components/schemas/Repository'
+        period:
+          type: string
+          example: "month"
+        traffic:
+          type: object
+          properties:
+            views:
+              type: integer
+              example: 12345
+            unique_visitors:
+              type: integer
+              example: 5678
+            clones:
+              type: integer
+              example: 234
+            unique_cloners:
+              type: integer
+              example: 123
+        contributors:
+          type: object
+          properties:
+            total:
+              type: integer
+              example: 42
+            active:
+              type: integer
+              example: 15
+            new:
+              type: integer
+              example: 3
+        issues:
+          type: object
+          properties:
+            opened:
+              type: integer
+              example: 25
+            closed:
+              type: integer
+              example: 20
+            average_resolution_time:
+              type: number
+              example: 2.5
+        pull_requests:
+          type: object
+          properties:
+            opened:
+              type: integer
+              example: 18
+            merged:
+              type: integer
+              example: 15
+            average_merge_time:
+              type: number
+              example: 1.8
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid request parameters"
+              message:
+                type: string
+                example: "The provided parameters are invalid"
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+              message:
+                type: string
+                example: "Authentication required"
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Forbidden"
+              message:
+                type: string
+                example: "You don't have permission to perform this action"
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Not found"
+              message:
+                type: string
+                example: "The requested resource was not found"
+
+    UnprocessableEntity:
+      description: Unprocessable entity
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Validation failed"
+              message:
+                type: string
+                example: "The request could not be processed"
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                    message:
+                      type: string
+
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Rate limit exceeded"
+              message:
+                type: string
+                example: "API rate limit exceeded. Try again later."
+              reset_time:
+                type: string
+                format: date-time
+
+tags:
+  - name: User
+    description: User management operations
+  - name: Repositories
+    description: Repository management operations
+  - name: Issues
+    description: Issue and pull request operations
+  - name: AI Services
+    description: AI-powered development services
+  - name: Analytics
+    description: Analytics and metrics operations

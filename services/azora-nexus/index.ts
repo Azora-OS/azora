@@ -1,0 +1,81 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
+import cors from 'cors';
+import express from 'express';
+import fetch from 'node-fetch';
+import { decide } from './policy/index';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Add security headers with proper CSP for development
+app.use((_req, res, next) => {
+  // Allow DevTools connections in development
+  if (process.env.NODE_ENV !== 'production') {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self' http://localhost:*; connect-src 'self' http://localhost:* ws://localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
+    );
+  } else {
+    // Production CSP (more restrictive)
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; connect-src 'self' ws: wss:; script-src 'self'; style-src 'self' 'unsafe-inline';",
+    );
+  }
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
+async function emitAudit(event: string, payload: Record<string, unknown>) {
+  await fetch('http://security-core:4022/audit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event, payload }),
+  });
+}
+
+async function execute(action: Record<string, unknown>) {
+  if (action.type === 'REPLENISH_TASK') {
+    await fetch('http://assistant:4000/assistant/tasks/NMB-STORE-001', { headers: { 'X-Tenant': 'retail-partner' } });
+  }
+  if (action.type === 'POS_UNDERSCAN') {
+    await fetch('http://security-core:4022/alerts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(action.payload),
+    });
+  }
+  // extend with price/energy routes
+}
+
+app.post('/orchestrate', async (req, res) => {
+  const action = req.body; // {type, payload, confidence, context}
+  const decision = decide(action);
+  await emitAudit('orchestrator.decision', { action, decision });
+  if (decision.allow && !decision.requireConfirm) {
+    await execute(action);
+    return res.json({ status: 'EXECUTED', decision });
+  }
+  if (decision.allow && decision.requireConfirm) {
+    // push to supervisor device for 1-tap confirm
+    await fetch('http://voice:4010/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: `Confirm action: ${action.type}. ${decision.reason}` }),
+    });
+    return res.json({ status: 'AWAITING_CONFIRM', decision });
+  }
+  return res.json({ status: 'BLOCKED', decision });
+});
+
+app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'orchestrator' }));
+app.listen(process.env.PORT || 4030, () => console.log('Orchestrator :4030'));

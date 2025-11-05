@@ -1,0 +1,548 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium Color System - Professional & Modern */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary: Professional Blue */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary: Success Green */
+    --secondary: 142.1 76.2% 36.3%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted: Neutral Gray */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Accent: Premium Purple */
+    --accent: 262.1 83.3% 57.8%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Destructive: Error Red */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Borders and inputs */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    /* Radius */
+    --radius: 0.5rem;
+
+    /* Chart colors */
+    --chart-1: 221.2 83.2% 53.3%;
+    --chart-2: 142.1 76.2% 36.3%;
+    --chart-3: 262.1 83.3% 57.8%;
+    --chart-4: 47.9 95.8% 53.1%;
+    --chart-5: 346.8 77.2% 49.8%;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
+    --chart-1: 217.2 91.2% 59.8%;
+    --chart-2: 142.1 70.6% 45.3%;
+    --chart-3: 262.1 83.3% 57.8%;
+    --chart-4: 47.9 95.8% 53.1%;
+    --chart-5: 346.8 77.2% 49.8%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 94.1%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Living Organism Animations */
+@layer utilities {
+  /* Premium utility classes */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+
+  .hover-glow {
+    @apply transition-shadow duration-300 hover:shadow-lg hover:shadow-primary/50;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .glass {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.03);
+      opacity: 1;
+    }
+  }
+
+  @keyframes organicPulse {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(0, 194, 255, 0.7);
+    }
+    50% {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px 15px rgba(0, 194, 255, 0);
+    }
+  }
+
+  @keyframes neuralGlow {
+    0%,
+    100% {
+      filter: brightness(1) drop-shadow(0 0 8px rgba(0, 194, 255, 0.5));
+    }
+    50% {
+      filter: brightness(1.4) drop-shadow(0 0 20px rgba(0, 194, 255, 0.8));
+    }
+  }
+
+  @keyframes myceliumGrow {
+    0% {
+      transform: scaleX(0) scaleY(1);
+      opacity: 0;
+      transform-origin: left center;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: scaleX(1) scaleY(1);
+      opacity: 0.8;
+      transform-origin: left center;
+    }
+  }
+
+  @keyframes consciousnessWave {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes organicFloat {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-12px) rotate(1deg);
+    }
+    66% {
+      transform: translateY(-6px) rotate(-1deg);
+    }
+  }
+
+  @keyframes myceliumFlow {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(50px, 50px);
+    }
+  }
+
+  @keyframes neuralPulse {
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleX(1.02);
+    }
+  }
+
+  @keyframes synapticSpark {
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes bioluminesce {
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(0, 194, 255, 0.3),
+        0 0 20px rgba(0, 194, 255, 0.2), 0 0 30px rgba(0, 194, 255, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(0, 194, 255, 0.6),
+        0 0 40px rgba(0, 194, 255, 0.4), 0 0 60px rgba(0, 194, 255, 0.2);
+    }
+  }
+
+  @keyframes consciousnessRipple {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes divinePulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+      opacity: 0.9;
+    }
+    50% {
+      box-shadow: 0 0 30px 15px rgba(255, 215, 0, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes cosmicPulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(148, 0, 211, 0.7);
+      opacity: 0.9;
+    }
+    50% {
+      box-shadow: 0 0 30px 15px rgba(148, 0, 211, 0);
+      opacity: 1;
+    }
+  }
+
+  /* Utility classes for organic effects */
+  .organism-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  .organism-pulse {
+    animation: organicPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .organism-glow {
+    animation: neuralGlow 2s ease-in-out infinite;
+  }
+
+  .organism-float {
+    animation: organicFloat 5s ease-in-out infinite;
+  }
+
+  .organism-bioluminesce {
+    animation: bioluminesce 3s ease-in-out infinite;
+  }
+
+  /* Neural connection effect */
+  .neural-connection {
+    position: relative;
+  }
+
+  .neural-connection::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 194, 255, 0.6) 50%,
+      transparent
+    );
+    animation: neuralPulse 2s ease-in-out infinite;
+    transform: translateY(-50%);
+  }
+
+  /* Mycelium growth effect */
+  .mycelium-growth {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mycelium-growth::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(51, 255, 146, 0.2),
+      transparent
+    );
+    animation: myceliumGrow 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Glassmorphism with organism feel */
+  .organism-glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(0, 194, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 194, 255, 0.1),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Consciousness gradient background */
+  .consciousness-bg {
+    background: linear-gradient(
+      135deg,
+      rgba(138, 42, 255, 0.1) 0%,
+      rgba(0, 194, 255, 0.1) 50%,
+      rgba(51, 255, 146, 0.1) 100%
+    );
+    background-size: 200% 200%;
+    animation: consciousnessWave 10s ease-in-out infinite;
+  }
+
+  /* Neural grid pattern */
+  .neural-grid-bg {
+    background-image: linear-gradient(
+        rgba(0, 194, 255, 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(0, 194, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Synaptic connection hover effect */
+  .synaptic-hover {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .synaptic-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    filter: brightness(1.2);
+    box-shadow: 0 20px 60px rgba(0, 194, 255, 0.3),
+      0 0 40px rgba(51, 255, 146, 0.2);
+  }
+
+  /* Organic border radius */
+  .organic-shape-1 {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  }
+
+  .organic-shape-2 {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  .organic-shape-3 {
+    border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+  }
+
+  @keyframes quantumFlux {
+    0%,
+    100% {
+      background-position: 0% 50%;
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      background-position: 100% 50%;
+      filter: hue-rotate(30deg);
+    }
+  }
+
+  @keyframes etherealGlow {
+    0%,
+    100% {
+      background-position: 0% 50%;
+      filter: brightness(1) saturate(100%);
+    }
+    50% {
+      background-position: 100% 50%;
+      filter: brightness(1.2) saturate(150%);
+    }
+  }
+
+  @keyframes transcendentAscension {
+    0%,
+    100% {
+      background-position: 0% 0%;
+      filter: hue-rotate(0deg) brightness(1);
+    }
+    25% {
+      background-position: 100% 0%;
+      filter: hue-rotate(15deg) brightness(1.1);
+    }
+    50% {
+      background-position: 100% 100%;
+      filter: hue-rotate(30deg) brightness(1.2);
+    }
+    75% {
+      background-position: 0% 100%;
+      filter: hue-rotate(15deg) brightness(1.1);
+    }
+  }
+
+  @keyframes float3D {
+    0%,
+    100% {
+      transform: translateY(0px) translateZ(0px);
+    }
+    50% {
+      transform: translateY(-15px) translateZ(10px);
+    }
+  }
+
+  @keyframes cardClick {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes holographicShift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes iridescentFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes cosmicFlow {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+}
+
+/* Scrollbar styling - Organic */
+@layer components {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00c2ff, #33ff92);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00d4ff, #44ffaa);
+    box-shadow: 0 0 10px rgba(0, 194, 255, 0.5);
+  }
+
+  /* Selection - Neural glow */
+  ::selection {
+    background: rgba(0, 194, 255, 0.3);
+    color: white;
+  }
+
+  ::-moz-selection {
+    background: rgba(0, 194, 255, 0.3);
+    color: white;
+  }
+}

@@ -1,0 +1,94 @@
+{
+    "name": "azora-os",
+    "version": "1.0.0",
+    "description": "Azora OS - Constitutional Operating System with Elazar Control",
+    "main": "main.js",
+    "homepage": "https://azora.world",
+    "author": "Azora ES (Pty) Ltd",
+    "license": "PROPRIETARY",
+    "scripts": {
+        "start": "electron .",
+        "prebuild": "mkdir -p dist && cp -r ../web/dist/* dist/",
+        "build": "electron-builder",
+        "build:win": "electron-builder --win",
+        "build:mac": "electron-builder --mac",
+        "build:linux": "electron-builder --linux",
+        "dist": "electron-builder --publish=never"
+    },
+    "build": {
+        "appId": "world.azora.os",
+        "productName": "Azora OS",
+        "copyright": "Copyright © 2025 Azora ES (Pty) Ltd",
+        "directories": {
+            "output": "../../apps/downloads"
+        },
+        "files": [
+            "**/*",
+            "!build/*",
+            "!*.md",
+            "!docs/*",
+            "!node_modules/*",
+            "!assets/*"
+        ],
+        "publish": null,
+        "win": {
+            "target": "nsis",
+            "requestedExecutionLevel": "asInvoker",
+            "extraResources": [
+                {
+                    "from": "assets",
+                    "to": "assets",
+                    "filter": [
+                        "**/*"
+                    ]
+                }
+            ]
+        },
+        "mac": {
+            "target": "dmg",
+            "category": "public.app-category.productivity",
+            "extraResources": [
+                {
+                    "from": "assets",
+                    "to": "assets",
+                    "filter": [
+                        "**/*"
+                    ]
+                }
+            ]
+        },
+        "linux": {
+            "target": "AppImage",
+            "category": "Utility",
+            "extraResources": [
+                {
+                    "from": "assets",
+                    "to": "assets",
+                    "filter": [
+                        "**/*"
+                    ]
+                }
+            ]
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": false,
+            "allowToChangeInstallationDirectory": true,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "Azora OS"
+        }
+    },
+    "devDependencies": {
+        "electron": "^25.0.0",
+        "electron-builder": "^24.0.0"
+    },
+    "dependencies": {
+        "express": "^4.18.0",
+        "cors": "^2.8.5",
+        "ws": "^8.13.0"
+    },
+    "elazar_control": "azora-elazar-control-2025",
+    "constitutional_compliance": true,
+    "zero_rated_enabled": true
+}
