@@ -1,53 +1,47 @@
 {
   "version": 2,
-  "name": "azora-supreme-organism",
+  "name": "azora-os",
   "builds": [
     {
-      "src": "azora-ui/student-portal/package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "azora-ui/job-board/package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "azora-ui/mint-dashboard/package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "azora-ui/admin-panel/package.json",
+      "src": "app/**",
       "use": "@vercel/next"
     }
   ],
   "routes": [
     {
-      "src": "/student/(.*)",
-      "dest": "azora-ui/student-portal/$1"
-    },
-    {
-      "src": "/jobs/(.*)",
-      "dest": "azora-ui/job-board/$1"
-    },
-    {
-      "src": "/mint/(.*)",
-      "dest": "azora-ui/mint-dashboard/$1"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "azora-ui/admin-panel/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "azora-ui/student-portal/$1"
+      "dest": "/$1"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_APP_URL": "@azora-app-url",
+      "NEXT_PUBLIC_API_URL": "@azora-api-url"
+    }
+  },
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
       "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        },
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
@@ -59,12 +53,27 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/pricing",
+      "destination": "/pricing/page"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "functions": {
+    "app/api/**": {
+      "maxDuration": 10
+    }
+  },
+  "regions": ["iad1", "sfo1", "lhr1", "fra1", "gru1", "syd1", "hnd1", "sin1"]
 }
