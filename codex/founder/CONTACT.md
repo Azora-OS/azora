@@ -84,7 +84,7 @@ Sunday: Emergency only
 
 1. **For urgent technical issues**: Call +27 73 234 7232
 2. **For business proposals**: Email legal@azora.world
-3. **For technical discussions**: Email sizwe@azora.world
+3. **For technical discussions**: Email sizwe.ngwenya@azora.world
 4. **For networking**: LinkedIn message
 5. **For open-source collaboration**: GitHub
 
