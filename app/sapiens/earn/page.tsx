@@ -31,6 +31,7 @@ import {
   Gift,
   Crown,
 } from 'lucide-react';
+import { PremiumBadge, PremiumCourseBadge } from '@/components/education/PremiumBadge';
 
 export default function CreativeEarningHub() {
   const [activeTab, setActiveTab] = useState<'overview' | 'mint' | 'marketplace' | 'tokens' | 'passive' | 'quests'>('overview');
@@ -59,7 +60,7 @@ export default function CreativeEarningHub() {
             <div className="hidden md:grid grid-cols-3 gap-4">
               <QuickStat icon={<Coins className="w-5 h-5" />} label="$LEARN Tokens" value={tokens.toLocaleString()} color="yellow" />
               <QuickStat icon={<TrendingUp className="w-5 h-5" />} label="Total Earned" value="$3,847" color="green" />
-              <QuickStat icon={<Zap className="w-5 h-5" />} label="Passive/Month" value={`$${monthlyPassive}`} color="purple" />
+              <QuickStat icon={<Zap className="w-5 h-5" />} label="Passive/Month" value={`$${monthlyPassive}`} color="purple" premium />
             </div>
           </div>
 
@@ -591,7 +592,7 @@ function QuestsView({ setTokens }: { setTokens: (fn: (prev: number) => number) =
 // COMPONENTS
 // ============================================================================
 
-function QuickStat({ icon, label, value, color }: any) {
+function QuickStat({ icon, label, value, color, premium }: any) {
   const colors = {
     yellow: 'from-yellow-600 to-amber-600',
     green: 'from-green-600 to-emerald-600',
@@ -599,7 +600,12 @@ function QuickStat({ icon, label, value, color }: any) {
   };
 
   return (
-    <div className={`bg-gradient-to-br ${colors[color as keyof typeof colors]} rounded-xl p-4`}>
+    <div className={`relative bg-gradient-to-br ${colors[color as keyof typeof colors]} rounded-xl p-4`}>
+      {premium && (
+        <div className="absolute -top-2 -right-2">
+          <PremiumBadge variant="gold" size="sm" />
+        </div>
+      )}
       <div className="flex items-center space-x-2 mb-1">{icon}</div>
       <div className="text-2xl font-bold">{value}</div>
       <div className="text-xs opacity-90">{label}</div>

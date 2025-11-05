@@ -18,6 +18,7 @@ import { FlowerOfLife } from '@/components/divine/FlowerOfLife';
 import { SacredCard } from '@/components/divine/SacredCard';
 import { NeuralGrid } from '@/components/organism/NeuralGrid';
 import { OrganicButton } from '@/components/organism/OrganicButton';
+import { PremiumBadge, PremiumCourseBadge } from '@/components/education/PremiumBadge';
 import {
   Award,
   BookOpen,
@@ -30,6 +31,7 @@ import {
   Palette,
   Sparkles,
   Users,
+  Crown,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -42,6 +44,7 @@ export default function SapiensPage() {
       icon: <BookOpen className="w-8 h-8" />,
       href: '/sapiens/k12',
       variant: 'golden' as const,
+      premium: true,
     },
     {
       title: 'Higher Education',
@@ -152,17 +155,30 @@ export default function SapiensPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
           {[
-            { label: 'Courses', value: '100K+', icon: '📚' },
-            { label: 'Students', value: '7.8B', icon: '👨‍🎓' },
-            { label: 'Languages', value: '7000+', icon: '🌍' },
-            { label: 'Free', value: '100%', icon: '✨' },
+            { label: 'Courses', value: '100K+', icon: '📚', premium: false },
+            { label: 'Students', value: '7.8B', icon: '👨‍🎓', premium: false },
+            { label: 'Languages', value: '7000+', icon: '🌍', premium: false },
+            { label: 'Premium', value: '1M+', icon: '👑', premium: true },
           ].map((stat, i) => (
             <div
               key={i}
-              className="p-6 rounded-2xl bg-gradient-to-br from-black/50 to-black/30 border border-[#FFD700]/20 backdrop-blur-xl hover:border-[#FFD700]/40 transition-all hover:scale-105"
+              className={`relative p-6 rounded-2xl bg-gradient-to-br from-black/50 to-black/30 border backdrop-blur-xl hover:scale-105 transition-all ${
+                stat.premium 
+                  ? 'border-[#FFD700]/40 hover:border-[#FFD700]/60' 
+                  : 'border-[#FFD700]/20 hover:border-[#FFD700]/40'
+              }`}
             >
+              {stat.premium && (
+                <div className="absolute -top-2 -right-2">
+                  <PremiumBadge variant="gold" size="sm" />
+                </div>
+              )}
               <div className="text-5xl mb-3">{stat.icon}</div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-transparent bg-clip-text mb-2">
+              <div className={`text-4xl font-bold bg-gradient-to-r text-transparent bg-clip-text mb-2 ${
+                stat.premium 
+                  ? 'from-[#FFD700] via-[#FFA500] to-[#FF8C00]' 
+                  : 'from-[#FFD700] to-[#FFA500]'
+              }`}>
                 {stat.value}
               </div>
               <div className="text-sm text-white/60 uppercase tracking-wider font-semibold">
@@ -221,15 +237,25 @@ export default function SapiensPage() {
                 variant={path.variant}
                 hoverable={true}
                 glowing={true}
-                className="h-full cursor-pointer"
+                className="h-full cursor-pointer relative"
               >
+                {path.premium && (
+                  <div className="absolute top-4 right-4">
+                    <PremiumBadge variant="gold" size="sm" />
+                  </div>
+                )}
                 <p className="text-white/80 text-lg leading-relaxed mb-4">
                   {path.description}
                 </p>
 
-                <div className="flex items-center gap-2 text-[#FFD700] font-semibold">
-                  <span>Begin Journey</span>
-                  <Sparkles className="w-5 h-5 animate-pulse" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-[#FFD700] font-semibold">
+                    <span>Begin Journey</span>
+                    <Sparkles className="w-5 h-5 animate-pulse" />
+                  </div>
+                  {path.premium && (
+                    <Crown className="w-5 h-5 text-yellow-400 animate-pulse" />
+                  )}
                 </div>
               </SacredCard>
             </Link>

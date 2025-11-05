@@ -26,8 +26,10 @@ import {
   Globe,
   Calculator,
   BookOpen,
-  Sparkles
+  Sparkles,
+  Crown
 } from 'lucide-react';
+import { PremiumBadge } from '@/components/education/PremiumBadge';
 
 type AgeGroup = 'K-2' | '3-5' | '6-8' | '9-12';
 type Subject = 'math' | 'science' | 'coding' | 'geography' | 'language' | 'art';
@@ -56,6 +58,9 @@ export default function SapiensK12() {
             <div className="text-right">
               <p className="text-sm text-purple-400">Powered by</p>
               <p className="font-bold text-purple-300">Constitutional AI + Research-Backed Science</p>
+              <div className="mt-2">
+                <PremiumBadge variant="gold" size="sm" />
+              </div>
             </div>
           </div>
         </div>

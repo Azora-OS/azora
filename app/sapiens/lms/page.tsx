@@ -28,12 +28,15 @@ import {
   Target,
   Zap,
   Clock,
+  Crown,
 } from 'lucide-react';
 import { useMyCourses, useMe, usePIVCLeaderboard, useCourses, useMentors, useStudyGroups } from './hooks';
+import { PremiumBadge, PremiumCourseBadge } from '@/components/education/PremiumBadge';
+import { PremiumFeatures } from '@/components/education/PremiumFeatures';
 
 
 export default function SapiensAdvancedLMS() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'learn' | 'earn' | 'build' | 'community'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'learn' | 'earn' | 'build' | 'community' | 'premium'>('dashboard');
   const [elaraChat, setElaraChat] = useState('');
   const [showElara, setShowElara] = useState(true);
   const { user, loading: userLoading } = useMe();
@@ -72,12 +75,12 @@ export default function SapiensAdvancedLMS() {
 
             {/* User */}
             <div className="flex items-center space-x-3">
-              <button className="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg flex items-center space-x-2">
-                <Sparkles className="w-4 h-4" />
-                <span>Premium</span>
-              </button>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center font-bold">
+              <PremiumBadge variant="gold" size="md" />
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center font-bold relative">
                 {user ? `${user.profile.firstName.charAt(0)}${user.profile.lastName.charAt(0)}` : '...'}
+                <div className="absolute -top-1 -right-1">
+                  <Crown className="w-4 h-4 text-yellow-400" />
+                </div>
               </div>
             </div>
           </div>
@@ -90,18 +93,22 @@ export default function SapiensAdvancedLMS() {
               { id: 'earn', label: 'Earn', icon: DollarSign },
               { id: 'build', label: 'Build', icon: Code2 },
               { id: 'community', label: 'Community', icon: Users },
-            ].map(({ id, label, icon: Icon }) => (
+              { id: 'premium', label: 'Premium', icon: Crown, premium: true },
+            ].map(({ id, label, icon: Icon, premium }: any) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id as any)}
-                className={`px-6 py-3 rounded-t-lg flex items-center space-x-2 transition-all ${
+                className={`px-6 py-3 rounded-t-lg flex items-center space-x-2 transition-all relative ${
                   activeTab === id
-                    ? 'bg-purple-900/50 border-t-2 border-purple-400'
+                    ? premium
+                      ? 'bg-gradient-to-r from-yellow-900/50 to-amber-900/50 border-t-2 border-yellow-400'
+                      : 'bg-purple-900/50 border-t-2 border-purple-400'
                     : 'hover:bg-purple-900/30'
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 <span className="font-semibold text-sm">{label}</span>
+                {premium && <Sparkles className="w-3 h-3 text-yellow-400 animate-pulse" />}
               </button>
             ))}
           </div>
@@ -117,6 +124,7 @@ export default function SapiensAdvancedLMS() {
           {activeTab === 'earn' && <EarnView />}
           {activeTab === 'build' && <BuildView />}
           {activeTab === 'community' && <CommunityView />}
+          {activeTab === 'premium' && <PremiumFeatures />}
         </main>
 
         {/* Elara Guardian Sidebar */}
@@ -233,6 +241,35 @@ export default function SapiensAdvancedLMS() {
 function DashboardView({ user, courses, leaderboard }) {
   return (
     <div className="space-y-6">
+      {/* Premium Banner */}
+      <div className="bg-gradient-to-r from-yellow-900/30 to-amber-900/30 rounded-3xl p-6 border-2 border-yellow-500/50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mt-4 -mr-4">
+          <div className="w-32 h-32 bg-yellow-500/20 rounded-full blur-3xl"></div>
+        </div>
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Crown className="w-6 h-6 text-yellow-400 animate-pulse" />
+              <h2 className="text-2xl font-bold text-yellow-200">Premium Learning Experience</h2>
+            </div>
+            <p className="text-yellow-100 mb-4">
+              Unlock advanced AI tutoring, exclusive content, and priority support
+            </p>
+            <div className="flex gap-3">
+              <button className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 px-6 py-2 rounded-lg font-semibold text-white transition-all">
+                Upgrade Now
+              </button>
+              <button className="bg-yellow-900/50 hover:bg-yellow-900/70 px-6 py-2 rounded-lg font-semibold text-yellow-200 transition-all">
+                View Features
+              </button>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <PremiumBadge variant="gold" size="lg" />
+          </div>
+        </div>
+      </div>
+
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-3xl p-8 border border-purple-500/30">
         <h2 className="text-3xl font-bold mb-2">Welcome back, {user ? user.profile.firstName : 'Student'}! 👋</h2>
@@ -243,7 +280,7 @@ function DashboardView({ user, courses, leaderboard }) {
           <StatCard icon={<TrendingUp className="w-6 h-6" />} label="Skills Mastered" value="7" color="green" />
           <StatCard icon={<DollarSign className="w-6 h-6" />} label="Total Earned" value="$1,234" color="blue" />
           <StatCard icon={<Code2 className="w-6 h-6" />} label="Projects Built" value="15" color="purple" />
-          <StatCard icon={<Trophy className="w-6 h-6" />} label="Achievements" value="23" color="yellow" />
+          <StatCard icon={<Trophy className="w-6 h-6" />} label="Achievements" value="23" color="yellow" premium />
         </div>
       </div>
 
@@ -402,14 +439,34 @@ function LearnView() {
 };
 
 function CourseCard({ course }: { course: any }) {
+  const isPremium = course.premium || Math.random() > 0.7; // Random premium for demo
+  
   return (
-    <div className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-2xl p-6 border border-purple-500/20 flex flex-col justify-between">
+    <div className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-2xl p-6 border border-purple-500/20 flex flex-col justify-between relative">
+      {isPremium && (
+        <div className="absolute top-4 right-4">
+          <PremiumCourseBadge level="basic" />
+        </div>
+      )}
       <div>
-        <h4 className="text-lg font-bold mb-2">{course.title}</h4>
+        <h4 className="text-lg font-bold mb-2 flex items-center gap-2">
+          {course.title}
+          {isPremium && <Crown className="w-4 h-4 text-yellow-400" />}
+        </h4>
         <p className="text-sm text-purple-300 mb-4">{course.description}</p>
+        {isPremium && (
+          <div className="mb-4 flex items-center gap-2 text-xs text-yellow-400">
+            <Sparkles className="w-3 h-3" />
+            <span>Premium Content</span>
+          </div>
+        )}
       </div>
-      <button className="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg w-full mt-4">
-        View Course
+      <button className={`px-4 py-2 rounded-lg w-full mt-4 font-semibold ${
+        isPremium 
+          ? 'bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white' 
+          : 'bg-purple-600 hover:bg-purple-500'
+      }`}>
+        {isPremium ? 'Unlock Premium Course' : 'View Course'}
       </button>
     </div>
   );
@@ -628,7 +685,7 @@ const SkeletonCard = () => (
 // COMPONENT LIBRARY
 // ============================================================================
 
-function StatCard({ icon, label, value, color }: any) {
+function StatCard({ icon, label, value, color, premium }: any) {
   const colors = {
     green: 'from-green-600 to-emerald-600',
     blue: 'from-blue-600 to-cyan-600',
@@ -637,7 +694,12 @@ function StatCard({ icon, label, value, color }: any) {
   };
 
   return (
-    <div className={`bg-gradient-to-br ${colors[color as keyof typeof colors]} rounded-xl p-4`}>
+    <div className={`relative bg-gradient-to-br ${colors[color as keyof typeof colors]} rounded-xl p-4`}>
+      {premium && (
+        <div className="absolute -top-2 -right-2">
+          <PremiumBadge variant="gold" size="sm" />
+        </div>
+      )}
       <div className="flex items-center space-x-2 mb-2">{icon}</div>
       <div className="text-3xl font-bold">{value}</div>
       <div className="text-sm opacity-90">{label}</div>
