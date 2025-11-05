@@ -1,0 +1,50 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="256" cy="256" r="240" fill="url(#classroom-gradient)"/>
+  
+  <!-- Video Screen -->
+  <rect x="166" y="186" width="180" height="120" rx="10" fill="#3B82F6"/>
+  <rect x="176" y="196" width="160" height="100" rx="5" fill="#60A5FA"/>
+  
+  <!-- Play Button -->
+  <circle cx="256" cy="246" r="25" fill="white" opacity="0.9"/>
+  <path d="M246 236L271 246L246 256V236Z" fill="#3B82F6"/>
+  
+  <!-- People/Students Icons -->
+  <g transform="translate(186, 336)">
+    <circle cx="0" cy="-8" r="10" fill="#10B981"/>
+    <path d="M-12 8C-12 0 -6 -4 0 -4C6 -4 12 0 12 8" fill="#10B981"/>
+  </g>
+  <g transform="translate(226, 336)">
+    <circle cx="0" cy="-8" r="10" fill="#10B981"/>
+    <path d="M-12 8C-12 0 -6 -4 0 -4C6 -4 12 0 12 8" fill="#10B981"/>
+  </g>
+  <g transform="translate(266" cy="-8" r="10" fill="#10B981"/>
+    <path d="M-12 8C-12 0 -6 -4 0 -4C6 -4 12 0 12 8" fill="#10B981"/>
+  </g>
+  <g transform="translate(306, 336)">
+    <circle cx="0" cy="-8" r="10" fill="#10B981"/>
+    <path d="M-12 8C-12 0 -6 -4 0 -4C6 -4 12 0 12 8" fill="#10B981"/>
+  </g>
+  
+  <!-- Connection Lines (Live) -->
+  <path d="M186 328L256 306M226 328L256 306M266 328L256 306M306 328L256 306" stroke="#10B981" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Live Badge -->
+  <rect x="316" y="196" width="50" height="24" rx="12" fill="#EF4444"/>
+  <circle cx="329" cy="208" r="4" fill="white">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="342" y="213" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="14" fill="white">LIVE</text>
+  
+  <!-- Text -->
+  <text x="256" y="395" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#0A0E27" text-anchor="middle">AZORA</text>
+  <text x="256" y="430" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="26" fill="#3B82F6" text-anchor="middle">CLASSROOM</text>
+  
+  <defs>
+    <linearGradient id="classroom-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#DBEAFE"/>
+      <stop offset="100%" stop-color="#BFDBFE"/>
+    </linearGradient>
+  </defs>
+</svg>
