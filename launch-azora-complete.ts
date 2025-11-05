@@ -7,7 +7,7 @@ See LICENSE file for details.
 */
 /**
  * Azora OS Complete Launch Script
- * 
+ *
  * Launches all core services in the correct order:
  * 1. Azora Supreme Organism (Self-Healing)
  * 2. Constitutional Learning Agent
@@ -119,7 +119,7 @@ class AzoraLauncher {
 
     try {
       console.log('  🌟 Starting Azora Supreme Organism...');
-      
+
       const organism = AzoraSupremeOrganism.getInstance({
         autoStart: true,
         selfHealing: true,
@@ -146,9 +146,9 @@ class AzoraLauncher {
 
     try {
       console.log('  📚 Starting Constitutional Learning Agent...');
-      
+
       const agent = ConstitutionalLearningAgent.getInstance();
-      
+
       // Initialize with sample learner
       await agent.analyzeAndAdapt('system-user');
 
@@ -166,9 +166,9 @@ class AzoraLauncher {
 
     try {
       console.log('  🏆 Starting PIVC Gamification Engine...');
-      
+
       const engine = PIVCGamificationEngine.getInstance();
-      
+
       // Initialize default badges and leaderboards
       const badges = engine.getAllBadges();
       console.log(`     Loaded ${badges.length} badges`);
@@ -187,9 +187,9 @@ class AzoraLauncher {
 
     try {
       console.log('  🛡️ Starting Sovereign Ingestion Engine...');
-      
+
       const _engine = SovereignIngestionEngine.getInstance();
-      
+
       console.log('     Aegis Vetter: READY');
       console.log('     Forge Engine: READY');
       console.log('     Elara Ω: READY');
@@ -316,13 +316,13 @@ class AzoraLauncher {
 // Main execution
 async function main() {
   const launcher = new AzoraLauncher();
-  
+
   try {
     await launcher.launchAll();
-    
+
     // Keep process alive
     console.log('\n💡 Press Ctrl+C to shutdown Azora OS\n');
-    
+
     // Handle graceful shutdown
     process.on('SIGINT', () => {
       console.log('\n\n🛑 Shutting down Azora OS...');

@@ -1,0 +1,23 @@
+{
+  "name": "azorahub",
+  "version": "1.0.0",
+  "description": "A comprehensive ecosystem that reimagines software development, collaboration, and deployment through intelligent, adaptive, and interconnected systems.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fluentui/react-components": "^9.72.4",
+    "@mui/material": "^7.3.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}

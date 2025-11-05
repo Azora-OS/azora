@@ -31,10 +31,10 @@ const HybridTokens = {
     },
     fontWeight: {
       regular: 400,
-    medium: 500,
-    semibold: 600,
-    bold: 700,
-  },
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+    },
   // Enhanced elevation system
   elevation: {
     subtle: '0 1px 3px rgba(0, 0, 0, 0.12)',
@@ -66,7 +66,7 @@ const HybridButtonRoot = styled.button<{
   /* Base Styles */
   font-family: ${HybridTokens.typography.fontFamily};
   font-size: ${props => HybridTokens.typography.fontSize[props.size]};
-  font-weight: ${HybridTokens.typography.weight.medium};
+  font-weight: ${HybridTokens.typography.fontWeight.medium};
   border: none;
   border-radius: 8px; /* Material Design 3 corner medium */
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
