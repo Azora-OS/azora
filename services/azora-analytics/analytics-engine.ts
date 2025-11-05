@@ -98,9 +98,51 @@ export class AnalyticsEngine extends EventEmitter {
   }
 
   /**
-   * Track progress
+   * Track progress with validation and persistence
    */
   async trackProgress(data: ProgressData): Promise<void> {
+    // Input validation
+    if (!data.studentId) {
+      throw new Error('Student ID is required');
+    }
+    if (!data.studentNumber) {
+      throw new Error('Student number is required');
+    }
+    if (!data.courseId) {
+      throw new Error('Course ID is required');
+    }
+    if (data.progress < 0 || data.progress > 100) {
+      throw new Error('Progress must be between 0 and 100');
+    }
+    if (data.timeSpent < 0) {
+      throw new Error('Time spent cannot be negative');
+    }
+
+    // Persist to database if connected
+    if (azoraDatabase.isDatabaseConnected()) {
+      try {
+        const ProgressDataModel = (await import('../shared/database/models')).ProgressData;
+        await ProgressDataModel.findOneAndUpdate(
+          {
+            studentId: data.studentId,
+            courseId: data.courseId,
+            moduleId: data.moduleId || null,
+          },
+          {
+            ...data,
+            lastAccessed: new Date(),
+          },
+          {
+            upsert: true,
+            new: true,
+          }
+        );
+      } catch (error) {
+        console.warn('Failed to persist progress to database:', error);
+        // Continue with in-memory tracking
+      }
+    }
+
     const studentProgress = this.progressData.get(data.studentId) || [];
     
     // Update or add progress
@@ -124,8 +166,10 @@ export class AnalyticsEngine extends EventEmitter {
     this.progressData.set(data.studentId, studentProgress);
     this.emit('progress:updated', data);
 
-    // Update analytics
-    await this.updateAnalytics(data.studentId);
+    // Update analytics asynchronously to avoid blocking
+    this.updateAnalytics(data.studentId).catch(err => {
+      console.error('Failed to update analytics:', err);
+    });
   }
 
   /**
