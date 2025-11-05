@@ -7,6 +7,10 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
  * Email Hosting Service
  * Professional email infrastructure for @azora.africa domains
  * Aligns with Constitution Article VI: Infrastructure Independence
+ * 
+ * @deprecated This service is deprecated. Use /services/azora-email-system/ instead
+ * The new system supports multi-domain, student/staff provisioning, and enterprise features.
+ * This file will be removed in the next major version.
  */
 
 import nodemailer from 'nodemailer';
