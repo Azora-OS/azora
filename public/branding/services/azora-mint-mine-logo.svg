@@ -1,0 +1,54 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#mint-mine-gradient)"/>
+  
+  <!-- Pickaxe Handle -->
+  <path d="M306 176L216 266" stroke="#94A3B8" stroke-width="12" stroke-linecap="round"/>
+  <path d="M306 176L216 266" stroke="#64748B" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Pickaxe Head -->
+  <path d="M296 156L316 176L296 196L276 176L296 156Z" fill="#94A3B8"/>
+  <path d="M316 176L336 196L316 216L296 196L316 176Z" fill="#64748B"/>
+  
+  <!-- Coin 1 (Background) -->
+  <circle cx="286" cy="266" r="40" fill="#F59E0B"/>
+  <circle cx="286" cy="266" r="35" fill="#FCD34D"/>
+  <text x="286" y="280" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="32" fill="#F59E0B" text-anchor="middle">$</text>
+  
+  <!-- Coin 2 (Foreground) -->
+  <circle cx="326" cy="236" r="45" fill="#F59E0B"/>
+  <circle cx="326" cy="236" r="40" fill="#FCD34D"/>
+  <text x="326" y="252" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#F59E0B" text-anchor="middle">A</text>
+  
+  <!-- Mining Sparkles -->
+  <path d="M226 206L236 216L226 226L216 216L226 206Z" fill="#FBBF24" opacity="0.8"/>
+  <path d="M186 236L196 246L186 256L176 246L186 236Z" fill="#FBBF24" opacity="0.8"/>
+  <path d="M196 276L206 286L196 296L186 286L196 276Z" fill="#FBBF24" opacity="0.8"/>
+  
+  <!-- Energy Wave -->
+  <path d="M146 286C156 276 166 276 176 286C186 296 196 296 206 286" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  <path d="M156 306C166 296 176 296 186 306C196 316 206 316 216 306" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  
+  <!-- Computer Chip (Mining Symbol) -->
+  <rect x="336" y="286" width="50" height="50" rx="5" fill="#6366F1"/>
+  <rect x="341" y="291" width="40" height="40" rx="3" fill="#818CF8"/>
+  <line x1="336" y1="301" x2="346" y2="301" stroke="#6366F1" stroke-width="2"/>
+  <line x1="336" y1="311" x2="346" y2="311" stroke="#6366F1" stroke-width="2"/>
+  <line x1="336" y1="321" x2="346" y2="321" stroke="#6366F1" stroke-width="2"/>
+  <line x1="376" y1="301" x2="386" y2="301" stroke="#6366F1" stroke-width="2"/>
+  <line x1="376" y1="311" x2="386" y2="311" stroke="#6366F1" stroke-width="2"/>
+  <line x1="376" y1="321" x2="386" y2="321" stroke="#6366F1" stroke-width="2"/>
+  
+  <!-- Text: Mint Mine Engine -->
+  <text x="256" y="385" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="32" fill="#0A0E27" text-anchor="middle">MINT-MINE</text>
+  <text x="256" y="418" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="26" fill="#F59E0B" text-anchor="middle">ENGINE</text>
+  <text x="256" y="445" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="18" fill="#64748B" text-anchor="middle">Earn While You Learn</text>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="mint-mine-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+</svg>

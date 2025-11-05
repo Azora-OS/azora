@@ -1,0 +1,75 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="256" cy="256" r="240" fill="url(#student-life-gradient)"/>
+  
+  <!-- Group of Happy People -->
+  <g transform="translate(206, 246)">
+    <circle cx="0" cy="-10" r="18" fill="#FBBF24"/>
+    <path d="M-22 20C-22 5 -11 -5 0 -5C11 -5 22 5 22 20" fill="#FBBF24"/>
+    <!-- Smile -->
+    <path d="M-10 -5C-10 -5 -5 0 0 0C5 0 10 -5 10 -5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <g transform="translate(256, 236)">
+    <circle cx="0" cy="-10" r="20" fill="#EF4444"/>
+    <path d="M-24 22C-24 5 -12 -6 0 -6C12 -6 24 5 24 22" fill="#EF4444"/>
+    <!-- Smile -->
+    <path d="M-12 -5C-12 -5 -6 0 0 0C6 0 12 -5 12 -5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <!-- Party Hat -->
+    <path d="M0 -30L-15 -10H15L0 -30Z" fill="#8B5CF6"/>
+    <circle cx="0" cy="-30" r="4" fill="white"/>
+  </g>
+  
+  <g transform="translate(306, 246)">
+    <circle cx="0" cy="-10" r="18" fill="#10B981"/>
+    <path d="M-22 20C-22 5 -11 -5 0 -5C11 -5 22 5 22 20" fill="#10B981"/>
+    <!-- Smile -->
+    <path d="M-10 -5C-10 -5 -5 0 0 0C5 0 10 -5 10 -5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Celebration Elements -->
+  <path d="M186 196L196 206L186 216L176 206L186 196Z" fill="#FBBF24"/>
+  <path d="M326 196L336 206L326 216L316 206L326 196Z" fill="#FBBF24"/>
+  <circle cx="176" cy="246" r="5" fill="#EF4444"/>
+  <circle cx="336" cy="246" r="5" fill="#EF4444"/>
+  <path d="M196 176L201 186L191 186L196 176Z" fill="#8B5CF6"/>
+  <path d="M316 176L321 186L311 186L316 176Z" fill="#8B5CF6"/>
+  
+  <!-- Confetti -->
+  <rect x="216" y="166" width="8" height="12" fill="#EC4899" opacity="0.8" transform="rotate(20 220 172)"/>
+  <rect x="286" y="166" width="8" height="12" fill="#06B6D4" opacity="0.8" transform="rotate(-20 290 172)"/>
+  
+  <!-- Activities Icons -->
+  <!-- Sports Ball -->
+  <circle cx="166" cy="316" r="16" fill="#F97316"/>
+  <circle cx="166" cy="316" r="16" stroke="white" stroke-width="2" fill="none"/>
+  
+  <!-- Music Note -->
+  <circle cx="226" cy="320" r="6" fill="#8B5CF6"/>
+  <path d="M232 314V290L242 285V310" stroke="#8B5CF6" stroke-width="3" fill="none"/>
+  <circle cx="242" cy="314" r="6" fill="#8B5CF6"/>
+  
+  <!-- Art Palette -->
+  <ellipse cx="286" cy="316" rx="18" ry="16" fill="#EC4899"/>
+  <circle cx="280" cy="312" r="3" fill="#FBBF24"/>
+  <circle cx="292" cy="312" r="3" fill="#3B82F6"/>
+  <circle cx="286" cy="321" r="3" fill="#10B981"/>
+  <ellipse cx="292" cy="320" rx="5" ry="4" fill="white" opacity="0.3"/>
+  
+  <!-- Gaming Controller -->
+  <rect x="338" y="308" width="36" height="20" rx="10" fill="#6366F1"/>
+  <circle cx="348" cy="318" r="3" fill="white"/>
+  <circle cx="364" cy="318" r="3" fill="white"/>
+  
+  <!-- Text -->
+  <text x="256" y="385" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#0A0E27" text-anchor="middle">AZORA</text>
+  <text x="256" y="418" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="26" fill="#FBBF24" text-anchor="middle">STUDENT LIFE</text>
+  <text x="256" y="443" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="18" fill="#64748B" text-anchor="middle">Beyond the Classroom</text>
+  
+  <defs>
+    <linearGradient id="student-life-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+</svg>

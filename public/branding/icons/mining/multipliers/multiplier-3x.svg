@@ -1,0 +1,13 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Silver Badge -->
+  <circle cx="48" cy="48" r="44" fill="#F8FAFC"/>
+  <circle cx="48" cy="48" r="40" fill="#E2E8F0"/>
+  <circle cx="48" cy="48" r="36" fill="#CBD5E1"/>
+  <!-- Shine Effect -->
+  <path d="M48 12C48 12 32 28 32 48C32 68 48 84 48 84" stroke="white" stroke-width="3" opacity="0.6"/>
+  <path d="M48 12C48 12 64 28 64 48C64 68 48 84 48 84" stroke="white" stroke-width="2" opacity="0.3"/>
+  <!-- Icon -->
+  <text x="48" y="58" font-family="Inter, sans-serif" font-weight="700" font-size="32" fill="#475569" text-anchor="middle">3×</text>
+  <!-- Label -->
+  <text x="48" y="88" font-family="Inter, sans-serif" font-weight="600" font-size="12" fill="#64748B" text-anchor="middle">SILVER</text>
+</svg>
