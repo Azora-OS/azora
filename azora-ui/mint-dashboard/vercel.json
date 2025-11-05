@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "name": "azora-mint-dashboard",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_MINT_API": "@mint_api_url",
+    "NEXT_PUBLIC_BLOCKCHAIN_RPC": "@blockchain_rpc",
+    "NEXT_PUBLIC_ETHEREUM_RPC": "@ethereum_rpc"
+  }
+}

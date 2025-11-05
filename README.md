@@ -301,6 +301,41 @@ npm run service:nexus
 
 ---
 
+## 🚀 Deployment
+
+### **Quick Deploy to Production:**
+
+#### **Frontend Apps (Vercel):**
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy all frontends
+cd azora-ui/student-portal && vercel --prod
+cd ../job-board && vercel --prod
+cd ../mint-dashboard && vercel --prod
+cd ../admin-panel && vercel --prod
+```
+
+#### **Backend Services (Railway):**
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Deploy core services
+cd services/azora-mint && railway up
+cd ../azora-education && railway up
+cd ../azora-forge && railway up
+```
+
+**📖 See [DEPLOYMENT-COMPLETE-GUIDE.md](./DEPLOYMENT-COMPLETE-GUIDE.md) for full instructions.**
+
+**Deployment Cost:** ~$255/month (scalable to millions of users)  
+**Time to Deploy:** ~30 minutes  
+**Platforms:** Vercel + Railway + Supabase
+
+---
+
 ## 📁 Repository Structure
 
 ```

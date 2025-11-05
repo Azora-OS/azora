@@ -1,45 +1,53 @@
 {
   "version": 2,
-  "name": "azora-os",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["iad1"],
-  "env": {
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_NAME": "Azora OS",
-    "NEXT_PUBLIC_APP_URL": "https://azora-os.vercel.app"
-  },
-  "build": {
-    "env": {
-      "NEXT_PUBLIC_APP_NAME": "Azora OS"
-    }
-  },
-  "functions": {
-    "app/api/**/*.ts": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
-  },
-  "rewrites": [
+  "name": "azora-supreme-organism",
+  "builds": [
     {
-      "source": "/sapiens/:path*",
-      "destination": "/app/sapiens/:path*"
+      "src": "azora-ui/student-portal/package.json",
+      "use": "@vercel/next"
     },
     {
-      "source": "/campus/:path*",
-      "destination": "/app/campus/:path*"
+      "src": "azora-ui/job-board/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "azora-ui/mint-dashboard/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "azora-ui/admin-panel/package.json",
+      "use": "@vercel/next"
     }
   ],
+  "routes": [
+    {
+      "src": "/student/(.*)",
+      "dest": "azora-ui/student-portal/$1"
+    },
+    {
+      "src": "/jobs/(.*)",
+      "dest": "azora-ui/job-board/$1"
+    },
+    {
+      "src": "/mint/(.*)",
+      "dest": "azora-ui/mint-dashboard/$1"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "azora-ui/admin-panel/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "azora-ui/student-portal/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Powered-By",
-          "value": "Azora OS"
-        },
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
@@ -47,6 +55,14 @@
         {
           "key": "X-Frame-Options",
           "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
     }

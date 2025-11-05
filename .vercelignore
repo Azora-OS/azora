@@ -1,70 +1,74 @@
-# Optimize Vercel deployment - exclude unnecessary files
+# Vercel Ignore File
+# Files and directories to exclude from Vercel deployments
 
-# Dependencies
-node_modules
-.pnpm-store
+# Backend services (deploy to Railway/Render instead)
+services/
+!services/shared/
 
-# Build artifacts  
-.next
-out
-build
-dist
+# Node modules
+node_modules/
+**/node_modules/
 
-# Large directories
-services/*
-organs/*
-infrastructure/*
-genome/*/node_modules
-synapse/*/node_modules
-ui/*/node_modules
+# Build outputs
+dist/
+build/
+.next/
+out/
 
-# Documentation (deploy separately if needed)
-docs/archive
-codex/archive
-marketing
+# Environment files
+.env
+.env.local
+.env*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Testing
-coverage
-test
-tests
-e2e
-*.test.ts
-*.test.js
-*.spec.ts
-*.spec.js
+coverage/
+.nyc_output/
+__tests__/
 
-# Development
-.vscode
-.idea
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
+*~
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
-# Environment
-.env.local
-.env*.local
-secrets
+# Temporary
+tmp/
+temp/
+*.tmp
 
-# Large files
-*.exe
-*.apk
-*.ipa
-*.dmg
-*.iso
-build/iso
+# Private
+private/
 
-# Mining
-mining-engine
-mining-config
+# Terraform
+infrastructure/terraform/
+*.tfstate
+*.tfstate.*
 
-# Misc
-reflexes
-examples
-templates
-mobile
-os-build
-archive
-branding/archive
+# Kubernetes
+infrastructure/kubernetes/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Database
+*.sql
+*.sqlite
+*.db
+
+# Blockchain
+contracts/
+*.sol
