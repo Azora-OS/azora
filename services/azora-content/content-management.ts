@@ -126,6 +126,26 @@ export class ContentManagementSystem extends EventEmitter {
       throw new Error('Database not connected');
     }
 
+    // Input validation
+    if (!course.title || course.title.trim().length < 3) {
+      throw new Error('Course title must be at least 3 characters');
+    }
+    if (!course.code || course.code.trim().length < 2) {
+      throw new Error('Course code must be at least 2 characters');
+    }
+    if (!course.instructorId) {
+      throw new Error('Instructor ID is required');
+    }
+    if (course.credits && (course.credits < 0 || course.credits > 100)) {
+      throw new Error('Credits must be between 0 and 100');
+    }
+
+    // Check for duplicate course code
+    const existingCourse = await Course.findOne({ code: course.code });
+    if (existingCourse) {
+      throw new Error(`Course with code ${course.code} already exists`);
+    }
+
     const newCourse = new Course({
       ...course,
       id: crypto.randomUUID(),
@@ -340,17 +360,22 @@ export class ContentManagementSystem extends EventEmitter {
   }
 
   /**
-   * Find module in any course (MongoDB)
+   * Find module in any course (MongoDB) - Optimized with indexed query
    */
   private async findModuleInCourses(moduleId: string): Promise<Module | undefined> {
     if (!azoraDatabase.isDatabaseConnected()) {
       return undefined;
     }
 
-    const courses = await Course.find({});
-    for (const course of courses) {
-      const module = course.modules.find((m: Module) => m.id === moduleId);
-      if (module) return module;
+    // Optimized: Use aggregation pipeline with $elemMatch instead of loading all courses
+    const course = await Course.findOne({
+      'modules.id': moduleId
+    }, {
+      'modules.$': 1 // Only return the matching module
+    });
+
+    if (course && course.modules && course.modules.length > 0) {
+      return course.modules[0] as Module;
     }
     return undefined;
   }
