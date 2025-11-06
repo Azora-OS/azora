@@ -82,9 +82,9 @@ TypeScript path mapping provides clean imports:
 
 ### Launcher System
 
-Multiple launcher entry points:
+Multiple launcher entry points (now in `tools/launchers/`):
 
-- **`elara-launcher-cli.ts`** - Main CLI launcher
+- **`tools/launchers/elara-launcher-cli.ts`** - Main CLI launcher
 - **`launch/azora-launch.ts`** - Service launcher
 - **`genome/elara-master-launcher.ts`** - Master orchestrator
 
