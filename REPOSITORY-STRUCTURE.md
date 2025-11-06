@@ -1,8 +1,26 @@
 # Azora OS Repository Structure
 
 > **Last Updated:** November 6, 2025  
-> **Version:** 2.0.0 (Post-Restructuring)  
+> **Version:** 2.1.0 (Post-Cleanup & Production Ready)  
 > **Status:** ✅ Production Ready
+
+## Recent Updates (v2.1.0)
+
+### Root Directory Cleanup ✨
+- **Reduced root files from 61 to 32** (47% reduction)
+- **Relocated launcher scripts** to `tools/launchers/` (15+ files)
+- **Relocated deployment scripts** to `tools/scripts/` (8+ files)
+- **Archived legacy files** to `.archive/` (7+ files)
+- **Moved documentation** to `docs/` (3 files)
+- **All links validated** and working ✅
+
+### Link Fixes ✅
+- ✅ Fixed banner image path in README.md
+- ✅ Updated deployment guide link
+- ✅ Fixed codex/constitution paths
+- ✅ Fixed codex/founder paths
+- ✅ Fixed contracts/founders paths
+- ✅ Added TODO markers for placeholder social media links
 
 ## Overview
 
@@ -160,10 +178,21 @@ Development tools, CLIs, IDEs, and utilities.
 ```
 tools/
 ├── bin/                        # Binary executables
-├── codex/                      # Code generation tools
+├── codex/                      # Code generation & documentation
+│   ├── constitution/           # Azora Constitution
+│   └── founder/                # Founder information
 ├── elara-ide/                  # Elara IDE
 ├── elara-vscode-extension/     # VS Code extension
-└── agents/                     # AI agents & automation
+├── agents/                     # AI agents & automation
+├── launchers/                  # 🆕 System launchers & orchestrators
+│   ├── azora-os-orchestrator.ts
+│   ├── launch-all-services.ts
+│   ├── graphql-server.ts
+│   └── [15+ launchers]
+└── scripts/                    # 🆕 Deployment & utility scripts
+    ├── DEPLOY-ALL-SERVICES.sh
+    ├── cleanup-repo.sh
+    └── [10+ scripts]
 ```
 
 ### ⚙️ `config/` - Configuration Files
