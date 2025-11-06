@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { SuperAI, initializeAIHierarchy, getAIHierarchyStatus } from '../../genome/ai-hierarchy';
-import { MintAgent } from '../../genome/ai-hierarchy/specialized-agents/mint-agent';
-import { AgentCommunicationSystem, AgentMessenger } from '../../genome/ai-hierarchy/communication/agent-communication';
-import { MemorySystem } from '../../genome/agent-tools/memory-system';
+import { SuperAI, initializeAIHierarchy, getAIHierarchyStatus } from '../../system-core/ai-hierarchy';
+import { MintAgent } from '../../system-core/ai-hierarchy/specialized-agents/mint-agent';
+import { AgentCommunicationSystem, AgentMessenger } from '../../system-core/ai-hierarchy/communication/agent-communication';
+import { MemorySystem } from '../../system-core/agent-tools/memory-system';
 import MintUI from './MintUI';
 
 /**

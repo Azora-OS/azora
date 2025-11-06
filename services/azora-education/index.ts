@@ -17,7 +17,7 @@ import { primaryEducation } from './primary-education-core'
 import { secondaryEducation } from './secondary-education-core'
 import { azoraSapiensUniversity } from '../azora-sapiens/university-core'
 import { enhancedMint } from '../azora-mint/enhanced-mint-core'
-import { elaraIntegration } from '../../genome/elara-integration'
+import { elaraIntegration } from '../../system-core/elara-integration'
 
 export class AzoraEducationSystem {
   private initialized = false

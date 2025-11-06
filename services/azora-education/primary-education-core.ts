@@ -17,7 +17,7 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraIntegration } from '../../genome/elara-integration'
+import { elaraIntegration } from '../../system-core/elara-integration'
 
 export interface PrimaryGrade {
   gradeLevel: 'R' | '1' | '2' | '3' | '4' | '5' | '6' | '7'

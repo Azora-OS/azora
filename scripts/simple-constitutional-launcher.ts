@@ -8,7 +8,7 @@ import * as path from 'path';
 import {
   ELARA_OMEGA_CONSTITUTION,
   validateElaraOmega,
-} from '../genome/ELARA_OMEGA_CONSTITUTION';
+} from '../system-core/ELARA_OMEGA_CONSTITUTION';
 
 interface ServiceConfig {
   name: string;

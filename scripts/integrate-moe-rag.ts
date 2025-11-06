@@ -24,7 +24,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { MoEConfig, MoETransformer } from '../core/moe-implementation';
 import { Document, SelfRAG } from '../core/rag-implementation';
-import { logger } from '../genome/utils/logger';
+import { logger } from '../system-core/utils/logger';
 
 // ============================================================================
 // CONFIGURATION

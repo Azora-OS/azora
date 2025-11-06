@@ -13,7 +13,7 @@ See LICENSE file for details.
  * and escrow unlock mechanisms in the Citadel MVP for ZA pilot.
  */
 
-import { GeopoliticalReadinessIndex } from '../genome/agent-tools/geopolitical-readiness-index.ts';
+import { GeopoliticalReadinessIndex } from '../system-core/agent-tools/geopolitical-readiness-index.ts';
 
 class GRITestSuite {
     constructor() {
