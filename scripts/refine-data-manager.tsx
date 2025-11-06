@@ -1082,8 +1082,8 @@ async function main() {
         break;
         
       case 'status':
-        logger.info(\`Status: \${dataManager.getStatus()}\`);
-        logger.info(\`Config: \${JSON.stringify(dataManager.getConfig(), null, 2)}\`);
+        logger.info(`Status: ${dataManager.getStatus()}`);
+        logger.info(`Config: ${JSON.stringify(dataManager.getConfig(), null, 2)}`);
         break;
         
       default:
