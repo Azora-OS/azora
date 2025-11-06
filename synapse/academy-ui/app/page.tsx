@@ -312,7 +312,6 @@ function AcademyContent() {
             </Card>
           </motion.div>
         </div>
-      </div>
     </div>
   )
 }

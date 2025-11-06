@@ -363,9 +363,10 @@ export class AzorahubWorkspace extends EventEmitter {
   public async optimizePerformance(): Promise<OptimizationResult> {
     return await this.performanceMonitor.optimize();
   }
+}
 
-  // ...
-
+// Stub classes - TODO: Implement or remove
+/*
   // Extension Manager
   class ExtensionManager {
     // ...
@@ -426,8 +427,9 @@ export class AzorahubWorkspace extends EventEmitter {
       return terminal;
     }
   }
+*/
 
-  // Supporting Types and Interfaces
+// Supporting Types and Interfaces
   export interface TerminalOptions {
     shell?: string;
     cwd?: string;

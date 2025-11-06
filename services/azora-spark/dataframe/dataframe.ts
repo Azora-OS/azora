@@ -221,7 +221,7 @@ class GroupedDataFrame {
   agg(aggregations: Record<string, string>): DataFrame {
     // Group and aggregate
     return new SparkDataFrame(this.df['sparkContext'], []).withRDD(
-      this.df['rdd'].map(async (data: any[]) => {
+      this.df['rdd'].map((data: any[]) => {
         const grouped = new Map<string, any[]>();
         
         // Group data
@@ -250,7 +250,7 @@ class GroupedDataFrame {
         }
 
         return result;
-      } as any)
+      })
     );
   }
 

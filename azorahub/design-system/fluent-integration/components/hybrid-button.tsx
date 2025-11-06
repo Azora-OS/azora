@@ -35,6 +35,7 @@ const HybridTokens = {
       semibold: 600,
       bold: 700,
     },
+  },
   // Enhanced elevation system
   elevation: {
     subtle: '0 1px 3px rgba(0, 0, 0, 0.12)',

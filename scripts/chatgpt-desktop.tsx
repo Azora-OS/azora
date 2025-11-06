@@ -616,7 +616,7 @@ async function main() {
         break;
         
       case 'status':
-        logger.info(\`Status: \${manager.getStatus()}\`);
+        logger.info(`Status: ${manager.getStatus()}`);
         break;
         
       default:
@@ -638,7 +638,7 @@ async function main() {
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
-  logger.info('\\n🙏 Gracefully shutting down ChatGPT integration...');
+  logger.info('\n🙏 Gracefully shutting down ChatGPT integration...');
   process.exit(0);
 });
 

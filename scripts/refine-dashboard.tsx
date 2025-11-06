@@ -647,8 +647,8 @@ async function main() {
         break;
         
       case 'status':
-        logger.info(\`Status: \${dashboard.getStatus()}\`);
-        logger.info(\`Active Widgets: \${dashboard.getActiveWidgets().join(', ')}\`);
+        logger.info(`Status: ${dashboard.getStatus()}`);
+        logger.info(`Active Widgets: ${dashboard.getActiveWidgets().join(', ')}`);
         break;
         
       default:
