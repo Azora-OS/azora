@@ -14,12 +14,47 @@ This document is proprietary intellectual property of Azora ES (Pty) Ltd.
 Unauthorized reproduction, distribution, or modification is prohibited.
 -->
 
-# ?? Changelog
+# 📝 Changelog
 
 All notable changes to Azora OS will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [2.1.0] - 2025-11-06
+
+### 🚀 Production Readiness Update
+
+**"Clean, Organized, Professional"**
+
+#### Changed
+- **Root Directory Cleanup**: Reduced from 61 to 32 files (47% reduction)
+- Reorganized all launcher scripts to `tools/launchers/` (16 files)
+- Reorganized all deployment/utility scripts to `tools/scripts/` (11 files)
+- Moved test files to `tests/` directory (2 files)
+- Moved documentation files to `docs/` directory (4 files)
+- Archived legacy/status files to `.archive/` (8 files)
+
+#### Fixed
+- **README.md**: Fixed banner image path (`./public/` → `./packages/public/`)
+- **README.md**: Fixed deployment guide link (missing → `./docs/DEPLOYMENT.md`)
+- **README.md**: Fixed constitution path (`./codex/` → `./tools/codex/`)
+- **README.md**: Fixed founder profile path (`./codex/` → `./tools/codex/`)
+- **README.md**: Fixed team update path (`./contracts/` → `./packages/contracts/`)
+- All markdown links validated (0 broken links found)
+
+#### Added
+- New `tools/launchers/README.md` - Complete launcher documentation
+- New `tools/scripts/README.md` - Complete scripts documentation
+- New `docs/PRODUCTION_READINESS_REPORT.md` - Comprehensive cleanup report
+- TODO markers for placeholder social media links
+
+#### Documentation
+- Updated `REPOSITORY-STRUCTURE.md` to v2.1.0 with cleanup changelog
+- Updated `.kiro/steering/structure.md` with new launcher paths
+- All documentation verified and current
 
 ---
 

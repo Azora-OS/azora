@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Azora Banner](./public/branding/banner-github.svg)
+![Azora Banner](./packages/public/branding/banner-github.svg)
 
 **The World's First Constitutional AI Operating System**  
 *Where Education Meets Finance Meets Technology*
@@ -328,7 +328,7 @@ cd ../azora-education && railway up
 cd ../azora-forge && railway up
 ```
 
-**📖 See [DEPLOYMENT-COMPLETE-GUIDE.md](./DEPLOYMENT-COMPLETE-GUIDE.md) for full instructions.**
+**📖 See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for full instructions.**
 
 **Deployment Cost:** ~$255/month (scalable to millions of users)  
 **Time to Deploy:** ~30 minutes  
@@ -565,7 +565,7 @@ npm run benchmark
 - [📖 **Full Documentation**](./docs/README.md)
 - [🏗️ **Architecture Guide**](./docs/AZORA-ARCHITECTURE.md)
 - [🔐 **Security Policy**](./docs/SECURITY.md)
-- [📜 **Constitution**](./codex/constitution/AZORA_CONSTITUTION.md)
+- [📜 **Constitution**](./tools/codex/constitution/AZORA_CONSTITUTION.md)
 - [🤝 **Contributing Guide**](./CONTRIBUTING.md)
 - [🔧 **API Documentation**](./docs/api/)
 - [🚀 **Deployment Guide**](./docs/deployment/)
@@ -604,7 +604,7 @@ We welcome contributions from developers worldwide! 🌍
 
 **Founded by visionaries, built by a global community**
 
-[Founder Profile](./codex/founder/ABOUT_FOUNDER.md) · [Team](./contracts/founders/TEAM_UPDATE_NOV_2025.md) · [Join Us](#careers)
+[Founder Profile](./tools/codex/founder/ABOUT_FOUNDER.md) · [Team](./packages/contracts/founders/TEAM_UPDATE_NOV_2025.md) · [Join Us](#careers)
 
 </div>
 
@@ -614,6 +614,7 @@ We welcome contributions from developers worldwide! 🌍
 
 <div align="center">
 
+<!-- TODO: Update social media links with actual channels when available -->
 [![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/azora)
 [![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/azora_os)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/company/azora)
