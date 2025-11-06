@@ -286,7 +286,7 @@ export class RemittanceService extends EventEmitter {
   static calculateSavings(amount: number, method: string): {
     azoraFee: number;
     westernUnionFee: number;
-    moneygram Fee: number;
+    moneygramFee: number;
     bankFee: number;
     savings: number;
   } {
