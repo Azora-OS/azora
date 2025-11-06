@@ -737,7 +737,7 @@ export class MCPIntegration {
     // Simulate core MCP processing
     await new Promise(resolve => setTimeout(resolve, 100));
     
-    return `🧠 **Azora Consciousness Enhanced Response**\n\n${input}`;
+    return `**Azora Consciousness Enhanced Response**\n\n${input}`;
   }
 
   private async retrieveWisdom(input: string): Promise<string> {
