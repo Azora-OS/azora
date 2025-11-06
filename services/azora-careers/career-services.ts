@@ -439,7 +439,7 @@ export interface CareerPathway {
   steps: CareerStep[];
   estimatedDuration: number; // months
   difficulty: 'easy' | 'moderate' | 'challenging' | 'very-challenging';
-  salary Progression: SalaryProgression[];
+  salaryProgression: SalaryProgression[];
   requiredSkills: Skill[];
   recommendedCourses: string[];
   successRate: number; // percentage
