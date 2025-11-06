@@ -10,19 +10,48 @@ import { GraphQLResolvers, typeDefs } from './azora-lms/core/graphql-unified-gat
 
 async function startGraphQLServer() {
   try {
-    // Create Apollo Server
+    // Allowed origins based on environment
+    const allowedOrigins = process.env.NODE_ENV === 'production'
+      ? [
+          'https://azora.es',
+          'https://www.azora.es',
+          'https://app.azora.es',
+          'https://api.azora.es'
+        ]
+      : [
+          'http://localhost:3000',
+          'http://localhost:3001',
+          'http://localhost:4000',
+          'http://127.0.0.1:3000'
+        ];
+
+    // Create Apollo Server with enhanced security
     const server = new ApolloServer({
       typeDefs,
       resolvers: new GraphQLResolvers().getResolvers(),
+      introspection: process.env.NODE_ENV !== 'production',
+      csrfPrevention: true,
+      cache: 'bounded',
     });
 
     const { url } = await startStandaloneServer(server, {
-      context: async ({ req }: any) => ({
-        userId: req.headers.authorization?.replace('Bearer ', ''),
-        roles: ['student'], // Default role
-        permissions: ['read'],
-        requestId: Math.random().toString(36).substring(7),
-      }),
+      context: async ({ req }: any) => {
+        // Enhanced authentication
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        
+        // CORS validation
+        const origin = req.headers.origin;
+        if (origin && !allowedOrigins.includes(origin)) {
+          throw new Error('CORS policy: Origin not allowed');
+        }
+
+        return {
+          userId: token,
+          roles: ['student'], // Default role - should be validated against token
+          permissions: ['read'],
+          requestId: Math.random().toString(36).substring(7),
+        };
+      },
       listen: { port: 4000 },
     });
 
