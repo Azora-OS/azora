@@ -1,22 +1,7 @@
 {
-  "auditReportVersion": 2,
-  "vulnerabilities": {},
-  "metadata": {
-    "vulnerabilities": {
-      "info": 0,
-      "low": 0,
-      "moderate": 0,
-      "high": 0,
-      "critical": 0,
-      "total": 0
-    },
-    "dependencies": {
-      "prod": 742,
-      "dev": 740,
-      "optional": 116,
-      "peer": 0,
-      "peerOptional": 0,
-      "total": 1535
-    }
+  "error": {
+    "code": "EDUPLICATEWORKSPACE",
+    "summary": "must not have multiple workspaces with the same name\npackage 'my-v0-project' has conflicts in the following paths:\n    /home/runner/work/Azora-OS/Azora-OS/apps/azora-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/ingestion-ui\n    /home/runner/work/Azora-OS/Azora-OS/packages/ui\npackage 'azora-ui-portal' has conflicts in the following paths:\n    /home/runner/work/Azora-OS/Azora-OS/apps/cloud-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/compliance-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/dev-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/enterprise-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/learn-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/marketplace-ui\n    /home/runner/work/Azora-OS/Azora-OS/apps/pay-ui",
+    "detail": ""
   }
 }
