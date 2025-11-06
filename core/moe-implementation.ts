@@ -20,7 +20,7 @@ See LICENSE file for details.
  */
 
 import * as tf from '@tensorflow/tfjs-node';
-import { logger } from '../genome/utils/logger';
+import { logger } from '../system-core/utils/logger';
 
 // ============================================================================
 // CONFIGURATION

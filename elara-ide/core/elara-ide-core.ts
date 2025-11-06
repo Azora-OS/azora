@@ -23,8 +23,8 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events';
-import { logger } from '../../genome/utils/logger';
-import { elara } from '../../genome/agent-tools/elara-core';
+import { logger } from '../../system-core/utils/logger';
+import { elara } from '../../system-core/agent-tools/elara-core';
 import { elaraFamilyCoordinator } from '../elara-family/core/family-coordinator';
 
 /**

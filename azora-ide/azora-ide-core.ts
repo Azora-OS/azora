@@ -12,8 +12,8 @@ See LICENSE file for details.
 
 import { EventEmitter } from 'events';
 import { CursorLearningEngine } from './cursor-learning-engine';
-import { ElaraCore } from '../genome/agent-tools/elara-core';
-import { EthicalFramework } from '../genome/ethical-framework';
+import { ElaraCore } from '../system-core/agent-tools/elara-core';
+import { EthicalFramework } from '../system-core/ethical-framework';
 
 export interface IDEConfig {
   elaraEnabled: boolean;

@@ -7,7 +7,7 @@ See LICENSE file for details.
 */
 
 import React, { useState, useEffect } from 'react';
-import { elaraAgent } from '../../../genome/agent-tools/elara-agent';
+import { elaraAgent } from '../../../system-core/agent-tools/elara-agent';
 
 // Advanced D3 visualization for superintelligence
 const createSuperintelligenceViz = () => {

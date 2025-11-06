@@ -14,7 +14,7 @@ See LICENSE file for details.
  */
 
 import { SparkContext, RDD } from '../core/spark-context';
-import { logger } from '../../../genome/utils/logger';
+import { logger } from '../../../system-core/utils/logger';
 
 // ============================================================================
 // INGESTION ENGINE INTERFACE

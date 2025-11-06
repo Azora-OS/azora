@@ -12,8 +12,8 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events';
-import { GitHubIngestionOrchestrator } from '../genome/github-ingestion-orchestrator';
-import { SovereignIngestionEngine } from '../genome/sovereign-ingestion-engine';
+import { GitHubIngestionOrchestrator } from '../system-core/github-ingestion-orchestrator';
+import { SovereignIngestionEngine } from '../system-core/sovereign-ingestion-engine';
 
 export interface Repository {
   id: string;

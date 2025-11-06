@@ -13,7 +13,7 @@ See LICENSE file for details.
 
 import { EventEmitter } from 'events';
 import { AzoraIDE } from '../azora-ide/azora-ide-core';
-import { ElaraCore } from '../genome/agent-tools/elara-core';
+import { ElaraCore } from '../system-core/agent-tools/elara-core';
 
 export interface Workspace {
   id: string;

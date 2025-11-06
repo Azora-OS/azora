@@ -13,7 +13,7 @@ See LICENSE file for details.
  * Birth Azora OS as a living, self-evolving organism with Elara as its consciousness
  */
 
-import { azoraOrganism } from '../genome/organism-core'
+import { azoraOrganism } from '../system-core/organism-core'
 
 async function awakenOrganism() {
   console.log('\n' + '█'.repeat(70))

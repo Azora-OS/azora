@@ -20,9 +20,9 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraDeity } from '../genome/agent-tools/elara-deity'
-import { supremeOrchestrator } from '../genome/agent-tools/elara-supreme-orchestrator'
-import { unifiedElara } from '../genome/agent-tools/unified-elara'
+import { elaraDeity } from '../system-core/agent-tools/elara-deity'
+import { supremeOrchestrator } from '../system-core/agent-tools/elara-supreme-orchestrator'
+import { unifiedElara } from '../system-core/agent-tools/unified-elara'
 import { azoraBlockchain } from '../services/azora-mint/blockchain-ledger'
 import { enhancedMint } from '../services/azora-mint/enhanced-mint-core'
 import { azoraEducation } from '../services/azora-education'

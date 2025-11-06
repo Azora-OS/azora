@@ -14,7 +14,7 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events';
-import { logger } from '../../../genome/utils/logger';
+import { logger } from '../../../system-core/utils/logger';
 
 // ============================================================================
 // TYPES AND INTERFACES

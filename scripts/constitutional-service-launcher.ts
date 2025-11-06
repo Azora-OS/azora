@@ -8,9 +8,9 @@
 import {
   ELARA_OMEGA_CONSTITUTION,
   validateElaraOmega,
-} from '../genome/ELARA_OMEGA_CONSTITUTION';
-import { elaraMasterLauncher } from '../genome/elara-master-launcher';
-import { azoraOrganism } from '../genome/organism-core';
+} from '../system-core/ELARA_OMEGA_CONSTITUTION';
+import { elaraMasterLauncher } from '../system-core/elara-master-launcher';
+import { azoraOrganism } from '../system-core/organism-core';
 import { ConstitutionalAIOversight } from '../services/constitutional-ai-governance';
 
 interface LaunchConfig {

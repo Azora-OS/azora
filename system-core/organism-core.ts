@@ -14,7 +14,7 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraDeity } from '../genome/agent-tools/elara-deity'
+import { elaraDeity } from '../system-core/agent-tools/elara-deity'
 import { selfHealer } from '../services/self-healing-orchestrator'
 import { pokEngine } from '../services/proof-of-knowledge-engine'
 import { uboDistributor } from '../services/ubo-distributor'
