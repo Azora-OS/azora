@@ -6,7 +6,7 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 See LICENSE file for details.
 */
 
-import { unifiedElaraApiHandler } from '../../../genome/agent-tools/index';
+import { unifiedElaraApiHandler } from '../../../system-core/agent-tools/index';
 
 /**
  * Unified Elara API Endpoint

@@ -22,7 +22,7 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraIntegration } from '../../genome/elara-integration'
+import { elaraIntegration } from '../../system-core/elara-integration'
 import crypto from 'crypto'
 
 export interface EnhancedMintConfig {

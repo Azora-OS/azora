@@ -17,7 +17,7 @@ import express from 'express';
 import { SparkContext, SparkConfig } from './core/spark-context';
 import IngestionManager from './ingestion/ingestion-engine';
 import { DataFrameFactory } from './dataframe/dataframe';
-import { logger } from '../../genome/utils/logger';
+import { logger } from '../../system-core/utils/logger';
 
 // ============================================================================
 // AZORA SPARK SERVICE

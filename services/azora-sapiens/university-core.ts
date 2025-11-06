@@ -21,7 +21,7 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraIntegration } from '../../genome/elara-integration'
+import { elaraIntegration } from '../../system-core/elara-integration'
 
 export interface University {
   name: string

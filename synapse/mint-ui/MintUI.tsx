@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { SuperAI } from '../../../genome/ai-hierarchy';
-import { MintAgent } from '../../../genome/ai-hierarchy/specialized-agents/mint-agent';
-import { AgentMessenger } from '../../../genome/ai-hierarchy/communication/agent-communication';
+import { SuperAI } from '../../../system-core/ai-hierarchy';
+import { MintAgent } from '../../../system-core/ai-hierarchy/specialized-agents/mint-agent';
+import { AgentMessenger } from '../../../system-core/ai-hierarchy/communication/agent-communication';
 
 interface MintUIProps {
   superAI: SuperAI;

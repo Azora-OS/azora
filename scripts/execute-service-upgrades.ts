@@ -13,7 +13,7 @@ See LICENSE file for details.
  */
 
 import { serviceUpgradeOrchestrator } from '../services-upgrade/service-upgrade-orchestrator';
-import { logger } from '../genome/utils/logger';
+import { logger } from '../system-core/utils/logger';
 
 export async function executeAllServiceUpgrades(): Promise<void> {
   logger.info('🚀 Starting comprehensive Azora OS service upgrades');

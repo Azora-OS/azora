@@ -5,7 +5,7 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 
 See LICENSE file for details.
 
-Document ID: AZORA-DOC-LAN5FUD0
+Document ID: AZORA-ROOT-DOC-NINGNIW9
 Version: 1.0
 Date: 2025-11-03
 Author: Azora OS Team
@@ -14,102 +14,410 @@ This document is proprietary intellectual property of Azora ES (Pty) Ltd.
 Unauthorized reproduction, distribution, or modification is prohibited.
 -->
 
-# Contributing to Azora OS
+# 🤝 Contributing to Azora OS
 
-Thank you for your interest in contributing to Azora OS! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to Azora OS! We welcome contributions from everyone, regardless of experience level.
 
-## 🌟 Ways to Contribute
+---
 
-### Development
-- **Code Contributions**: Submit pull requests for bug fixes, features, or improvements
-- **Documentation**: Help improve documentation, tutorials, and guides
-- **Testing**: Write and maintain tests, report bugs, or help with QA
+## 📖 Table of Contents
 
-### Community
-- **Issue Reporting**: Report bugs or request features using our issue templates
-- **Discussions**: Participate in discussions about architecture, features, or roadmap
-- **Education**: Help educate others about Azora OS and its mission
+- [Code of Conduct](#code-of-conduct)
+- [How Can I Contribute?](#how-can-i-contribute)
+- [Development Setup](#development-setup)
+- [Coding Standards](#coding-standards)
+- [Commit Guidelines](#commit-guidelines)
+- [Pull Request Process](#pull-request-process)
+- [Community](#community)
 
-### Research & Analysis
-- **Economic Research**: Contribute to economic models and analysis
-- **AI Research**: Help advance our constitutional AI capabilities
-- **Security Research**: Identify and help fix security vulnerabilities
+---
 
-## 🚀 Getting Started
+## 📜 Code of Conduct
+
+### Our Pledge
+
+We pledge to make participation in Azora OS a harassment-free experience for everyone, regardless of:
+
+- Age, body size, disability, ethnicity
+- Gender identity and expression
+- Level of experience
+- Nationality, personal appearance, race
+- Religion, or sexual identity and orientation
+
+### Our Standards
+
+**Positive behavior includes:**
+- Using welcoming and inclusive language
+- Being respectful of differing viewpoints
+- Gracefully accepting constructive criticism
+- Focusing on what is best for the community
+- Showing empathy towards other community members
+
+**Unacceptable behavior includes:**
+- Trolling, insulting/derogatory comments
+- Public or private harassment
+- Publishing others' private information
+- Other conduct which could reasonably be considered inappropriate
+
+### Our Responsibilities
+
+Project maintainers are responsible for clarifying standards and taking appropriate action in response to unacceptable behavior.
+
+---
+
+## 🎯 How Can I Contribute?
+
+### 1. Reporting Bugs
+
+**Before submitting a bug report:**
+- Check the [existing issues](https://github.com/Azora-OS-AI/azora-os/issues)
+- Use the latest version
+- Try to reproduce the issue
+
+**Bug Report Template:**
+```markdown
+**Description:** Clear description of the bug
+
+**Steps to Reproduce:**
+1. Go to '...'
+2. Click on '....'
+3. See error
+
+**Expected Behavior:** What should happen
+
+**Actual Behavior:** What actually happens
+
+**Environment:**
+- OS: [e.g., Ubuntu 22.04]
+- Browser: [e.g., Chrome 120]
+- Node version: [e.g., 18.17.0]
+
+**Screenshots:** If applicable
+
+**Additional Context:** Any other relevant information
+```
+
+### 2. Suggesting Features
+
+**Feature Request Template:**
+```markdown
+**Feature Name:** Clear, descriptive title
+
+**Problem:** What problem does this solve?
+
+**Proposed Solution:** How should it work?
+
+**Alternatives Considered:** Other approaches you've thought about
+
+**Additional Context:** Mockups, examples, etc.
+```
+
+### 3. Contributing Code
+
+We welcome code contributions! Here's how:
+
+**Good First Issues:**
+- Look for issues labeled `good first issue`
+- These are great for newcomers
+- Ask questions if needed!
+
+**Areas of Contribution:**
+- 🐛 Bug fixes
+- ✨ New features
+- 📝 Documentation
+- 🌍 Translations
+- 🎨 UI/UX improvements
+- 🧪 Tests
+- ♿ Accessibility enhancements
+
+---
+
+## 💻 Development Setup
 
 ### Prerequisites
-- Node.js 22+
-- Docker & Docker Compose
-- Git
-- Basic knowledge of TypeScript, React, and microservices
 
-### Development Setup
+- **Node.js** 18+ and npm 9+
+- **Git** 2.34+
+- **Code Editor** (VS Code recommended)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Sizwe780/azora-os.git
-   cd azora-os
-   ```
+### Setup Steps
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+# 1. Fork the repository on GitHub
 
-3. **Set up environment**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+# 2. Clone your fork
+git clone https://github.com/YOUR_USERNAME/azora-os.git
+cd azora-os
 
-4. **Start development environment**
-   ```bash
-   npm run dev
-   ```
+# 3. Add upstream remote
+git remote add upstream https://github.com/Azora-OS-AI/azora-os.git
 
-5. **Run tests**
-   ```bash
-   npm test
-   ```
+# 4. Install dependencies
+npm install
 
-## 📝 Development Guidelines
+# 5. Create a feature branch
+git checkout -b feature/your-feature-name
+
+# 6. Start development server
+npm run dev
+
+# Visit http://localhost:3000
+```
+
+### Keeping Your Fork Updated
+
+```bash
+# Fetch upstream changes
+git fetch upstream
+
+# Merge upstream main into your main
+git checkout main
+git merge upstream/main
+
+# Push to your fork
+git push origin main
+```
+
+---
+
+## 📏 Coding Standards
+
+### TypeScript
+
+- **Use TypeScript** for all new code
+- **Define types/interfaces** for all props and functions
+- **Avoid `any`** - use proper types
+- **Use const** over let when possible
+
+**Example:**
+```typescript
+// ✅ Good
+interface UserProps {
+  name: string;
+  email: string;
+  age: number;
+}
+
+const User: React.FC<UserProps> = ({ name, email, age }) => {
+  return <div>{name}</div>;
+};
+
+// ❌ Bad
+const User = (props: any) => {
+  return <div>{props.name}</div>;
+};
+```
+
+### React Components
+
+- **Functional components** with hooks
+- **Props interface** above component
+- **Descriptive names** in PascalCase
+- **Single responsibility** per component
+
+**Example:**
+```typescript
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
+}
+
+export function Button({ 
+  label, 
+  onClick, 
+  variant = 'primary',
+  disabled = false 
+}: ButtonProps) {
+  return (
+    <button 
+      onClick={onClick}
+      disabled={disabled}
+      className={`btn btn-${variant}`}
+    >
+      {label}
+    </button>
+  );
+}
+```
+
+### File Naming
+
+- **Components:** PascalCase (`Button.tsx`, `UserProfile.tsx`)
+- **Utilities:** camelCase (`formatDate.ts`, `apiClient.ts`)
+- **Pages:** kebab-case (`user-profile.tsx`, `about-us.tsx`)
+- **Tests:** Same as file + `.test.ts` (`Button.test.tsx`)
 
 ### Code Style
-- Follow the existing TypeScript and React patterns
-- Use ESLint and Prettier for code formatting
-- Write meaningful commit messages
-- Add tests for new features
 
-### Pull Request Process
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and linting (`npm run test && npm run lint`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+```typescript
+// ✅ Good: Clear, readable, typed
+async function fetchUserData(userId: string): Promise<User> {
+  try {
+    const response = await fetch(`/api/users/${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw error;
+  }
+}
 
-### Commit Message Format
-```
-type(scope): description
-
-[optional body]
-
-[optional footer]
+// ❌ Bad: No types, poor error handling
+async function fetchUserData(userId) {
+  const response = await fetch(`/api/users/${userId}`);
+  return await response.json();
+}
 ```
 
-Types:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `style`: Code style changes
-- `refactor`: Code refactoring
-- `test`: Testing
-- `chore`: Maintenance
+### Linting & Formatting
+
+```bash
+# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+
+# Type check
+npm run type-check
+```
+
+**Automated Checks:**
+- ESLint runs on commit (via Husky)
+- Prettier formats on save
+- TypeScript checks before build
+
+---
+
+## 📝 Commit Guidelines
+
+We follow **Conventional Commits** for clear, automated versioning.
+
+### Commit Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `feat` | New feature | `feat(auth): Add Google OAuth login` |
+| `fix` | Bug fix | `fix(ui): Resolve button alignment issue` |
+| `docs` | Documentation | `docs(readme): Update installation steps` |
+| `style` | Formatting (no code change) | `style(button): Format button component` |
+| `refactor` | Code restructuring | `refactor(api): Simplify user endpoint` |
+| `test` | Add/update tests | `test(auth): Add login flow tests` |
+| `chore` | Maintenance | `chore(deps): Update Next.js to 14.2.5` |
+| `perf` | Performance improvement | `perf(images): Optimize image loading` |
+
+### Scope
+
+Optional but recommended: `auth`, `ui`, `api`, `docs`, etc.
+
+### Examples
+
+```bash
+# ✅ Good commits
+feat(education): Add K-12 interactive simulations
+fix(auth): Resolve session timeout issue
+docs(api): Add authentication endpoint documentation
+refactor(components): Extract Button variants to separate file
+test(auth): Add unit tests for login validation
+
+# ❌ Bad commits
+update stuff
+fix bug
+changes
+WIP
+```
+
+### Commit Best Practices
+
+- **Keep commits focused** - one logical change per commit
+- **Write clear messages** - explain "why" not just "what"
+- **Use present tense** - "Add feature" not "Added feature"
+- **Reference issues** - `Closes #123` in footer
+
+---
+
+## 🔄 Pull Request Process
+
+### Before Submitting
+
+**Checklist:**
+- [ ] Code follows our style guide
+- [ ] All tests pass (`npm test`)
+- [ ] Linting passes (`npm run lint`)
+- [ ] Type checking passes (`npm run type-check`)
+- [ ] Documentation updated (if needed)
+- [ ] Commit messages follow convention
+- [ ] Branch is up to date with main
+
+### Creating a Pull Request
+
+1. **Push your branch** to your fork:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+2. **Open a PR** on GitHub
+
+3. **Fill out the template:**
+   ```markdown
+   ## Description
+   Clear description of changes
+
+   ## Type of Change
+   - [ ] Bug fix
+   - [ ] New feature
+   - [ ] Breaking change
+   - [ ] Documentation update
+
+   ## Testing
+   How has this been tested?
+
+   ## Screenshots
+   If applicable
+
+   ## Checklist
+   - [ ] Code follows style guide
+   - [ ] Tests added/updated
+   - [ ] Documentation updated
+   - [ ] All checks passing
+   ```
+
+### Review Process
+
+1. **Automated checks** run (CI/CD)
+2. **Maintainers review** your code
+3. **Feedback addressed** (if any)
+4. **Approval** from maintainer(s)
+5. **Merge** into main
+
+### After Merge
+
+- Your contribution is in the main branch! 🎉
+- Delete your feature branch
+- Update your fork
+- Consider tackling another issue!
+
+---
 
 ## 🧪 Testing
 
 ### Running Tests
+
 ```bash
 # Run all tests
 npm test
@@ -121,107 +429,115 @@ npm run test:watch
 npm run test:coverage
 
 # Run specific test file
-npm test -- path/to/test.js
+npm test Button.test.tsx
 ```
 
 ### Writing Tests
-- Use Jest for unit and integration tests
-- Follow the existing test patterns
-- Aim for high test coverage
-- Test both happy path and error cases
 
-## 📚 Documentation
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from './Button';
 
-### API Documentation
-- Update API docs for any endpoint changes
-- Use Swagger/OpenAPI format
-- Include examples and error responses
+describe('Button', () => {
+  it('renders with correct label', () => {
+    render(<Button label="Click me" onClick={() => {}} />);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
 
-### Code Documentation
-- Add JSDoc comments for public APIs
-- Document complex algorithms and business logic
-- Keep README files up to date
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn();
+    render(<Button label="Click" onClick={handleClick} />);
+    
+    fireEvent.click(screen.getByText('Click'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
 
-## 🔒 Security
+  it('is disabled when disabled prop is true', () => {
+    render(<Button label="Click" onClick={() => {}} disabled />);
+    expect(screen.getByText('Click')).toBeDisabled();
+  });
+});
+```
 
-### Reporting Security Issues
-- **DO NOT** create public issues for security vulnerabilities
-- Email security issues to: security@azora.world
-- Allow reasonable time for fixes before public disclosure
+---
 
-### Security Best Practices
-- Never commit secrets or credentials
-- Use environment variables for configuration
-- Follow the principle of least privilege
-- Keep dependencies updated
+## 🌍 Translation
 
-## 🌍 Community Guidelines
+Help us serve everyone by translating Azora OS!
 
-### Code of Conduct
-- Be respectful and inclusive
-- Focus on constructive feedback
-- Help newcomers learn and contribute
-- Maintain professional communication
+### Process
+
+1. Check if your language exists in `/locales`
+2. If not, copy `/locales/en.json` to `/locales/YOUR_LANG.json`
+3. Translate all strings
+4. Test the translation
+5. Submit a PR
+
+**Translation Guidelines:**
+- Keep the same keys
+- Maintain formatting placeholders (`{name}`, `{count}`, etc.)
+- Use culturally appropriate phrases
+- Test thoroughly
+
+---
+
+## 💬 Community
+
+### Communication Channels
+
+- **GitHub Issues** - Bug reports, feature requests
+- **GitHub Discussions** - General questions, ideas
+- **Discord** - Real-time chat (coming soon)
+- **Twitter** - Updates and announcements
 
 ### Getting Help
-- Check existing issues and documentation first
-- Use GitHub Discussions for questions
-- Join our community channels
 
-## 🎯 Current Active Development Areas (November 2025 - Q1 2026)
+**Stuck? Don't worry!**
+- Check the [documentation](./docs)
+- Search [existing issues](https://github.com/Azora-OS-AI/azora-os/issues)
+- Ask in GitHub Discussions
+- Reach out to maintainers
 
-### **Immediate Priority: G20 Summit Follow-Up** 🚀
-- [ ] **Diplomatic Outreach**: Help coordinate bilateral meetings with G20 delegations
-- [ ] **Commitment Tracking**: Develop tools for monitoring summit commitments
-- [ ] **Pilot Development**: Assist with pilot program development for interested nations
-- [ ] **Funding Coordination**: Help secure and deploy implementation funding
+**We're here to help! Everyone was a beginner once.** 🌱
 
-### **Infrastructure & Quality Enhancement** 🔧
-- [ ] **Dependabot Updates**: Merge 15 pending dependency security updates
-- [ ] **Code Quality**: Enable ESLint/Prettier strict mode and fix warnings
-- [ ] **Service Testing**: Implement actual API endpoints beyond current mocks
-- [ ] **Docker Optimization**: Reduce image sizes and add health checks
-- [ ] **Database Setup**: Configure PostgreSQL with pgvector for production
-- [ ] **Microsoft 365 Integration**: Establish business infrastructure
+---
 
-### **Core Service Implementation** ⚙️
-- [ ] **Aegis Citadel API**: Complete sovereign seed grant management endpoints
-- [ ] **Azora Sapiens Platform**: Build education enrollment and assessment system
-- [ ] **Azora Mint Engine**: Implement Proof-of-Knowledge reward distribution
-- [ ] **Azora Oracle Service**: Deploy exchange rate streaming and knowledge ingestion
+## 🏆 Recognition
 
-### **Community & Collaboration** 🤝
-- [ ] **Discord Setup**: Help establish Discord server for real-time collaboration
-- [ ] **Forum Platform**: Launch forum.azora.world for technical discussions
-- [ ] **Issue Templates**: Create detailed contribution templates
-- [ ] **Good First Issues**: Label and create beginner-friendly tasks
+### Contributors
 
-### **Legacy High Priority**
-- [ ] Performance optimization
-- [ ] Security hardening
-- [ ] Test coverage improvement
-- [ ] Documentation enhancement
-- [ ] Bug fixes
+All contributors are listed in our [CONTRIBUTORS.md](./CONTRIBUTORS.md) and in GitHub's contributors graph.
 
-### **Future Opportunities**
-- [ ] Mobile app development
-- [ ] Multi-language support
-- [ ] Advanced AI features
-- [ ] Economic modeling tools
+### Special Recognition
 
-## 📞 Contact
+- **Top Contributors** featured in README
+- **Significant Features** mentioned in CHANGELOG
+- **Community Champions** invited to maintainer team
 
-- **General Questions**: discussions@azora.world
-- **Technical Support**: support@azora.world
-- **Security Issues**: security@azora.world
-- **Business Inquiries**: enterprise@azora.world
+---
 
-## 🙏 Recognition
+## 📄 License
 
-Contributors are recognized in our:
-- GitHub repository contributors list
-- Release notes and changelogs
-- Community acknowledgments
-- Potential future contributor programs
+By contributing to Azora OS, you agree that your contributions will be licensed under the Azora Proprietary License.
 
-Thank you for contributing to Azora OS and helping build a more prosperous future for all! 🌟
+---
+
+## 🙏 Thank You!
+
+Your contributions make Azora OS possible. Whether you:
+
+- Fix a typo
+- Translate a page
+- Add a feature
+- Report a bug
+- Share the project
+
+**You are helping serve 8 billion humans! Thank you!** 🌍
+
+---
+
+**From Africa 🇿🇦 For Humanity 🌍 Unto God's Glory ✨**
+
+**Together, we build. Together, we serve. Together, we thrive.**
+
+**AMEN! 🙏**

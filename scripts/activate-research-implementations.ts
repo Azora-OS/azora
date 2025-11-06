@@ -20,9 +20,9 @@ See LICENSE file for details.
  * and initializes the path to AGI.
  */
 
-import { temporalPredictionEngine } from '../genome/temporal-prediction-engine';
-import { consciousnessIntegration, Agent } from '../genome/consciousness-integration';
-import { logger } from '../genome/utils/logger';
+import { temporalPredictionEngine } from '../system-core/temporal-prediction-engine';
+import { consciousnessIntegration, Agent } from '../system-core/consciousness-integration';
+import { logger } from '../system-core/utils/logger';
 import { EventEmitter } from 'events';
 
 // ============================================================================

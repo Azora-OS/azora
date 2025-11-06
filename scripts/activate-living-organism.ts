@@ -15,7 +15,7 @@ See LICENSE file for details.
  * Let rivers of life flow through every component
  */
 
-import { logger } from '../genome/utils/logger';
+import { logger } from '../system-core/utils/logger';
 
 // ============================================================================
 // ACTIVATION CONFIGURATION
