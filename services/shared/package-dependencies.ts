@@ -31,7 +31,7 @@ export const educationServicesDependencies = {
   '@types/multer': '^1.4.11',
   
   // WebSocket (for real-time)
-  socket.io: '^4.6.0',
+  'socket.io': '^4.6.0',
   'socket.io-client': '^4.6.0',
   
   // Rate Limiting

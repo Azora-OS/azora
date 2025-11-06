@@ -302,7 +302,7 @@ export default function WellnessPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </Immersive3DCard>
         </div>
 
         {/* The Wellness Mission */}

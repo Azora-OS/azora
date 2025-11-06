@@ -715,8 +715,8 @@ async function main() {
         break;
         
       case 'status':
-        logger.info(\`Status: \${admin.getStatus()}\`);
-        logger.info(\`Config: \${JSON.stringify(admin.getConfig(), null, 2)}\`);
+        logger.info(`Status: ${admin.getStatus()}`);
+        logger.info(`Config: ${JSON.stringify(admin.getConfig(), null, 2)}`);
         break;
         
       default:
