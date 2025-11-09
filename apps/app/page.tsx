@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { LoginForm } from './components/LoginForm';
 import { Dashboard } from './components/Dashboard';
+import { AzoraLogo } from '@/apps/azora-ui/components/branding';
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,10 +28,19 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Azora OS...</p>
+          <div className="mb-6">
+            <AzoraLogo 
+              variant="primaryPro" 
+              size="xl" 
+              glassmorphic 
+              glow="sapphire"
+              animated
+            />
+          </div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-premium-sapphire-500 mx-auto mb-4"></div>
+          <p className="text-muted-foreground text-lg">Loading Azora OS...</p>
         </div>
       </div>
     );

@@ -1,0 +1,41 @@
+{
+  "name": "@azora/design-system-tools",
+  "version": "1.0.0",
+  "description": "Design Automation Engine + Infrastructure Bridge Tools",
+  "type": "module",
+  "main": "design-automation-engine.ts",
+  "scripts": {
+    "scan": "tsx design-automation-engine.ts scan",
+    "fix": "tsx design-automation-engine.ts fix",
+    "validate": "tsx design-automation-engine.ts validate",
+    "report": "tsx design-automation-engine.ts report",
+    "infra:scan": "tsx design-infrastructure-bridge.ts scan",
+    "infra:deploy": "tsx design-infrastructure-bridge.ts deploy",
+    "infra:validate": "tsx design-infrastructure-bridge.ts validate",
+    "infra:report": "tsx design-infrastructure-bridge.ts report",
+    "cli:scan": "tsx infrastructure-design-cli.ts scan",
+    "cli:deploy": "tsx infrastructure-design-cli.ts deploy",
+    "cli:validate": "tsx infrastructure-design-cli.ts validate",
+    "cli:fix": "tsx infrastructure-design-cli.ts fix",
+    "cli:report": "tsx infrastructure-design-cli.ts report",
+    "cli:init": "tsx infrastructure-design-cli.ts init",
+    "test:integration": "tsx infrastructure-integration-tests.ts",
+    "deploy": "./infrastructure-deployment-script.sh"
+  },
+  "dependencies": {
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "@types/node": "^20.10.0"
+  },
+  "keywords": [
+    "design-system",
+    "automation",
+    "infrastructure",
+    "azora",
+    "ubuntu"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

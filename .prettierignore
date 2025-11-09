@@ -1,31 +1,48 @@
 # Dependencies
 node_modules
-package-lock.json
-yarn.lock
+**/node_modules
 
 # Build outputs
-.next
-out
 dist
 build
+.next
+out
 coverage
+tmp
+temp-*
 
-# Git
-.git
+# Archives and backups
+.archive
+docs/reports/archive-2025-11
 
-# Environment
+# Logs and locks
+*.log
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Assets
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+
+# Environment files
 .env.local
 .env*.local
 
-# Archives
-.archive
+# Tooling and VCS metadata
+.git
+.github
+.vscode
+.idea
 
 # Generated files
 *.min.js
 *.min.css
 
-# Documentation (preserve formatting)
+# Documentation intentionally skipped
 CHANGELOG.md
-
-# Config files that should not be formatted
-.github
