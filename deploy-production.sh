@@ -40,7 +40,7 @@ echo "   Launch Mode: $LAUNCH_MODE"
 
 # 1. Infrastructure Deployment
 echo "🏗️ Deploying Infrastructure..."
-docker-compose -f docker-compose.production.yml up -d
+docker-compose up -d
 kubectl apply -f k8s/production/
 
 # 2. Database Initialization

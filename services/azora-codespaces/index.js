@@ -157,6 +157,66 @@ app.post('/api/workspaces/:id/elara', authMiddleware, async (req, res) => {
   }
 });
 
+// ✨ SPARK INTEGRATION - GitHub Spark/Copilot Alternative
+const SPARK_API = process.env.SPARK_API || 'http://localhost:4300/api/spark';
+
+// Index workspace for Spark
+app.post('/api/workspaces/:id/spark/index', authMiddleware, async (req, res) => {
+  try {
+    const { files } = req.body;
+    const response = await axios.post(`${SPARK_API}/index/${req.params.id}`, {
+      files
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get code completion from Spark
+app.post('/api/workspaces/:id/spark/completion', authMiddleware, async (req, res) => {
+  try {
+    const { filePath, code, cursorPosition, context } = req.body;
+    const response = await axios.post(`${SPARK_API}/completion/${req.params.id}`, {
+      filePath,
+      code,
+      cursorPosition,
+      context
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Search codebase with Spark
+app.post('/api/workspaces/:id/spark/search', authMiddleware, async (req, res) => {
+  try {
+    const { query, options } = req.body;
+    const response = await axios.post(`${SPARK_API}/search/${req.params.id}`, {
+      query,
+      options
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Chat with Spark
+app.post('/api/workspaces/:id/spark/chat', authMiddleware, async (req, res) => {
+  try {
+    const { message, context } = req.body;
+    const response = await axios.post(`${SPARK_API}/chat/${req.params.id}`, {
+      message,
+      context
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/collaborate/:workspaceId', authMiddleware, async (req, res) => {
   try {
     const { userId } = req.body;

@@ -1,7 +1,22 @@
 #!/usr/bin/env node
 
-const axios = require('axios');
+import axios from 'axios';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+/**
+ * @typedef {Object} ServiceConfig
+ * @property {string} name
+ * @property {string} url
+ *
+ * @typedef {Object} ServiceResult
+ * @property {string} name
+ * @property {'✅ healthy' | '❌ unhealthy'} status
+ * @property {unknown} [data]
+ * @property {string} [error]
+ */
+
+/** @type {ServiceConfig[]} */
 const services = [
   { name: 'Auth Service', url: 'http://localhost:3001/health' },
   { name: 'Mint Service', url: 'http://localhost:3002/health' },
@@ -9,27 +24,32 @@ const services = [
   { name: 'Forge Service', url: 'http://localhost:3004/health' },
   { name: 'Nexus Service', url: 'http://localhost:3005/health' },
   { name: 'Education Service', url: 'http://localhost:3007/health' },
-  { name: 'Payments Service', url: 'http://localhost:3008/health' }
+  { name: 'Payments Service', url: 'http://localhost:3008/health' },
 ];
 
+/**
+ * @param {ServiceConfig} service
+ * @returns {Promise<ServiceResult>}
+ */
 async function checkService(service) {
   try {
     const response = await axios.get(service.url, { timeout: 5000 });
     return {
       name: service.name,
       status: '✅ healthy',
-      data: response.data
+      data: response.data,
     };
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     return {
       name: service.name,
       status: '❌ unhealthy',
-      error: error.message
+      error: message,
     };
   }
 }
 
-async function runHealthCheck() {
+export async function runQuickHealthCheck() {
   console.log('🏥 AZORA OS CORE SERVICES HEALTH CHECK');
   console.log('=====================================');
   console.log(`⏰ ${new Date().toISOString()}\n`);
@@ -40,8 +60,9 @@ async function runHealthCheck() {
 
   results.forEach(result => {
     console.log(`${result.status}: ${result.name}`);
+
     if (result.status.includes('healthy')) {
-      healthyCount++;
+      healthyCount += 1;
     }
   });
 
@@ -51,7 +72,9 @@ async function runHealthCheck() {
   console.log('===========');
   console.log(`🎯 Core Services Health: ${healthPercentage}%`);
   console.log(`✅ Healthy: ${healthyCount}/${services.length}`);
-  console.log(`❌ Unhealthy: ${services.length - healthyCount}/${services.length}`);
+  console.log(
+    `❌ Unhealthy: ${services.length - healthyCount}/${services.length}`
+  );
 
   if (healthPercentage === 100) {
     console.log('\n🚀 ALL CORE SERVICES OPERATIONAL!');
@@ -62,4 +85,12 @@ async function runHealthCheck() {
   process.exit(healthPercentage < 50 ? 1 : 0);
 }
 
-runHealthCheck().catch(console.error);
+const invokedPath = process.argv[1] ? resolve(process.argv[1]) : undefined;
+const modulePath = resolve(fileURLToPath(import.meta.url));
+
+if (invokedPath && invokedPath === modulePath) {
+  runQuickHealthCheck().catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
+}
