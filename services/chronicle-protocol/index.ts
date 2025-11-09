@@ -11,10 +11,25 @@ import express from 'express';
 import cors from 'cors';
 import { hybridStorage } from './hybrid-storage';
 import { blockchainManager } from './blockchain-manager';
+import { chronicleMetrics } from './metrics';
+import { performanceTracker } from './performance-tracker';
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
+// Middleware: Request timing
+app.use((req, res, next) => {
+  const start = Date.now();
+  
+  res.on('finish', () => {
+    const duration = (Date.now() - start) / 1000;
+    chronicleMetrics.trackApiRequest(req.method, req.path, res.statusCode, duration);
+    performanceTracker.trackApiRequest(duration * 1000, res.statusCode);
+  });
+  
+  next();
+});
 
 // Service state
 let serviceReady = false;
@@ -322,6 +337,68 @@ app.get('/api/v1/chronicle/stats', async (req, res) => {
     });
   } catch (error: any) {
     console.error('❌ Stats error:', error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * GET /metrics
+ * Prometheus metrics endpoint
+ */
+app.get('/metrics', async (req, res) => {
+  try {
+    const metrics = await chronicleMetrics.getMetrics();
+    res.set('Content-Type', chronicleMetrics.register.contentType);
+    res.end(metrics);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/v1/chronicle/performance
+ * Get performance report
+ */
+app.get('/api/v1/chronicle/performance', async (req, res) => {
+  try {
+    const periodMinutes = parseInt(req.query.period as string) || 60;
+    const report = await performanceTracker.generateReport(periodMinutes);
+    
+    res.json({
+      success: true,
+      report,
+    });
+  } catch (error: any) {
+    console.error('❌ Performance report error:', error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/v1/chronicle/alerts
+ * Get recent performance alerts
+ */
+app.get('/api/v1/chronicle/alerts', async (req, res) => {
+  try {
+    const count = parseInt(req.query.count as string) || 10;
+    const alerts = performanceTracker.getRecentAlerts(count);
+    
+    res.json({
+      success: true,
+      count: alerts.length,
+      alerts,
+    });
+  } catch (error: any) {
+    console.error('❌ Alerts retrieval error:', error.message);
     res.status(500).json({
       success: false,
       error: error.message,

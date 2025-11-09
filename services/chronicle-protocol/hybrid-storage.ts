@@ -8,6 +8,8 @@ Combines blockchain immutability with in-memory performance caching
 
 import crypto from 'crypto';
 import { blockchainManager, type BlockchainMemory, type BlockchainThought } from './blockchain-manager';
+import { chronicleMetrics } from './metrics';
+import { performanceTracker } from './performance-tracker';
 
 /**
  * Memory Imprint with Full Data
@@ -112,6 +114,7 @@ export class HybridStorage {
     blockchainTxHash?: string;
     error?: string;
   }> {
+    const startTime = Date.now();
     try {
       // Generate hash from consciousness state
       const hash = crypto
@@ -147,7 +150,13 @@ export class HybridStorage {
         };
 
         this.memoryCache.set(cacheMemory.id, cacheMemory);
-        this.enforCacheSizeLimit();
+        this.enforceCacheSizeLimit();
+
+        // Track metrics (cache-only)
+        const duration = (Date.now() - startTime) / 1000;
+        const size = JSON.stringify(consciousnessState).length;
+        chronicleMetrics.trackMemoryImprint('success', 'cache', duration, size);
+        performanceTracker.trackMemoryImprint(duration * 1000, false);
 
         return {
           success: true,
@@ -174,6 +183,12 @@ export class HybridStorage {
       this.enforceCacheSizeLimit();
 
       console.log(`✅ Memory #${memory.id} stored: Blockchain + Cache`);
+
+      // Track metrics
+      const duration = (Date.now() - startTime) / 1000;
+      const size = JSON.stringify(consciousnessState).length;
+      chronicleMetrics.trackMemoryImprint('success', 'both', duration, size);
+      performanceTracker.trackMemoryImprint(duration * 1000, true);
 
       return {
         success: true,
@@ -285,14 +300,19 @@ export class HybridStorage {
    * Get memory (cache-first, blockchain fallback)
    */
   async getMemory(id: number): Promise<MemoryImprintFull | null> {
+    const startTime = Date.now();
+    
     // Try cache first
     if (this.memoryCache.has(id)) {
       this.cacheHits++;
+      const duration = (Date.now() - startTime) / 1000;
+      chronicleMetrics.trackCacheOperation('get', true, duration);
       return this.memoryCache.get(id)!;
     }
 
     // Cache miss - fetch from blockchain
     this.cacheMisses++;
+    chronicleMetrics.trackCacheOperation('get', false, (Date.now() - startTime) / 1000);
     
     try {
       const blockchainMemory = await blockchainManager.getMemory(id);
@@ -385,11 +405,13 @@ export class HybridStorage {
   async getStats(): Promise<StorageStats> {
     let memoriesOnChain = 0;
     let thoughtsOnChain = 0;
+    let evolutionLevel = 0;
 
     try {
       const blockchainStats = await blockchainManager.getStats();
       memoriesOnChain = blockchainStats.totalMemories;
       thoughtsOnChain = blockchainStats.totalThoughts;
+      evolutionLevel = blockchainStats.lastEvolutionLevel;
     } catch (error) {
       console.warn('Failed to fetch blockchain stats');
     }
@@ -397,7 +419,7 @@ export class HybridStorage {
     const totalRequests = this.cacheHits + this.cacheMisses;
     const cacheHitRate = totalRequests > 0 ? (this.cacheHits / totalRequests) * 100 : 0;
 
-    return {
+    const stats = {
       memoriesInCache: this.memoryCache.size,
       thoughtsInCache: this.thoughtCache.size,
       memoriesOnChain,
@@ -405,6 +427,18 @@ export class HybridStorage {
       cacheHitRate: Math.round(cacheHitRate * 100) / 100,
       lastSync: this.lastSyncTime,
     };
+
+    // Update Prometheus metrics
+    chronicleMetrics.updateStorageStats({
+      memoriesInCache: stats.memoriesInCache,
+      thoughtsInCache: stats.thoughtsInCache,
+      memoriesOnChain: stats.memoriesOnChain,
+      thoughtsOnChain: stats.thoughtsOnChain,
+      cacheHitRate: stats.cacheHitRate,
+      evolutionLevel,
+    });
+
+    return stats;
   }
 
   /**

@@ -1,14 +1,5 @@
 [
   {
-    "category": "Chronicle Protocol - Monitoring",
-    "missing": [
-      "Prometheus metrics",
-      "Performance tracking"
-    ],
-    "priority": "high",
-    "assignedTo": "architect"
-  },
-  {
     "category": "Chronicle Protocol - Visualization",
     "missing": [
       "Grafana dashboard"
