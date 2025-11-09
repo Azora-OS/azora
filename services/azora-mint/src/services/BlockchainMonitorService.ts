@@ -34,7 +34,7 @@ export interface TransactionMonitor {
 }
 
 export class BlockchainMonitorService extends EventEmitter {
-  private provider: ethers.providers.JsonRpcProvider;
+  private provider: ethers.Provider;
   private monitoredTransactions: Map<string, TransactionMonitor> = new Map();
   private monitoredContracts: Map<string, ethers.Contract> = new Map();
   private monitoringInterval: NodeJS.Timeout | null = null;
@@ -44,7 +44,7 @@ export class BlockchainMonitorService extends EventEmitter {
     private networkName: string = 'ethereum'
   ) {
     super();
-    this.provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
     this.initializeMonitoring();
   }
 
@@ -176,7 +176,6 @@ export class BlockchainMonitorService extends EventEmitter {
         monitor.status = status;
         monitor.confirmations = confirmations;
         monitor.gasUsed = receipt.gasUsed.toString();
-        monitor.effectiveGasPrice = receipt.effectiveGasPrice?.toString();
         monitor.lastChecked = Date.now();
 
         // Update database
@@ -186,7 +185,6 @@ export class BlockchainMonitorService extends EventEmitter {
             status,
             confirmations,
             gasUsed: monitor.gasUsed,
-            gasPrice: monitor.effectiveGasPrice,
             updatedAt: new Date()
           }
         });
@@ -196,12 +194,11 @@ export class BlockchainMonitorService extends EventEmitter {
           hash,
           status,
           confirmations,
-          gasUsed: monitor.gasUsed,
-          effectiveGasPrice: monitor.effectiveGasPrice
+          gasUsed: monitor.gasUsed
         });
 
         // Remove from monitoring if confirmed or failed
-        if (status !== 'pending') {
+        if (status === 'confirmed' || status === 'failed') {
           this.monitoredTransactions.delete(hash);
           console.log(`✅ Transaction ${hash} ${status} with ${confirmations} confirmations`);
         }
@@ -220,6 +217,10 @@ export class BlockchainMonitorService extends EventEmitter {
   private async handleContractEvent(contractName: string, event: any): Promise<void> {
     try {
       const block = await this.provider.getBlock(event.blockNumber);
+      if (!block) {
+        console.error(`Block ${event.blockNumber} not found`);
+        return;
+      }
       const timestamp = block.timestamp * 1000; // Convert to milliseconds
 
       const blockchainEvent: BlockchainEvent = {
@@ -281,15 +282,14 @@ export class BlockchainMonitorService extends EventEmitter {
         blockNumber: tx.blockNumber,
         from: tx.from,
         to: tx.to,
-        value: ethers.utils.formatEther(tx.value),
+        value: ethers.formatEther(tx.value),
         gasLimit: tx.gasLimit.toString(),
-        gasPrice: ethers.utils.formatUnits(tx.gasPrice, 'gwei'),
+        gasPrice: ethers.formatUnits(tx.gasPrice, 'gwei'),
         data: tx.data,
         status: receipt?.status === 1 ? 'confirmed' : receipt?.status === 0 ? 'failed' : 'pending',
         confirmations,
         gasUsed: receipt?.gasUsed?.toString(),
-        effectiveGasPrice: receipt?.effectiveGasPrice?.toString(),
-        timestamp: receipt ? (await this.provider.getBlock(receipt.blockNumber)).timestamp : null
+        timestamp: receipt ? (await this.provider.getBlock(receipt.blockNumber!))?.timestamp : null
       };
     } catch (error) {
       console.error('Get transaction details error:', error);
@@ -308,7 +308,7 @@ export class BlockchainMonitorService extends EventEmitter {
         take: limit
       });
 
-      return events.map(event => ({
+      return events.map((event: any) => ({
         transactionHash: event.transactionHash,
         blockNumber: event.blockNumber,
         eventName: event.eventName,
@@ -330,9 +330,9 @@ export class BlockchainMonitorService extends EventEmitter {
    */
   async getNetworkStats(): Promise<any> {
     try {
-      const [blockNumber, gasPrice, network] = await Promise.all([
+      const [blockNumber, feeData, network] = await Promise.all([
         this.provider.getBlockNumber(),
-        this.provider.getGasPrice(),
+        this.provider.getFeeData(),
         this.provider.getNetwork()
       ]);
 
@@ -342,9 +342,9 @@ export class BlockchainMonitorService extends EventEmitter {
         network: this.networkName,
         chainId: network.chainId,
         blockNumber,
-        gasPrice: ethers.utils.formatUnits(gasPrice, 'gwei'),
-        timestamp: latestBlock.timestamp,
-        blockTime: latestBlock.timestamp
+        gasPrice: ethers.formatUnits(feeData.gasPrice || 0, 'gwei'),
+        timestamp: latestBlock?.timestamp,
+        blockTime: latestBlock?.timestamp
       };
     } catch (error) {
       console.error('Get network stats error:', error);

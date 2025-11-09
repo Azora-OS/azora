@@ -8,7 +8,7 @@ See LICENSE file for details.
 
 /**
  * JUDICIARY SERVICE - Core Interfaces
- * 
+ *
  * Manages the judicial process for dispute resolution:
  * - Case lifecycle management
  * - Evidence handling and verification
@@ -35,7 +35,7 @@ export interface JudicialCase {
   updatedAt: Date;
 }
 
-export type CaseStatus = 
+export type CaseStatus =
   | 'filed'
   | 'evidence_collection'
   | 'hearing_scheduled'
@@ -46,7 +46,7 @@ export type CaseStatus =
   | 'closed'
   | 'appealed';
 
-export type CasePhase = 
+export type CasePhase =
   | 'preliminary'
   | 'discovery'
   | 'hearing'
@@ -186,7 +186,7 @@ export interface ArbiterVote {
   reasoning: string;
   confidence: number;
   votedAt: Date;
-  claims Supported: string[];
+  claimsSupported: string[];
   claimsDenied: string[];
   recommendedOrders: DecisionOrder[];
 }

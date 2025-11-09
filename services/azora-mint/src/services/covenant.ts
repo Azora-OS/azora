@@ -1,7 +1,7 @@
 // azora-mint/src/services/covenant.ts
 
 import axios from 'axios';
-import { TransferResult } from '../interfaces/Reward';
+import { TransferResult } from '../interfaces/Reward.js';
 
 const COVENANT_BASE_URL = process.env.COVENANT_BASE_URL || 'http://localhost:4400';
 

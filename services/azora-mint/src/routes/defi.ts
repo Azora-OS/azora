@@ -8,8 +8,8 @@ See LICENSE file for details.
 
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import { DefiService } from '../services/DefiService';
-import { AuthenticatedRequest } from '../middleware/auth';
+import { DefiService } from '../services/DefiService.js';
+import { AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();
 const defiService = new DefiService();

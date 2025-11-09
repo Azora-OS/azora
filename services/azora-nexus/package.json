@@ -2,6 +2,7 @@
   "name": "azora-nexus",
   "version": "1.0.0",
   "description": "Azora Nexus - AI Recommendations & Neural Network Hub",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

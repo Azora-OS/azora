@@ -19,8 +19,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 // Import Azora database and event bus services
-import { createDatabasePool, createRedisCache, createSupabaseClient } from 'azora-database-layer';
-import { createAzoraNexusEventBus } from 'azora-event-bus';
+import { createDatabasePool, createRedisCache, createSupabaseClient } from '../../azora-database-layer.js';
+import { createAzoraNexusEventBus } from '../../azora-event-bus.js';
 
 // Import routes
 import creditRoutes from './routes/credit.js';
@@ -34,7 +34,7 @@ import { processKnowledgeReward } from './controllers/rewardController.js';
 import { CreditService } from './services/CreditService.js';
 import { StakingService } from './services/StakingService.js';
 import { DefiService } from './services/DefiService.js';
-import { LiquidityService } from './services/LiquidityService';
+import { LiquidityService } from './services/LiquidityService.js';
 
 // Import middleware
 import { authenticateToken } from './middleware/auth.js';
@@ -245,7 +245,7 @@ function setupEventBusListeners() {
   if (!eventBus) return;
 
   // Listen for credit score requests
-  eventBus.subscribe('credit.score.request', async (event) => {
+  eventBus.subscribe('credit.score.request', async (event: any) => {
     try {
       const { userId, factors } = event.data;
       logger.info('Processing credit score request', { userId });
@@ -266,7 +266,7 @@ function setupEventBusListeners() {
   });
 
   // Listen for payment processing requests
-  eventBus.subscribe('payment.process.request', async (event) => {
+  eventBus.subscribe('payment.process.request', async (event: any) => {
     try {
       const { userId, amount, currency, type } = event.data;
       logger.info('Processing payment request', { userId, amount, currency });
@@ -290,7 +290,7 @@ function setupEventBusListeners() {
   });
 
   // Listen for staking reward calculations
-  eventBus.subscribe('staking.reward.calculate', async (event) => {
+  eventBus.subscribe('staking.reward.calculate', async (event: any) => {
     try {
       const { userId, stakeAmount, duration } = event.data;
       logger.info('Processing staking reward calculation', { userId, stakeAmount, duration });
@@ -311,3 +311,91 @@ function setupEventBusListeners() {
     }
   });
 }
+
+// Initialize services and start server
+async function initializeServices() {
+  try {
+    if (!MINT_MOCK_MODE) {
+      // Initialize Azora database layer
+      dbPool = createDatabasePool({
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT || '5432'),
+        database: process.env.DB_NAME || 'azora_mint',
+        user: process.env.DB_USER || 'azora',
+        password: process.env.DB_PASSWORD,
+      });
+
+      redisCache = createRedisCache({
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+      });
+
+      supabaseClient = createSupabaseClient({
+        url: process.env.SUPABASE_URL,
+        key: process.env.SUPABASE_KEY,
+      });
+
+      eventBus = createAzoraNexusEventBus({
+        redis: redisCache,
+      });
+
+      // Setup event bus listeners
+      setupEventBusListeners();
+    }
+
+    logger.info('Azora Mint services initialized successfully');
+  } catch (error) {
+    logger.error('Failed to initialize services', { error: (error as Error).message });
+    throw error;
+  }
+}
+
+// Start server
+async function startServer() {
+  try {
+    await initializeServices();
+
+    const server = app.listen(PORT, () => {
+      logger.info(`Azora Mint server running on port ${PORT}`);
+      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`Mock mode: ${MINT_MOCK_MODE}`);
+      logger.info(`Background jobs: ${ENABLE_BACKGROUND_JOBS}`);
+
+      console.log(`🚀 Azora Mint Server Started`);
+      console.log(`📍 Port: ${PORT}`);
+      console.log(`🌐 API Docs: http://localhost:${PORT}/api-docs`);
+      console.log(`💊 Health Check: http://localhost:${PORT}/health`);
+      console.log(`📊 Metrics: http://localhost:${PORT}/metrics`);
+    });
+
+    // Graceful shutdown
+    process.on('SIGTERM', async () => {
+      logger.info('SIGTERM received, shutting down gracefully');
+      server.close(async () => {
+        if (dbPool) await dbPool.close();
+        if (redisCache) await (redisCache as any).close?.();
+        process.exit(0);
+      });
+    });
+
+    process.on('SIGINT', async () => {
+      logger.info('SIGINT received, shutting down gracefully');
+      server.close(async () => {
+        if (dbPool) await dbPool.close();
+        if (redisCache) await (redisCache as any).close?.();
+        process.exit(0);
+      });
+    });
+
+  } catch (error) {
+    logger.error('Failed to start server', { error: (error as Error).message });
+    process.exit(1);
+  }
+}
+
+// Start the application
+startServer().catch((error) => {
+  console.error('Unhandled error during startup:', error);
+  process.exit(1);
+});

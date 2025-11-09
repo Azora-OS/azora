@@ -320,5 +320,4 @@ export function createMockApiError(message: string): ApiResponse<any> {
     error: message,
     timestamp: new Date().toISOString()
   };
-}</content>
-<parameter name="filePath">c:\azora-os\Azora-OS\packages\lib\mock-data.ts
+}

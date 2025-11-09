@@ -50,7 +50,7 @@ export interface SalaryRange {
   negotiable: boolean;
 }
 
-export type JobCategory = 
+export type JobCategory =
   | 'technology'
   | 'business'
   | 'engineering'
@@ -506,11 +506,7 @@ export class CareerServicesSystem extends EventEmitter {
   private applications: Map<string, Application> = new Map();
   private resumes: Map<string, Resume> = new Map();
   private portfolios: Map<string, Portfolio> = new Map();
-  private internships: Map<string, Internship> = new Map();
-  private freelanceGigs: Map<string, FreelanceGig> = new Map();
   private careerProfiles: Map<string, CareerProfile> = new Map();
-  private jobAlerts: Map<string, JobAlert> = new Map();
-  private interviewPreps: Map<string, InterviewPrep> = new Map();
   private jobCounter: number = 10000;
   private applicationCounter: number = 50000;
 

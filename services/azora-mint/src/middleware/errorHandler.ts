@@ -7,7 +7,7 @@ See LICENSE file for details.
 */
 
 import { Request, Response, NextFunction } from 'express';
-import logger from './requestLogger';
+import logger from './requestLogger.js';
 
 interface CustomError extends Error {
   statusCode?: number;

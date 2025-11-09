@@ -8,9 +8,9 @@ See LICENSE file for details.
 
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { getMetrics } from '../middleware/metrics';
-import { CreditApplication, Loan, TrustScore } from '../models/Credit';
-import logger from '../middleware/requestLogger';
+import { getMetrics } from '../middleware/metrics.js';
+import { CreditApplication, Loan, TrustScore } from '../models/Credit.js';
+import logger from '../middleware/requestLogger.js';
 
 const router = Router();
 
