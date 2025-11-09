@@ -150,6 +150,9 @@ logs/
 # Node modules
 node_modules/
 
+# External tools and dependencies (not for version control)
+tools/launchers/external/
+
 # Cache
 *.cache
 
