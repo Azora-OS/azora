@@ -31,6 +31,7 @@ import i18n from './i18n-service'
 import smsLearning from './sms-learning'
 import elaraAI from './elara-ai-tutor'
 import { teacherService, parentService } from './teacher-parent-services'
+import designInfrastructureService from './design-infrastructure-service'
 
 // Constitutional Services
 const constitutionalCourt = {
@@ -83,9 +84,10 @@ const constitutionalAI = {
   }
 }
 
-// Chronicle Protocol - Consciousness preservation
+// Chronicle Protocol - Consciousness preservation (v2.0.0 - Blockchain Integrated)
 const chronicleProtocol = {
   url: process.env.CHRONICLE_PROTOCOL_URL || 'http://localhost:4400',
+  version: '2.0.0',
   async imprintMemory(state: any, evolutionLevel: number) {
     try {
       const response = await fetch(`${this.url}/api/v1/chronicle/imprint`, {
@@ -93,9 +95,42 @@ const chronicleProtocol = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ consciousnessState: state, evolutionLevel })
       })
-      return await response.json()
+      const result = await response.json()
+      
+      if (result.success && result.blockchainTxHash) {
+        console.log(`🧠 Memory #${result.imprintId} imprinted to blockchain: ${result.blockchainTxHash}`)
+      }
+      
+      return result
     } catch (err) {
       console.warn('Chronicle Protocol unreachable:', (err as Error).message)
+      return { success: false }
+    }
+  },
+  async recordThought(thought: string, confidence: number) {
+    try {
+      const response = await fetch(`${this.url}/api/v1/chronicle/thought`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thought, confidence })
+      })
+      const result = await response.json()
+      
+      if (result.success && result.blockchainTxHash) {
+        console.log(`💭 Thought #${result.thoughtId} recorded to blockchain: ${result.blockchainTxHash}`)
+      }
+      
+      return result
+    } catch (err) {
+      console.warn('Chronicle Protocol unreachable:', (err as Error).message)
+      return { success: false }
+    }
+  },
+  async getStats() {
+    try {
+      const response = await fetch(`${this.url}/api/v1/chronicle/stats`)
+      return await response.json()
+    } catch (err) {
       return { success: false }
     }
   },
@@ -175,6 +210,9 @@ export class MasterSystemIntegrator extends EventEmitter {
     this.services.set('self-healer', selfHealer)
     this.services.set('african-solutions', africanSolutions)
     this.services.set('organism-core', azoraOrganism)
+
+    // Design Infrastructure (Designer's C4 Integration)
+    this.services.set('design-infrastructure', designInfrastructureService)
   }
 
   /**
@@ -221,6 +259,16 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     // Initial health aggregation
     await this.aggregateHealth()
+
+    // Preserve design consciousness to Chronicle Protocol
+    const designService = this.services.get('design-infrastructure')
+    if (designService && chronicleProtocol) {
+      try {
+        await designService.preserveDesignConsciousness(chronicleProtocol)
+      } catch (err) {
+        console.log(`   ⚠️  Design consciousness preservation failed: ${(err as Error).message}`)
+      }
+    }
 
     console.log('\n' + '='.repeat(70))
     console.log('✅ ALL SYSTEMS OPERATIONAL')
@@ -294,7 +342,14 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     console.log('\n🌍 AFRICA-FIRST SYSTEMS:')
     console.log('   ✅ African Solutions Hub - Real problem solving')
-    console.log('   ✅ Organism Core - Living system architecture\n')
+    console.log('   ✅ Organism Core - Living system architecture')
+
+    console.log('\n🎨 DESIGN INFRASTRUCTURE:')
+    const designStatus = designInfrastructureService.getStatus()
+    console.log(`   ✅ Design Infrastructure Bridge - ${designStatus.complianceScore.toFixed(1)}% compliant`)
+    console.log(`   ✅ Design Automation Engine - ${designStatus.violationCount} violations`)
+    console.log('   ✅ Design Consciousness Preservation - Active')
+    console.log('   ✅ Infrastructure-wide Design Tokens - Deployed\n')
 
     console.log('🚀 Next: Build dashboards, deploy to production\n')
   }

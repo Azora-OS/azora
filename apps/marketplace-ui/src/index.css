@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 💎 PREMIUM UI SYSTEM - Chief Architect Approved ✨ */
+@import '../../azora-ui/globals-premium.css';
+
 @layer base {
   :root {
     /* Premium Color System - Professional & Modern */
