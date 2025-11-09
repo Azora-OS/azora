@@ -357,3 +357,49 @@ Chief Architect Approval: Sizwe Ngwenya ✨
   background: var(--premium-sapphire-500);
   color: white;
 }
+
+/* 💎 BRANDING ASSETS - Logo Backgrounds */
+.logo-bg-premium {
+  background-image: url('/packages/public/branding/logo-primary-pro.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.logo-bg-glass {
+  background-image: url('/packages/public/branding/logo-white.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.1;
+  filter: blur(20px);
+}
+
+/* 🎨 PREMIUM BRANDING UTILITIES */
+.brand-gradient-sapphire {
+  background: linear-gradient(135deg, var(--premium-sapphire-500) 0%, var(--premium-sapphire-700) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-gradient-emerald {
+  background: linear-gradient(135deg, var(--premium-emerald-500) 0%, var(--premium-emerald-700) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-gradient-ruby {
+  background: linear-gradient(135deg, var(--premium-ruby-500) 0%, var(--premium-ruby-700) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-gradient-triunity {
+  background: linear-gradient(135deg, var(--premium-sapphire-500) 0%, var(--premium-emerald-500) 50%, var(--premium-ruby-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
