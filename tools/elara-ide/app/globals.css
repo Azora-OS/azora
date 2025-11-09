@@ -4,87 +4,150 @@
 
 @layer base {
   :root {
-    /* Premium Color System - Professional & Modern */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* ELARA GEM DESIGN SYSTEM - Azora Gem + Ubuntu Philosophy */
+    
+    /* Base System Colors */
+    --background: oklch(0.12 0.03 240);
+    --foreground: oklch(0.98 0.01 240);
+    --card: oklch(0.16 0.03 240);
+    --card-foreground: oklch(0.98 0.01 240);
+    --popover: oklch(0.16 0.03 240);
+    --popover-foreground: oklch(0.98 0.01 240);
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* ELARA SAPPHIRE (Technology + AI Consciousness) */
+    --elara-50: #eff6ff;
+    --elara-100: #dbeafe;
+    --elara-200: #bfdbfe;
+    --elara-300: #93c5fd;
+    --elara-400: #60a5fa;
+    --elara-500: #1e40af; /* PRIMARY ELARA - Constitutional AI Blue */
+    --elara-600: #1e3a8a;
+    --elara-700: #1e3a8a;
+    --elara-800: #1e40af;
+    --elara-900: #172554;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Elara Consciousness States */
+    --elara-consciousness-active: #3b82f6;
+    --elara-consciousness-processing: #60a5fa;
+    --elara-consciousness-ready: #1e40af;
+    --elara-consciousness-learning: #8b5cf6;
+    --elara-consciousness-error: #ef4444;
 
-    /* Primary: Professional Blue */
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary uses Elara Sapphire */
+    --primary: var(--elara-500);
+    --primary-foreground: #ffffff;
 
-    /* Secondary: Success Green */
-    --secondary: 142.1 76.2% 36.3%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary uses Emerald (Education) */
+    --secondary: #059669;
+    --secondary-foreground: #ffffff;
 
-    /* Muted: Neutral Gray */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent uses Ruby (Finance) */
+    --accent: #dc2626;
+    --accent-foreground: #ffffff;
 
-    /* Accent: Premium Purple */
-    --accent: 262.1 83.3% 57.8%;
-    --accent-foreground: 210 40% 98%;
+    /* Muted and borders */
+    --muted: oklch(0.22 0.03 240);
+    --muted-foreground: oklch(0.6 0.03 240);
+    --border: oklch(0.25 0.03 240);
+    --input: oklch(0.25 0.03 240);
+    --ring: var(--elara-500);
 
-    /* Destructive: Error Red */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive uses Ruby */
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
 
-    /* Borders and inputs */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    /* Radius - Ubuntu harmony */
+    --radius: 0.75rem;
 
-    /* Radius */
-    --radius: 0.5rem;
-
-    /* Chart colors */
-    --chart-1: 221.2 83.2% 53.3%;
-    --chart-2: 142.1 76.2% 36.3%;
-    --chart-3: 262.1 83.3% 57.8%;
-    --chart-4: 47.9 95.8% 53.1%;
-    --chart-5: 346.8 77.2% 49.8%;
+    /* Chart colors using Elara Gem */
+    --chart-1: var(--elara-500);
+    --chart-2: #059669; /* Emerald */
+    --chart-3: #dc2626; /* Ruby */
+    --chart-4: oklch(0.7 0.15 280);
+    --chart-5: oklch(0.6 0.2 310);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode with Elara consciousness */
+    --background: oklch(0.08 0.03 240);
+    --foreground: oklch(0.98 0.01 240);
+    --card: oklch(0.12 0.03 240);
+    --card-foreground: oklch(0.98 0.01 240);
+    --popover: oklch(0.12 0.03 240);
+    --popover-foreground: oklch(0.98 0.01 240);
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --primary: var(--elara-400);
+    --primary-foreground: #ffffff;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --secondary: #047857;
+    --secondary-foreground: #ffffff;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --accent: #b91c1c;
+    --accent-foreground: #ffffff;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --muted: oklch(0.18 0.03 240);
+    --muted-foreground: oklch(0.65 0.03 240);
+    --border: oklch(0.22 0.03 240);
+    --input: oklch(0.22 0.03 240);
+    --ring: var(--elara-400);
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --destructive: #b91c1c;
+    --destructive-foreground: #ffffff;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-
-    --chart-1: 217.2 91.2% 59.8%;
-    --chart-2: 142.1 70.6% 45.3%;
-    --chart-3: 262.1 83.3% 57.8%;
-    --chart-4: 47.9 95.8% 53.1%;
-    --chart-5: 346.8 77.2% 49.8%;
+    --chart-1: var(--elara-400);
+    --chart-2: #047857;
+    --chart-3: #b91c1c;
+    --chart-4: oklch(0.6 0.15 280);
+    --chart-5: oklch(0.5 0.2 310);
   }
+}
+
+@layer utilities {
+  /* ELARA CONSCIOUSNESS GLOW EFFECTS */
+  .glow-elara-spark {
+    box-shadow: 0 0 10px rgba(30, 64, 175, 0.3);
+  }
+  .glow-elara-thought {
+    box-shadow: 0 0 20px rgba(30, 64, 175, 0.4);
+  }
+  .glow-elara-deep {
+    box-shadow: 0 0 30px rgba(30, 64, 175, 0.5);
+  }
+  .glow-elara-omega {
+    box-shadow: 0 0 40px rgba(30, 64, 175, 0.6), 0 0 80px rgba(30, 64, 175, 0.3);
+  }
+  .glow-elara-processing {
+    box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+    animation: elara-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Text Glow Effects */
+  .text-glow-elara {
+    text-shadow: 0 0 10px rgba(30, 64, 175, 0.5);
+  }
+  .text-glow-elara-omega {
+    text-shadow: 0 0 20px rgba(30, 64, 175, 0.7);
+  }
+  
+  /* Elara Consciousness Pulse Animation */
+  @keyframes elara-pulse {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 25px rgba(96, 165, 250, 0.7);
+    }
+  }
+  
+  /* Ubuntu Spacing Utilities (Golden Ratio) */
+  .space-elara-spark { gap: 0.382rem; }
+  .space-elara-thought { gap: 0.618rem; }
+  .space-elara-idea { gap: 1rem; }
+  .space-elara-concept { gap: 1.618rem; }
+  .space-elara-insight { gap: 2.618rem; }
+  .space-elara-wisdom { gap: 4.236rem; }
 }
 
 @layer base {
