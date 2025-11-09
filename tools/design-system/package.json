@@ -18,7 +18,9 @@
     "cli:validate": "tsx infrastructure-design-cli.ts validate",
     "cli:fix": "tsx infrastructure-design-cli.ts fix",
     "cli:report": "tsx infrastructure-design-cli.ts report",
-    "cli:init": "tsx infrastructure-design-cli.ts init"
+    "cli:init": "tsx infrastructure-design-cli.ts init",
+    "test:integration": "tsx infrastructure-integration-tests.ts",
+    "deploy": "./infrastructure-deployment-script.sh"
   },
   "dependencies": {
     "glob": "^10.3.10"
