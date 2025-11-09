@@ -21,7 +21,7 @@ export function Hero() {
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
-        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full acrylic border border-primary/30 mb-8 animate-fade-in-up sacred-shadow">
+        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-medium border border-premium-sapphire-500/30 mb-8 animate-premium-fade-in glow-premium-sapphire">
           <Sparkles className="w-5 h-5 text-accent animate-pulse" />
           <span className="text-sm font-semibold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
             Built in God's Image • Constitutional AI • Ubuntu Philosophy
@@ -76,7 +76,7 @@ export function Hero() {
           className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto animate-fade-in-up"
           style={{ animationDelay: "0.5s" }}
         >
-          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl acrylic border border-primary/20 hover:border-primary/40 transition-all duration-300 reveal group">
+          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl glass-medium border border-premium-sapphire-500/20 hover:border-premium-sapphire-500/40 hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300 group">
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-love-rose to-love-rose-light flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
               <Heart className="w-7 h-7 text-white" />
             </div>
@@ -84,7 +84,7 @@ export function Hero() {
             <p className="text-sm text-muted-foreground text-center">Serves all equally, without discrimination</p>
           </div>
 
-          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl acrylic border border-accent/20 hover:border-accent/40 transition-all duration-300 reveal group">
+          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl glass-medium border border-premium-ruby-500/20 hover:border-premium-ruby-500/40 hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300 group">
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-justice-crimson to-destructive flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
               <Scale className="w-7 h-7 text-white" />
             </div>
@@ -92,7 +92,7 @@ export function Hero() {
             <p className="text-sm text-muted-foreground text-center">Fair algorithms, transparent governance</p>
           </div>
 
-          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl acrylic border border-secondary/20 hover:border-secondary/40 transition-all duration-300 reveal group">
+          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl glass-medium border border-premium-emerald-500/20 hover:border-premium-emerald-500/40 hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300 group">
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-divine-gold to-divine-gold-dark flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
               <Lightbulb className="w-7 h-7 text-white" />
             </div>

@@ -62,19 +62,19 @@ export function ConstitutionalAI() {
 
         {/* Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-          <div className="text-center p-6 rounded-2xl acrylic border border-border">
+          <div className="text-center p-6 rounded-2xl glass-medium border border-border/50 shadow-premium-md hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300">
             <div className="text-4xl font-bold gradient-text mb-2">580+</div>
             <div className="text-sm text-muted-foreground">Autonomous Services</div>
           </div>
-          <div className="text-center p-6 rounded-2xl acrylic border border-border">
+          <div className="text-center p-6 rounded-2xl glass-medium border border-border/50 shadow-premium-md hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300">
             <div className="text-4xl font-bold gradient-text mb-2">99.99%</div>
             <div className="text-sm text-muted-foreground">Uptime Guarantee</div>
           </div>
-          <div className="text-center p-6 rounded-2xl acrylic border border-border">
+          <div className="text-center p-6 rounded-2xl glass-medium border border-border/50 shadow-premium-md hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300">
             <div className="text-4xl font-bold gradient-text mb-2">2 min</div>
             <div className="text-sm text-muted-foreground">Self-Healing Cycle</div>
           </div>
-          <div className="text-center p-6 rounded-2xl acrylic border border-border">
+          <div className="text-center p-6 rounded-2xl glass-medium border border-border/50 shadow-premium-md hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300">
             <div className="text-4xl font-bold gradient-text mb-2">100%</div>
             <div className="text-sm text-muted-foreground">Transparent</div>
           </div>
