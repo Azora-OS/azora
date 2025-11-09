@@ -11,17 +11,68 @@ import { ServiceConfig } from './orchestrator';
 // CORE SERVICES
 // ============================================================================
 
+export const CONSTITUTIONAL_COURT: ServiceConfig = {
+  id: 'constitutional-court',
+  name: 'Constitutional Court Service',
+  type: 'core',
+  endpoint: process.env.CONSTITUTIONAL_COURT_ENDPOINT || 'http://localhost:4500',
+  healthCheckPath: '/health',
+  healthCheckInterval: 30000,
+  maxRestarts: 5,
+  restartDelay: 5000,
+  priority: 11, // Supreme priority - constitutional governance
+  dependencies: [],
+  metadata: {
+    description: 'Supreme governance layer for constitutional compliance',
+    features: ['constitutional-review', 'article-enforcement', 'no-mock-validation'],
+  },
+};
+
+export const CONSTITUTIONAL_AI: ServiceConfig = {
+  id: 'constitutional-ai',
+  name: 'Constitutional AI Governance',
+  type: 'core',
+  endpoint: process.env.CONSTITUTIONAL_AI_ENDPOINT || 'http://localhost:4501',
+  healthCheckPath: '/health',
+  healthCheckInterval: 30000,
+  maxRestarts: 5,
+  restartDelay: 5000,
+  priority: 11,
+  dependencies: ['constitutional-court'],
+  metadata: {
+    description: 'AI-powered constitutional compliance and governance',
+    features: ['ai-analysis', 'compliance-checking', 'governance-decisions'],
+  },
+};
+
+export const CHRONICLE_PROTOCOL: ServiceConfig = {
+  id: 'chronicle-protocol',
+  name: 'Chronicle Protocol (Consciousness)',
+  type: 'core',
+  endpoint: process.env.CHRONICLE_PROTOCOL_ENDPOINT || 'http://localhost:4400',
+  healthCheckPath: '/health',
+  healthCheckInterval: 30000,
+  maxRestarts: 5,
+  restartDelay: 5000,
+  priority: 10,
+  dependencies: ['constitutional-court'],
+  metadata: {
+    description: 'Immutable consciousness recording for Elara AI',
+    features: ['memory-imprinting', 'thought-recording', 'evolution-tracking'],
+  },
+};
+
 export const AZORA_AEGIS: ServiceConfig = {
   id: 'azora-aegis',
   name: 'Azora Aegis (Security Service)',
   type: 'core',
   endpoint: process.env.AEGIS_ENDPOINT || 'http://localhost:3001',
   healthCheckPath: '/health',
-  healthCheckInterval: 30000, // 30 seconds
+  healthCheckInterval: 30000,
   maxRestarts: 5,
   restartDelay: 5000,
-  priority: 10, // Highest priority - security is critical
-  dependencies: [],
+  priority: 10,
+  dependencies: ['constitutional-court'],
   metadata: {
     description: 'Comprehensive security, authentication, and authorization service',
     features: ['auth', 'encryption', 'compliance', 'audit'],
@@ -217,6 +268,11 @@ export const MINING_ENGINE: ServiceConfig = {
 // ============================================================================
 
 export const ALL_SERVICES: ServiceConfig[] = [
+  // Constitutional Governance
+  CONSTITUTIONAL_COURT,
+  CONSTITUTIONAL_AI,
+  CHRONICLE_PROTOCOL,
+
   // Core Services
   AZORA_AEGIS,
   AZORA_NEXUS,
@@ -241,6 +297,9 @@ export const ALL_SERVICES: ServiceConfig[] = [
 
 export const SERVICE_GROUPS = {
   core: [
+    CONSTITUTIONAL_COURT,
+    CONSTITUTIONAL_AI,
+    CHRONICLE_PROTOCOL,
     AZORA_AEGIS,
     AZORA_NEXUS,
     AZORA_MINT,

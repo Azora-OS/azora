@@ -1,15 +1,48 @@
 import OpenAI from 'openai'
-import { RateLimiter } from 'limiter'
-import { logger } from '../../infrastructure/monitoring/logger'
+import { EventEmitter } from 'events'
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY || 'sk-test'
 })
 
-// Rate limiter: 60 requests per minute
+class RateLimiter {
+  private tokens: number
+  private interval: number
+  private lastRefill: number
+
+  constructor(config: { tokensPerInterval: number; interval: string }) {
+    this.tokens = config.tokensPerInterval
+    this.interval = config.interval === 'minute' ? 60000 : 1000
+    this.lastRefill = Date.now()
+  }
+
+  async removeTokens(count: number): Promise<void> {
+    const now = Date.now()
+    if (now - this.lastRefill >= this.interval) {
+      this.tokens = 60
+      this.lastRefill = now
+    }
+    if (this.tokens >= count) {
+      this.tokens -= count
+    } else {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+  }
+}
+
 const rateLimiter = new RateLimiter({ tokensPerInterval: 60, interval: 'minute' })
 
-export class AIEducationService {
+const logger = {
+  info: (msg: string, data?: any) => console.log(`[INFO] ${msg}`, data || ''),
+  error: (msg: string, data?: any) => console.error(`[ERROR] ${msg}`, data || '')
+}
+
+export class AIEducationService extends EventEmitter {
+  constructor() {
+    super()
+    console.log('🤖 AI Education Service initialized')
+  }
+
   async generatePersonalizedContent(userId: string, topic: string, level: string) {
     await rateLimiter.removeTokens(1)
     
@@ -113,4 +146,149 @@ export class AIEducationService {
       return { hasBias: false, analysis: 'Analysis failed', timestamp: new Date().toISOString() }
     }
   }
+
+  async generateLearningPath(userId: string, strengths: string[], weaknesses: string[]) {
+    await rateLimiter.removeTokens(1)
+    
+    try {
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an AI learning path designer. Create personalized learning paths based on student strengths and weaknesses. Focus on African context and practical skills.'
+          },
+          {
+            role: 'user',
+            content: `Create a learning path for a student with strengths in: ${strengths.join(', ')} and weaknesses in: ${weaknesses.join(', ')}`
+          }
+        ],
+        max_tokens: 800
+      })
+
+      const path = response.choices[0]?.message?.content
+      
+      logger.info('Learning path generated', { userId, strengths, weaknesses })
+      this.emit('learning-path-generated', { userId, path })
+      
+      return {
+        path,
+        recommendations: this.extractRecommendations(path || ''),
+        timestamp: new Date().toISOString()
+      }
+    } catch (error) {
+      logger.error('Learning path generation failed', { error, userId })
+      return this.getDefaultLearningPath(strengths, weaknesses)
+    }
+  }
+
+  async tutorQuestion(question: string, context: string, language: string = 'en') {
+    await rateLimiter.removeTokens(1)
+    
+    try {
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: `You are Elara, an AI tutor for African students. Answer questions clearly and encourage learning. Use Socratic method when appropriate. Respond in ${language}.`
+          },
+          {
+            role: 'user',
+            content: `Context: ${context}\n\nQuestion: ${question}`
+          }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      })
+
+      const answer = response.choices[0]?.message?.content
+      
+      this.emit('question-answered', { question, answer, language })
+      
+      return {
+        answer,
+        followUpQuestions: this.generateFollowUpQuestions(question, answer || ''),
+        timestamp: new Date().toISOString()
+      }
+    } catch (error) {
+      logger.error('Tutor question failed', { error, question })
+      throw error
+    }
+  }
+
+  async generateQuiz(topic: string, difficulty: number, questionCount: number = 5) {
+    await rateLimiter.removeTokens(1)
+    
+    try {
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'Generate educational quiz questions in JSON format. Each question should have: question, options (array of 4), correctAnswer (index), explanation.'
+          },
+          {
+            role: 'user',
+            content: `Generate ${questionCount} multiple choice questions about ${topic} at difficulty level ${difficulty}/10. Return as JSON array.`
+          }
+        ],
+        max_tokens: 1500
+      })
+
+      const content = response.choices[0]?.message?.content || '[]'
+      const questions = JSON.parse(content)
+      
+      logger.info('Quiz generated', { topic, difficulty, questionCount })
+      this.emit('quiz-generated', { topic, questions })
+      
+      return {
+        questions,
+        topic,
+        difficulty,
+        timestamp: new Date().toISOString()
+      }
+    } catch (error) {
+      logger.error('Quiz generation failed', { error, topic })
+      return this.getDefaultQuiz(topic, difficulty, questionCount)
+    }
+  }
+
+  private extractRecommendations(path: string): string[] {
+    const lines = path.split('\n').filter(line => line.trim().startsWith('-') || line.trim().match(/^\d+\./))
+    return lines.slice(0, 5).map(line => line.replace(/^[-\d.]+\s*/, '').trim())
+  }
+
+  private generateFollowUpQuestions(question: string, answer: string): string[] {
+    return [
+      'Can you explain that in simpler terms?',
+      'How does this apply in real life?',
+      'What are some examples?'
+    ]
+  }
+
+  private getDefaultLearningPath(strengths: string[], weaknesses: string[]) {
+    return {
+      path: `Focus on strengthening: ${weaknesses.join(', ')}. Build on: ${strengths.join(', ')}.`,
+      recommendations: weaknesses.slice(0, 3),
+      timestamp: new Date().toISOString()
+    }
+  }
+
+  private getDefaultQuiz(topic: string, difficulty: number, count: number) {
+    return {
+      questions: Array(count).fill(null).map((_, i) => ({
+        question: `Question ${i + 1} about ${topic}`,
+        options: ['Option A', 'Option B', 'Option C', 'Option D'],
+        correctAnswer: 0,
+        explanation: 'Default explanation'
+      })),
+      topic,
+      difficulty,
+      timestamp: new Date().toISOString()
+    }
+  }
 }
+
+export const aiEducation = new AIEducationService()
+export default aiEducation

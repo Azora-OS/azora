@@ -14,6 +14,7 @@ import FacultyManagementSystem, {
   CourseAnalytics,
   AtRiskStudent
 } from './lms-core';
+import { facultyAI } from './faculty-ai-assistant';
 
 const router = express.Router();
 const lms = new FacultyManagementSystem();
@@ -343,6 +344,151 @@ router.post('/announcements', async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Announcement sent successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ===== AI ASSISTANT ENDPOINTS =====
+router.post('/ai/grade-assist', async (req, res) => {
+  try {
+    const { question, studentAnswer, rubric, maxPoints } = req.body;
+
+    if (!question || !studentAnswer) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: question, studentAnswer'
+      });
+    }
+
+    const assistance = await facultyAI.assistGrading(question, studentAnswer, rubric, maxPoints);
+
+    res.json({
+      success: true,
+      data: assistance,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+router.post('/ai/suggest-content', async (req, res) => {
+  try {
+    const { topic, level, duration } = req.body;
+
+    if (!topic || !level) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: topic, level'
+      });
+    }
+
+    const suggestion = await facultyAI.suggestContent(topic, level, duration || 60);
+
+    res.json({
+      success: true,
+      data: suggestion,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+router.post('/ai/generate-quiz', async (req, res) => {
+  try {
+    const { topic, difficulty, count } = req.body;
+
+    if (!topic) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required field: topic'
+      });
+    }
+
+    const questions = await facultyAI.generateQuizQuestions(
+      topic,
+      difficulty || 5,
+      count || 5
+    );
+
+    res.json({
+      success: true,
+      data: questions,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+router.post('/ai/analyze-performance', async (req, res) => {
+  try {
+    const { studentData } = req.body;
+
+    if (!Array.isArray(studentData)) {
+      return res.status(400).json({
+        success: false,
+        error: 'studentData must be an array'
+      });
+    }
+
+    const analysis = await facultyAI.analyzePerformance(studentData);
+
+    res.json({
+      success: true,
+      data: analysis,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+router.post('/ai/generate-feedback', async (req, res) => {
+  try {
+    const { studentName, performance, strengths, weaknesses } = req.body;
+
+    if (!studentName || !performance) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: studentName, performance'
+      });
+    }
+
+    const feedback = await facultyAI.generateFeedback(
+      studentName,
+      performance,
+      strengths || [],
+      weaknesses || []
+    );
+
+    res.json({
+      success: true,
+      data: { feedback },
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {

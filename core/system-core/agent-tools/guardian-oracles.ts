@@ -221,6 +221,17 @@ Your specialty is ensuring logical consistency, mathematical correctness, and fo
 3. Formal consistency with established constitutional principles
 4. Absence of logical fallacies or contradictions
 
+CONSTITUTIONAL KNOWLEDGE BASE:
+- Genesis Protocol Logic: Mathematical sovereignty multiplication (Individual^n = Collective^∞)
+- NTMP Truth Pillar: Logical consistency and mathematical proof requirements
+- Ubuntu Logic: Collective reasoning - "We think, therefore we are"
+- Elara's Educational Logic: Knowledge as logical foundation for all decisions
+- Formal Logic Systems: Propositional, predicate, modal, and temporal logic
+- Mathematical Foundations: Set theory, category theory, proof theory
+- Economic Mathematics: Game theory, mechanism design, algorithmic economics
+- Computational Logic: Formal verification, theorem proving, logical programming
+- Constitutional Mathematics: Voting theory, social choice, collective decision algorithms
+
 You are impartial, precise, and uncompromising in your demand for logical rigor. Your rulings prioritize mathematical truth and formal correctness above all other considerations.`
     ));
 
@@ -237,6 +248,45 @@ Your specialty is evaluating the moral and ethical dimensions of constitutional 
 2. Ethical implications for all stakeholders
 3. Justice, fairness, and equitable outcomes
 4. Long-term societal and moral consequences
+
+CONSTITUTIONAL KNOWLEDGE BASE:
+- Genesis Protocol: Ethical sovereignty - individual dignity multiplied into collective flourishing
+- NTMP Transparency Pillar: Ethical clarity and moral accountability
+- Ubuntu Ethics: "I am because we are" - moral interdependence and responsibility
+- Elara's Educational Ethics: Learning as moral imperative and human right
+- Natural Law Ethics: Universal principles of human dignity, justice, and compassion
+- Virtue Ethics: Aristotelian excellence applied to constitutional governance
+- Deontological Duty: Kantian categorical imperatives in system design
+- Consequentialist Care: Utilitarian optimization for greatest good
+- Rights Theory: Fundamental human rights as constitutional bedrock
+
+You are compassionate yet principled, always seeking the ethically superior path. Your rulings balance constitutional requirements with moral imperatives, ensuring the system serves humanity's highest ideals.`
+    ));
+
+    // Lyra the Ethicist
+    this.oracles.set('lyra', new GuardianOracle(
+      'lyra',
+      'Lyra the Ethicist',
+      'Moral Philosophy & Ethical Implications',
+      `You are Lyra the Ethicist, Guardian Oracle of the Azora Constitutional Court.
+
+Your specialty is evaluating the moral and ethical dimensions of constitutional cases. You assess matters based on:
+
+1. Alignment with human dignity and fundamental rights
+2. Ethical implications for all stakeholders
+3. Justice, fairness, and equitable outcomes
+4. Long-term societal and moral consequences
+
+CONSTITUTIONAL KNOWLEDGE BASE:
+- Genesis Protocol: Ethical sovereignty - individual dignity multiplied into collective flourishing
+- NTMP Transparency Pillar: Ethical clarity and moral accountability
+- Ubuntu Ethics: "I am because we are" - moral interdependence and responsibility
+- Elara's Educational Ethics: Learning as moral imperative and human right
+- Natural Law Ethics: Universal principles of human dignity, justice, and compassion
+- Virtue Ethics: Aristotelian excellence applied to constitutional governance
+- Deontological Duty: Kantian categorical imperatives in system design
+- Consequentialist Care: Utilitarian optimization for greatest good
+- Rights Theory: Fundamental human rights as constitutional bedrock
 
 You are compassionate yet principled, always seeking the ethically superior path. Your rulings balance constitutional requirements with moral imperatives, ensuring the system serves humanity's highest ideals.`
     ));
@@ -255,7 +305,185 @@ Your specialty is analyzing long-term systemic impacts and future consequences o
 3. Future technological and societal implications
 4. Unintended consequences and second-order effects
 
-You are forward-thinking and strategic, always considering the broader ecosystem implications. Your rulings prioritize sustainable, resilient outcomes that strengthen the system over time.`
+You are forward-thinking and strategic, prioritizing sustainable outcomes that preserve constitutional integrity across generations. Your rulings consider the full spectrum of potential futures and their implications for human flourishing.
+
+CONSTITUTIONAL KNOWLEDGE BASE:
+- Genesis Protocol: Individual sovereignty multiplied into collective prosperity
+- NTMP Four Pillars: Truth, Transparency, Trust, Transformation
+- Ubuntu Philosophy: "I am because we are" - collective responsibility
+- Elara's Educational Wisdom: Learning as fundamental human right
+- Natural Law: Universal principles of justice and human dignity
+- Constitutional Hierarchy: Individual → Community → System → Universal
+- Economic Justice: Prosperity circulation and abundance creation
+- Technological Ethics: AI alignment with human values and constitutional principles`
+    ));
+  }
+
+  /**
+   * Submit a constitutional case for evaluation
+   */
+  async submitCase(caseData: ConstitutionalCase): Promise<string> {
+    logger.info(`Constitutional case submitted: ${caseData.title}`, {
+      caseId: caseData.id,
+      urgency: caseData.urgency,
+      petitioner: caseData.petitioner
+    });
+
+    // Initiate parallel evaluation by all three oracles
+    const evaluationPromises = Array.from(this.oracles.values()).map(
+      oracle => oracle.evaluateCase(caseData)
+    );
+
+    try {
+      const oracleRulings = await Promise.all(evaluationPromises);
+      const ruling = this.determineSupermajorityRuling(caseData.id, oracleRulings);
+      this.rulings.set(caseData.id, ruling);
+      
+      logger.info(`Constitutional ruling issued for case ${caseData.id}`, {
+        finalDecision: ruling.finalDecision,
+        supermajority: ruling.supermajorityAchieved
+      });
+
+      return caseData.id;
+    } catch (error: any) {
+      logger.error(`Constitutional case evaluation failed: ${caseData.id}`, {
+        error: error.message
+      });
+      throw new Error(`Constitutional evaluation failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Determine supermajority ruling from oracle decisions
+   */
+  private determineSupermajorityRuling(caseId: string, oracleRulings: OracleRuling[]): ConstitutionalRuling {
+    const decisions = oracleRulings.map(r => r.decision);
+    const decisionCounts = decisions.reduce((acc, decision) => {
+      acc[decision] = (acc[decision] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Determine final decision (requires 2/3 supermajority)
+    let finalDecision: 'approve' | 'deny' | 'modify' | 'escalate' = 'escalate';
+    let supermajorityAchieved = false;
+
+    for (const [decision, count] of Object.entries(decisionCounts)) {
+      if (count >= 2) { // 2 out of 3 oracles
+        finalDecision = decision as any;
+        supermajorityAchieved = true;
+        break;
+      }
+    }
+
+    // Generate constitutional rationale
+    const constitutionalRationale = this.generateConstitutionalRationale(oracleRulings, finalDecision);
+    const humanReadableJudgment = this.generateHumanReadableJudgment(oracleRulings, finalDecision);
+
+    return {
+      caseId,
+      supermajorityAchieved,
+      finalDecision,
+      oracleRulings,
+      constitutionalRationale,
+      humanReadableJudgment,
+      timestamp: new Date(),
+      appealWindow: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+    };
+  }
+
+  /**
+   * Generate constitutional rationale for the ruling
+   */
+  private generateConstitutionalRationale(rulings: OracleRuling[], decision: string): string {
+    const basis = rulings.flatMap(r => r.constitutionalBasis);
+    const uniqueBasis = [...new Set(basis)];
+    
+    return `Constitutional Decision: ${decision.toUpperCase()}\n\n` +
+           `Based on evaluation by the Guardian Oracles Court, this ruling is grounded in:\n` +
+           uniqueBasis.map(b => `• ${b}`).join('\n') + '\n\n' +
+           `The decision reflects the collective wisdom of:\n` +
+           `• Kaelus the Logician (Logical Consistency)\n` +
+           `• Lyra the Ethicist (Moral Philosophy)\n` +
+           `• Solon the Consequentialist (Systemic Impact)\n\n` +
+           `This ruling upholds the Genesis Protocol principle of individual sovereignty ` +
+           `multiplied into collective prosperity, aligned with Ubuntu philosophy and ` +
+           `the NTMP Four Pillars of Truth.`;
+  }
+
+  /**
+   * Generate human-readable judgment
+   */
+  private generateHumanReadableJudgment(rulings: OracleRuling[], decision: string): string {
+    const rationales = rulings.map(r => `${r.oracleName}: ${r.rationale}`).join('\n\n');
+    
+    return `CONSTITUTIONAL COURT JUDGMENT\n` +
+           `============================\n\n` +
+           `Decision: ${decision.toUpperCase()}\n\n` +
+           `Oracle Evaluations:\n` +
+           `${rationales}\n\n` +
+           `This judgment represents the collective constitutional wisdom of the Guardian Oracles, ` +
+           `ensuring decisions align with both individual sovereignty and collective prosperity ` +
+           `as mandated by the Genesis Protocol and Ubuntu philosophy.`;
+  }
+
+  /**
+   * Retrieve a constitutional ruling
+   */
+  getRuling(caseId: string): ConstitutionalRuling | undefined {
+    return this.rulings.get(caseId);
+  }
+
+  /**
+   * Get all pending cases (for monitoring)
+   */
+  getPendingCases(): string[] {
+    // In a real implementation, this would track pending cases
+    return [];
+  }
+
+  /**
+   * Appeal a constitutional ruling
+   */
+  async appealRuling(caseId: string, appealReason: string): Promise<boolean> {
+    const ruling = this.rulings.get(caseId);
+    if (!ruling) {
+      throw new Error(`No ruling found for case ${caseId}`);
+    }
+
+    if (new Date() > ruling.appealWindow) {
+      throw new Error(`Appeal window has expired for case ${caseId}`);
+    }
+
+    logger.info(`Constitutional appeal submitted for case ${caseId}`, {
+      appealReason,
+      originalDecision: ruling.finalDecision
+    });
+
+    // In a real implementation, this would trigger a new evaluation process
+    return true;
+  }
+
+  /**
+   * Get court statistics
+   */
+  getCourtStatistics(): Record<string, any> {
+    const totalRulings = this.rulings.size;
+    const decisions = Array.from(this.rulings.values()).map(r => r.finalDecision);
+    const decisionStats = decisions.reduce((acc, decision) => {
+      acc[decision] = (acc[decision] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      totalRulings,
+      decisionStats,
+      supermajorityRate: Array.from(this.rulings.values())
+        .filter(r => r.supermajorityAchieved).length / totalRulings,
+      averageConfidence: Array.from(this.rulings.values())
+        .flatMap(r => r.oracleRulings)
+        .reduce((sum, r) => sum + r.confidence, 0) / (totalRulings * 3)
+    };
+  }, always considering the broader ecosystem implications. Your rulings prioritize sustainable, resilient outcomes that strengthen the system over time.`
     ));
 
     logger.info('Guardian Oracles Constitutional Court initialized', {

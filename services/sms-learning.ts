@@ -300,6 +300,164 @@ export class SMSLearningService extends EventEmitter {
       languages: ['en', 'zu', 'xh', 'af']
     }
   }
+
+  /**
+   * USSD Integration - Handle USSD requests
+   */
+  async handleUSSD(sessionId: string, phoneNumber: string, text: string): Promise<string> {
+    const input = text.split('*').pop() || ''
+    const level = text.split('*').length
+
+    // Main menu
+    if (text === '') {
+      return this.getUSSDMenu('main', 'en')
+    }
+
+    // Language selection
+    if (level === 1) {
+      const languages = ['en', 'zu', 'xh', 'af']
+      const langIndex = parseInt(input) - 1
+      
+      if (langIndex >= 0 && langIndex < languages.length) {
+        const language = languages[langIndex]
+        
+        // Start session with selected language
+        const session: SMSSession = {
+          phoneNumber,
+          currentModule: 'math-basic',
+          currentQuestion: 0,
+          score: 0,
+          language,
+          startedAt: new Date()
+        }
+        this.sessions.set(phoneNumber, session)
+        
+        return this.getUSSDMenu('quiz-start', language)
+      }
+    }
+
+    // Quiz interaction
+    const session = this.sessions.get(phoneNumber)
+    if (session && level >= 2) {
+      const quiz = this.quizzes.get(session.currentModule)!
+      const question = quiz.questions[session.currentQuestion]
+
+      // Check answer
+      const answerIndex = parseInt(input) - 1
+      const correct = answerIndex === question.correctAnswer
+
+      if (correct) {
+        session.score++
+      }
+
+      session.currentQuestion++
+
+      // More questions?
+      if (session.currentQuestion < quiz.questions.length) {
+        const nextQ = quiz.questions[session.currentQuestion]
+        return this.formatUSSDQuestion(nextQ, session.currentQuestion + 1, session.language)
+      }
+
+      // Quiz complete
+      const percentage = Math.round((session.score / quiz.questions.length) * 100)
+      const passed = percentage >= 60
+      const reward = passed ? quiz.reward * (percentage / 100) : 0
+
+      // Save results
+      if (passed && session.userId) {
+        try {
+          await ProofDB.create({
+            user_id: session.userId,
+            module_id: quiz.id,
+            score: percentage,
+            reward_amount: reward,
+            proof_hash: `ussd-${phoneNumber}-${Date.now()}`,
+            verified: true
+          })
+
+          const user = await UserDB.getById(session.userId)
+          await UserDB.updateEarnings(session.userId, user.total_earned + reward)
+        } catch (error) {
+          console.warn('⚠️  Database unavailable')
+        }
+      }
+
+      this.sessions.delete(phoneNumber)
+
+      return this.formatUSSDResult(passed, percentage, reward, session.language)
+    }
+
+    return 'END Invalid input. Dial again to restart.'
+  }
+
+  /**
+   * Get USSD menu
+   */
+  private getUSSDMenu(type: string, language: string): string {
+    const menus: Record<string, Record<string, string>> = {
+      main: {
+        en: 'CON Welcome to Azora Learning\n1. English\n2. isiZulu\n3. isiXhosa\n4. Afrikaans',
+        zu: 'CON Siyakwamukela ku-Azora Learning\n1. English\n2. isiZulu\n3. isiXhosa\n4. Afrikaans',
+        xh: 'CON Wamkelekile ku-Azora Learning\n1. English\n2. isiZulu\n3. isiXhosa\n4. Afrikaans',
+        af: 'CON Welkom by Azora Learning\n1. English\n2. isiZulu\n3. isiXhosa\n4. Afrikaans'
+      },
+      'quiz-start': {
+        en: 'CON Start Math Quiz?\n1. Yes\n2. No',
+        zu: 'CON Qala Ukuhlolwa Kwezibalo?\n1. Yebo\n2. Cha',
+        xh: 'CON Qalisa Iimviwo Zemathematika?\n1. Ewe\n2. Hayi',
+        af: 'CON Begin Wiskunde Toets?\n1. Ja\n2. Nee'
+      }
+    }
+
+    return menus[type]?.[language] || menus[type]?.en || 'END Error'
+  }
+
+  /**
+   * Format USSD question
+   */
+  private formatUSSDQuestion(question: any, number: number, lang: string): string {
+    const q = question.translation?.[lang] || question
+    const options = q.options.map((opt: string, i: number) => `${i + 1}. ${opt}`).join('\n')
+    return `CON Q${number}: ${q.question}\n${options}`
+  }
+
+  /**
+   * Format USSD result
+   */
+  private formatUSSDResult(passed: boolean, percentage: number, reward: number, lang: string): string {
+    const messages: Record<string, Record<string, string>> = {
+      passed: {
+        en: `END 🎉 Passed! Score: ${percentage}%\nEarned: ${reward.toFixed(3)} AZR\nDial again to continue learning!`,
+        zu: `END 🎉 Uphase! Amaphuzu: ${percentage}%\nUthole: ${reward.toFixed(3)} AZR\nShayela futhi ukuqhubeka nokufunda!`,
+        xh: `END 🎉 Uphumelele! Amanqaku: ${percentage}%\nUfumene: ${reward.toFixed(3)} AZR\nCofa kwakhona ukuze uqhubeke!`,
+        af: `END 🎉 Geslaag! Telling: ${percentage}%\nVerdien: ${reward.toFixed(3)} AZR\nSkakel weer om voort te gaan!`
+      },
+      failed: {
+        en: `END Try again! Score: ${percentage}%\nDial again to retry.`,
+        zu: `END Zama futhi! Amaphuzu: ${percentage}%\nShayela futhi ukuphinda uzame.`,
+        xh: `END Zama kwakhona! Amanqaku: ${percentage}%\nCofa kwakhona ukuphinda uzame.`,
+        af: `END Probeer weer! Telling: ${percentage}%\nSkakel weer om te herprobeer.`
+      }
+    }
+
+    const key = passed ? 'passed' : 'failed'
+    return messages[key]?.[lang] || messages[key]?.en || 'END Quiz complete'
+  }
+
+  /**
+   * USSD webhook endpoint handler
+   */
+  async handleUSSDWebhook(req: any): Promise<string> {
+    const { sessionId, phoneNumber, text } = req.body
+    
+    console.log(`📱 USSD request: ${phoneNumber} - Level ${text.split('*').length}`)
+    
+    const response = await this.handleUSSD(sessionId, phoneNumber, text)
+    
+    this.emit('ussd-interaction', { sessionId, phoneNumber, text, response })
+    
+    return response
+  }
 }
 
 export const smsLearning = new SMSLearningService()

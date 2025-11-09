@@ -1,0 +1,16 @@
+{
+  "name": "@azora/exchange-rate-service",
+  "version": "1.0.0",
+  "description": "Azora Exchange Rate Service - Real-time Currency Conversion",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "node-cache": "^5.1.2"
+  }
+}

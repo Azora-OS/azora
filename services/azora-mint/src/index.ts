@@ -150,7 +150,7 @@ app.post('/api/v2/knowledge-reward', processKnowledgeReward);
 // Metrics endpoint
 app.get('/metrics', async (req, res) => {
   try {
-    res.set('Content-Type', reister.contentType);
+    res.set('Content-Type', register.contentType);
     res.end(await register.metrics());
   } catch (ex) {
     res.status(500).end(ex);
@@ -160,8 +160,9 @@ app.get('/metrics', async (req, res) => {
 // Health check
 app.get('/health', async (req, res) => {
   try {
- et ddbHealdbHealth= s  e reisHalhfle
-  lt supabaseHealth = false;
+    let dbHealth = false;
+    let redisHealth = false;
+    let supabaseHealth = false;
 
     if (!MINT_MOCK_MODE) {
       // Check Azora database layer health
@@ -214,7 +215,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Error handling middleware
-app.use(( areq: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   logger.error('Unhandled error', {
     error: err.message,
     stack: err.stack,
@@ -222,7 +223,8 @@ app.use(( areq: express.Request, res: express.Response, next: express.NextFuncti
     method: req.method
   });
 
-  res.status(err.sta| o{    error: {
+  res.status(500).json({
+    error: {
       message: err.message || 'Internal server error',
       ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     }
@@ -252,7 +254,7 @@ function setupEventBusListeners() {
       // This would integrate with the CreditService
 
       // Publish credit score result
-    avenBsbi.re.calculated', {
+      await eventBus.publish('credit.score.calculated', {
         userId,
         score: Math.floor(Math.random() * 1000) + 1, // Mock score
         factors,
@@ -291,4 +293,21 @@ function setupEventBusListeners() {
   eventBus.subscribe('staking.reward.calculate', async (event) => {
     try {
       const { userId, stakeAmount, duration } = event.data;
-      logger.i
+      logger.info('Processing staking reward calculation', { userId, stakeAmount, duration });
+
+      // Process staking reward calculation
+      // This would integrate with staking service
+
+      // Publish staking reward result
+      await eventBus.publish('staking.reward.calculated', {
+        userId,
+        stakeAmount,
+        duration,
+        reward: Math.floor(stakeAmount * 0.05), // 5% annual reward
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      logger.error('Staking reward calculation failed', { error: (error as Error).message });
+    }
+  });
+}
