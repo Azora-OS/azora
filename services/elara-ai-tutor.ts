@@ -12,6 +12,11 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 
 import { EventEmitter } from 'events';
 import { ProofDB, UserDB } from './supabase-client';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || 'sk-test'
+});
 
 export interface LearningPath {
   userId: string;
@@ -102,6 +107,53 @@ export class ElaraAITutor extends EventEmitter {
     } catch (error) {
       console.warn('⚠️  Database unavailable, using default path');
       return this.getDefaultPath(userId);
+    }
+  }
+
+  /**
+   * AI-powered lesson generation
+   */
+  async generateAILesson(userId: string, topic: string, difficulty: number): Promise<PersonalizedLesson> {
+    try {
+      const user = await UserDB.getById(userId);
+      const path = this.learningPaths.get(userId) || await this.analyzeLearner(userId);
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: `You are Elara, an AI tutor. Create a personalized lesson for a ${path.learningStyle} learner at level ${difficulty}. Use African context and examples. Respond in ${path.language}.`
+          },
+          {
+            role: 'user',
+            content: `Create a lesson about ${topic} for difficulty level ${difficulty}/10`
+          }
+        ],
+        max_tokens: 1000,
+        temperature: 0.7
+      });
+
+      const content = response.choices[0]?.message?.content || '';
+
+      const lesson: PersonalizedLesson = {
+        id: `ai-lesson-${Date.now()}`,
+        title: `AI Lesson: ${topic}`,
+        description: content.substring(0, 200),
+        difficulty,
+        estimatedTime: path.pace === 'slow' ? 30 : path.pace === 'fast' ? 10 : 20,
+        contentType: path.learningStyle === 'visual' ? 'video' : path.learningStyle === 'auditory' ? 'voice' : 'interactive',
+        aiGenerated: true,
+        reasoning: `AI-generated lesson tailored to your ${path.learningStyle} learning style`
+      };
+
+      console.log(`🤖 AI lesson generated: ${lesson.title}`);
+      this.emit('ai-lesson-generated', lesson);
+
+      return lesson;
+    } catch (error) {
+      console.warn('⚠️  AI lesson generation failed, using template');
+      return this.getTemplateLesson(userId, topic, difficulty);
     }
   }
 
@@ -325,6 +377,121 @@ export class ElaraAITutor extends EventEmitter {
       learningStyle: 'visual',
       pace: 'medium',
       language: 'en',
+    };
+  }
+
+  /**
+   * AI-powered Socratic questioning
+   */
+  async askSocraticQuestion(userId: string, topic: string, studentAnswer?: string): Promise<string> {
+    try {
+      const path = this.learningPaths.get(userId) || await this.analyzeLearner(userId);
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: `You are Elara, using Socratic method to teach. Ask thought-provoking questions that guide students to discover answers themselves. Use ${path.language} language.`
+          },
+          {
+            role: 'user',
+            content: studentAnswer 
+              ? `Student answered: "${studentAnswer}" about ${topic}. Ask a follow-up Socratic question.`
+              : `Ask an opening Socratic question about ${topic}`
+          }
+        ],
+        max_tokens: 200
+      });
+
+      const question = response.choices[0]?.message?.content || 'What do you think about this topic?';
+      
+      await this.speak(question, path.language);
+      this.emit('socratic-question', { userId, topic, question });
+      
+      return question;
+    } catch (error) {
+      console.error('Socratic question failed:', error);
+      return 'What do you already know about this topic?';
+    }
+  }
+
+  /**
+   * Adaptive difficulty adjustment
+   */
+  async adjustDifficulty(userId: string, recentScores: number[]): Promise<number> {
+    const avgScore = recentScores.reduce((a, b) => a + b, 0) / recentScores.length;
+    const path = this.learningPaths.get(userId);
+    
+    if (!path) return 1;
+
+    let newLevel = path.currentLevel;
+
+    // Increase difficulty if consistently scoring high
+    if (avgScore >= 85 && recentScores.length >= 3) {
+      newLevel = Math.min(path.currentLevel + 1, 10);
+      console.log(`🚀 Level up! ${path.currentLevel} → ${newLevel}`);
+    }
+    // Decrease if struggling
+    else if (avgScore < 60 && recentScores.length >= 3) {
+      newLevel = Math.max(path.currentLevel - 1, 1);
+      console.log(`💪 Adjusting difficulty: ${path.currentLevel} → ${newLevel}`);
+    }
+
+    path.currentLevel = newLevel;
+    this.emit('difficulty-adjusted', { userId, oldLevel: path.currentLevel, newLevel, avgScore });
+
+    return newLevel;
+  }
+
+  /**
+   * Real-time feedback during learning
+   */
+  async provideFeedback(userId: string, answer: string, correctAnswer: string): Promise<string> {
+    try {
+      const path = this.learningPaths.get(userId);
+      const language = path?.language || 'en';
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: `You are Elara, an encouraging AI tutor. Provide constructive feedback. Be supportive and specific. Use ${language} language.`
+          },
+          {
+            role: 'user',
+            content: `Student answered: "${answer}". Correct answer: "${correctAnswer}". Provide feedback.`
+          }
+        ],
+        max_tokens: 150
+      });
+
+      const feedback = response.choices[0]?.message?.content || 'Good effort! Keep learning!';
+      
+      await this.speak(feedback, language);
+      this.emit('feedback-provided', { userId, feedback });
+      
+      return feedback;
+    } catch (error) {
+      console.error('Feedback generation failed:', error);
+      return 'Keep practicing! You\'re making progress!';
+    }
+  }
+
+  /**
+   * Template lesson fallback
+   */
+  private getTemplateLesson(userId: string, topic: string, difficulty: number): PersonalizedLesson {
+    return {
+      id: `template-${Date.now()}`,
+      title: `Learn ${topic}`,
+      description: `A structured lesson about ${topic}`,
+      difficulty,
+      estimatedTime: 20,
+      contentType: 'interactive',
+      aiGenerated: false,
+      reasoning: 'Template lesson based on curriculum'
     };
   }
 }

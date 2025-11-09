@@ -1,12 +1,13 @@
 {
   "name": "health-monitor",
   "version": "1.0.0",
+  "description": "Azora OS Health Monitor Service",
   "main": "index.js",
   "scripts": {
+    "dev": "node index.js",
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "axios": "^1.6.5"
+    "express": "^4.18.2"
   }
 }

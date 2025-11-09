@@ -131,14 +131,26 @@ class ServiceRegistry {
 
   initializeServices() {
     const serviceConfigs = {
+      // Constitutional Governance
+      'constitutional-court': { urls: [process.env.CONSTITUTIONAL_COURT_URL || 'http://localhost:4500'], weight: 1 },
+      'constitutional-ai': { urls: [process.env.CONSTITUTIONAL_AI_URL || 'http://localhost:4501'], weight: 1 },
+      'chronicle': { urls: [process.env.CHRONICLE_URL || 'http://localhost:4400'], weight: 1 },
+      
+      // Core Services
       auth: { urls: [process.env.AUTH_URL || 'http://localhost:3001'], weight: 1 },
       mint: { urls: [process.env.MINT_URL || 'http://localhost:3002'], weight: 1 },
       lms: { urls: [process.env.LMS_URL || 'http://localhost:3003'], weight: 1 },
-      forge: { urls: [process.env.FORGE_URL || 'http://localhost:3004'], weight: 1 },
+      forge: { urls: [process.env.FORGE_URL || 'http://localhost:4700'], weight: 1 },
       nexus: { urls: [process.env.NEXUS_URL || 'http://localhost:3005'], weight: 1 },
       education: { urls: [process.env.EDUCATION_URL || 'http://localhost:3007'], weight: 1 },
       payments: { urls: [process.env.PAYMENTS_URL || 'http://localhost:3008'], weight: 1 },
       analytics: { urls: [process.env.ANALYTICS_URL || 'http://localhost:3009'], weight: 1 },
+      
+      // Marketplace & Skills
+      marketplace: { urls: [process.env.MARKETPLACE_URL || 'http://localhost:4600'], weight: 1 },
+      careers: { urls: [process.env.CAREERS_URL || 'http://localhost:4800'], weight: 1 },
+      
+      // Infrastructure
       health: { urls: [process.env.HEALTH_URL || 'http://localhost:9090'], weight: 1 }
     };
 

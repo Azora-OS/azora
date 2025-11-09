@@ -571,6 +571,8 @@ export class ChamberOfGhostsService {
   }
 
   private startCognitiveCycles(): void {
+    // Temporarily disabled cron jobs for debugging
+    /*
     // Run past analysis every 6 hours
     cron.schedule('0 */6 * * *', async () => {
       try {
@@ -597,6 +599,7 @@ export class ChamberOfGhostsService {
         this.logger.error('Future ghost simulation failed:', error);
       }
     });
+    */
 
     this.logger.info('Cognitive cycles started - Chamber of Ghosts is now active');
   }

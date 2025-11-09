@@ -7,84 +7,158 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model SalesCampaign {
-  id          String   @id @default(cuid())
-  name        String
-  target      String
-  strategy    String
-  status      String   @default("active")
-  deadline    DateTime
-  createdAt   DateTime @default(now())
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  role          UserRole @default(FREELANCER)
+  skills        String[]
+  rating        Float    @default(0)
+  completedJobs Int      @default(0)
+  createdAt     DateTime @default(now())
+  
+  jobsPosted    Job[]    @relation("ClientJobs")
+  jobsApplied   Application[]
+  jobsAssigned  Job[]    @relation("FreelancerJobs")
+  reviews       Review[]
 }
 
-model Lead {
-  id        String   @id @default(cuid())
-  userId    String
-  campaignId String
-  status    String   @default("prospect")
-  score     Float
-  createdAt DateTime @default(now())
+model Job {
+  id            String      @id @default(cuid())
+  title         String
+  description   String
+  budget        Decimal     @db.Decimal(20, 2)
+  currency      String      @default("AZR")
+  skills        String[]
+  status        JobStatus   @default(OPEN)
+  clientId      String
+  freelancerId  String?
+  escrowId      String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  client        User        @relation("ClientJobs", fields: [clientId], references: [id])
+  freelancer    User?       @relation("FreelancerJobs", fields: [freelancerId], references: [id])
+  applications  Application[]
+  escrow        Escrow?
+  milestones    Milestone[]
+  
+  @@index([status, createdAt])
+  @@index([clientId])
+  @@index([freelancerId])
 }
 
-model AuditLog {
-  id        String   @id @default(cuid())
-  eventType String
-  details   Json
-  createdAt DateTime @default(now())
-  userId    String?
+model Application {
+  id            String      @id @default(cuid())
+  jobId         String
+  freelancerId  String
+  proposal      String
+  bidAmount     Decimal     @db.Decimal(20, 2)
+  status        ApplicationStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+  
+  job           Job         @relation(fields: [jobId], references: [id])
+  freelancer    User        @relation(fields: [freelancerId], references: [id])
+  
+  @@unique([jobId, freelancerId])
+  @@index([freelancerId])
 }
 
-model Listing {
-  id          String   @id @default(cuid())
-  item        String
-  price       Float
-  userId      String
-  status      String   @default("active")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Escrow {
+  id            String      @id @default(cuid())
+  jobId         String      @unique
+  amount        Decimal     @db.Decimal(20, 2)
+  currency      String      @default("AZR")
+  status        EscrowStatus @default(HELD)
+  createdAt     DateTime    @default(now())
+  releasedAt    DateTime?
+  
+  job           Job         @relation(fields: [jobId], references: [id])
+  
+  @@index([status])
 }
 
-model Transaction {
-  id        String   @id @default(cuid())
-  listingId String
-  buyerId   String
-  amount    Float
-  createdAt DateTime @default(now())
+model Milestone {
+  id            String      @id @default(cuid())
+  jobId         String
+  title         String
+  description   String
+  amount        Decimal     @db.Decimal(20, 2)
+  status        MilestoneStatus @default(PENDING)
+  dueDate       DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  
+  job           Job         @relation(fields: [jobId], references: [id])
+  
+  @@index([jobId])
 }
 
-model Domain {
-  id          String   @id @default(cuid())
-  domain      String   @unique
-  owner       String
-  status      String   @default("available")
-  price       Float?
-  currency    String   @default("USD")
-  featured    Boolean  @default(false)
-  inquiries   Int       @default(0)
-  buyer       String?
-  soldAt      DateTime?
-  soldPrice   Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Review {
+  id            String      @id @default(cuid())
+  jobId         String
+  reviewerId    String
+  revieweeId    String
+  rating        Int
+  comment       String?
+  createdAt     DateTime    @default(now())
+  
+  reviewer      User        @relation(fields: [reviewerId], references: [id])
+  
+  @@index([revieweeId])
 }
 
-model DomainBid {
-  id        String   @id @default(cuid())
-  domainId  String
-  bidder    String
-  amount    Float
-  currency  String   @default("USD")
-  message   String?
-  status    String   @default("active")
-  createdAt DateTime @default(now())
+model SkillVerification {
+  id            String      @id @default(cuid())
+  userId        String
+  skill         String
+  level         SkillLevel
+  verifiedBy    String?
+  verifiedAt    DateTime?
+  createdAt     DateTime    @default(now())
+  
+  @@unique([userId, skill])
+  @@index([userId])
 }
 
-model DomainWatchlist {
-  id         String   @id @default(cuid())
-  userId     String
-  domain     String
-  alertPrice Float?
-  createdAt  DateTime @default(now())
+enum UserRole {
+  CLIENT
+  FREELANCER
+  BOTH
+}
 
-  @@unique([userId, domain])
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum EscrowStatus {
+  HELD
+  RELEASED
+  REFUNDED
+  DISPUTED
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  APPROVED
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }

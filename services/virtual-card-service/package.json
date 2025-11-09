@@ -1,0 +1,16 @@
+{
+  "name": "@azora/virtual-card-service",
+  "version": "1.0.0",
+  "description": "Azora Virtual Card Service - Constitutional Card Issuance",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "crypto": "^1.0.1",
+    "axios": "^1.6.0"
+  }
+}

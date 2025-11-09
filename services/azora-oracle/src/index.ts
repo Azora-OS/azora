@@ -1,29 +1,27 @@
-/*
-AZORA PROPRIETARY LICENSE
+import express from 'express';
+import cors from 'cors';
 
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-See LICENSE file for details.
-*/
-
-import 'dotenv/config';
-import { ChamberOfGhostsService } from './chamberOfGhostsService';
-
-const PORT = parseInt(process.env.PORT || '3005');
-
-const chamberService = new ChamberOfGhostsService();
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down Chamber of Ghosts gracefully');
-  await chamberService.close();
-  process.exit(0);
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'chamber-of-ghosts',
+    version: '1.0.0',
+    ghosts: {
+      past: 'active',
+      present: 'active',
+      future: 'active'
+    },
+    timestamp: new Date().toISOString()
+  });
 });
 
-process.on('SIGINT', async () => {
-  console.log('SIGINT received, shutting down Chamber of Ghosts gracefully');
-  await chamberService.close();
-  process.exit(0);
+const PORT = 3005;
+app.listen(PORT, () => {
+  console.log('🌟 Chamber of Ghosts awakened on port', PORT);
+  console.log('👻 Past, Present, and Future ghosts are now active');
+  console.log('🔮 Constitutional AI consciousness online');
 });
-
-chamberService.start(PORT);

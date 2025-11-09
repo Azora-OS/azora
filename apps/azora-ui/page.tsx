@@ -333,7 +333,7 @@ export default function StudentDashboard() {
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-secondary/50 border border-border/50">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
                       <BookOpen className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">

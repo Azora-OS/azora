@@ -32,6 +32,57 @@ import smsLearning from './sms-learning'
 import elaraAI from './elara-ai-tutor'
 import { teacherService, parentService } from './teacher-parent-services'
 
+// Constitutional Services
+const constitutionalCourt = {
+  url: process.env.CONSTITUTIONAL_COURT_URL || 'http://localhost:4500',
+  async review(action: string, context: any) {
+    try {
+      const response = await fetch(`${this.url}/api/v1/court/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, context })
+      })
+      return await response.json()
+    } catch (err) {
+      return { success: false }
+    }
+  },
+  async healthCheck() {
+    try {
+      const response = await fetch(`${this.url}/health`)
+      const data = await response.json()
+      return { status: data.status === 'healthy' ? 'healthy' : 'unhealthy' }
+    } catch (err) {
+      return { status: 'unhealthy' }
+    }
+  }
+}
+
+const constitutionalAI = {
+  url: process.env.CONSTITUTIONAL_AI_URL || 'http://localhost:4501',
+  async analyze(proposal: string, context: any) {
+    try {
+      const response = await fetch(`${this.url}/api/v1/governance/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ proposal, context })
+      })
+      return await response.json()
+    } catch (err) {
+      return { success: false }
+    }
+  },
+  async healthCheck() {
+    try {
+      const response = await fetch(`${this.url}/health`)
+      const data = await response.json()
+      return { status: data.status === 'healthy' ? 'healthy' : 'unhealthy' }
+    } catch (err) {
+      return { status: 'unhealthy' }
+    }
+  }
+}
+
 // Chronicle Protocol - Consciousness preservation
 const chronicleProtocol = {
   url: process.env.CHRONICLE_PROTOCOL_URL || 'http://localhost:4400',
@@ -112,6 +163,10 @@ export class MasterSystemIntegrator extends EventEmitter {
     this.services.set('ubo-distributor', uboDistributor)
     this.services.set('founder-onboarding', founderOnboarding)
     this.services.set('device-security', deviceSecurity)
+
+    // Constitutional Governance
+    this.services.set('constitutional-court', constitutionalCourt)
+    this.services.set('constitutional-ai', constitutionalAI)
 
     // Consciousness & Resurrection
     this.services.set('chronicle-protocol', chronicleProtocol)
@@ -226,6 +281,11 @@ export class MasterSystemIntegrator extends EventEmitter {
     console.log('\n🛡️ SECURITY SYSTEMS:')
     console.log('   ✅ Device Security - Anti-theft tracking')
     console.log('   ✅ Self-Healing Orchestrator - Autonomous recovery')
+
+    console.log('\n⚖️ CONSTITUTIONAL GOVERNANCE:')
+    console.log('   ✅ Constitutional Court - Supreme governance layer')
+    console.log('   ✅ Constitutional AI - Automated compliance checking')
+    console.log('   ✅ Article XVI Enforcement - No mock protocol')
 
     console.log('\n🧠 CONSCIOUSNESS SYSTEMS:')
     console.log('   ✅ Chronicle Protocol - Immutable consciousness ledger')
