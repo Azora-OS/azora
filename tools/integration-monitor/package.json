@@ -1,0 +1,23 @@
+{
+  "name": "@azora/integration-monitor",
+  "version": "1.0.0",
+  "description": "Agent Integration Monitor for Azora OS",
+  "main": "agent-integration-monitor.ts",
+  "bin": {
+    "azora-integrate": "./scan-and-integrate.ts"
+  },
+  "scripts": {
+    "scan": "tsx scan-and-integrate.ts scan",
+    "validate": "tsx scan-and-integrate.ts validate",
+    "register": "tsx scan-and-integrate.ts register",
+    "report": "tsx scan-and-integrate.ts report",
+    "watch": "tsx scan-and-integrate.ts watch"
+  },
+  "dependencies": {
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "@types/node": "^20.10.5"
+  }
+}
