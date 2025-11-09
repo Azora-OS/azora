@@ -36,7 +36,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="bg-card border border-border rounded-lg p-6"
+            className="glass-medium border border-border/50 rounded-2xl p-6 shadow-premium-md hover:shadow-premium-lg hover:scale-[1.02] transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -88,15 +88,15 @@ const Dashboard = () => {
       >
         <h2 className="text-xl font-semibold text-foreground mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="p-4 border border-border rounded-lg hover:bg-accent transition-colors text-left">
+          <button className="p-4 glass-light border border-border/50 rounded-xl hover:glass-medium hover:shadow-premium-sm transition-all duration-300 text-left group">
             <h3 className="font-medium text-foreground">Deploy New Service</h3>
             <p className="text-sm text-muted-foreground">Launch a new AI-powered service</p>
           </button>
-          <button className="p-4 border border-border rounded-lg hover:bg-accent transition-colors text-left">
+          <button className="p-4 glass-light border border-border/50 rounded-xl hover:glass-medium hover:shadow-premium-sm transition-all duration-300 text-left group">
             <h3 className="font-medium text-foreground">System Diagnostics</h3>
             <p className="text-sm text-muted-foreground">Run comprehensive health checks</p>
           </button>
-          <button className="p-4 border border-border rounded-lg hover:bg-accent transition-colors text-left">
+          <button className="p-4 glass-light border border-border/50 rounded-xl hover:glass-medium hover:shadow-premium-sm transition-all duration-300 text-left group">
             <h3 className="font-medium text-foreground">View Analytics</h3>
             <p className="text-sm text-muted-foreground">Access detailed performance metrics</p>
           </button>
