@@ -8,8 +8,8 @@ See LICENSE file for details.
 
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import { CreditService } from '../services/CreditService';
-import { AuthenticatedRequest } from '../middleware/auth';
+import { CreditService } from '../services/CreditService.js';
+import { AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();
 const creditService = new CreditService();

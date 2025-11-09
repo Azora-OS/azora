@@ -15,7 +15,7 @@ See LICENSE file for details.
 
 import { EventEmitter } from 'events'
 import winston from 'winston'
-import { createDatabasePool, createRedisCache, createSupabaseClient } from 'azora-database-layer'
+import { createDatabasePool, createRedisCache, createSupabaseClient } from '../azora-database-layer.js'
 import { EventBus } from 'azora-event-bus'
 
 interface SymbioticRule {
@@ -1086,5 +1086,4 @@ export function createAzoraSymbioticRulesSystem(): AzoraSymbioticRulesSystem {
 }
 
 // Default export
-export default AzoraSymbioticRulesSystem</content>
-<parameter name="filePath">c:\azora-os\Azora-OS\services\azora-health\symbiotic-rules-system.ts
+export default AzoraSymbioticRulesSystem

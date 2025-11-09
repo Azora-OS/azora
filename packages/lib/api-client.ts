@@ -372,16 +372,24 @@ export class ForgeApi extends ApiClient {
     super('forge');
   }
 
-  async getJobs() {
-    return this.get('/jobs');
+  // Forge-specific methods
+  async getJobs(query?: string, category?: string) {
+    const params = new URLSearchParams();
+    if (query) params.append('q', query);
+    if (category) params.append('category', category);
+    return this.get(`/jobs?${params.toString()}`);
   }
 
-  async createJob(data: any) {
-    return this.post('/jobs', data);
+  async getJob(jobId: string) {
+    return this.get(`/jobs/${jobId}`);
   }
 
-  async applyToJob(userId: string, jobId: string) {
-    return this.post('/apply', { userId, jobId });
+  async applyForJob(jobId: string, application: any) {
+    return this.post(`/jobs/${jobId}/apply`, application);
+  }
+
+  async getApplications(userId: string) {
+    return this.get(`/applications/${userId}`);
   }
 }
 
@@ -404,21 +412,7 @@ export class PaymentsApi extends ApiClient {
     super('payments');
   }
 
-  async createPayment(data: any) {
-    return this.post('/payment', data);
-  }
-
-  async getPayment(id: string) {
-    return this.get(`/payment/${id}`);
-  }
-}
-
-// Export instances
-export const lmsApi = new LmsApi();
-export const mintApi = new MintApi();
-export const forgeApi = new ForgeApi();
-export const educationApi = new EducationApi();
-export const paymentsApi = new PaymentsApi();cific methods
+  // Payments-specific methods
   async getBalance(userId: string) {
     return this.get(`/balance/${userId}`);
   }
@@ -436,6 +430,9 @@ export const paymentsApi = new PaymentsApi();cific methods
   }
 }
 
+// Export instances
+export const paymentsApi = new PaymentsApi();
+
 export class NexusApi extends ApiClient {
   constructor() {
     super('nexus');
@@ -452,32 +449,6 @@ export class NexusApi extends ApiClient {
 
   async getUsageStats(userId: string) {
     return this.get(`/usage/${userId}`);
-  }
-}
-
-export class ForgeApi extends ApiClient {
-  constructor() {
-    super('forge');
-  }
-
-  // Forge-specific methods
-  async getJobs(query?: string, category?: string) {
-    const params = new URLSearchParams();
-    if (query) params.append('q', query);
-    if (category) params.append('category', category);
-    return this.get(`/jobs?${params.toString()}`);
-  }
-
-  async getJob(jobId: string) {
-    return this.get(`/jobs/${jobId}`);
-  }
-
-  async applyForJob(jobId: string, application: any) {
-    return this.post(`/jobs/${jobId}/apply`, application);
-  }
-
-  async getApplications(userId: string) {
-    return this.get(`/applications/${userId}`);
   }
 }
 

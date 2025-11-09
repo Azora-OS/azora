@@ -1,7 +1,7 @@
 // azora-mint/src/services/aegis.ts
 
 import axios from 'axios';
-import { KnowledgeRewardRequest } from '../interfaces/Reward';
+import { KnowledgeRewardRequest } from '../interfaces/Reward.js';
 
 const AEGIS_BASE_URL = process.env.AEGIS_BASE_URL || 'http://localhost:4098';
 
