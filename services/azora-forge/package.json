@@ -2,6 +2,7 @@
   "name": "azora-forge",
   "version": "1.0.0",
   "description": "Azora Forge - Decentralized Skills & Services Marketplace",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",

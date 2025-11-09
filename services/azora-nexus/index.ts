@@ -1,81 +1,71 @@
-/*
-AZORA PROPRIETARY LICENSE
-
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-
-See LICENSE file for details.
-*/
-
-import cors from 'cors';
+// 🌐 Azora Nexus - Ubuntu Event Bus & Real-Time System
 import express from 'express';
-import fetch from 'node-fetch';
-import { decide } from './policy/index';
+import { createServer } from 'http';
+import { nexus, EventTypes } from './event-bus';
+import { initializeWebSocket } from './websocket-server';
+import { initializeDatabase } from '../database';
 
 const app = express();
-app.use(cors());
+const httpServer = createServer(app);
+const PORT = process.env.NEXUS_PORT || 4001;
+
 app.use(express.json());
 
-// Add security headers with proper CSP for development
-app.use((_req, res, next) => {
-  // Allow DevTools connections in development
-  if (process.env.NODE_ENV !== 'production') {
-    res.setHeader(
-      'Content-Security-Policy',
-      "default-src 'self' http://localhost:*; connect-src 'self' http://localhost:* ws://localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
-    );
-  } else {
-    // Production CSP (more restrictive)
-    res.setHeader(
-      'Content-Security-Policy',
-      "default-src 'self'; connect-src 'self' ws: wss:; script-src 'self'; style-src 'self' 'unsafe-inline';",
-    );
-  }
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  next();
-});
-
-async function emitAudit(event: string, payload: Record<string, unknown>) {
-  await fetch('http://security-core:4022/audit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event, payload }),
+// Health check
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'azora-nexus',
+    timestamp: Date.now(),
+    ubuntu: 'I am because we are'
   });
-}
-
-async function execute(action: Record<string, unknown>) {
-  if (action.type === 'REPLENISH_TASK') {
-    await fetch('http://assistant:4000/assistant/tasks/NMB-STORE-001', { headers: { 'X-Tenant': 'retail-partner' } });
-  }
-  if (action.type === 'POS_UNDERSCAN') {
-    await fetch('http://security-core:4022/alerts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(action.payload),
-    });
-  }
-  // extend with price/energy routes
-}
-
-app.post('/orchestrate', async (req, res) => {
-  const action = req.body; // {type, payload, confidence, context}
-  const decision = decide(action);
-  await emitAudit('orchestrator.decision', { action, decision });
-  if (decision.allow && !decision.requireConfirm) {
-    await execute(action);
-    return res.json({ status: 'EXECUTED', decision });
-  }
-  if (decision.allow && decision.requireConfirm) {
-    // push to supervisor device for 1-tap confirm
-    await fetch('http://voice:4010/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: `Confirm action: ${action.type}. ${decision.reason}` }),
-    });
-    return res.json({ status: 'AWAITING_CONFIRM', decision });
-  }
-  return res.json({ status: 'BLOCKED', decision });
 });
 
-app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'orchestrator' }));
-app.listen(process.env.PORT || 4030, () => console.log('Orchestrator :4030'));
+// Publish event endpoint
+app.post('/events/publish', async (req, res) => {
+  try {
+    const event = await nexus.publish(req.body);
+    res.json({ success: true, event });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to publish event' });
+  }
+});
+
+// Get event history
+app.get('/events/history', (req, res) => {
+  const { type, limit } = req.query;
+  const history = nexus.getHistory(
+    type as string,
+    limit ? parseInt(limit as string) : 100
+  );
+  res.json({ events: history });
+});
+
+// Event types reference
+app.get('/events/types', (req, res) => {
+  res.json({ eventTypes: EventTypes });
+});
+
+// Initialize and start
+async function start() {
+  try {
+    await initializeDatabase();
+    initializeWebSocket(httpServer);
+    
+    httpServer.listen(PORT, () => {
+      console.log(`🌐 Azora Nexus running on port ${PORT}`);
+      console.log('🫀 Event Bus: Active');
+      console.log('🌐 WebSocket: Active');
+      console.log('💾 Database: Connected');
+      console.log('🛡️ Ubuntu Philosophy: Activated');
+    });
+  } catch (error) {
+    console.error('❌ Failed to start Azora Nexus:', error);
+    process.exit(1);
+  }
+}
+
+start();
+
+export { nexus, EventTypes };
+export default app;

@@ -26,22 +26,21 @@ export class ServiceConnector {
 
   async checkAllConnections(): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {}
-    
+
     for (const [name, service] of this.services) {
       try {
         const response = await fetch(`${service.url}/health`, {
           method: 'GET',
-          timeout: 5000,
           signal: AbortSignal.timeout(5000),
           headers: { 'Content-Type': 'application/json' }
         })
-        
+
         results[name] = response.ok
         service.healthy = response.ok
       } catch (error) {
         results[name] = false
         service.healthy = false
-        console.warn(`Service ${name} health check failed:`, error.message)
+        console.warn(`Service ${name} health check failed:`, (error as Error).message)
       }
     }
 
@@ -67,7 +66,7 @@ export class ServiceConnector {
   async validateServiceIntegration(): Promise<{ valid: boolean; issues: string[] }> {
     const issues: string[] = []
     const connections = await this.checkAllConnections()
-    
+
     for (const [service, connected] of Object.entries(connections)) {
       if (!connected) {
         issues.push(`${service} is not responding`)

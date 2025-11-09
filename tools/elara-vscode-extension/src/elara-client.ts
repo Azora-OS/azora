@@ -488,13 +488,14 @@ export class ElaraChatViewProvider implements vscode.WebviewViewProvider {
           function addMessage(sender, text) {
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ' + sender;
-            messageDiv.innerHTML = `
-              <div class="message-avatar">${sender === 'user' ? '👤' : '🧠'}</div>
-              <div class="message-content">
-                <div class="message-sender">${sender === 'user' ? 'You' : 'Elara'}</div>
-                <div class="message-text">${text}</div>
-              </div>
-            `;
+            const avatar = sender === 'user' ? '👤' : '🧠';
+            const senderName = sender === 'user' ? 'You' : 'Elara';
+            messageDiv.innerHTML =
+              '<div class="message-avatar">' + avatar + '</div>' +
+              '<div class="message-content">' +
+                '<div class="message-sender">' + senderName + '</div>' +
+                '<div class="message-text">' + text + '</div>' +
+              '</div>';
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
           }

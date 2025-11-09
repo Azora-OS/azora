@@ -16,8 +16,8 @@ See LICENSE file for details.
 import { EventEmitter } from 'events'
 import winston from 'winston'
 import crypto from 'crypto'
-import { createDatabasePool, createRedisCache, createSupabaseClient } from 'azora-database-layer'
-import { EventBus } from 'azora-event-bus'
+import { createDatabasePool, createRedisCache, createSupabaseClient } from '../azora-database-layer.js'
+import { EventBus } from '../azora-event-bus.js'
 
 interface BlockchainEntry {
   id: string
@@ -732,5 +732,4 @@ export function createAzoraBlockchainLogger(): AzoraBlockchainLogger {
 }
 
 // Default export
-export default AzoraBlockchainLogger</content>
-<parameter name="filePath">c:\azora-os\Azora-OS\services\azora-health\blockchain-logger.ts
+export default AzoraBlockchainLogger

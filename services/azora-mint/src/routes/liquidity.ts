@@ -8,7 +8,7 @@ See LICENSE file for details.
 
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import { LiquidityService } from '../services/LiquidityService';
+import { LiquidityService } from '../services/LiquidityService.js';
 import { AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();

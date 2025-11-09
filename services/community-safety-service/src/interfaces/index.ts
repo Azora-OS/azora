@@ -8,7 +8,7 @@ See LICENSE file for details.
 
 /**
  * COMMUNITY SAFETY SERVICE - Core Interfaces
- * 
+ *
  * Community-driven safety networks providing:
  * - Emergency incident reporting and response
  * - Real-time safety alerts
@@ -211,7 +211,7 @@ export interface UserSafetyProfile {
   preferences: {
     alertRadius: number;
     alertTypes: string[];
-    quiet Hours: {
+    quietHours: {
       start: number;
       end: number;
     };

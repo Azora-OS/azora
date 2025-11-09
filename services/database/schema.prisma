@@ -1,0 +1,207 @@
+// 🛡️ Azora Database Schema - Ubuntu Data Model
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 👤 User & Identity
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String   @unique
+  passwordHash  String
+  role          Role     @default(STUDENT)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  profile       Profile?
+  wallets       Wallet[]
+  enrollments   Enrollment[]
+  transactions  Transaction[]
+  jobs          Job[]
+  applications  Application[]
+  
+  @@index([email])
+  @@index([username])
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName String
+  lastName  String
+  avatar    String?
+  bio       String?
+  country   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 💰 Financial System
+model Wallet {
+  id           String        @id @default(uuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currency     Currency      @default(AZR)
+  balance      Decimal       @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  transactions Transaction[]
+  
+  @@unique([userId, currency])
+  @@index([userId])
+}
+
+model Transaction {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  walletId    String
+  wallet      Wallet      @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  type        TxType
+  amount      Decimal
+  currency    Currency
+  status      TxStatus    @default(PENDING)
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+  
+  @@index([userId])
+  @@index([walletId])
+  @@index([createdAt])
+}
+
+// 🎓 Education System
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  price       Decimal      @default(0)
+  currency    Currency     @default(AZR)
+  published   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  
+  @@index([published])
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  content     String
+  order       Int
+  duration    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([courseId])
+}
+
+model Enrollment {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress    Int      @default(0)
+  completed   Boolean  @default(false)
+  enrolledAt  DateTime @default(now())
+  completedAt DateTime?
+  
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+// 💼 Marketplace System
+model Job {
+  id           String        @id @default(uuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  budget       Decimal
+  currency     Currency      @default(AZR)
+  status       JobStatus     @default(OPEN)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  applications Application[]
+  
+  @@index([userId])
+  @@index([status])
+}
+
+model Application {
+  id        String    @id @default(uuid())
+  jobId     String
+  job       Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proposal  String
+  status    AppStatus @default(PENDING)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@unique([jobId, userId])
+  @@index([jobId])
+  @@index([userId])
+}
+
+// 📊 Enums
+enum Role {
+  STUDENT
+  EDUCATOR
+  BUSINESS
+  ADMIN
+}
+
+enum Currency {
+  AZR
+  USD
+  EUR
+  BTC
+  ETH
+}
+
+enum TxType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  MINING_REWARD
+  UBI_PAYMENT
+  COURSE_PAYMENT
+  JOB_PAYMENT
+}
+
+enum TxStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum AppStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
