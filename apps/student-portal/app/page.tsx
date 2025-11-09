@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { AzoraLogo, ServiceLogo, ElaraAvatar, colors } from "@azora/branding"
 import { GraduationCap, DollarSign, TrendingUp, Users, Award, BookOpen, Target, Zap } from "lucide-react"
 
 const stats = [
@@ -40,11 +41,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-3">
-              <img
-                src="/packages/public/branding/logo-primary.svg"
-                alt="Azora"
-                className="h-8 w-auto"
-              />
+              <AzoraLogo variant="primary" size="sm" animated />
               <span className="text-xl font-bold text-foreground">Student Portal</span>
             </div>
             <div className="hidden gap-8 md:flex">
@@ -189,11 +186,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 md:grid-cols-4">
             <div className="space-y-4">
-              <img
-                src="/packages/public/branding/logo-primary.svg"
-                alt="Azora"
-                className="h-8 w-auto"
-              />
+              <AzoraLogo variant="primary" size="sm" />
               <p className="text-sm text-muted-foreground">
                 The World's First Constitutional AI Operating System for Education
               </p>

@@ -1,0 +1,27 @@
+{
+  "name": "@azora/branding",
+  "version": "1.0.0",
+  "description": "Azora OS Branding Package - World-Class Design System",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["azora", "branding", "design-system", "ubuntu", "elara"],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}
