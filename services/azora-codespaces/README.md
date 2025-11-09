@@ -12,6 +12,7 @@
 - 👥 **Real-time Collaboration**: Live coding with peers
 - 📡 **Offline Sync**: Zero-rated data optimization
 - 🛡️ **Constitutional Compliance**: Automated governance monitoring
+- 🔌 **20+ Open Source Integrations**: Full development ecosystem
 
 ## Quick Start
 
@@ -144,6 +145,28 @@ Azora Codespaces embodies Ubuntu principles:
 
 ```bash
 curl http://localhost:4200/api/health
+```
+
+## 🔌 Open Source Integrations
+
+See [INTEGRATIONS.md](./INTEGRATIONS.md) for complete list:
+
+- 🐳 Portainer (Docker UI)
+- 📊 Grafana (Monitoring)
+- 🔍 SonarQube (Code Quality)
+- 📝 Jupyter (Notebooks)
+- 🗄️ PostgreSQL/MySQL (Databases)
+- 🔐 Vault (Secrets)
+- 📡 MinIO (S3 Storage)
+- 📚 Gitea (Git)
+- 🧪 Selenium (Testing)
+- 📊 Metabase (Analytics)
+- 🔧 n8n (Automation)
+- And 9 more...
+
+```bash
+# Start all integrations
+docker-compose -f docker-compose.integrations.yml up -d
 ```
 
 ## License

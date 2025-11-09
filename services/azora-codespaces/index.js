@@ -10,8 +10,11 @@ import { createClient } from 'redis';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import * as integrations from './integrations.js';
 
 const app = express();
+app.set('trust proxy', true);
+
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 const docker = new Docker();
@@ -167,6 +170,69 @@ app.post('/api/collaborate/:workspaceId', authMiddleware, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+app.post('/api/workspaces/:id/git/clone', authMiddleware, async (req, res) => {
+  try {
+    const result = await integrations.gitIntegration.cloneRepo(req.params.id, req.body.repoUrl, req.body.token);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/workspaces/:id/jupyter', authMiddleware, async (req, res) => {
+  try {
+    const result = await integrations.jupyterIntegration.createNotebook(req.params.id, req.body.name);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/workspaces/:id/database', authMiddleware, async (req, res) => {
+  try {
+    const result = await integrations.databaseIntegration.createDatabase(req.params.id, req.body.type);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/workspaces/:id/video', authMiddleware, async (req, res) => {
+  try {
+    const result = await integrations.jitsiIntegration.createRoom(req.params.id);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/integrations', authMiddleware, (req, res) => {
+  res.json({
+    available: [
+      { name: 'Git', type: 'git', icon: '🔥' },
+      { name: 'Jupyter', type: 'jupyter', icon: '📝' },
+      { name: 'PostgreSQL', type: 'postgres', icon: '🗄️' },
+      { name: 'MySQL', type: 'mysql', icon: '🗄️' },
+      { name: 'Jitsi Video', type: 'jitsi', icon: '🔊' },
+      { name: 'Portainer', type: 'portainer', icon: '🐳' },
+      { name: 'Grafana', type: 'grafana', icon: '📊' },
+      { name: 'SonarQube', type: 'sonar', icon: '🔍' },
+      { name: 'Jenkins', type: 'jenkins', icon: '🚀' },
+      { name: 'Vault', type: 'vault', icon: '🔐' },
+      { name: 'MinIO', type: 'minio', icon: '📡' },
+      { name: 'Selenium', type: 'selenium', icon: '🧪' },
+      { name: 'Gitea', type: 'gitea', icon: '📚' },
+      { name: 'Draw.io', type: 'drawio', icon: '🎨' },
+      { name: 'Metabase', type: 'metabase', icon: '📊' },
+      { name: 'n8n', type: 'n8n', icon: '🔧' },
+      { name: 'Adminer', type: 'adminer', icon: '🐘' },
+      { name: 'Elasticsearch', type: 'elasticsearch', icon: '🔍' },
+      { name: 'Mailhog', type: 'mailhog', icon: '📨' },
+      { name: 'Keycloak', type: 'keycloak', icon: '🔐' }
+    ]
+  });
 });
 
 app.get('/api/health', (req, res) => {
