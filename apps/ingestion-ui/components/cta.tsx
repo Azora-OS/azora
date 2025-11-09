@@ -19,15 +19,15 @@ export function CTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="gradient-bg text-primary-foreground text-lg px-8 h-14 glow">
+          <Button size="lg" className="gradient-premium-sapphire text-white text-lg px-8 h-14 glow-premium-sapphire shadow-premium-lg hover:scale-105 transition-all duration-300">
             Get Started Free
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-          <Button size="lg" variant="outline" className="text-lg px-8 h-14 bg-transparent">
+          <Button size="lg" variant="outline" className="text-lg px-8 h-14 glass-light border-2 border-premium-sapphire-500/30 hover:border-premium-sapphire-500 hover:glass-medium transition-all duration-300">
             <BookOpen className="mr-2 w-5 h-5" />
             Read Documentation
           </Button>
-          <Button size="lg" variant="outline" className="text-lg px-8 h-14 bg-transparent">
+          <Button size="lg" variant="outline" className="text-lg px-8 h-14 glass-light border-2 border-premium-sapphire-500/30 hover:border-premium-sapphire-500 hover:glass-medium transition-all duration-300">
             <Github className="mr-2 w-5 h-5" />
             View on GitHub
           </Button>

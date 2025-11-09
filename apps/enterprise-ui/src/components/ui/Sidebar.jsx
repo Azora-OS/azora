@@ -48,8 +48,8 @@ const Sidebar = () => {
     <div className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40">
       <div className="flex flex-col h-full">
         {/* Logo */}
-        <div className="p-6 border-b border-border">
-          <h1 className="text-xl font-bold text-foreground">Azora OS</h1>
+        <div className="p-6 border-b border-border/50">
+          <h1 className="text-xl font-bold brand-gradient-triunity">Azora OS</h1>
           <p className="text-sm text-muted-foreground">Sovereign Operating System</p>
         </div>
 
@@ -70,8 +70,8 @@ const Sidebar = () => {
                         to={child.href}
                         className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
                           location.pathname === child.href
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-foreground hover:bg-accent'
+                            ? 'gradient-premium-sapphire text-white shadow-premium-sm glow-premium-sapphire'
+                            : 'text-foreground hover:glass-light transition-all duration-300'
                         }`}
                       >
                         {child.name}
