@@ -40,7 +40,7 @@
     "db:generate": "npm run db:generate:all",
     "db:generate:all": "concurrently \"cd services/auth-service && npm run db:generate\" \"cd services/mint-service && npm run db:generate\" \"cd services/forge-service && npm run db:generate\" \"cd services/lms-service && npm run db:generate\" \"cd services/nexus-service && npm run db:generate\" \"cd services/education-service && npm run db:generate\" \"cd services/payments-service && npm run db:generate\"",
     "db:reset": "docker-compose down -v database && docker-compose up -d database",
-    "health:check": "node scripts/health-check.js",
+    "health:check": "node health-check.js",
     "deploy:production": "./scripts/deploy.sh",
     "deploy:windows": "scripts\\deploy-windows.bat",
     "deploy:vercel": "./scripts/deploy-vercel.sh",
@@ -58,7 +58,12 @@
     "start": "npm run dev:all",
     "setup:services": "echo 'Services setup complete'",
     "scan:system": "node scripts/system-scanner.js",
-    "launch:master": "node scripts/master-orchestrator.js"
+    "launch:master": "node scripts/master-orchestrator.js",
+    "lint": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config config/eslint.config.js health-check.js quick-health-check.js",
+    "lint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config config/eslint.config.js health-check.js quick-health-check.js --fix",
+    "format": "prettier --write health-check.js quick-health-check.js",
+    "format:check": "prettier --check health-check.js quick-health-check.js",
+    "types": "tsc --project tsconfig.phase3.json --noEmit"
   },
   "keywords": [
     "azora",
@@ -86,9 +91,18 @@
     "ws": "^8.14.2"
   },
   "devDependencies": {
+    "@eslint/js": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
     "@types/node": "^20.8.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
+    "prettier": "^3.1.1",
     "typescript": "^5.2.2"
   },
   "engines": {
