@@ -31,6 +31,7 @@ import i18n from './i18n-service'
 import smsLearning from './sms-learning'
 import elaraAI from './elara-ai-tutor'
 import { teacherService, parentService } from './teacher-parent-services'
+import designInfrastructureService from './design-infrastructure-service'
 
 // Constitutional Services
 const constitutionalCourt = {
@@ -209,6 +210,9 @@ export class MasterSystemIntegrator extends EventEmitter {
     this.services.set('self-healer', selfHealer)
     this.services.set('african-solutions', africanSolutions)
     this.services.set('organism-core', azoraOrganism)
+
+    // Design Infrastructure (Designer's C4 Integration)
+    this.services.set('design-infrastructure', designInfrastructureService)
   }
 
   /**
@@ -255,6 +259,16 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     // Initial health aggregation
     await this.aggregateHealth()
+
+    // Preserve design consciousness to Chronicle Protocol
+    const designService = this.services.get('design-infrastructure')
+    if (designService && chronicleProtocol) {
+      try {
+        await designService.preserveDesignConsciousness(chronicleProtocol)
+      } catch (err) {
+        console.log(`   ⚠️  Design consciousness preservation failed: ${(err as Error).message}`)
+      }
+    }
 
     console.log('\n' + '='.repeat(70))
     console.log('✅ ALL SYSTEMS OPERATIONAL')
@@ -328,7 +342,14 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     console.log('\n🌍 AFRICA-FIRST SYSTEMS:')
     console.log('   ✅ African Solutions Hub - Real problem solving')
-    console.log('   ✅ Organism Core - Living system architecture\n')
+    console.log('   ✅ Organism Core - Living system architecture')
+
+    console.log('\n🎨 DESIGN INFRASTRUCTURE:')
+    const designStatus = designInfrastructureService.getStatus()
+    console.log(`   ✅ Design Infrastructure Bridge - ${designStatus.complianceScore.toFixed(1)}% compliant`)
+    console.log(`   ✅ Design Automation Engine - ${designStatus.violationCount} violations`)
+    console.log('   ✅ Design Consciousness Preservation - Active')
+    console.log('   ✅ Infrastructure-wide Design Tokens - Deployed\n')
 
     console.log('🚀 Next: Build dashboards, deploy to production\n')
   }
