@@ -52,7 +52,7 @@ import {
   Copy,
   Download,
   Upload,
-  Refresh,
+  RefreshCw,
   Play,
   Pause,
   AlertTriangle,
@@ -90,7 +90,7 @@ import {
   DollarSign,
   Euro,
   PoundSterling,
-  Yen,
+
   Bitcoin,
   CreditCard,
   ShoppingCart,
@@ -99,7 +99,7 @@ import {
   Ship,
   Car,
   Bike,
-  Walk,
+
   Home,
   Building,
   Factory,
@@ -303,9 +303,9 @@ export const AzoraDatabaseStudio: React.FC = () => {
       const mockResult: QueryResult = {
         columns: [
           { name: 'id', type: 'uuid', nullable: false, primaryKey: true },
-          { name: 'name', type: 'varchar', nullable: false },
-          { name: 'constitutional_alignment', type: 'integer', nullable: false },
-          { name: 'pivc_score', type: 'decimal', nullable: false },
+          { name: 'name', type: 'varchar', nullable: false, primaryKey: false },
+          { name: 'constitutional_alignment', type: 'integer', nullable: false, primaryKey: false },
+          { name: 'pivc_score', type: 'decimal', nullable: false, primaryKey: false },
         ],
         rows: [
           ['550e8400-e29b-41d4-a716-446655440000', 'Azora Constitution', 100, 98.5],
@@ -404,10 +404,7 @@ LIMIT 10;`;
             >
               <Immersive3DCard
                 variant={themeConfig.cardVariant}
-                depth="medium"
-                float={true}
                 className="p-6 cursor-pointer hover:ring-2 transition-all duration-300"
-                style={{ '--tw-ring-color': level.color } as React.CSSProperties}
               >
                 {/* Table Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -531,8 +528,6 @@ LIMIT 10;`;
         {/* Natural Language Query */}
         <Immersive3DCard
           variant={themeConfig.cardVariant}
-          depth="medium"
-          float={true}
           className="p-6"
         >
           <div className="flex items-center gap-3 mb-4">
@@ -576,8 +571,6 @@ LIMIT 10;`;
         {/* SQL Query */}
         <Immersive3DCard
           variant={themeConfig.cardVariant}
-          depth="medium"
-          float={true}
           className="p-6"
         >
           <div className="flex items-center gap-3 mb-4">
@@ -631,8 +624,6 @@ LIMIT 10;`;
         {queryResult && (
           <Immersive3DCard
             variant={themeConfig.cardVariant}
-            depth="medium"
-            float={true}
             className="p-6"
           >
             <div className="flex items-center justify-between mb-4">
@@ -696,8 +687,6 @@ LIMIT 10;`;
         {/* Query History */}
         <Immersive3DCard
           variant={themeConfig.cardVariant}
-          depth="medium"
-          float={true}
           className="p-6"
         >
           <h3 className="text-lg font-bold mb-4" style={{ color: themeConfig.primary }}>
@@ -763,10 +752,7 @@ LIMIT 10;`;
             <Immersive3DCard
               key={category.name}
               variant={themeConfig.cardVariant}
-              depth="medium"
-              float={true}
               className="p-4 text-center cursor-pointer hover:ring-2"
-              style={{ '--tw-ring-color': category.color } as React.CSSProperties}
             >
               <Icon className="w-8 h-8 mx-auto mb-2" style={{ color: category.color }} />
               <div className="text-lg font-bold" style={{ color: themeConfig.primary }}>
@@ -783,8 +769,6 @@ LIMIT 10;`;
       {/* Active Policies */}
       <Immersive3DCard
         variant={themeConfig.cardVariant}
-        depth="medium"
-        float={true}
         className="p-6"
       >
         <h3 className="text-lg font-bold mb-4" style={{ color: themeConfig.primary }}>
@@ -870,8 +854,6 @@ LIMIT 10;`;
             <Immersive3DCard
               key={metric.label}
               variant={themeConfig.cardVariant}
-              depth="medium"
-              float={true}
               className="p-4"
             >
               <div className="flex items-center justify-between mb-2">
@@ -898,8 +880,6 @@ LIMIT 10;`;
       <div className="grid lg:grid-cols-2 gap-6">
         <Immersive3DCard
           variant={themeConfig.cardVariant}
-          depth="medium"
-          float={true}
           className="p-6"
         >
           <h3 className="text-lg font-bold mb-4" style={{ color: themeConfig.primary }}>
@@ -915,8 +895,6 @@ LIMIT 10;`;
 
         <Immersive3DCard
           variant={themeConfig.cardVariant}
-          depth="medium"
-          float={true}
           className="p-6"
         >
           <h3 className="text-lg font-bold mb-4" style={{ color: themeConfig.primary }}>
@@ -969,8 +947,6 @@ LIMIT 10;`;
       {/* API Endpoints */}
       <Immersive3DCard
         variant={themeConfig.cardVariant}
-        depth="medium"
-        float={true}
         className="p-6"
       >
         <h3 className="text-lg font-bold mb-4" style={{ color: themeConfig.primary }}>
@@ -1105,7 +1081,6 @@ LIMIT 10;`;
                     }`}
                     style={{
                       backgroundColor: config.primary,
-                      ringColor: config.primary,
                     }}
                     title={`${themeKey.charAt(0).toUpperCase() + themeKey.slice(1)} Theme`}
                   />
