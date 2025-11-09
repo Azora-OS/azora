@@ -2,12 +2,33 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
+/**
+ * Ubuntu Card Component
+ * 
+ * @description A card that embodies Ubuntu philosophy - individual content
+ *              that contributes to collective knowledge. Supports Azora Gem
+ *              color variants for different system pillars.
+ * 
+ * @ubuntu Individual content → Collective knowledge
+ * 
+ * @example
+ * // Sapphire card (Technology)
+ * <Card className="border-sapphire-500">Technology Content</Card>
+ * 
+ * // Emerald card (Education)
+ * <Card className="border-emerald-500 glow-emerald">Learning Content</Card>
+ * 
+ * // Ruby card (Finance)
+ * <Card className="border-ruby-500">Financial Content</Card>
+ */
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card"
       className={cn(
         'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+        // Ubuntu spacing (golden ratio)
+        'space-ubuntu-md',
         className,
       )}
       {...props}
