@@ -20,7 +20,9 @@
 9. [Integration Points](#integration-points)
 10. [Deployment & Infrastructure](#deployment--infrastructure)
 11. [Documentation Index](#documentation-index)
-12. [Quick Reference](#quick-reference)
+12. [🚫 Strict Development Rules](#-strict-development-rules) ⚠️ **IMPORTANT**
+13. [Quick Reference](#quick-reference)
+14. [Project Status Summary](#project-status-summary)
 
 ---
 
@@ -441,6 +443,12 @@ ubuntu/docs/description
 ubuntu/docs/api-reference-update
 ```
 
+### ⚠️ Important Development Rules
+
+**🚫 README Files**: **DO NOT edit README.md files** - See [Strict Development Rules](#-strict-development-rules) section for details.
+
+**📝 Documentation**: Use `docs/` directory for new documentation instead of modifying READMEs.
+
 ---
 
 ## 📚 KEY CONCEPTS & TERMINOLOGY
@@ -616,6 +624,44 @@ OPENAI_API_KEY=your_key_here
 - `docs/branding/` - Brand guidelines
 - `docs/marketing/` - Marketing materials
 - `docs/research/` - Research documents
+
+---
+
+## 🚫 STRICT DEVELOPMENT RULES
+
+### ⛔ README Files - DO NOT EDIT
+
+**CRITICAL RULE**: **NEVER edit or modify README.md files** unless explicitly requested by project maintainers.
+
+#### Why This Rule Exists
+- README files serve as stable documentation and reference points
+- Unauthorized changes can cause confusion and break documentation consistency
+- README files are maintained by designated documentation maintainers
+- Changes require careful review to maintain accuracy and completeness
+
+#### What This Means
+- ❌ **DO NOT** edit `README.md` files in any directory
+- ❌ **DO NOT** modify existing README content
+- ❌ **DO NOT** add or remove sections from README files
+- ❌ **DO NOT** update version numbers or status indicators in READMEs
+- ✅ **DO** create new documentation files if needed (`docs/` directory)
+- ✅ **DO** update code comments and inline documentation
+- ✅ **DO** create or update technical documentation in `docs/` directory
+- ✅ **DO** request README changes through proper channels if needed
+
+#### Exception Process
+If README changes are absolutely necessary:
+1. **Request Permission**: Contact project maintainers first
+2. **Document Reason**: Explain why the change is needed
+3. **Get Approval**: Wait for explicit approval before making changes
+4. **Follow Guidelines**: If approved, follow documentation standards
+
+#### Enforcement
+- Automated checks may flag README modifications
+- Pull requests modifying READMEs without approval will be rejected
+- Violations may result in review of contributor access
+
+**This rule is enforced by the Snr Designer and applies to all team members.**
 
 ---
 
