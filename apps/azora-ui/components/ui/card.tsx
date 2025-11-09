@@ -26,9 +26,9 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="card"
       className={cn(
-        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-        // Ubuntu spacing (golden ratio)
-        'space-ubuntu-md',
+        'glass-medium text-card-foreground flex flex-col gap-6 rounded-2xl border border-border/50 py-6 shadow-premium-md transition-all duration-300 hover:shadow-premium-lg hover:scale-[1.02] hover:border-premium-sapphire/50 focus-within:ring-2 focus-within:ring-premium-sapphire-500 focus-within:ring-offset-2',
+        // Premium spacing (golden ratio)
+        'space-premium-lg',
         className,
       )}
       {...props}
