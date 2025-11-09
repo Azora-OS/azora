@@ -17,7 +17,8 @@
     "express": "^5.0.0",
     "cors": "^2.8.5",
     "ethers": "^6.9.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "prom-client": "^15.1.0"
   },
   "devDependencies": {
     "tsx": "^4.7.0",
