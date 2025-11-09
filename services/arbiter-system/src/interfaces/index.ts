@@ -33,7 +33,7 @@ export interface Arbiter {
 export interface ExpertiseArea {
   domain: 'commercial' | 'consumer' | 'employment' | 'property' | 'intellectual_property' | 'technology' | 'general';
   level: 'junior' | 'intermediate' | 'senior' | 'expert';
-  cases Handled: number;
+  casesHandled: number;
   successRate: number;
 }
 
@@ -128,7 +128,7 @@ export interface CaseParty {
     representativeId?: string;
   };
   claims: string[];
-  evidence Submitted: number;
+  evidenceSubmitted: number;
   lastActive: Date;
 }
 

@@ -33,14 +33,14 @@ export interface TransactionInfo {
 }
 
 export class WalletService {
-  private provider: ethers.providers.JsonRpcProvider;
-  private azrContract: ethers.Contract;
+  private provider: ethers.Provider;
+  private azrContract?: ethers.Contract;
 
   constructor(
     private rpcUrl: string = process.env.ETHEREUM_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/demo',
     private azrContractAddress: string = process.env.AZR_CONTRACT_ADDRESS || ''
   ) {
-    this.provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
 
     // Initialize AZR contract if address is provided
     if (azrContractAddress) {
@@ -144,7 +144,7 @@ export class WalletService {
       if (this.azrContract) {
         try {
           const balance = await this.azrContract.balanceOf(walletData.address);
-          azrBalance = ethers.utils.formatEther(balance);
+          azrBalance = ethers.formatEther(balance);
         } catch (error) {
           console.warn('Failed to get AZR balance:', error);
         }
@@ -155,7 +155,7 @@ export class WalletService {
 
       return {
         address: walletData.address,
-        balance: ethers.utils.formatEther(ethBalance),
+        balance: ethers.formatEther(ethBalance),
         network: walletData.network,
         isVerified: walletData.isVerified,
         kycStatus: walletData.kycStatus as any,
@@ -191,7 +191,7 @@ export class WalletService {
       // Create transaction
       const transaction = {
         to,
-        value: ethers.utils.parseEther(amount),
+        value: ethers.parseEther(amount),
         gasLimit: 21000
       };
 
@@ -247,7 +247,7 @@ export class WalletService {
       const contractWithSigner = this.azrContract.connect(wallet);
 
       // Send tokens
-      const tx = await contractWithSigner.transfer(to, ethers.utils.parseEther(amount));
+      const tx = await (contractWithSigner as any).transfer(to, ethers.parseEther(amount));
 
       // Record transaction in database
       await prisma.transaction.create({
@@ -328,7 +328,7 @@ export class WalletService {
    */
   async verifyWalletOwnership(userId: string, address: string, signature: string, message: string): Promise<boolean> {
     try {
-      const recoveredAddress = ethers.utils.verifyMessage(message, signature);
+      const recoveredAddress = ethers.verifyMessage(message, signature);
       return recoveredAddress.toLowerCase() === address.toLowerCase();
     } catch (error) {
       console.error('Verify wallet ownership error:', error);
@@ -341,8 +341,8 @@ export class WalletService {
    */
   async getGasPrice(): Promise<string> {
     try {
-      const gasPrice = await this.provider.getGasPrice();
-      return ethers.utils.formatUnits(gasPrice, 'gwei');
+      const feeData = await this.provider.getFeeData();
+      return ethers.formatUnits(feeData.gasPrice || 0, 'gwei');
     } catch (error) {
       console.error('Get gas price error:', error);
       throw new Error('Failed to get gas price');
@@ -356,7 +356,7 @@ export class WalletService {
     try {
       const gasEstimate = await this.provider.estimateGas({
         to,
-        value: ethers.utils.parseEther(value)
+        value: ethers.parseEther(value)
       });
       return gasEstimate.toString();
     } catch (error) {

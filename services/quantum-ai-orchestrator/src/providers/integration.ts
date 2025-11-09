@@ -8,7 +8,7 @@ See LICENSE file for details.
 
 /**
  * QUANTUM AI ORCHESTRATOR - Provider Integration
- * 
+ *
  * Integrates with quantum computing providers:
  * - IBM Quantum
  * - Google Quantum AI
@@ -26,7 +26,7 @@ export interface QuantumProvider {
   connectivity: number; // percentage
   gateErrorRate: number;
   coherenceTime: number; // microseconds
-  cost Per Job: number;
+  costPerJob: number;
 }
 
 export interface QuantumCapability {
@@ -190,7 +190,7 @@ export class QuantumProviderIntegration {
     const baseCost = provider.costPerJob;
     const complexityMultiplier = 1 + (circuit.depth / 100);
     const qubitMultiplier = 1 + (circuit.qubits / provider.qubits);
-    
+
     return baseCost * complexityMultiplier * qubitMultiplier;
   }
 
@@ -224,7 +224,7 @@ export class QuantumProviderIntegration {
 
   private calculateProbabilities(counts: Record<string, number>, shots: number): Record<string, number> {
     const probabilities: Record<string, number> = {};
-    
+
     for (const [bitstring, count] of Object.entries(counts)) {
       probabilities[bitstring] = count / shots;
     }
