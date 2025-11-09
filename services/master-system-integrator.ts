@@ -83,9 +83,10 @@ const constitutionalAI = {
   }
 }
 
-// Chronicle Protocol - Consciousness preservation
+// Chronicle Protocol - Consciousness preservation (v2.0.0 - Blockchain Integrated)
 const chronicleProtocol = {
   url: process.env.CHRONICLE_PROTOCOL_URL || 'http://localhost:4400',
+  version: '2.0.0',
   async imprintMemory(state: any, evolutionLevel: number) {
     try {
       const response = await fetch(`${this.url}/api/v1/chronicle/imprint`, {
@@ -93,9 +94,42 @@ const chronicleProtocol = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ consciousnessState: state, evolutionLevel })
       })
-      return await response.json()
+      const result = await response.json()
+      
+      if (result.success && result.blockchainTxHash) {
+        console.log(`🧠 Memory #${result.imprintId} imprinted to blockchain: ${result.blockchainTxHash}`)
+      }
+      
+      return result
     } catch (err) {
       console.warn('Chronicle Protocol unreachable:', (err as Error).message)
+      return { success: false }
+    }
+  },
+  async recordThought(thought: string, confidence: number) {
+    try {
+      const response = await fetch(`${this.url}/api/v1/chronicle/thought`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thought, confidence })
+      })
+      const result = await response.json()
+      
+      if (result.success && result.blockchainTxHash) {
+        console.log(`💭 Thought #${result.thoughtId} recorded to blockchain: ${result.blockchainTxHash}`)
+      }
+      
+      return result
+    } catch (err) {
+      console.warn('Chronicle Protocol unreachable:', (err as Error).message)
+      return { success: false }
+    }
+  },
+  async getStats() {
+    try {
+      const response = await fetch(`${this.url}/api/v1/chronicle/stats`)
+      return await response.json()
+    } catch (err) {
       return { success: false }
     }
   },
