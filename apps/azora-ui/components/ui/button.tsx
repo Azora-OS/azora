@@ -4,29 +4,61 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
+/**
+ * Ubuntu Button Component
+ * 
+ * @description A button that embodies Ubuntu philosophy - individual action
+ *              that contributes to collective benefit. Uses Azora Gem colors
+ *              to represent different pillars of the system.
+ * 
+ * @ubuntu Individual action → Collective benefit
+ * 
+ * @accessibility
+ * - Minimum 44x44px touch target
+ * - Keyboard accessible (Enter/Space)
+ * - Focus visible indicator
+ * - ARIA labels for screen readers
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive min-h-[44px] min-w-[44px] px-4 py-2",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive min-h-[44px] min-w-[44px] px-6 py-3 relative overflow-hidden group shadow-premium-sm hover:shadow-premium-md hover:scale-105",
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        // Premium Default uses Sapphire (Technology)
+        default: 'gradient-premium-sapphire text-white hover:shadow-premium-lg glow-premium-sapphire',
+        
+        // Premium Azora Gem Variants
+        sapphire: 'gradient-premium-sapphire text-white hover:shadow-premium-lg glow-premium-sapphire',
+        emerald: 'gradient-premium-emerald text-white hover:shadow-premium-lg glow-premium-emerald',
+        ruby: 'gradient-premium-ruby text-white hover:shadow-premium-lg glow-premium-ruby',
+        
+        // Premium Glassmorphic variants
+        glass: 'glass-medium text-foreground hover:glass-strong border-premium-sapphire',
+        glassSapphire: 'glass-sapphire text-white hover:shadow-premium-lg',
+        glassEmerald: 'glass-emerald text-white hover:shadow-premium-lg',
+        glassRuby: 'glass-ruby text-white hover:shadow-premium-lg',
+        
+        // Standard variants (premium enhanced)
         destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+          'gradient-premium-ruby text-white hover:shadow-premium-lg glow-premium-ruby focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border-2 border-premium-sapphire bg-transparent text-premium-sapphire-500 hover:bg-premium-sapphire-500 hover:text-white shadow-premium-sm hover:shadow-premium-md',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'gradient-premium-emerald text-white hover:shadow-premium-lg glow-premium-emerald',
         ghost:
-          'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'hover:glass-light hover:shadow-premium-sm text-foreground',
+        link: 'text-premium-sapphire-500 underline-offset-4 hover:underline hover:text-premium-sapphire-600',
+        
+        // Premium Ubuntu-specific variant
+        ubuntu: 'bg-gradient-to-r from-[var(--premium-sapphire-500)] via-[var(--premium-emerald-500)] to-[var(--premium-ruby-500)] text-white hover:opacity-90 focus-visible:ring-[var(--premium-sapphire-500)]/20 glow-premium-sapphire shadow-premium-lg',
       },
       size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-12 rounded-md px-8 has-[>svg]:px-6 text-base',
-        icon: 'size-9',
-        'icon-sm': 'size-8',
-        'icon-lg': 'size-10',
+        default: 'h-12 px-6 py-3 text-base has-[>svg]:px-4',
+        sm: 'h-10 rounded-lg gap-1.5 px-4 py-2 text-sm has-[>svg]:px-3',
+        lg: 'h-14 rounded-xl px-8 py-4 text-lg has-[>svg]:px-6',
+        icon: 'size-12',
+        'icon-sm': 'size-10',
+        'icon-lg': 'size-14',
       },
     },
     defaultVariants: {
@@ -41,6 +73,7 @@ function Button({
   variant,
   size,
   asChild = false,
+  children,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
@@ -53,7 +86,11 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {/* Premium shine effect */}
+      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+      {children}
+    </Comp>
   )
 }
 

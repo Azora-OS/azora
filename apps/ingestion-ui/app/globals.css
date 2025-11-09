@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* 💎 PREMIUM UI SYSTEM - Chief Architect Approved ✨ */
+@import '../../../azora-ui/globals-premium.css';
+
+/* Map acrylic to glassmorphic */
+.acrylic {
+  @apply glass-medium;
+}
+
+.elevation-2 {
+  @apply shadow-premium-md;
+}
+
+.sacred-shadow {
+  @apply shadow-premium-lg glow-premium-sapphire;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
