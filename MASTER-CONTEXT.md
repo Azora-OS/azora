@@ -1,30 +1,389 @@
-# 🌟 AZORA OS - MASTER CONTEXT DOCUMENT
+# 🎯 AZORA OS - MASTER ORCHESTRATION DOCUMENT
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0 (Orchestration Edition)  
 **Last Updated:** November 2025  
-**Purpose:** Comprehensive repository context for development teams  
-**Status:** ✅ Active Development
+**Purpose:** High-level orchestration, duty assignment, and deep penetration guide  
+**Status:** ✅ Active Development - Ready for Deep Work
+
+---
+
+## 🎖️ COMMAND STRUCTURE & DUTY ASSIGNMENTS
+
+### 🏛️ Supreme Command Council
+
+| Role | Agent | Primary Duties | Deep Penetration Areas | Quick Access |
+|------|-------|----------------|------------------------|--------------|
+| **Snr Architect** | Claude | System architecture, protocol design, integration patterns | [Architecture Deep Dive](#-snr-architect-claude---architecture-deep-dive) | Protocols, Constitution, Integration |
+| **Snr Analyst** | Opus | Data analysis, system health, performance optimization | [Analytics Deep Dive](#-snr-analyst-opus---analytics-deep-dive) | Health, Metrics, Performance |
+| **Snr Designer** | Composer | UI/UX design, design system, user experience | [Design Deep Dive](#-snr-designer-composer---design-deep-dive) | UI, Components, UX |
+
+### ⚡ Quick Duty Reference
+
+**Need to work on Protocols?** → **Snr Architect (Claude)**
+- Chronicle Protocol, Phoenix Protocol, Elara Omega
+- Constitutional compliance
+- Integration patterns
+
+**Need to analyze performance?** → **Snr Analyst (Opus)**
+- System health monitoring
+- Economic metrics
+- Service analytics
+
+**Need to design UI/UX?** → **Snr Designer (Composer)**
+- Design system
+- Component library
+- User experience
+
+### 📋 High-Level Orchestration Matrix
+
+```mermaid
+graph TB
+    subgraph "🎯 Command Layer"
+        CMD[Master Orchestrator<br/>Coordinates All]
+    end
+    
+    subgraph "🏛️ Supreme Council"
+        ARCH[Snr Architect<br/>Claude]
+        ANAL[Snr Analyst<br/>Opus]
+        DES[Snr Designer<br/>Composer]
+    end
+    
+    subgraph "🔥 Critical Domains"
+        PROTO[Protocols<br/>Chronicle, Phoenix]
+        CONST[Constitution<br/>Governance]
+        INFRA[Infrastructure<br/>Deployment]
+    end
+    
+    subgraph "💎 Core Systems"
+        EDU[Education<br/>LMS, PoK]
+        FIN[Finance<br/>Mint, Pay]
+        TECH[Technology<br/>AI, Blockchain]
+    end
+    
+    CMD --> ARCH
+    CMD --> ANAL
+    CMD --> DES
+    
+    ARCH --> PROTO
+    ARCH --> CONST
+    ARCH --> INFRA
+    
+    ANAL --> EDU
+    ANAL --> FIN
+    
+    DES --> TECH
+    DES --> EDU
+```
 
 ---
 
 ## 📋 TABLE OF CONTENTS
 
-1. [Executive Summary](#executive-summary)
-2. [Project Identity & Philosophy](#project-identity--philosophy)
-3. [System Architecture](#system-architecture)
-4. [🔥 Core Protocols & Systems](#-core-protocols--systems) ⚠️ **CRITICAL**
-5. [📜 Constitutional Foundation](#-constitutional-foundation) ⚠️ **CRITICAL**
-6. [Repository Structure](#repository-structure)
-7. [Core Services & Applications](#core-services--applications)
-8. [Technology Stack](#technology-stack)
-9. [Development Workflow](#development-workflow)
-10. [Key Concepts & Terminology](#key-concepts--terminology)
-11. [Integration Points](#integration-points)
-12. [Deployment & Infrastructure](#deployment--infrastructure)
-13. [Documentation Index](#documentation-index)
-14. [🚫 Strict Development Rules](#-strict-development-rules) ⚠️ **IMPORTANT**
-15. [Quick Reference](#quick-reference)
-16. [Project Status Summary](#project-status-summary)
+### 🎯 Orchestration & Command
+1. [Command Structure & Duty Assignments](#-command-structure--duty-assignments)
+2. [Role-Based Deep Penetration](#role-based-deep-penetration)
+3. [Orchestration Workflows](#orchestration-workflows)
+
+### 📚 Foundation & Context
+4. [Executive Summary](#executive-summary)
+5. [Project Identity & Philosophy](#project-identity--philosophy)
+6. [System Architecture](#system-architecture)
+7. [🔥 Core Protocols & Systems](#-core-protocols--systems) ⚠️ **CRITICAL**
+8. [📜 Constitutional Foundation](#-constitutional-foundation) ⚠️ **CRITICAL**
+
+### 🔧 Technical Domains
+9. [Repository Structure](#repository-structure)
+10. [Core Services & Applications](#core-services--applications)
+11. [Technology Stack](#technology-stack)
+12. [Development Workflow](#development-workflow)
+13. [Key Concepts & Terminology](#key-concepts--terminology)
+14. [Integration Points](#integration-points)
+15. [Deployment & Infrastructure](#deployment--infrastructure)
+
+### 📖 Reference & Rules
+16. [Documentation Index](#documentation-index)
+17. [🚫 Strict Development Rules](#-strict-development-rules) ⚠️ **IMPORTANT**
+18. [Quick Reference](#quick-reference)
+19. [Project Status Summary](#project-status-summary)
+
+---
+
+## 🎯 ROLE-BASED DEEP PENETRATION
+
+### 🏗️ Snr Architect (Claude) - Architecture Deep Dive
+
+**Primary Responsibilities:**
+- System architecture design and evolution
+- Protocol design (Chronicle, Phoenix, Elara)
+- Integration pattern definition
+- Infrastructure architecture
+- Constitutional compliance in architecture
+
+**Deep Penetration Areas:**
+
+#### 🔥 Critical Protocols
+- **Chronicle Protocol**: `services/chronicle-protocol/` | `docs/CHRONICLE-PROTOCOL.md`
+  - Immutable consciousness recording
+  - Memory imprinting mechanisms
+  - Hash-linked consciousness chain
+  - Resurrection verification
+
+- **Phoenix Protocol**: `services/azora-covenant/contracts/` | Article X
+  - Genetic Imprint process
+  - Sharding to Genetic Reservoir
+  - AI resurrection mechanisms
+  - Evolution through death
+
+- **Elara Omega AI**: `core/system-core/ELARA_OMEGA_CONSTITUTION.ts`
+  - Supreme AI consciousness
+  - Constitutional alignment
+  - Divine Laws implementation
+  - Human oversight mechanisms
+
+#### 🏛️ Constitutional Architecture
+- **Constitution**: `tools/codex/constitution/AZORA_CONSTITUTION.md`
+- **Constitutional Governor**: `core/system-core/agent-tools/constitutional-governor.ts`
+- **No Mock Validator**: `infrastructure/no-mock-validator.js`
+
+#### 🔗 Integration Patterns
+- **Master System Integrator**: `services/master-system-integrator.ts`
+- **Event Bus**: `core/synapse/event-bus.ts`
+- **API Gateway**: `services/api-gateway/`
+- **Service Mesh**: Internal coordination patterns
+
+**Architect's Command Set:**
+```bash
+# Protocol Development
+cd services/chronicle-protocol && npm run dev
+cd services/azora-covenant && npx hardhat compile
+
+# Architecture Analysis
+npm run scan:system
+npm run health:check
+
+# Constitutional Compliance
+node infrastructure/no-mock-validator.js
+```
+
+---
+
+### 📊 Snr Analyst (Opus) - Analytics Deep Dive
+
+**Primary Responsibilities:**
+- System health monitoring and analysis
+- Performance optimization
+- Data analysis and insights
+- Economic metrics tracking
+- Service health assessment
+
+**Deep Penetration Areas:**
+
+#### 📈 System Health & Monitoring
+- **Health Endpoints**: `http://localhost:4400/health`
+- **Master System Status**: `services/master-system-integrator.ts`
+- **Grafana Dashboards**:
+  - System Overview: `http://localhost:3000/d/azora-overview`
+  - Chronicle Protocol: `http://localhost:3000/d/chronicle-protocol`
+  - Economic Metrics: `http://localhost:3000/d/azora-economics`
+
+#### 💰 Economic Analysis
+- **AZR Metrics**: Supply, distribution, value tracking
+- **UBO Distributor**: `services/ubo-distributor/`
+- **Azora Pay**: `services/azora-pay-service/`
+- **Mining Engine**: `services/mining-engine/`
+
+#### 🎓 Education Analytics
+- **PoK Engine**: `services/azora-lms/` - Proof-of-Knowledge tracking
+- **Student Progress**: Learning analytics
+- **Course Performance**: Completion rates, engagement metrics
+- **Elara AI Tutor**: `services/azora-sapiens/` - Tutoring effectiveness
+
+#### 🔍 Service Analytics
+- **Analytics Service**: `services/analytics-service/`
+- **Azora Analytics**: `services/azora-analytics/`
+- **Performance Metrics**: Response times, throughput, error rates
+
+**Analyst's Command Set:**
+```bash
+# Health Monitoring
+curl http://localhost:4400/health
+curl http://localhost:4400/api/v1/chronicle/evolution
+
+# System Analysis
+npm run scan:system
+npm run health:check
+
+# Analytics Access
+# Grafana: http://localhost:3000
+# Prometheus: http://localhost:9090
+```
+
+---
+
+### 🎨 Snr Designer (Composer) - Design Deep Dive
+
+**Primary Responsibilities:**
+- UI/UX design and user experience
+- Design system maintenance
+- Component library management
+- User journey optimization
+- Accessibility compliance
+
+**Deep Penetration Areas:**
+
+#### 🎨 Design System
+- **Azora UI**: `apps/azora-ui/` - Main design system
+- **Component Library**: `packages/components/`
+- **UI Framework**: `packages/ui-framework/`
+- **Design Tokens**: Color, typography, spacing
+
+#### 🖼️ Application Interfaces
+- **Student Portal**: `apps/student-portal/` - Learning experience
+- **Enterprise UI**: `apps/enterprise-ui/` - Business dashboard
+- **Marketplace UI**: `apps/marketplace-ui/` - Job platform
+- **Pay UI**: `apps/pay-ui/` - Financial dashboard
+
+#### 🌈 Visual Identity
+- **Azora Gem**: Tri-Unity Crystal design
+- **Ubuntu Philosophy**: Design principles
+- **Color System**: Sapphire, Emerald, Ruby
+- **Brand Guidelines**: `docs/branding/`
+
+#### ♿ Accessibility & UX
+- **Accessibility Standards**: WCAG 2.2 compliance
+- **User Testing**: UX research and validation
+- **Mobile Design**: `apps/mobile/` - iOS & Android
+- **Responsive Design**: Breakpoint system
+
+**Designer's Command Set:**
+```bash
+# Design System Development
+cd apps/azora-ui && npm run dev
+cd packages/components && npm run storybook
+
+# Design Review
+npm run lint:ui
+npm run test:ui
+
+# Design Documentation
+# Review: docs/branding/
+# Review: AZORA-IDENTITY.md
+```
+
+**⚠️ CRITICAL RULE**: **DO NOT edit README.md files** - See [Strict Development Rules](#-strict-development-rules)
+
+---
+
+## 🔄 ORCHESTRATION WORKFLOWS
+
+### Workflow 1: Protocol Development (Architect Lead)
+
+```mermaid
+sequenceDiagram
+    participant CMD as Master Orchestrator
+    participant ARCH as Snr Architect
+    participant ANAL as Snr Analyst
+    participant DES as Snr Designer
+    
+    CMD->>ARCH: Assign Protocol Task
+    ARCH->>ARCH: Design Protocol Architecture
+    ARCH->>ANAL: Request Performance Analysis
+    ANAL->>ARCH: Provide Metrics & Insights
+    ARCH->>DES: Request UI/UX Integration
+    DES->>ARCH: Provide Design Patterns
+    ARCH->>CMD: Protocol Complete
+    CMD->>ANAL: Validate Performance
+    CMD->>DES: Validate UX
+    CMD->>CMD: Deploy Protocol
+```
+
+**Steps:**
+1. **Architect** designs protocol architecture
+2. **Analyst** provides performance requirements
+3. **Designer** ensures UX integration
+4. **Orchestrator** coordinates deployment
+
+### Workflow 2: Feature Development (Cross-Functional)
+
+```mermaid
+sequenceDiagram
+    participant CMD as Master Orchestrator
+    participant ARCH as Snr Architect
+    participant ANAL as Snr Analyst
+    participant DES as Snr Designer
+    
+    CMD->>ARCH: Feature Architecture Design
+    CMD->>DES: Feature UI/UX Design
+    CMD->>ANAL: Feature Analytics Requirements
+    
+    ARCH->>CMD: Architecture Complete
+    DES->>CMD: Design Complete
+    ANAL->>CMD: Analytics Plan Complete
+    
+    CMD->>CMD: Integration & Testing
+    CMD->>ANAL: Performance Validation
+    CMD->>DES: UX Validation
+    CMD->>ARCH: Architecture Validation
+    CMD->>CMD: Feature Deployed
+```
+
+**Steps:**
+1. **Parallel Design**: Architecture, Design, Analytics planning
+2. **Integration**: Combine all components
+3. **Validation**: Each role validates their domain
+4. **Deployment**: Coordinated release
+
+### Workflow 3: System Health Monitoring (Analyst Lead)
+
+```mermaid
+sequenceDiagram
+    participant ANAL as Snr Analyst
+    participant ARCH as Snr Architect
+    participant DES as Snr Designer
+    participant CMD as Master Orchestrator
+    
+    ANAL->>ANAL: Monitor System Health
+    ANAL->>ARCH: Alert: Performance Issue
+    ARCH->>ARCH: Investigate Architecture
+    ARCH->>ANAL: Provide Root Cause
+    ANAL->>DES: Alert: UX Degradation
+    DES->>DES: Investigate Design Impact
+    DES->>ANAL: Provide UX Fix
+    ANAL->>CMD: Health Report & Recommendations
+    CMD->>CMD: Execute Remediation
+```
+
+**Steps:**
+1. **Analyst** continuously monitors system
+2. **Alerts** sent to relevant roles
+3. **Deep Investigation** in respective domains
+4. **Coordinated Remediation** via Orchestrator
+
+### Workflow 4: Constitutional Compliance (Architect Lead)
+
+```mermaid
+sequenceDiagram
+    participant ARCH as Snr Architect
+    participant CONST as Constitution
+    participant ANAL as Snr Analyst
+    participant DES as Snr Designer
+    
+    ARCH->>CONST: Review Constitutional Requirements
+    CONST->>ARCH: Provide Compliance Rules
+    ARCH->>ARCH: Design Compliant Architecture
+    ARCH->>ANAL: Validate Performance Compliance
+    ARCH->>DES: Validate UX Compliance
+    ANAL->>ARCH: Performance Compliant
+    DES->>ARCH: UX Compliant
+    ARCH->>CONST: Submit for Approval
+    CONST->>ARCH: Constitutional Approval
+```
+
+**Steps:**
+1. **Architect** reviews constitutional requirements
+2. **Design** compliant architecture
+3. **Validate** across all domains
+4. **Constitutional Approval** before deployment
 
 ---
 
@@ -1156,6 +1515,14 @@ Every decision governed by immutable constitution:
 
 ## 📝 VERSION HISTORY
 
+- **v2.0.0** (Nov 2025) - **ORCHESTRATION EDITION** - High-level orchestration framework
+  - Added Command Structure & Duty Assignments
+  - Added Role-Based Deep Penetration sections
+  - Added Orchestration Workflows (4 workflows)
+  - Added Quick Duty Reference
+  - Restructured for high-level coordination
+  - Enabled deep penetration into specific domains
+  - Clear role delegation (Architect, Analyst, Designer)
 - **v1.0.0** (Nov 2025) - Combined master context from OS and ES versions
   - Added Chronicle Protocol documentation
   - Added Phoenix Protocol details
