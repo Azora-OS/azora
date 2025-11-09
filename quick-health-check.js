@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-const axios = require('axios');
+import axios from 'axios';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const services = [
   { name: 'Auth Service', url: 'http://localhost:3001/health' },
@@ -29,7 +31,7 @@ async function checkService(service) {
   }
 }
 
-async function runHealthCheck() {
+export async function runQuickHealthCheck() {
   console.log('🏥 AZORA OS CORE SERVICES HEALTH CHECK');
   console.log('=====================================');
   console.log(`⏰ ${new Date().toISOString()}\n`);
@@ -38,10 +40,11 @@ async function runHealthCheck() {
 
   let healthyCount = 0;
 
-  results.forEach(result => {
+  results.forEach((result) => {
     console.log(`${result.status}: ${result.name}`);
+
     if (result.status.includes('healthy')) {
-      healthyCount++;
+      healthyCount += 1;
     }
   });
 
@@ -62,4 +65,12 @@ async function runHealthCheck() {
   process.exit(healthPercentage < 50 ? 1 : 0);
 }
 
-runHealthCheck().catch(console.error);
+const invokedPath = process.argv[1] ? resolve(process.argv[1]) : undefined;
+const modulePath = resolve(fileURLToPath(import.meta.url));
+
+if (invokedPath && invokedPath === modulePath) {
+  runQuickHealthCheck().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

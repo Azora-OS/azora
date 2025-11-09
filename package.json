@@ -35,7 +35,7 @@
     "db:generate": "npm run db:generate:all",
     "db:generate:all": "concurrently \"cd services/auth-service && npm run db:generate\" \"cd services/mint-service && npm run db:generate\" \"cd services/forge-service && npm run db:generate\" \"cd services/lms-service && npm run db:generate\" \"cd services/nexus-service && npm run db:generate\" \"cd services/education-service && npm run db:generate\" \"cd services/payments-service && npm run db:generate\"",
     "db:reset": "docker-compose down -v database && docker-compose up -d database",
-    "health:check": "node scripts/health-check.js",
+    "health:check": "node health-check.js",
     "deploy:production": "./scripts/deploy.sh",
     "deploy:windows": "scripts\\deploy-windows.bat",
     "setup:dev": "./scripts/setup-dev.sh",

@@ -4,8 +4,11 @@ AZORA PROPRIETARY LICENSE
 Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 */
 
-const axios = require('axios');
-const { performance } = require('perf_hooks');
+import axios from 'axios';
+import net from 'node:net';
+import { resolve } from 'node:path';
+import { performance } from 'node:perf_hooks';
+import { fileURLToPath } from 'node:url';
 
 const services = [
   { name: 'API Gateway', url: 'http://localhost:4000/health' },
@@ -25,41 +28,43 @@ const services = [
 
 async function checkService(service) {
   const start = performance.now();
+
   try {
     if (service.type === 'tcp') {
-      // For TCP connections (database, Redis)
       const url = new URL(service.url);
-      const net = require('net');
-      
-      return new Promise((resolve) => {
-        const client = net.createConnection({ host: url.hostname, port: url.port }, () => {
-          const end = performance.now();
-          const responseTime = Math.round(end - start);
-          client.end();
-          resolve({
-            name: service.name,
-            status: 'healthy',
-            responseTime: `${responseTime}ms`,
-            data: 'TCP connection successful'
-          });
-        });
-        
+
+      return new Promise((resolvePromise) => {
+        const client = net.createConnection(
+          { host: url.hostname, port: Number(url.port) || undefined },
+          () => {
+            const end = performance.now();
+            const responseTime = Math.round(end - start);
+            client.end();
+            resolvePromise({
+              name: service.name,
+              status: 'healthy',
+              responseTime: `${responseTime}ms`,
+              data: 'TCP connection successful'
+            });
+          }
+        );
+
         client.on('error', (error) => {
           const end = performance.now();
           const responseTime = Math.round(end - start);
-          resolve({
+          resolvePromise({
             name: service.name,
             status: 'unhealthy',
             responseTime: `${responseTime}ms`,
             error: error.message
           });
         });
-        
+
         setTimeout(() => {
           client.destroy();
           const end = performance.now();
           const responseTime = Math.round(end - start);
-          resolve({
+          resolvePromise({
             name: service.name,
             status: 'unhealthy',
             responseTime: `${responseTime}ms`,
@@ -67,23 +72,22 @@ async function checkService(service) {
           });
         }, 5000);
       });
-    } else {
-      // For HTTP endpoints
-      const response = await axios.get(service.url, { timeout: 5000 });
-      const end = performance.now();
-      const responseTime = Math.round(end - start);
-      
-      return {
-        name: service.name,
-        status: 'healthy',
-        responseTime: `${responseTime}ms`,
-        data: response.data
-      };
     }
+
+    const response = await axios.get(service.url, { timeout: 5000 });
+    const end = performance.now();
+    const responseTime = Math.round(end - start);
+
+    return {
+      name: service.name,
+      status: 'healthy',
+      responseTime: `${responseTime}ms`,
+      data: response.data
+    };
   } catch (error) {
     const end = performance.now();
     const responseTime = Math.round(end - start);
-    
+
     return {
       name: service.name,
       status: 'unhealthy',
@@ -93,25 +97,25 @@ async function checkService(service) {
   }
 }
 
-async function runHealthCheck() {
+export async function runHealthCheck() {
   console.log('🏥 AZORA OS HEALTH CHECK');
   console.log('========================');
   console.log(`⏰ ${new Date().toISOString()}\n`);
 
   const results = await Promise.all(services.map(checkService));
-  
+
   let healthyCount = 0;
   let totalResponseTime = 0;
 
-  results.forEach(result => {
+  results.forEach((result) => {
     const icon = result.status === 'healthy' ? '✅' : '❌';
     console.log(`${icon} ${result.name}: ${result.status} (${result.responseTime})`);
-    
+
     if (result.status === 'healthy') {
-      healthyCount++;
-      totalResponseTime += parseInt(result.responseTime);
+      healthyCount += 1;
+      totalResponseTime += parseInt(result.responseTime, 10);
     }
-    
+
     if (result.error) {
       console.log(`   Error: ${result.error}`);
     }
@@ -138,8 +142,12 @@ async function runHealthCheck() {
   process.exit(healthPercentage < 50 ? 1 : 0);
 }
 
-if (require.main === module) {
-  runHealthCheck().catch(console.error);
-}
+const invokedPath = process.argv[1] ? resolve(process.argv[1]) : undefined;
+const modulePath = resolve(fileURLToPath(import.meta.url));
 
-module.exports = { runHealthCheck };
+if (invokedPath && invokedPath === modulePath) {
+  runHealthCheck().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
