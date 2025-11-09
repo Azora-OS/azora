@@ -1,0 +1,19 @@
+{
+  "name": "@azora/lib",
+  "version": "0.1.0",
+  "description": "Shared Azora utilities, design tokens, and client helpers",
+  "type": "module",
+  "main": "./index.ts",
+  "module": "./index.ts",
+  "types": "./index.ts",
+  "sideEffects": false,
+  "files": [
+    "**/*.ts",
+    "**/*.tsx",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}
