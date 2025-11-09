@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                String            @id @default(uuid())
+  email             String            @unique
+  password          String?
+  name              String
+  role              String            @default("user")
+  isEmailVerified   Boolean           @default(false)
+  emailVerificationToken String?
+  emailVerificationExpires DateTime?
+  passwordResetToken String?
+  passwordResetExpires DateTime?
+  mfaEnabled        Boolean           @default(false)
+  mfaSecret         String?
+  mfaBackupCodes    String?           // JSON array of backup codes
+  lastLoginAt       DateTime?
+  loginAttempts     Int               @default(0)
+  lockoutUntil      DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  // OAuth fields
+  googleId          String?           @unique
+  githubId          String?           @unique
+  appleId           String?           @unique
+  avatar            String?
+
+  // Relations
+  sessions          Session[]
+  refreshTokens     RefreshToken[]
+
+  @@map("users")
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  ipAddress   String?
+  userAgent   String?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  revokedAt   DateTime?
+  replacedBy  String?
+
+  @@map("refresh_tokens")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  permissions String? // JSON array of permission strings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  resource    String   // e.g., "user", "payment", "course"
+  action      String   // e.g., "create", "read", "update", "delete"
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@map("permissions")
+}

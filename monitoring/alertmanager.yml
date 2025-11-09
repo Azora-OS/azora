@@ -1,0 +1,54 @@
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alerts@azora.os'
+  smtp_auth_username: 'alerts@azora.os'
+  smtp_auth_password: 'your-app-password'
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'azora-team'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'azora-critical'
+
+receivers:
+  - name: 'azora-team'
+    email_configs:
+      - to: 'team@azora.os'
+        headers:
+          subject: 'Azora Alert: {{ .GroupLabels.alertname }}'
+        html: |
+          {{ range .Alerts }}
+          <h2>Alert: {{ .Annotations.summary }}</h2>
+          <p><strong>Description:</strong> {{ .Annotations.description }}</p>
+          <p><strong>Severity:</strong> {{ .Labels.severity }}</p>
+          <hr>
+          {{ end }}
+
+  - name: 'azora-critical'
+    email_configs:
+      - to: 'critical@azora.os'
+        headers:
+          subject: 'CRITICAL ALERT: {{ .GroupLabels.alertname }}'
+        html: |
+          {{ range .Alerts }}
+          <h1>🚨 CRITICAL ALERT 🚨</h1>
+          <h2>Alert: {{ .Annotations.summary }}</h2>
+          <p><strong>Description:</strong> {{ .Annotations.description }}</p>
+          <p><strong>Severity:</strong> {{ .Labels.severity }}</p>
+          <hr>
+          {{ end }}
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+        channel: '#alerts-critical'
+        title: '🚨 CRITICAL ALERT: {{ .GroupLabels.alertname }}'
+        text: |
+          {{ range .Alerts }}
+          *{{ .Annotations.summary }}*
+          {{ .Annotations.description }}
+          Severity: {{ .Labels.severity }}
+          {{ end }}

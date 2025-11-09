@@ -2,10 +2,30 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Bell, Settings, Wallet, Shield, TrendingUp, Users, Globe, ArrowRight, BookOpen, Zap } from "lucide-react"
+import { Bell, Settings, Wallet, Shield, TrendingUp, Users, Globe, ArrowRight, BookOpen, Zap, Loader2 } from "lucide-react"
 import { InternationalCollaboration } from "@/components/ui/international-collaboration"
+import { useWalletBalance, useStudentProgress, useHealthCheck } from "@/hooks/useApi"
 
 export default function StudentDashboard() {
+  // API hooks for real data
+  const { data: walletData, loading: walletLoading } = useWalletBalance("student-123")
+  const { data: progressData, loading: progressLoading } = useStudentProgress("student-123")
+  const { health, loading: healthLoading } = useHealthCheck()
+
+  // Mock data fallbacks
+  const mockWallet = { balance: 125.75, change: 12.5 }
+  const mockProgress = {
+    completedModules: 34,
+    totalModules: 47,
+    hoursInvested: 28.5,
+    streak: 14,
+    weeklyData: [40, 65, 45, 80, 70, 85, 95]
+  }
+
+  // Use real data or fallbacks
+  const wallet = walletData || mockWallet
+  const progress = progressData || mockProgress
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -19,6 +39,27 @@ export default function StudentDashboard() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">Azora Sapiens University</h1>
+                {healthLoading ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span className="text-xs text-muted-foreground">Checking system health...</span>
+                  </div>
+                ) : health ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className={`h-2 w-2 rounded-full ${
+                      health.status === 'healthy' ? 'bg-success' :
+                      health.status === 'degraded' ? 'bg-warning' : 'bg-destructive'
+                    }`} />
+                    <span className="text-xs text-muted-foreground capitalize">
+                      System {health.status}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="h-2 w-2 rounded-full bg-destructive" />
+                    <span className="text-xs text-muted-foreground">System offline</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -97,14 +138,22 @@ export default function StudentDashboard() {
                         strokeWidth="8"
                         fill="none"
                         strokeDasharray={`${2 * Math.PI * 88}`}
-                        strokeDashoffset={`${2 * Math.PI * 88 * (1 - 0.73)}`}
+                        strokeDashoffset={`${2 * Math.PI * 88 * (1 - (progress.completedModules / progress.totalModules))}`}
                         className="text-primary glow-cyan transition-all duration-1000"
                         strokeLinecap="round"
                       />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-5xl font-bold text-primary text-glow-cyan">73%</span>
-                      <span className="text-sm text-muted-foreground mt-1">Complete</span>
+                      {progressLoading ? (
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      ) : (
+                        <>
+                          <span className="text-5xl font-bold text-primary text-glow-cyan">
+                            {Math.round((progress.completedModules / progress.totalModules) * 100)}%
+                          </span>
+                          <span className="text-sm text-muted-foreground mt-1">Complete</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -115,18 +164,18 @@ export default function StudentDashboard() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Modules Completed</span>
-                      <span className="font-semibold text-primary">12</span>
+                      <span className="font-semibold text-primary">{progress.completedModules}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Hours Invested</span>
-                      <span className="font-semibold text-accent">28.5</span>
+                      <span className="font-semibold text-accent">{progress.hoursInvested}h</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Streak</span>
-                      <span className="font-semibold text-success">14 days</span>
+                      <span className="font-semibold text-success">{progress.streak} days</span>
                     </div>
                     <div className="mt-4 h-20 flex items-end gap-1">
-                      {[40, 65, 45, 80, 70, 85, 95].map((height, i) => (
+                      {progress.weeklyData.map((height, i) => (
                         <div key={i} className="flex-1 bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
                           <div className="w-full bg-primary rounded-t glow-cyan" style={{ height: "100%" }} />
                         </div>
@@ -237,12 +286,25 @@ export default function StudentDashboard() {
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-4xl font-bold text-primary text-glow-cyan">125.75</span>
-                  <span className="text-xl text-muted-foreground">aZAR</span>
+                  {walletLoading ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-6 w-6 animate-spin" />
+                      <span className="text-muted-foreground">Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-bold text-primary text-glow-cyan">
+                        {wallet.balance.toFixed(2)}
+                      </span>
+                      <span className="text-xl text-muted-foreground">aZAR</span>
+                    </>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <TrendingUp className="h-4 w-4 text-success" />
-                  <span className="text-success font-medium">+12.5 aZAR this week</span>
+                  <span className="text-success font-medium">
+                    {walletLoading ? '...' : `+${wallet.change} aZAR this week`}
+                  </span>
                 </div>
               </div>
 
@@ -316,11 +378,11 @@ export default function StudentDashboard() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Total Modules</span>
-                  <span className="font-semibold text-primary">47</span>
+                  <span className="font-semibold text-primary">{progress.totalModules}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Completed</span>
-                  <span className="font-semibold text-success">34</span>
+                  <span className="font-semibold text-success">{progress.completedModules}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">In Progress</span>
@@ -328,7 +390,7 @@ export default function StudentDashboard() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Total aZAR Earned</span>
-                  <span className="font-semibold text-primary">125.75</span>
+                  <span className="font-semibold text-primary">{wallet.balance.toFixed(2)}</span>
                 </div>
               </div>
             </Card>

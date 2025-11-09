@@ -1,5 +1,5 @@
 {
-  "name": "azora-os",
+  "name": "azora-os-service",
   "version": "1.0.0",
   "description": "Azora OS - A comprehensive platform for decentralized applications.",
   "main": "index.js",

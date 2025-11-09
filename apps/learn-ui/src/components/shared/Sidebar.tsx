@@ -2,13 +2,14 @@ import {
   LayoutDashboard,
   BookOpen,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  Settings
 } from 'lucide-react'
 import { LearningOverview } from '../../types'
 
 interface SidebarProps {
-  activeView: 'dashboard' | 'courses' | 'progress' | 'earnings'
-  onViewChange: (view: 'dashboard' | 'courses' | 'progress' | 'earnings') => void
+  activeView: 'dashboard' | 'courses' | 'progress' | 'earnings' | 'settings'
+  onViewChange: (view: 'dashboard' | 'courses' | 'progress' | 'earnings' | 'settings') => void
   data?: LearningOverview
 }
 
@@ -37,6 +38,12 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
       label: 'Earnings',
       icon: DollarSign,
       count: data?.totalEarnings ? `${data.totalEarnings} AZR` : null
+    },
+    {
+      id: 'settings' as const,
+      label: 'Settings',
+      icon: Settings,
+      count: null
     }
   ]
 

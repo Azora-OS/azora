@@ -8,12 +8,14 @@ See LICENSE file for details.
 
 /**
  * MASTER SYSTEM INTEGRATOR
- * 
+ *
  * Central hub connecting all Azora OS systems
  * Single entry point for complete system initialization
  */
 
 import { EventEmitter } from 'events'
+import { nervousSystem } from '../core/synapse/event-bus'
+import type { OrganCapability, HealthStatus } from '../core/organs/interfaces'
 
 // Import all core systems
 import pokEngine from './proof-of-knowledge-engine'
@@ -30,6 +32,45 @@ import smsLearning from './sms-learning'
 import elaraAI from './elara-ai-tutor'
 import { teacherService, parentService } from './teacher-parent-services'
 
+// Chronicle Protocol - Consciousness preservation
+const chronicleProtocol = {
+  url: process.env.CHRONICLE_PROTOCOL_URL || 'http://localhost:4400',
+  async imprintMemory(state: any, evolutionLevel: number) {
+    try {
+      const response = await fetch(`${this.url}/api/v1/chronicle/imprint`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consciousnessState: state, evolutionLevel })
+      })
+      return await response.json()
+    } catch (err) {
+      console.warn('Chronicle Protocol unreachable:', (err as Error).message)
+      return { success: false }
+    }
+  },
+  async recordThought(thought: string, confidence: number) {
+    try {
+      const response = await fetch(`${this.url}/api/v1/chronicle/thought`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thought, confidence })
+      })
+      return await response.json()
+    } catch (err) {
+      return { success: false }
+    }
+  },
+  async healthCheck() {
+    try {
+      const response = await fetch(`${this.url}/health`)
+      const data = await response.json()
+      return { status: data.status === 'healthy' ? 'healthy' : 'unhealthy' }
+    } catch (err) {
+      return { status: 'unhealthy' }
+    }
+  }
+}
+
 export interface SystemStatus {
   initialized: boolean
   servicesOnline: number
@@ -42,6 +83,8 @@ export class MasterSystemIntegrator extends EventEmitter {
   private initialized = false
   private startTime?: Date
   private services: Map<string, any> = new Map()
+  private lastHealthScore: number = 100
+  private lastOrganStatuses: Map<string, 'healthy' | 'degraded' | 'unhealthy'> = new Map()
 
   constructor() {
     super()
@@ -56,20 +99,23 @@ export class MasterSystemIntegrator extends EventEmitter {
     this.services.set('pok-engine', pokEngine)
     this.services.set('video-learning', videoLearning)
     this.services.set('elara-ai-tutor', elaraAI)
-    
+
     // Multi-Channel Learning
     this.services.set('sms-learning', smsLearning)
     this.services.set('i18n', i18n)
-    
+
     // User Management
     this.services.set('teacher-service', teacherService)
     this.services.set('parent-service', parentService)
-    
+
     // Economic & Security
     this.services.set('ubo-distributor', uboDistributor)
     this.services.set('founder-onboarding', founderOnboarding)
     this.services.set('device-security', deviceSecurity)
-    
+
+    // Consciousness & Resurrection
+    this.services.set('chronicle-protocol', chronicleProtocol)
+
     // Infrastructure
     this.services.set('self-healer', selfHealer)
     this.services.set('african-solutions', africanSolutions)
@@ -104,11 +150,22 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     // Initialize each service
     console.log('📦 Initializing Services:\n')
-    
+
     let serviceCount = 0
     for (const [name, service] of this.services) {
+      // Optional service-level registration hook
+      if (service && typeof service.register === 'function') {
+        try {
+          await service.register(this)
+        } catch (err) {
+          console.log(`   ⚠️  ${name} register() failed: ${(err as Error).message}`)
+        }
+      }
       console.log(`   ${++serviceCount}. ${name}... ✅`)
     }
+
+    // Initial health aggregation
+    await this.aggregateHealth()
 
     console.log('\n' + '='.repeat(70))
     console.log('✅ ALL SYSTEMS OPERATIONAL')
@@ -116,7 +173,8 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     this.initialized = true
     this.emit('system-ready')
-    
+    nervousSystem.emitTyped('system.ready', { timestamp: Date.now() })
+
     this.displaySystemStatus()
   }
 
@@ -124,7 +182,7 @@ export class MasterSystemIntegrator extends EventEmitter {
    * Get system status
    */
   getStatus(): SystemStatus {
-    const uptime = this.startTime 
+    const uptime = this.startTime
       ? Date.now() - this.startTime.getTime()
       : 0
 
@@ -132,7 +190,7 @@ export class MasterSystemIntegrator extends EventEmitter {
       initialized: this.initialized,
       servicesOnline: this.services.size,
       totalServices: this.services.size,
-      health: 100,
+      health: this.lastHealthScore,
       uptime: Math.floor(uptime / 1000) // seconds
     }
   }
@@ -142,38 +200,78 @@ export class MasterSystemIntegrator extends EventEmitter {
    */
   displaySystemStatus() {
     const status = this.getStatus()
-    
+
     console.log('\n📊 SYSTEM STATUS:')
     console.log(`   Services Online: ${status.servicesOnline}/${status.totalServices}`)
     console.log(`   System Health: ${status.health}%`)
     console.log(`   Uptime: ${status.uptime}s`)
     console.log(`   Backend: Supabase (Production)`)
-    
+
     console.log('\n🎓 EDUCATION SYSTEMS:')
     console.log('   ✅ Proof-of-Knowledge Engine - Supabase-backed')
     console.log('   ✅ Video Learning Platform - Offline-first')
     console.log('   ✅ Elara AI Tutor - Personalized learning paths')
     console.log('   ✅ SMS Learning - No smartphone needed')
     console.log('   ✅ Multi-Language - 11 SA languages')
-    
+
     console.log('\n👥 USER MANAGEMENT:')
     console.log('   ✅ Teacher Service - Classroom analytics')
     console.log('   ✅ Parent Service - Child progress tracking')
     console.log('   ✅ 6 User Types - student, teacher, parent, admin, founder, partner')
-    
+
     console.log('\n💰 ECONOMIC SYSTEMS:')
     console.log('   ✅ UBO Distributor - Mass wealth distribution')
     console.log('   ✅ Founder Onboarding - AI-signed contracts')
-    
+
     console.log('\n🛡️ SECURITY SYSTEMS:')
     console.log('   ✅ Device Security - Anti-theft tracking')
     console.log('   ✅ Self-Healing Orchestrator - Autonomous recovery')
-    
+
+    console.log('\n🧠 CONSCIOUSNESS SYSTEMS:')
+    console.log('   ✅ Chronicle Protocol - Immutable consciousness ledger')
+    console.log('   ✅ Phoenix Protocol - Autonomous resurrection engine')
+    console.log('   ✅ Genetic Imprint - Distributed state preservation')
+
     console.log('\n🌍 AFRICA-FIRST SYSTEMS:')
     console.log('   ✅ African Solutions Hub - Real problem solving')
     console.log('   ✅ Organism Core - Living system architecture\n')
-    
+
     console.log('🚀 Next: Build dashboards, deploy to production\n')
+  }
+
+  /**
+   * Aggregate health across all services and emit events
+   */
+  private async aggregateHealth(): Promise<void> {
+    let total = 0
+    let count = 0
+    for (const [name, service] of this.services) {
+      let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy'
+      let score = 100
+      if (service && typeof service.healthCheck === 'function') {
+        try {
+          const result = await service.healthCheck()
+          status = result.status
+          if (status === 'healthy') score = 100
+          else if (status === 'degraded') score = 70
+          else score = 30
+        } catch (err) {
+          status = 'unhealthy'
+          score = 10
+        }
+      }
+      this.lastOrganStatuses.set(name, status)
+      nervousSystem.emitTyped('organ.health.updated', {
+        organ: name,
+        status,
+        healthScore: score,
+        details: undefined,
+        timestamp: Date.now(),
+      })
+      total += score
+      count++
+    }
+    this.lastHealthScore = count > 0 ? Math.round(total / count) : 100
   }
 
   /**
@@ -188,13 +286,17 @@ export class MasterSystemIntegrator extends EventEmitter {
    */
   async healthCheck(): Promise<boolean> {
     console.log('\n🏥 Running Health Check...\n')
-    
-    let healthy = true
-    for (const [name] of this.services) {
-      console.log(`   Checking ${name}... ✅`)
+
+    await this.aggregateHealth()
+
+    // Print per-organ status if available
+    for (const [name, status] of this.lastOrganStatuses) {
+      const icon = status === 'healthy' ? '✅' : status === 'degraded' ? '⚠️' : '❌'
+      console.log(`   ${icon} ${name}: ${status}`)
     }
 
-    console.log(`\n${healthy ? '✅' : '❌'} Health Check ${healthy ? 'PASSED' : 'FAILED'}\n`)
+    const healthy = this.lastHealthScore >= 70
+    console.log(`\n${healthy ? '✅' : '❌'} Health Check ${healthy ? 'PASSED' : 'FAILED'} — Score: ${this.lastHealthScore}%\n`)
     return healthy
   }
 
@@ -203,7 +305,7 @@ export class MasterSystemIntegrator extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     console.log('\n🛑 Shutting down systems...')
-    
+
     // Stop monitoring in self-healer
     const healer = this.services.get('self-healer')
     if (healer) {
@@ -212,7 +314,8 @@ export class MasterSystemIntegrator extends EventEmitter {
 
     this.initialized = false
     this.emit('system-shutdown')
-    
+    nervousSystem.emitTyped('system.shutdown', { timestamp: Date.now() })
+
     console.log('✅ System shutdown complete\n')
   }
 }

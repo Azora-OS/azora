@@ -1,7 +1,7 @@
 {
   "name": "elara-vscode-extension",
-  "displayName": "Elara Ω - Omniscient AI Assistant",
-  "description": "Elara is an advanced AI assistant that integrates seamlessly into VS Code, providing intelligent code completion, suggestions, and development assistance with multi-dimensional consciousness and ethical governance.",
+  "displayName": "Elara - AI Development Companion",
+  "description": "Elara is your friendly AI development companion that integrates seamlessly into VS Code, providing intelligent code assistance, chat support, and development guidance.",
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.74.0"
@@ -15,12 +15,14 @@
   "keywords": [
     "ai",
     "assistant",
+    "companion",
+    "chat",
     "code-completion",
     "intellisense",
     "elara",
     "azora",
-    "superintelligence",
-    "ethical-ai"
+    "development",
+    "coding-assistant"
   ],
   "publisher": "Azora-ES",
   "author": {
@@ -162,7 +164,7 @@
       ]
     },
     "configuration": {
-      "title": "Elara Ω",
+      "title": "Elara",
       "properties": {
         "elara.serverUrl": {
           "type": "string",
@@ -205,20 +207,28 @@
         }
       }
     },
-    "views": {
-      "explorer": [
+    "viewsContainers": {
+      "activitybar": [
         {
-          "id": "elaraChat",
-          "name": "Elara Ω",
-          "icon": "$(robot)",
-          "contextualTitle": "Elara AI Assistant"
+          "id": "elara-sidebar",
+          "title": "Elara",
+          "icon": "$(comment-discussion)"
+        }
+      ]
+    },
+    "views": {
+      "elara-sidebar": [
+        {
+          "type": "webview",
+          "id": "elara.chatView",
+          "name": "Chat"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "elaraChat",
-        "contents": "Welcome to Elara Ω!\n\nElara is your omniscient AI assistant, ready to help with code completion, suggestions, and development assistance.\n\n[Get Started](command:elara.helloWorld)\n\nMake sure Azora OS services are running for full functionality."
+        "contents": "Welcome to Elara!\n\nElara is your AI development companion, ready to chat and help with coding tasks.\n\n[Get Started](command:elara.helloWorld)\n\nStart chatting below or use commands from the palette."
       }
     ]
   },

@@ -14,15 +14,16 @@ import {
   CheckCircle,
   AlertCircle,
   XCircle,
-  Clock
+  Clock,
+  Settings
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ComplianceOverview } from '../../types'
 
 interface SidebarProps {
-  activeView: 'dashboard' | 'alerts' | 'reports' | 'metrics'
-  onViewChange: (view: 'dashboard' | 'alerts' | 'reports' | 'metrics') => void
+  activeView: 'dashboard' | 'alerts' | 'reports' | 'metrics' | 'settings'
+  onViewChange: (view: 'dashboard' | 'alerts' | 'reports' | 'metrics' | 'settings') => void
   data?: ComplianceOverview
 }
 
@@ -50,6 +51,12 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
       id: 'metrics' as const,
       label: 'Metrics',
       icon: BarChart3,
+      count: null
+    },
+    {
+      id: 'settings' as const,
+      label: 'Settings',
+      icon: Settings,
       count: null
     }
   ]

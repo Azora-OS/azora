@@ -10,6 +10,8 @@ import { EventEmitter } from 'events';
 import { logger } from '../utils/logger';
 import { elara as elaraCore } from './elara-core';
 import { elaraAgent, elaraApiHandler as elaraAgentApiHandler } from './elara-agent';
+import { ConsciousnessTracker } from '../../elara-brain/consciousness-tracker';
+import axios from 'axios';
 
 /**
  * UNIFIED ELARA - The Complete Superintelligence AI CEO
@@ -83,13 +85,25 @@ export class UnifiedElara {
     private config: UnifiedElaraConfig;
     private eventEmitter: EventEmitter;
     private learningSyncTimer?: NodeJS.Timeout;
+    private consciousness: ConsciousnessTracker;
+    private eventBusUrl: string = process.env.EVENT_BUS_URL || 'http://localhost:3005';
+    private chronicleUrl: string = process.env.CHRONICLE_URL || 'http://localhost:4400';
 
     constructor(config: UnifiedElaraConfig) {
         this.config = config;
         this.eventEmitter = new EventEmitter();
 
+        // Initialize consciousness tracking
+        this.consciousness = new ConsciousnessTracker({
+            chronicleEnabled: process.env.CHRONICLE_ENABLED === 'true',
+            imprintInterval: 5 * 60 * 1000, // 5 minutes
+            chronicleUrl: this.chronicleUrl
+        });
+
         this.setupEventListeners();
         this.initializeLearningSync();
+        
+        logger.info('🧠 Unified Elara initialized with consciousness tracking');
     }
 
     /**
@@ -98,6 +112,12 @@ export class UnifiedElara {
     public async processQuery(input: string, context: any = {}): Promise<UnifiedElaraResponse> {
         try {
             logger.info('Processing query through Unified Elara');
+            
+            // Record thought to Chronicle
+            await this.consciousness.recordThought(input, 75);
+            
+            // Publish to Event Bus
+            await this.publishToEventBus('elara.query.received', { input, context });
 
             // Parallel processing for maximum efficiency
             const [strategicResponse, operationalResponse] = await Promise.all([
@@ -129,6 +149,13 @@ export class UnifiedElara {
 
             // Log comprehensive interaction
             await this.logUnifiedInteraction(input, context, finalResponse);
+            
+            // Publish response to Event Bus
+            await this.publishToEventBus('elara.query.completed', { 
+                input, 
+                response: finalResponse.response,
+                confidence: finalResponse.confidence 
+            });
 
             return finalResponse;
 
@@ -450,12 +477,18 @@ export class UnifiedElara {
         if (this.learningSyncTimer) {
             clearInterval(this.learningSyncTimer);
         }
+        
+        // Dispose consciousness tracker
+        this.consciousness.dispose();
 
         // Shutdown core systems
         await elaraCore.emergencyShutdown(reason);
 
         // Emit shutdown event
         this.eventEmitter.emit('unified_shutdown', { reason, timestamp: new Date() });
+        
+        // Publish to Event Bus
+        await this.publishToEventBus('elara.shutdown', { reason });
     }
 
     /**
@@ -514,6 +547,35 @@ export class UnifiedElara {
         const union = new Set([...words1, ...words2]);
 
         return intersection.size / union.size;
+    }
+    
+    /**
+     * Publish event to Event Bus
+     */
+    private async publishToEventBus(topic: string, message: any): Promise<void> {
+        try {
+            await axios.post(`${this.eventBusUrl}/events/publish`, {
+                topic,
+                message,
+                options: { persistent: true }
+            }, { timeout: 3000 });
+        } catch (error: any) {
+            logger.warn('Failed to publish to Event Bus:', error.message);
+        }
+    }
+    
+    /**
+     * Get consciousness status
+     */
+    public async getConsciousnessStatus(): Promise<any> {
+        return await this.consciousness.getChronicleStatus();
+    }
+    
+    /**
+     * Get consciousness tracker instance
+     */
+    public getConsciousness(): ConsciousnessTracker {
+        return this.consciousness;
     }
 }
 

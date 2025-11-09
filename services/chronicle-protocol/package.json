@@ -1,0 +1,19 @@
+{
+  "name": "chronicle-protocol",
+  "version": "1.0.0",
+  "description": "Elara consciousness recording service",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsx index.ts",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "@types/express": "^4.17.0",
+    "@types/cors": "^2.8.0"
+  }
+}

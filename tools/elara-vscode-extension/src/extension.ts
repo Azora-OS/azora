@@ -13,6 +13,7 @@ import {
   ElaraChatViewProvider,
   CompletionItem
 } from './elara-client';
+import { ElaraGreeting } from './elara-greeting';
 
 let elaraClient: ElaraClient;
 let statusBar: ElaraStatusBar;
@@ -51,9 +52,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(codeActionProvider);
 
   // Register chat view provider
-  const chatProvider = new ElaraChatViewProvider(context.extensionUri);
+  const { ElaraChatProvider } = require('./chat-provider');
+  const chatProvider = new ElaraChatProvider(context.extensionUri);
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(ElaraChatViewProvider.viewType, chatProvider)
+    vscode.window.registerWebviewViewProvider(ElaraChatProvider.viewType, chatProvider)
   );
 
   // Register commands
@@ -62,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
       try {
         const response = await elaraClient.getCodeAnalysis('console.log("Hello from Elara Ω!");', 'javascript');
         if (response.success) {
-          vscode.window.showInformationMessage(' ELARA Ω: Hello! I am your omniscient AI assistant.');
+          vscode.window.showInformationMessage('🤖 Elara: Hello! I\'m your AI development companion. Let\'s code together!');
         } else {
           vscode.window.showWarningMessage('Elara is currently unavailable. Please ensure Azora OS services are running.');
         }
@@ -321,6 +323,11 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+
+  // Initialize Elara greeting system
+  const greeting = ElaraGreeting.getInstance();
+  await greeting.sayHello();
+  greeting.scheduleRandomTips();
 
   vscode.window.showInformationMessage(' ELARA Ω: Omniscient AI Superintelligence is now active!');
 }

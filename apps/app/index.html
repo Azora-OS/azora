@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS MVP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div id="app" class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p class="text-gray-600">Loading Azora OS...</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple authentication state management
+        let isAuthenticated = false;
+        let user = null;
+        let currentView = 'loading';
+
+        // Check authentication on load
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
+
+            if (token && userData) {
+                try {
+                    user = JSON.parse(userData);
+                    isAuthenticated = true;
+                    currentView = 'dashboard';
+                } catch (error) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    currentView = 'login';
+                }
+            } else {
+                currentView = 'login';
+            }
+
+            render();
+        }
+
+        // Login form
+        function renderLogin() {
+            return `
+                <div class="min-h-screen flex items-center justify-center bg-gray-100">
+                    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                        <h2 class="text-2xl font-bold text-center mb-6">Azora OS Login</h2>
+
+                        <div class="mb-4">
+                            <button id="toggleMode" class="text-blue-500 hover:text-blue-700 text-sm">
+                                Need to register instead?
+                            </button>
+                        </div>
+
+                        <form id="authForm">
+                            <div id="nameField" class="mb-4 hidden">
+                                <input type="text" id="name" placeholder="Full Name"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="email" id="email" placeholder="Email" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <div class="mb-6">
+                                <input type="password" id="password" placeholder="Password" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <button type="submit" id="submitBtn"
+                                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
+                                Login
+                            </button>
+                        </form>
+
+                        <div id="error" class="mt-4 text-red-500 text-center hidden"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Dashboard
+        function renderDashboard() {
+            return `
+                <div class="min-h-screen bg-gray-100">
+                    <header class="bg-white shadow-sm">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="flex justify-between items-center py-4">
+                                <h1 class="text-2xl font-bold text-gray-900">Azora OS Dashboard</h1>
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-gray-700">Welcome, ${user?.name || user?.email}!</span>
+                                    <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                        <div class="px-4 py-6 sm:px-0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-white overflow-hidden shadow rounded-lg">
+                                    <div class="p-5">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                                                    <span class="text-white font-bold">L</span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-5 w-0 flex-1">
+                                                <dl>
+                                                    <dt class="text-sm font-medium text-gray-500 truncate">LMS Integration</dt>
+                                                    <dd class="text-lg font-medium text-gray-900">Active</dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white overflow-hidden shadow rounded-lg">
+                                    <div class="p-5">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                                                    <span class="text-white font-bold">$</span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-5 w-0 flex-1">
+                                                <dl>
+                                                    <dt class="text-sm font-medium text-gray-500 truncate">Payment Service</dt>
+                                                    <dd class="text-lg font-medium text-gray-900">Coming Soon</dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white overflow-hidden shadow rounded-lg">
+                                    <div class="p-5">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                                                    <span class="text-white font-bold">A</span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-5 w-0 flex-1">
+                                                <dl>
+                                                    <dt class="text-sm font-medium text-gray-500 truncate">AI Security</dt>
+                                                    <dd class="text-lg font-medium text-gray-900">Coming Soon</dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            `;
+        }
+
+        // Render current view
+        function render() {
+            const app = document.getElementById('app');
+
+            if (currentView === 'loading') {
+                app.innerHTML = `
+                    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+                        <div class="text-center">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                            <p class="text-gray-600">Loading Azora OS...</p>
+                        </div>
+                    </div>
+                `;
+            } else if (currentView === 'login') {
+                app.innerHTML = renderLogin();
+                setupLoginHandlers();
+            } else if (currentView === 'dashboard') {
+                app.innerHTML = renderDashboard();
+                setupDashboardHandlers();
+            }
+        }
+
+        // Setup login form handlers
+        function setupLoginHandlers() {
+            const form = document.getElementById('authForm');
+            const toggleBtn = document.getElementById('toggleMode');
+            const submitBtn = document.getElementById('submitBtn');
+            const nameField = document.getElementById('nameField');
+            let isLogin = true;
+
+            toggleBtn.addEventListener('click', () => {
+                isLogin = !isLogin;
+                nameField.classList.toggle('hidden');
+                submitBtn.textContent = isLogin ? 'Login' : 'Register';
+                toggleBtn.textContent = isLogin ? 'Need to register instead?' : 'Already have an account?';
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const name = document.getElementById('name').value;
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Processing...';
+
+                try {
+                    const endpoint = isLogin ? '/login' : '/register';
+                    const body = isLogin
+                        ? { email, password }
+                        : { name, email, password };
+
+                    const response = await fetch('http://localhost:3001' + endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(body),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        user = data.user;
+                        isAuthenticated = true;
+                        currentView = 'dashboard';
+                        render();
+                    } else {
+                        showError(data.message || 'Authentication failed');
+                    }
+                } catch (error) {
+                    showError('Network error. Make sure the auth service is running.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = isLogin ? 'Login' : 'Register';
+                }
+            });
+        }
+
+        // Setup dashboard handlers
+        function setupDashboardHandlers() {
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                isAuthenticated = false;
+                user = null;
+                currentView = 'login';
+                render();
+            });
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Initialize app
+        setTimeout(checkAuth, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  creatorId   String
+  type        String   // article, video, image, code, etc.
+  status      String   @default("draft") // draft, generating, completed, failed
+  settings    Json?    // AI generation settings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contents    Content[]
+
+  @@map("projects")
+}
+
+model Content {
+  id          String   @id @default(cuid())
+  projectId   String
+  title       String?
+  content     String?
+  type        String   // text, image, video, audio
+  url         String?  // For media files
+  metadata    Json?    // Additional metadata
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+
+  project     Project  @relation(fields: [projectId], references: [id])
+
+  @@map("contents")
+}
+
+model Generation {
+  id          String   @id @default(cuid())
+  projectId   String?
+  prompt      String
+  model       String   // gpt-4, dall-e, etc.
+  type        String   // text, image, etc.
+  status      String   @default("pending") // pending, processing, completed, failed
+  result      Json?
+  error       String?
+  tokens      Int?
+  cost        Float?
+  createdAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@map("generations")
+}
