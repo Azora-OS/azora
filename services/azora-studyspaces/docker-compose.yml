@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  azora-studyspaces:
+    build: .
+    ports:
+      - "4300:4300"
+    environment:
+      - PORT=4300
+      - CLASSROOM_SERVICE_URL=http://azora-classroom:4200
+      - SAPIENS_SERVICE_URL=http://azora-sapiens:4100
+      - MINT_SERVICE_URL=http://azora-mint:4001
+      - NODE_ENV=production
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4300/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  azora-network:
+    external: true
