@@ -1,0 +1,320 @@
+openapi: 3.0.3
+info:
+  title: Azora OS API Gateway
+  description: |
+    # Azora OS API Gateway
+
+    The central entry point for all Azora OS microservices, providing unified access to:
+    - Authentication & Authorization
+    - Service Routing & Load Balancing
+    - Request/Response Transformation
+    - Rate Limiting & Security
+    - Monitoring & Metrics Collection
+
+    ## Authentication
+
+    All requests require JWT authentication via the `Authorization: Bearer <token>` header.
+
+    ## Rate Limiting
+
+    - 1000 requests per minute per user
+    - 10000 requests per minute per service
+
+    ## Error Responses
+
+    Standard HTTP status codes with JSON error details:
+    ```json
+    {
+      "error": {
+        "code": "ERROR_CODE",
+        "message": "Human readable message",
+        "details": {},
+        "requestId": "req_123"
+      }
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: Azora OS API Support
+    email: api@azora.os
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:4000
+    description: Local development
+  - url: https://api.azora.os
+    description: Production
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Check the health status of the API Gateway and all downstream services
+      tags:
+        - Health
+      responses:
+        '200':
+          description: All services healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, unhealthy]
+                  services:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          enum: [healthy, unhealthy]
+                        responseTime:
+                          type: string
+                        lastCheck:
+                          type: string
+                          format: date-time
+                  uptime:
+                    type: string
+                  version:
+                    type: string
+
+  /auth/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: Authentication service proxy
+      description: Proxy requests to the authentication service
+      tags:
+        - Authentication
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The path to proxy to the auth service
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response from auth service
+        '401':
+          description: Authentication required
+        '403':
+          description: Forbidden
+
+  /mint/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: Mint service proxy
+      description: Proxy requests to the mint service
+      tags:
+        - Mint
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response from mint service
+
+  /lms/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: LMS service proxy
+      description: Proxy requests to the learning management system
+      tags:
+        - LMS
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response from LMS service
+
+  /forge/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: Forge service proxy
+      description: Proxy requests to the AI content generation service
+      tags:
+        - Forge
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response from Forge service
+
+  /nexus/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: Nexus service proxy
+      description: Proxy requests to the AI agent orchestration service
+      tags:
+        - Nexus
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response from Nexus service
+
+  /education/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: Education service proxy
+      description: Proxy requests to the education service
+      tags:
+        - Education
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response from Education service
+
+  /payments/{path*}:
+    get:
+    post:
+    put:
+    delete:
+    patch:
+      summary: Payments service proxy
+      description: Proxy requests to the payments service
+      tags:
+        - Payments
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response from Payments service
+
+  /metrics:
+    get:
+      summary: Gateway metrics
+      description: Get API Gateway performance metrics
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: Metrics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requests:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      byService:
+                        type: object
+                        additionalProperties:
+                          type: integer
+                      byMethod:
+                        type: object
+                        additionalProperties:
+                          type: integer
+                  responseTimes:
+                    type: object
+                    properties:
+                      average:
+                        type: number
+                      p95:
+                        type: number
+                      p99:
+                        type: number
+                  errors:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      byService:
+                        type: object
+                        additionalProperties:
+                          type: integer
+                      byType:
+                        type: object
+                        additionalProperties:
+                          type: integer
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+            requestId:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

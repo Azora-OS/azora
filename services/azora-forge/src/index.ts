@@ -13,9 +13,136 @@ import categoryRoutes from './routes/categoryRoutes';
 import marketplaceRoutes from './marketplaceApi';
 import ForgeOrganismIntegration from './organism-integration';
 
+// Azora Infrastructure Integration
+import { getDatabasePool, getRedisCache, getSupabaseClient } from 'azora-database-layer'
+import { EventBus } from 'azora-event-bus'
+
 const app = express();
 const PORT = process.env.PORT || 12345;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/azora-forge';
+
+// Azora Infrastructure Components
+let dbPool: any
+let redisCache: any
+let supabaseClient: any
+let eventBus: EventBus
+
+// Configuration
+const AZORA_DB_URL = process.env.AZORA_DB_URL || 'postgresql://localhost:5432/azora'
+const AZORA_REDIS_URL = process.env.AZORA_REDIS_URL || 'redis://localhost:6379'
+const AZORA_SUPABASE_URL = process.env.AZORA_SUPABASE_URL
+const AZORA_SUPABASE_KEY = process.env.AZORA_SUPABASE_KEY
+const AZORA_EVENT_BUS_URL = process.env.AZORA_EVENT_BUS_URL || 'redis://localhost:6379'
+
+/**
+ * Setup Event Bus Listeners for Forge Service
+ */
+async function setupEventBusListeners() {
+  // Listen for skill assessments from Education service
+  eventBus.subscribe('education.skill.assessed', async (event: any) => {
+    const { studentId, skillId, assessmentScore, timestamp } = event.data
+    console.log(`🎯 Skill assessed for student ${studentId}: ${skillId} (${assessmentScore})`)
+
+    // Update skill marketplace listings based on assessment
+    try {
+      // Store assessment in database
+      const query = `
+        INSERT INTO skill_assessments (student_id, skill_id, assessment_score, assessed_at)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (student_id, skill_id) 
+        DO UPDATE SET assessment_score = $3, assessed_at = $4
+      `
+      await dbPool.query(query, [studentId, skillId, assessmentScore, timestamp])
+
+      // Publish skill certification if score is high enough
+      if (assessmentScore >= 80) {
+        await eventBus.publish('forge.skill.certified', {
+          studentId,
+          skillId,
+          certificationLevel: assessmentScore >= 90 ? 'expert' : 'proficient',
+          timestamp: new Date()
+        })
+      }
+    } catch (error) {
+      console.error('Error processing skill assessment:', error)
+    }
+  })
+
+  // Listen for course completions from Education service
+  eventBus.subscribe('education.course.completed', async (event: any) => {
+    const { studentId, courseId, completionScore, timestamp } = event.data
+    console.log(`🎓 Course completed by student ${studentId}: ${courseId} (${completionScore}%)`)
+
+    // Update student's marketplace profile
+    try {
+      const query = `
+        INSERT INTO course_completions (student_id, course_id, completion_score, completed_at)
+        VALUES ($1, $2, $3, $4)
+      `
+      await dbPool.query(query, [studentId, courseId, completionScore, timestamp])
+
+      // Publish marketplace skill update
+      await eventBus.publish('forge.profile.updated', {
+        studentId,
+        courseId,
+        completionScore,
+        timestamp: new Date()
+      })
+    } catch (error) {
+      console.error('Error processing course completion:', error)
+    }
+  })
+
+  // Listen for payment requests from Education service
+  eventBus.subscribe('education.payment.requested', async (event: any) => {
+    const { studentId, courseId, amount, currency, timestamp } = event.data
+    console.log(`💰 Payment requested for student ${studentId}: ${amount} ${currency}`)
+
+    // Process course payment through Mint service
+    try {
+      await eventBus.publish('forge.payment.requested', {
+        studentId,
+        courseId,
+        amount,
+        currency,
+        serviceType: 'education',
+        timestamp: new Date()
+      })
+    } catch (error) {
+      console.error('Error processing payment request:', error)
+    }
+  })
+
+  // Listen for job matching requests from Careers service
+  eventBus.subscribe('careers.skill.match.requested', async (event: any) => {
+    const { userId, requiredSkills, timestamp } = event.data
+    console.log(`💼 Job matching requested for user ${userId}`)
+
+    // Find qualified service providers
+    try {
+      const query = `
+        SELECT sp.*, sa.skill_id, sa.assessment_score
+        FROM service_providers sp
+        JOIN skill_assessments sa ON sp.user_id = sa.student_id
+        WHERE sa.skill_id = ANY($1) AND sa.assessment_score >= 70
+        ORDER BY sa.assessment_score DESC
+        LIMIT 10
+      `
+      const providers = await dbPool.query(query, [requiredSkills])
+
+      // Publish matching results
+      await eventBus.publish('forge.providers.matched', {
+        jobId: event.data.jobId,
+        providers: providers.rows,
+        timestamp: new Date()
+      })
+    } catch (error) {
+      console.error('Error processing job matching:', error)
+    }
+  })
+
+  console.log('✅ Forge service event listeners configured')
+}
 
 // Initialize Organism Integration 🌟
 const organismIntegration = new ForgeOrganismIntegration({
@@ -41,15 +168,49 @@ app.set('trust proxy', 1);
 app.use(express.json());
 app.use(cors());
 
-// MongoDB Connection
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('✅ Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
-  });
+// Initialize Azora Infrastructure
+async function initializeAzoraForge() {
+  try {
+    console.log('🔧 Initializing Azora Forge Infrastructure...')
+
+    // Initialize database components
+    dbPool = getDatabasePool(AZORA_DB_URL)
+    redisCache = getRedisCache(AZORA_REDIS_URL)
+    supabaseClient = getSupabaseClient(AZORA_SUPABASE_URL, AZORA_SUPABASE_KEY)
+
+    // Initialize event bus
+    eventBus = new EventBus(AZORA_EVENT_BUS_URL, 'forge-service')
+
+    // Setup event listeners
+    await setupEventBusListeners()
+
+    // Test database connection
+    await dbPool.query('SELECT 1')
+    console.log('  ✓ Azora database connection established')
+
+    // Test Redis connection
+    await redisCache.set('forge:health', 'ok')
+    console.log('  ✓ Redis cache connection established')
+
+    // Test Supabase connection (if configured)
+    if (supabaseClient) {
+      await supabaseClient.from('health_check').select('*').limit(1)
+      console.log('  ✓ Supabase connection established')
+    }
+
+    // Legacy MongoDB connection (for existing data)
+    await mongoose.connect(MONGODB_URI)
+    console.log('  ✓ Legacy MongoDB connection established')
+
+    console.log('✅ Azora Forge Infrastructure operational')
+  } catch (error) {
+    console.error('❌ Failed to initialize Azora Forge Infrastructure:', error)
+    process.exit(1)
+  }
+}
+
+// Initialize on startup
+initializeAzoraForge()
 
 // Initialize Organism Bridge
 organismBridge.on('ready', () => {
@@ -68,27 +229,63 @@ app.use('/api/escrow', escrowRoutes);
 // app.use('/api/messaging', messagingRoutes);
 
 // Health endpoint (for Supreme Organism monitoring)
-app.get('/health', (req, res) => {
-  const organismHealth = organismBridge.getOrganismHealth();
-  
-  res.json({
-    success: true,
-    status: 'healthy',
-    service: 'azora-forge',
-    biologicalRole: '🍔 Stomach - Processes work into money',
-    organSystem: 'digestive',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
-    organismIntegration: {
-      connected: true,
-      mint: 'connected',
-      education: 'connected',
-      careers: 'connected',
-      community: 'connected',
-      nexus: 'connected',
-    },
-  });
+app.get('/health', async (req, res) => {
+  try {
+    // Check Azora database health
+    const dbHealth = await dbPool.query('SELECT 1').then(() => 'healthy').catch(() => 'unhealthy')
+
+    // Check Redis health
+    const redisHealth = await redisCache.get('forge:health').then(() => 'healthy').catch(() => 'unhealthy')
+
+    // Check Supabase health
+    let supabaseHealth = 'not_configured'
+    if (supabaseClient) {
+      supabaseHealth = await supabaseClient.from('health_check').select('*').limit(1).then(() => 'healthy').catch(() => 'unhealthy')
+    }
+
+    // Check event bus health
+    const eventBusHealth = eventBus ? 'healthy' : 'unhealthy'
+
+    // Check legacy MongoDB health
+    const mongoHealth = mongoose.connection.readyState === 1 ? 'healthy' : 'unhealthy'
+
+    const isHealthy = dbHealth === 'healthy' && redisHealth === 'healthy' && eventBusHealth === 'healthy'
+
+    const organismHealth = organismBridge.getOrganismHealth();
+
+    res.json({
+      success: true,
+      status: isHealthy ? 'healthy' : 'unhealthy',
+      service: 'azora-forge',
+      biologicalRole: '🍔 Stomach - Processes work into money',
+      organSystem: 'digestive',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      infrastructure: {
+        database: dbHealth,
+        redis: redisHealth,
+        supabase: supabaseHealth,
+        eventBus: eventBusHealth,
+        legacyMongoDB: mongoHealth
+      },
+      organismIntegration: {
+        connected: true,
+        mint: 'connected',
+        education: 'connected',
+        careers: 'connected',
+        community: 'connected',
+        nexus: 'connected',
+      },
+    });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      status: 'unhealthy',
+      service: 'azora-forge',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    })
+  }
 });
 
 // Organism integration endpoints
@@ -148,9 +345,54 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🔥 Azora Forge Marketplace running on port ${PORT}`);
   console.log(`📊 API Documentation: http://localhost:${PORT}/`);
   console.log(`🌉 Organism Bridge: Active`);
   console.log(`💪 Role: Skills & Work (Muscles of Azora)`);
+  console.log(`🔗 Connected to Azora Database & Event Bus`);
 });
+
+// ========== GRACEFUL SHUTDOWN ==========
+process.on('SIGTERM', async () => {
+  console.log('🛑 Received SIGTERM, shutting down gracefully...')
+
+  try {
+    // Close server
+    server.close(async () => {
+      console.log('  ✓ HTTP server closed')
+
+      // Close Azora database connections
+      if (dbPool) {
+        await dbPool.end()
+        console.log('  ✓ Azora database connections closed')
+      }
+
+      // Close Redis connections
+      if (redisCache) {
+        await redisCache.quit()
+        console.log('  ✓ Redis connections closed')
+      }
+
+      // Close event bus
+      if (eventBus) {
+        await eventBus.disconnect()
+        console.log('  ✓ Event bus disconnected')
+      }
+
+      // Close legacy MongoDB
+      await mongoose.connection.close()
+      console.log('  ✓ Legacy MongoDB connections closed')
+
+      console.log('✅ Azora Forge System shutdown complete')
+      process.exit(0)
+    })
+  } catch (error) {
+    console.error('❌ Error during shutdown:', error)
+    process.exit(1)
+  }
+})
+
+process.on('SIGINT', () => {
+  process.emit('SIGTERM')
+})

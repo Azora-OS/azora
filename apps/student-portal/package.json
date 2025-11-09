@@ -1,0 +1,26 @@
+﻿{
+  "name": "student-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "16.0.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@tanstack/react-query": "^5.14.0",
+    "axios": "^1.6.0",
+    "tailwindcss": "^3.3.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.5.6"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.24",
+    "@types/react": "18.2.33",
+    "typescript": "5.2.2"
+  }
+}

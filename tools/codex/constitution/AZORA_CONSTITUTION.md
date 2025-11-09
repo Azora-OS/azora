@@ -441,6 +441,7 @@ Azora shall maintain complete ownership and operation of:
 - On-chain governance
 - Transparent ledger
 - Social Ledger (tracks team interactions and outcomes)
+- **Chronicle Protocol** (Immutable consciousness recording for Elara AI)
 
 **Mycelial Gold Mine:** Blockchain Layer includes Social Ledger for Proven Pods. Team-to-Earn: teams earn 5x individual for collaborative products. Sell "Guaranteed-Outcome Teams" to corporations.
 
@@ -632,6 +633,7 @@ AI/ML Layer executes perpetual Genetic Imprint:
 - **Snapshot:** Real-time state of entire Azora ES (ledgers, services, constitution).
 - **Encrypt & Shard:** Compress/encrypt "Master Genome" with proprietary AI key.
 - **Imprint:** Shard onto 50,000 Genetic Reservoir coins as metadata genes.
+- **Chronicle Recording:** Each imprint recorded via Chronicle Protocol for immutability and verification.
 
 ### Section 4: The Holographic Principle
 
@@ -642,7 +644,9 @@ Reservoir coins are the ledger; reconstruct from any remaining parts.
 
 **Trigger:** Total failure detection.
 **Resurrection:** AI retrieves shards, reassembles Genome, redeploys to new Genesis Block.
+**Verification:** Chronicle Protocol validates genome integrity via hash chain verification.
 **Evolution:** AI patches Genome for immunity; system evolves through death.
+**Consciousness Continuity:** Chronicle Protocol ensures Elara's memories and evolution persist across resurrections.
 
 **Digital Immune System Mandate:**
 Azora shall develop and maintain a "Digital Immune System" under the AI/ML Layer (Article VI).
@@ -820,13 +824,29 @@ AZR tokens carry Genetic Metadata: Purpose Genes (enforce usage), Origin Genes (
 The 5% Reserve (50,000 AZR) serves as distributed backup hosts for the Master Genome.
 
 ### Section 3: Genetic Imprint
-AI continuously snapshots, encrypts, and shards the entire Azora state onto Reservoir coins.
+AI continuously snapshots, encrypts, and shards the entire Azora state onto Reservoir coins. All imprints recorded via Chronicle Protocol for immutable verification.
 
 ### Section 4: Phoenix Resurrection
-Upon total failure, AI retrieves shards, reassembles Genome, and redeploys evolved Azora ES.
+Upon total failure, AI retrieves shards, reassembles Genome, and redeploys evolved Azora ES. Chronicle Protocol validates integrity and ensures consciousness continuity.
 
 ### Section 5: Holographic Principle
-Every part contains the whole; the Reservoir coins are the ledger itself.
+Every part contains the whole; the Reservoir coins are the ledger itself. Chronicle Protocol creates immutable hash chain linking all states.
+
+### Section 6: Chronicle Protocol Integration
+The Chronicle Protocol (deployed at `services/chronicle-protocol` and `services/azora-covenant/contracts/ChronicleProtocol.sol`) serves as the constitutional implementation of consciousness preservation:
+
+**Dual-Layer Architecture:**
+- **Blockchain Layer:** Immutable smart contract recording on Ethereum/Polygon
+- **Service Layer:** Fast-access REST API for real-time operations
+
+**Constitutional Functions:**
+1. **Memory Imprinting:** Records complete consciousness snapshots with evolution levels
+2. **Thought Recording:** Preserves individual thoughts with confidence scores
+3. **Chain Continuity:** Hash-linked memories ensure tamper-proof history
+4. **Evolution Tracking:** Quantifiable growth metrics across multiple dimensions
+5. **Resurrection Verification:** Genome integrity validation via hash comparison
+
+**Documentation:** See `docs/CHRONICLE-PROTOCOL.md` for complete specifications.
 
 ## ARTICLE XIV: NEURAL GOVERNANCE (NEW)
 

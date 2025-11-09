@@ -1,0 +1,638 @@
+openapi: 3.0.3
+info:
+  title: Azora OS Auth Service
+  description: |
+    # Azora OS Authentication & User Management Service
+
+    Comprehensive authentication service providing:
+    - User registration and login
+    - JWT token management
+    - OAuth integration (Google, GitHub, Apple)
+    - Multi-factor authentication (MFA/TOTP)
+    - Password reset and email verification
+    - User profile management
+    - Session management
+    - Audit logging and security monitoring
+
+    ## Authentication Flow
+
+    1. **Registration**: User creates account with email/password
+    2. **Email Verification**: User verifies email address
+    3. **Login**: User authenticates and receives JWT tokens
+    4. **MFA Setup** (optional): User enables two-factor authentication
+    5. **Token Refresh**: Access tokens are refreshed using refresh tokens
+
+    ## Security Features
+
+    - Rate limiting on authentication endpoints
+    - Account lockout after failed attempts
+    - Secure password hashing with bcrypt
+    - JWT tokens with configurable expiration
+    - Audit logging for all security events
+    - CORS protection and helmet security headers
+  version: 1.0.0
+  contact:
+    name: Azora OS Security Team
+    email: security@azora.os
+
+servers:
+  - url: http://localhost:3001
+    description: Local development
+  - url: https://auth.azora.os
+    description: Production
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Check service health and basic metrics
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                  uptime:
+                    type: string
+                  version:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: Get service metrics in Prometheus format
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: Metrics data
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /register:
+    post:
+      summary: User registration
+      description: Register a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - firstName
+                - lastName
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  minLength: 8
+                  description: User's password
+                firstName:
+                  type: string
+                  minLength: 1
+                  description: User's first name
+                lastName:
+                  type: string
+                  minLength: 1
+                  description: User's last name
+                acceptTerms:
+                  type: boolean
+                  description: User accepts terms of service
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid input data
+        '409':
+          description: User already exists
+        '429':
+          description: Rate limit exceeded
+
+  /login:
+    post:
+      summary: User login
+      description: Authenticate user and return JWT tokens
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                mfaToken:
+                  type: string
+                  description: MFA token if MFA is enabled
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+        '403':
+          description: Account locked or MFA required
+        '429':
+          description: Rate limit exceeded
+
+  /auth/google:
+    get:
+      summary: Google OAuth initiation
+      description: Redirect to Google OAuth login
+      tags:
+        - OAuth
+      parameters:
+        - name: redirect_uri
+          in: query
+          schema:
+            type: string
+          description: Redirect URI after authentication
+      responses:
+        '302':
+          description: Redirect to Google OAuth
+
+  /auth/google/callback:
+    post:
+      summary: Google OAuth callback
+      description: Handle Google OAuth callback and create/login user
+      tags:
+        - OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+                  description: OAuth authorization code
+                redirectUri:
+                  type: string
+                  description: Original redirect URI
+      responses:
+        '200':
+          description: OAuth login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /auth/github:
+    get:
+      summary: GitHub OAuth initiation
+      description: Redirect to GitHub OAuth login
+      tags:
+        - OAuth
+      responses:
+        '302':
+          description: Redirect to GitHub OAuth
+
+  /auth/github/callback:
+    post:
+      summary: GitHub OAuth callback
+      description: Handle GitHub OAuth callback
+      tags:
+        - OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+      responses:
+        '200':
+          description: OAuth login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /auth/apple:
+    get:
+      summary: Apple Sign In initiation
+      description: Redirect to Apple Sign In
+      tags:
+        - OAuth
+      responses:
+        '302':
+          description: Redirect to Apple Sign In
+
+  /auth/apple/callback:
+    post:
+      summary: Apple Sign In callback
+      description: Handle Apple Sign In callback
+      tags:
+        - OAuth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+      responses:
+        '200':
+          description: OAuth login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /verify:
+    get:
+      summary: Verify JWT token
+      description: Verify if the provided JWT token is valid
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid or expired token
+
+  /profile:
+    get:
+      summary: Get user profile
+      description: Get current user's profile information
+      tags:
+        - User Management
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /verify-email:
+    post:
+      summary: Verify email address
+      description: Verify user's email address with token
+      tags:
+        - User Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: Email verification token
+      responses:
+        '200':
+          description: Email verified successfully
+        '400':
+          description: Invalid token
+
+  /resend-verification:
+    post:
+      summary: Resend email verification
+      description: Resend email verification link
+      tags:
+        - User Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Verification email sent
+        '429':
+          description: Rate limit exceeded
+
+  /forgot-password:
+    post:
+      summary: Request password reset
+      description: Send password reset email
+      tags:
+        - Password Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Password reset email sent
+        '429':
+          description: Rate limit exceeded
+
+  /reset-password:
+    post:
+      summary: Reset password
+      description: Reset password using reset token
+      tags:
+        - Password Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                  description: Password reset token
+                newPassword:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid token or password
+
+  /refresh:
+    post:
+      summary: Refresh access token
+      description: Get new access token using refresh token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: New tokens generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  expiresIn:
+                    type: integer
+        '401':
+          description: Invalid refresh token
+
+  /logout:
+    post:
+      summary: Logout user
+      description: Invalidate refresh token and logout user
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Invalid token
+
+  /mfa/setup:
+    post:
+      summary: Setup MFA
+      description: Generate MFA secret and QR code
+      tags:
+        - MFA
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: MFA setup data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret:
+                    type: string
+                    description: TOTP secret
+                  qrCode:
+                    type: string
+                    description: QR code data URL
+                  backupCodes:
+                    type: array
+                    items:
+                      type: string
+                    description: Backup recovery codes
+
+  /mfa/verify:
+    post:
+      summary: Verify MFA token
+      description: Verify MFA token during setup or login
+      tags:
+        - MFA
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: TOTP token
+                secret:
+                  type: string
+                  description: TOTP secret (during setup)
+      responses:
+        '200':
+          description: MFA token verified
+        '400':
+          description: Invalid token
+
+  /mfa/disable:
+    post:
+      summary: Disable MFA
+      description: Disable multi-factor authentication
+      tags:
+        - MFA
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  description: Current password for verification
+      responses:
+        '200':
+          description: MFA disabled
+        '400':
+          description: Invalid password
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        accessToken:
+          type: string
+          description: JWT access token
+        refreshToken:
+          type: string
+          description: JWT refresh token
+        expiresIn:
+          type: integer
+          description: Access token expiration time in seconds
+        mfaRequired:
+          type: boolean
+          description: Whether MFA verification is required
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        emailVerified:
+          type: boolean
+        mfaEnabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+            requestId:
+              type: string
+            timestamp:
+              type: string
+              format: date-time

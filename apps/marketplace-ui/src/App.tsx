@@ -4,31 +4,21 @@ Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 See LICENSE file for details.
 */
 import { useState, Suspense, lazy } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { Header, Sidebar } from './components'
-import { ComplianceOverview } from './types'
+import { useMarketplaceApi } from '../../../packages/hooks/useApi'
 
 // Lazy load panel components for code splitting
 const Dashboard = lazy(() => import('./components/panels/Dashboard').then(module => ({ default: module.Dashboard })))
 const AlertsPanel = lazy(() => import('./components/panels/AlertsPanel').then(module => ({ default: module.AlertsPanel })))
 const ReportsPanel = lazy(() => import('./components/panels/ReportsPanel').then(module => ({ default: module.ReportsPanel })))
 const MetricsPanel = lazy(() => import('./components/panels/MetricsPanel').then(module => ({ default: module.MetricsPanel })))
+const Settings = lazy(() => import('./pages/Settings').then(module => ({ default: module.Settings })))
 
 function App() {
-  const [activeView, setActiveView] = useState<'dashboard' | 'alerts' | 'reports' | 'metrics'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'alerts' | 'reports' | 'metrics' | 'settings'>('dashboard');
 
-  // Fetch compliance data from the backend API
-  const { data: complianceData, isLoading, error, refetch } = useQuery({
-    queryKey: ['compliance-overview'],
-    queryFn: async (): Promise<ComplianceOverview> => {
-      const response = await fetch('http://localhost:4000/api/compliance/dashboard')
-      if (!response.ok) {
-        throw new Error('Failed to fetch compliance data')
-      }
-      return response.json().then(data => data.data)
-    },
-    refetchInterval: 30000, // Refetch every 30 seconds
-  })
+  // Fetch marketplace data using the new API hook with fallback to mock data
+  const { data: marketplaceData, isLoading, error, refetch } = useMarketplaceApi('/dashboard')
 
   const renderActiveView = () => {
     if (isLoading) {
@@ -72,7 +62,7 @@ function App() {
       case 'dashboard':
         return (
           <Suspense fallback={<LoadingFallback />}>
-            <Dashboard data={complianceData!} />
+            <Dashboard data={marketplaceData?.data} />
           </Suspense>
         )
       case 'alerts':
@@ -93,10 +83,16 @@ function App() {
             <MetricsPanel />
           </Suspense>
         )
+      case 'settings':
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <Settings />
+          </Suspense>
+        )
       default:
         return (
           <Suspense fallback={<LoadingFallback />}>
-            <Dashboard data={complianceData!} />
+            <Dashboard data={marketplaceData?.data} />
           </Suspense>
         )
     }

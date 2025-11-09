@@ -1,0 +1,140 @@
+name: Health Monitoring
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+
+    - name: Configure kubectl for EKS
+      run: |
+        aws eks update-kubeconfig --region us-east-1 --name azora-production
+
+    - name: Check pod health
+      run: |
+        # Check if all pods are running
+        kubectl get pods -n azora-production --no-headers | awk '{print $3}' | grep -v Running | wc -l | xargs -I {} sh -c 'if [ {} -gt 0 ]; then echo "Found {} non-running pods"; exit 1; else echo "All pods are healthy"; fi'
+
+    - name: Check service endpoints
+      run: |
+        # Test key service endpoints
+        services=("api-gateway:4000" "auth-service:3001" "lms-service:3002")
+
+        for service in "${services[@]}"; do
+          name=$(echo $service | cut -d: -f1)
+          port=$(echo $service | cut -d: -f2)
+
+          if kubectl exec -n azora-production deployment/$name -- wget --quiet --tries=1 --spider http://localhost:$port/health; then
+            echo "✅ $name health check passed"
+          else
+            echo "❌ $name health check failed"
+            exit 1
+          fi
+        done
+
+    - name: Check database connectivity
+      run: |
+        # Test database connection through a service
+        kubectl exec -n azora-production deployment/api-gateway -- node -e "
+        const { Client } = require('pg');
+        const client = new Client({
+          host: process.env.DB_HOST,
+          port: process.env.DB_PORT,
+          user: process.env.DB_USER,
+          password: process.env.DB_PASSWORD,
+          database: process.env.DB_NAME,
+          ssl: { rejectUnauthorized: false }
+        });
+        client.connect().then(() => {
+          console.log('Database connection successful');
+          return client.end();
+        }).catch(err => {
+          console.error('Database connection failed:', err);
+          process.exit(1);
+        });
+        "
+
+    - name: Check Redis connectivity
+      run: |
+        # Test Redis connection
+        kubectl exec -n azora-production deployment/api-gateway -- node -e "
+        const redis = require('redis');
+        const client = redis.createClient({
+          host: process.env.REDIS_HOST,
+          port: process.env.REDIS_PORT,
+          password: process.env.REDIS_PASSWORD
+        });
+        client.connect().then(() => {
+          console.log('Redis connection successful');
+          return client.quit();
+        }).catch(err => {
+          console.error('Redis connection failed:', err);
+          process.exit(1);
+        });
+        "
+
+    - name: Check monitoring stack
+      run: |
+        # Verify Prometheus and Grafana are accessible
+        kubectl port-forward -n monitoring svc/prometheus-server 9090:80 &
+        sleep 5
+        curl -f http://localhost:9090/-/healthy || exit 1
+        kill %1
+
+        kubectl port-forward -n monitoring svc/grafana 3000:80 &
+        sleep 5
+        curl -f http://localhost:3000/api/health || exit 1
+        kill %1
+
+        echo "✅ Monitoring stack is healthy"
+
+    - name: Run synthetic tests
+      run: |
+        npm run test:synthetic
+
+    - name: Alert on failure
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        text: "🚨 Azora OS Health Check Failed - Immediate attention required!"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Success notification
+      if: success()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        text: "✅ Azora OS Health Check Passed - All systems operational"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

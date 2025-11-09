@@ -2,8 +2,8 @@
   "name": "@azora/lms",
   "version": "1.0.0",
   "description": "Faculty Learning Management System for Azora Education",
-  "main": "faculty-management-system.js",
-  "types": "faculty-management-system.d.ts",
+  "main": "dist/faculty-management-system.js",
+  "types": "dist/faculty-management-system.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-dev --respawn faculty-management-system.ts",
@@ -23,6 +23,8 @@
   "license": "PROPRIETARY",
   "dependencies": {
     "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
     "uuid": "^9.0.1",
     "date-fns": "^2.30.0"
   },

@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  symbol      String
+  contractAddress String? @unique
+  creatorId   String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  nfts NFT[]
+
+  @@map("collections")
+}
+
+model NFT {
+  id          String   @id @default(cuid())
+  tokenId     String?  @unique
+  name        String
+  description String?
+  imageUrl    String
+  metadataUrl String?
+  collectionId String
+  ownerId     String
+  creatorId   String
+  price       Float?
+  status      String   @default("draft") // draft, minted, listed, sold
+  blockchain  String   @default("ethereum")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  collection Collection @relation(fields: [collectionId], references: [id])
+
+  @@map("nfts")
+}

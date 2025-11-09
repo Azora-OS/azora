@@ -1,0 +1,93 @@
+/*
+AZORA PROPRIETARY LICENSE
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+APP-SPECIFIC THEMES WITH PREMIUM TRIMMING
+=========================================
+*/
+
+/* Base Premium Trimming */
+.premium-trim {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #FFD700, #FFA500, #FFD700) 1;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+/* Education Apps - Blue Theme */
+.theme-education {
+  --app-primary: #0066FF;
+  --app-secondary: #4A90E2;
+  --app-accent: #1E88E5;
+  --app-bg: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(74, 144, 226, 0.1));
+}
+
+/* Finance Apps - Green Theme */
+.theme-finance {
+  --app-primary: #00D4AA;
+  --app-secondary: #10B981;
+  --app-accent: #059669;
+  --app-bg: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(16, 185, 129, 0.1));
+}
+
+/* Marketplace Apps - Purple Theme */
+.theme-marketplace {
+  --app-primary: #8B5CF6;
+  --app-secondary: #A855F7;
+  --app-accent: #7C3AED;
+  --app-bg: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+}
+
+/* Enterprise Apps - Orange Theme */
+.theme-enterprise {
+  --app-primary: #FF6B35;
+  --app-secondary: #F97316;
+  --app-accent: #EA580C;
+  --app-bg: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(249, 115, 22, 0.1));
+}
+
+/* Cloud Apps - Cyan Theme */
+.theme-cloud {
+  --app-primary: #06B6D4;
+  --app-secondary: #0891B2;
+  --app-accent: #0E7490;
+  --app-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1));
+}
+
+/* Compliance Apps - Red Theme */
+.theme-compliance {
+  --app-primary: #EF4444;
+  --app-secondary: #DC2626;
+  --app-accent: #B91C1C;
+  --app-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+}
+
+/* Dev Apps - Indigo Theme */
+.theme-dev {
+  --app-primary: #6366F1;
+  --app-secondary: #4F46E5;
+  --app-accent: #4338CA;
+  --app-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1));
+}
+
+/* Apply theme colors */
+.app-themed {
+  background: var(--app-bg);
+}
+
+.app-themed .btn-primary {
+  background: linear-gradient(135deg, var(--app-primary), var(--app-secondary));
+  border-color: var(--app-accent);
+}
+
+.app-themed .glass-card {
+  border-color: var(--app-primary);
+  box-shadow: 0 8px 32px var(--app-primary)20;
+}
+
+.app-themed .holo-text {
+  background: linear-gradient(45deg, var(--app-primary), var(--app-secondary), var(--app-accent));
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: holo-shift 3s ease-in-out infinite;
+}

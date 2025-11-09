@@ -44,6 +44,7 @@
     "checkJs": false,
     "incremental": true,
     "composite": false,
+    "ignoreDeprecations": "6.0",
     // Next.js specific
     "plugins": [
       {

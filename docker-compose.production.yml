@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: azora2025
+      POSTGRES_DB: azora_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - AUTH_URL=http://auth-service:3001
+      - MINT_URL=http://mint-service:3002
+      - LMS_URL=http://lms-service:3003
+      - FORGE_URL=http://forge-service:3004
+    depends_on:
+      - auth-service
+    restart: unless-stopped
+
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL=postgresql://postgres:azora2025@postgres:5432/azora_auth
+      - JWT_SECRET=azora-secret-2025
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    command: sh -c "npx prisma db push && node index.js"
+
+  health-monitor:
+    build: ./services/health-monitor
+    ports:
+      - "9090:9090"
+    environment:
+      - PORT=9090
+      - GATEWAY_URL=http://api-gateway:4000
+      - AUTH_URL=http://auth-service:3001
+    depends_on:
+      - api-gateway
+      - auth-service
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
