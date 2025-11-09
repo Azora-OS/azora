@@ -5,6 +5,11 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "integrate:scan": "cd tools/integration-monitor && npm run scan",
+    "integrate:validate": "cd tools/integration-monitor && npm run validate",
+    "integrate:register": "cd tools/integration-monitor && npm run register",
+    "integrate:report": "cd tools/integration-monitor && npm run report",
+    "integrate:watch": "cd tools/integration-monitor && npm run watch",
     "supreme:launch": "node scripts/master-orchestrator.js",
     "supreme:install": "node scripts/master-orchestrator.js --install-deps",
     "supreme:services": "node scripts/master-orchestrator.js --services-only",
