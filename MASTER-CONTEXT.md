@@ -268,7 +268,47 @@ npm run test:ui
 # Design Documentation
 # Review: docs/branding/
 # Review: AZORA-IDENTITY.md
+
+# 🎯 DESIGN AUTOMATION ENGINE (C4 Planted)
+cd tools/design-system
+npx tsx design-automation-engine.ts scan      # Scan for violations
+npx tsx design-automation-engine.ts fix       # Auto-fix violations
+npx tsx design-automation-engine.ts validate  # Validate components
+npx tsx design-automation-engine.ts report    # Generate report
+
+# 🌉 DESIGN INFRASTRUCTURE BRIDGE (Response to Architect's C4)
+npx tsx design-infrastructure-bridge.ts scan      # Scan infrastructure
+npx tsx design-infrastructure-bridge.ts deploy    # Deploy design tokens
+npx tsx design-infrastructure-bridge.ts validate # Validate infrastructure
+npx tsx design-infrastructure-bridge.ts report    # Infrastructure report
+
+# 🎯 UNIFIED CLI (Complete Integration)
+npx tsx infrastructure-design-cli.ts scan        # Comprehensive scan
+npx tsx infrastructure-design-cli.ts deploy --all # Deploy to all services
+npx tsx infrastructure-design-cli.ts validate    # Validate compliance
+npx tsx infrastructure-design-cli.ts fix        # Auto-fix violations
+npx tsx infrastructure-design-cli.ts report     # Generate report
+npx tsx infrastructure-design-cli.ts init <path> # Initialize service
 ```
+
+**🔥 Designer's C4 Tools:**
+- **Design Automation Engine**: `tools/design-system/design-automation-engine.ts`
+  - Scans for design violations
+  - Auto-fixes issues
+  - Validates components
+  - Generates Ubuntu-aligned components
+  
+- **Design Infrastructure Bridge**: `tools/design-system/design-infrastructure-bridge.ts`
+  - Scans infrastructure services
+  - Deploys design tokens infrastructure-wide
+  - Validates infrastructure design compliance
+  - Generates infrastructure-aligned components
+  
+- **Infrastructure Design CLI**: `tools/design-system/infrastructure-design-cli.ts`
+  - Unified command interface
+  - Comprehensive infrastructure scanning
+  - Automated deployment and validation
+  - Complete design system integration
 
 **⚠️ CRITICAL RULE**: **DO NOT edit README.md files** - See [Strict Development Rules](#-strict-development-rules)
 
@@ -1514,6 +1554,13 @@ Every decision governed by immutable constitution:
 ---
 
 ## 📝 VERSION HISTORY
+
+- **v2.1.0** (Nov 2025) - **DESIGN INFRASTRUCTURE INTEGRATION** - Infrastructure design bridge
+  - Added Design Infrastructure Bridge (response to Architect's C4)
+  - Added Infrastructure Design CLI (unified command interface)
+  - Updated Designer's Command Set with C4 tools
+  - Infrastructure-wide design token deployment
+  - Cross-service design validation
 
 - **v2.0.0** (Nov 2025) - **ORCHESTRATION EDITION** - High-level orchestration framework
   - Added Command Structure & Duty Assignments
