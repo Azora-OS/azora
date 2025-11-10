@@ -421,7 +421,33 @@ Entire subsystems remain commented-out TODOs:
 
 ---
 
-### Phase 4: Cleanup & Hardening (Weeks 8-9) ⚠️ **MEDIUM**
+### Phase 4: Turborepo Optimization (Week 5) ⚡ **HIGH**
+
+#### Sprint 4.0: Turborepo CI/CD Integration (Week 5)
+**Priority:** HIGH
+
+**Tasks:**
+1. ✅ Optimize build pipeline dependencies
+2. ✅ Integrate Turborepo with GitHub Actions
+3. ✅ Set up remote cache in CI
+4. ✅ Measure build performance improvements
+5. ✅ Document Turborepo usage
+6. ✅ Train team on Turborepo
+
+**Deliverables:**
+- CI/CD integrated with Turborepo
+- Remote cache working in CI
+- 3-5x faster builds
+- Team trained
+
+**Effort:** 3-5 days  
+**Owner:** DevOps Team + Snr Architect
+
+**See:** `TURBOREPO-INTEGRATION-PLAN.md` for full details
+
+---
+
+### Phase 5: Cleanup & Hardening (Weeks 8-9) ⚠️ **MEDIUM**
 
 #### Sprint 4.1: Remove Stubs & TODOs (Week 8)
 **Priority:** MEDIUM
@@ -563,23 +589,30 @@ Testing & Observability
 
 ## 🚨 IMMEDIATE ACTIONS (This Week)
 
-### Monday-Tuesday: Security Fixes
+### Monday-Tuesday: Security Fixes + Turborepo Setup
 1. ☐ Externalize all secrets
 2. ☐ Remove hard-coded JWT secrets
 3. ☐ Add environment variable validation
 4. ☐ Set up secret management (HashiCorp Vault or similar)
+5. ☐ **Install Turborepo** (`npm install -D turbo`)
+6. ☐ **Create `turbo.json` configuration**
+7. ☐ **Update root `package.json` scripts**
 
-### Wednesday-Thursday: Database Setup
+### Wednesday-Thursday: Database Setup + Core Apps Migration
 1. ☐ Set up PostgreSQL instances
 2. ☐ Configure Prisma for critical services
 3. ☐ Create initial schemas
 4. ☐ Test database connections
+5. ☐ **Migrate core apps to Turborepo** (apps/app, apps/azora-ui, apps/student-portal)
+6. ☐ **Test Turborepo builds**
 
-### Friday: Authentication Pipeline
+### Friday: Authentication Pipeline + Service Migration
 1. ☐ Implement JWT minting
 2. ☐ Wire up session-service
 3. ☐ Add JWT validation middleware
 4. ☐ Test authentication flow
+5. ☐ **Migrate critical services to Turborepo** (api-gateway, auth-service, chronicle-protocol)
+6. ☐ **Set up remote cache**
 
 ---
 
