@@ -1,23 +1,21 @@
 {
   "name": "@azora/database",
   "version": "1.0.0",
-  "description": "Azora Database Layer - Ubuntu Data Infrastructure",
-  "main": "index.ts",
+  "description": "Azora OS Database Service",
+  "main": "index.js",
   "scripts": {
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
-    "db:studio": "prisma studio",
-    "db:seed": "ts-node seed.ts"
+    "db:generate": "prisma generate --schema=./schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=./schema.prisma",
+    "db:migrate:prod": "prisma migrate deploy --schema=./schema.prisma",
+    "db:seed": "node seed.js",
+    "db:reset": "prisma migrate reset --schema=./schema.prisma --force",
+    "db:studio": "prisma studio --schema=./schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
-    "mongodb": "^6.3.0",
-    "redis": "^4.6.11"
+    "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
-    "prisma": "^5.7.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "prisma": "^5.7.0"
   }
 }
