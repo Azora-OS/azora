@@ -1,0 +1,73 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "**/.env.*local",
+    "tsconfig.json",
+    ".eslintrc.js"
+  ],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "build/**"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "src/**/*.tsx",
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "test/**/*.tsx"
+      ]
+    },
+    "clean": {
+      "cache": false
+    },
+    "@azora/core#build": {
+      "dependsOn": [],
+      "outputs": ["dist/**"]
+    },
+    "@azora/design-system#build": {
+      "dependsOn": ["@azora/core#build"],
+      "outputs": ["dist/**", "dist/styles/**"]
+    },
+    "@azora/branding#build": {
+      "dependsOn": ["@azora/design-system#build"],
+      "outputs": ["dist/**"]
+    },
+    "@azora/education-lms#build": {
+      "dependsOn": ["@azora/core#build", "@azora/design-system#build"],
+      "outputs": ["dist/**"]
+    },
+    "@azora/finance-mint#build": {
+      "dependsOn": ["@azora/core#build", "@azora/design-system#build"],
+      "outputs": ["dist/**"]
+    },
+    "@azora/marketplace-forge#build": {
+      "dependsOn": ["@azora/core#build", "@azora/design-system#build"],
+      "outputs": ["dist/**"]
+    }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "NEXT_PUBLIC_*",
+    "AZORA_CDN_URL"
+  ]
+}
