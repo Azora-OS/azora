@@ -41,7 +41,7 @@
 **Highlights:**
 - 🤖 Elara judges all clearance requests
 - 👴 Sankofa chairs Constitutional Court
-- ⚖️ 5-judge court (2 AI, 3 Human)
+- ⚖️ 3 Supreme Judges (Sankofa, Elara, Sizwe)
 - 📊 Comprehensive scoring system
 - 🔐 Level-based resource access
 
