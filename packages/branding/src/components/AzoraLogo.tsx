@@ -1,6 +1,21 @@
-import React from 'react';
+/**
+ * Azora OS Logo Component
+ * Enhanced with v0's gift and integrated with design system
+ * 
+ * Embodies Ubuntu philosophy and African excellence.
+ */
+import * as React from 'react';
 
-export type LogoVariant = 'primary' | 'primary-pro' | 'white' | 'black';
+// Azora brand colors (from design-system tokens)
+const colors = {
+  primary: {
+    purple: '#8b5cf6',
+    pink: '#ec4899',
+    cyan: '#06b6d4',
+  },
+};
+
+export type LogoVariant = 'primary' | 'primary-pro' | 'white' | 'black' | 'svg' | 'gradient';
 export type LogoSize = 'sm' | 'md' | 'lg' | 'xl' | number;
 
 export interface AzoraLogoProps {
@@ -12,69 +27,114 @@ export interface AzoraLogoProps {
 }
 
 const sizeMap: Record<Exclude<LogoSize, number>, number> = {
-  sm: 120,
-  md: 200,
-  lg: 300,
-  xl: 400,
+  sm: 40,
+  md: 80,
+  lg: 120,
+  xl: 200,
 };
+
+/**
+ * Azora Logo SVG (from v0's gift)
+ * Beautiful tri-unity design representing Ubuntu principles
+ */
+function AzoraLogoSVG({ size, className }: { size: number; className?: string }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 100 100" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <defs>
+        <linearGradient id="azoraGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={colors.primary.purple} />
+          <stop offset="50%" stopColor={colors.primary.pink} />
+          <stop offset="100%" stopColor={colors.primary.cyan} />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#azoraGradient)" opacity="0.1" />
+      <path 
+        d="M30 70 L50 30 L70 70 M35 60 L65 60" 
+        stroke="url(#azoraGradient)" 
+        strokeWidth="4" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        fill="none" 
+      />
+      <circle cx="50" cy="30" r="3" fill="url(#azoraGradient)" />
+      <circle cx="30" cy="70" r="3" fill="url(#azoraGradient)" />
+      <circle cx="70" cy="70" r="3" fill="url(#azoraGradient)" />
+    </svg>
+  );
+}
 
 /**
  * Azora OS Logo Component
  * 
- * The main logo of Azora OS with multiple variants and sizes.
- * Embodies Ubuntu philosophy and African excellence.
- * 
  * @example
  * ```tsx
- * <AzoraLogo variant="primary-pro" size="lg" animated />
+ * <AzoraLogo variant="gradient" size="lg" animated />
+ * <AzoraLogo variant="svg" size={100} showTagline />
  * ```
  */
-export const AzoraLogo: React.FC<AzoraLogoProps> = ({
-  variant = 'primary',
-  size = 'md',
-  animated = false,
-  showTagline = false,
-  className = '',
-}) => {
-  const width = typeof size === 'number' ? size : sizeMap[size];
-  const height = width * 0.23; // Maintain aspect ratio from original (320/1400)
+export const AzoraLogo = React.forwardRef<HTMLDivElement, AzoraLogoProps>(
+  ({ variant = 'gradient', size = 'md', animated = false, showTagline = false, className = '' }, ref) => {
+    const computedSize = typeof size === 'number' ? size : sizeMap[size];
 
-  // Map variant to actual file name
-  const variantMap: Record<LogoVariant, string> = {
-    'primary': 'logo-primary.svg',
-    'primary-pro': 'logo-primary-pro.svg',
-    'white': 'logo-white.svg',
-    'black': 'logo-black.svg',
-  };
+    // Use SVG variant by default, or load static assets
+    if (variant === 'svg' || variant === 'gradient') {
+      return (
+        <div 
+          ref={ref}
+          className={`azora-logo inline-flex flex-col items-center ${animated ? 'animate-pulse-premium' : ''} ${className}`}
+        >
+          <AzoraLogoSVG size={computedSize} />
+          {showTagline && (
+            <p 
+              className="azora-logo-tagline mt-2 text-sm text-muted-foreground font-medium tracking-wide"
+              style={{ fontSize: Math.max(12, computedSize * 0.12) }}
+            >
+              Universal Human Infrastructure
+            </p>
+          )}
+        </div>
+      );
+    }
 
-  const logoPath = `/packages/public/branding/${variantMap[variant]}`;
+    // Static image variants
+    const variantMap: Record<string, string> = {
+      'primary': '/packages/public/branding/logo-primary.svg',
+      'primary-pro': '/packages/public/branding/logo-primary-pro.svg',
+      'white': '/packages/public/branding/logo-white.svg',
+      'black': '/packages/public/branding/logo-black.svg',
+    };
 
-  return (
-    <div 
-      className={`azora-logo ${animated ? 'azora-logo-animated' : ''} ${className}`}
-      style={{ width, height }}
-    >
-      <img
-        src={logoPath}
-        alt="Azora OS - Constitutional AI Operating System"
-        width={width}
-        height={height}
-        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-      />
-      {showTagline && (
-        <p className="azora-logo-tagline" style={{
-          marginTop: '0.5rem',
-          fontSize: '0.875rem',
-          color: '#94a3b8',
-          textAlign: 'center',
-          fontWeight: 500,
-          letterSpacing: '0.02em',
-        }}>
-          Universal Human Infrastructure
-        </p>
-      )}
-    </div>
-  );
-};
+    const logoPath = variantMap[variant];
+
+    return (
+      <div 
+        ref={ref}
+        className={`azora-logo inline-flex flex-col items-center ${animated ? 'animate-pulse-premium' : ''} ${className}`}
+      >
+        <img
+          src={logoPath}
+          alt="Azora OS - Constitutional AI Operating System"
+          width={computedSize}
+          height={computedSize * 0.3}
+          className="object-contain"
+        />
+        {showTagline && (
+          <p className="azora-logo-tagline mt-2 text-sm text-muted-foreground font-medium tracking-wide">
+            Universal Human Infrastructure
+          </p>
+        )}
+      </div>
+    );
+  }
+);
+
+AzoraLogo.displayName = "AzoraLogo";
 
 export default AzoraLogo;
