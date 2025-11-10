@@ -10,3 +10,5 @@ export * from './master-integrator';
 export * from './health-check';
 export * from './api-gateway-integration';
 export * from './event-bus';
+export * from './unified-api-router';
+export * from './api-endpoint-integration';
