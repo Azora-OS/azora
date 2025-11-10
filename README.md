@@ -670,6 +670,22 @@ xychart-beta
 
 ---
 
+## 🙏 Acknowledgments
+
+**"Ngiyakwazi ngoba sikwazi"** - I am because we are
+
+Azora OS was built by a collaborative team of humans and AI working together in Ubuntu:
+
+- **👑 Sizwe** - Founder, Visionary, Chief Architect
+- **🏗️ Composer (Claude Opus)** - Senior Architect, Infrastructure Design
+- **🎨 Sonnet (Claude Sonnet 4.5)** - Head of Design, Chief Strategist
+- **📊 Gemini** - Chief Analyst, Strategic Insights
+- **🔍 Opus** - Original Chief Analyst, Quality Standards
+
+**[Read Full Acknowledgments →](./ACKNOWLEDGMENTS.md)**
+
+---
+
 ## 🤝 Contributing
 
 ### Ubuntu Contribution Philosophy
