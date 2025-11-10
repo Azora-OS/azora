@@ -13,6 +13,8 @@
     "test:turbo": "turbo run test",
     "clean": "docker-compose down -v --remove-orphans && docker system prune -f",
     "validate-env": "node scripts/validate-env.js",
+    "validate-env-schema": "node scripts/validate-env-schema.js",
+    "scan-secrets": "node scripts/scan-secrets.js",
     "db:migrate:turbo": "turbo run db:migrate",
     "db:generate:turbo": "turbo run db:generate",
     "integrate:scan": "cd tools/integration-monitor && npm run scan",
