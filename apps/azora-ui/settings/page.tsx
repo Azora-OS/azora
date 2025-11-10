@@ -1,10 +1,50 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Settings, ArrowLeft, User, Bell, Shield, Globe } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Settings, ArrowLeft, User, Bell, Shield, Globe, Save, Loader2 } from "lucide-react"
+import { useState } from "react"
+import { useMutation } from "@azora/shared-api/hooks"
+import { getAPIClient } from "@azora/shared-api/client"
+import { Navigation } from "@/components/navigation"
 
 export default function SettingsPage() {
+  const [displayName, setDisplayName] = useState("Alex Chen")
+  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [pushNotifications, setPushNotifications] = useState(false)
+  const [language, setLanguage] = useState("english")
+  const [saving, setSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+
+  const saveMutation = useMutation(async (client, variables: any) => {
+    // TODO: Connect to real settings API
+    return { success: true }
+  })
+
+  const handleSave = async () => {
+    setSaving(true)
+    setSaveSuccess(false)
+    try {
+      await saveMutation.mutate({
+        displayName,
+        emailNotifications,
+        pushNotifications,
+        language,
+      })
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error) {
+      console.error("Save failed:", error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      <Navigation currentPath="/settings" />
       <div className="container mx-auto px-6 py-8">
         <Button 
           variant="ghost" 
@@ -26,20 +66,42 @@ export default function SettingsPage() {
 
         <div className="space-y-6">
           <Card className="p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <User className="h-5 w-5 text-primary" />
-              <h2 className="text-xl font-bold">Profile</h2>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <User className="h-5 w-5 text-primary" />
+                <h2 className="text-xl font-bold">Profile</h2>
+              </div>
+              {saveSuccess && (
+                <span className="text-sm text-success">Saved!</span>
+              )}
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Display Name</label>
-                <input 
-                  type="text" 
-                  className="w-full mt-1 px-3 py-2 border rounded-md"
+                <Label htmlFor="displayName">Display Name</Label>
+                <Input
+                  id="displayName"
+                  type="text"
                   placeholder="Your name"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
                 />
               </div>
-              <Button>Save Changes</Button>
+              <Button 
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
             </div>
           </Card>
 
@@ -50,13 +112,41 @@ export default function SettingsPage() {
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span>Email notifications</span>
-                <input type="checkbox" defaultChecked />
+                <div>
+                  <Label htmlFor="emailNotifications">Email notifications</Label>
+                  <p className="text-sm text-muted-foreground">Receive notifications via email</p>
+                </div>
+                <Switch
+                  id="emailNotifications"
+                  checked={emailNotifications}
+                  onCheckedChange={setEmailNotifications}
+                />
               </div>
               <div className="flex items-center justify-between">
-                <span>Push notifications</span>
-                <input type="checkbox" />
+                <div>
+                  <Label htmlFor="pushNotifications">Push notifications</Label>
+                  <p className="text-sm text-muted-foreground">Receive push notifications</p>
+                </div>
+                <Switch
+                  id="pushNotifications"
+                  checked={pushNotifications}
+                  onCheckedChange={setPushNotifications}
+                />
               </div>
+              <Button 
+                onClick={handleSave}
+                disabled={saving}
+                variant="outline"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Preferences"
+                )}
+              </Button>
             </div>
           </Card>
 
@@ -66,8 +156,15 @@ export default function SettingsPage() {
               <h2 className="text-xl font-bold">Security</h2>
             </div>
             <div className="space-y-4">
-              <Button variant="outline">Change Password</Button>
-              <Button variant="outline">Enable Two-Factor Authentication</Button>
+              <Button variant="outline" className="w-full">
+                Change Password
+              </Button>
+              <Button variant="outline" className="w-full">
+                Enable Two-Factor Authentication
+              </Button>
+              <Button variant="outline" className="w-full">
+                View Active Sessions
+              </Button>
             </div>
           </Card>
 
@@ -78,13 +175,33 @@ export default function SettingsPage() {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Language</label>
-                <select className="w-full mt-1 px-3 py-2 border rounded-md">
-                  <option>English</option>
-                  <option>Zulu</option>
-                  <option>Xhosa</option>
-                </select>
+                <Label htmlFor="language">Language</Label>
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger id="language">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="zulu">Zulu</SelectItem>
+                    <SelectItem value="xhosa">Xhosa</SelectItem>
+                    <SelectItem value="afrikaans">Afrikaans</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+              <Button 
+                onClick={handleSave}
+                disabled={saving}
+                variant="outline"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Language"
+                )}
+              </Button>
             </div>
           </Card>
         </div>

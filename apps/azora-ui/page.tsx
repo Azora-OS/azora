@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Bell, Settings, Wallet, Shield, TrendingUp, Users, Globe, ArrowRight, BookOpen, Zap, Loader2 } from "lucide-react"
 import { InternationalCollaboration } from "@/components/ui/international-collaboration"
+import { Navigation } from "@/components/navigation"
 import { useWalletBalance, useStudentProgress, useHealthCheck } from "@/hooks/useApi"
 
 export default function StudentDashboard() {
@@ -18,8 +19,9 @@ export default function StudentDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation currentPath="/" />
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/30 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border/50 bg-card/30 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo and Title */}

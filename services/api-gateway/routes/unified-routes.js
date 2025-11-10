@@ -243,4 +243,114 @@ router.post('/institutional/students/register', authenticateSession, async (req,
   }
 });
 
+/**
+ * Wallet Transaction Routes
+ */
+router.post('/wallet/send', authenticateSession, async (req, res) => {
+  try {
+    const { amount, address } = req.body
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real wallet service
+    const txHash = "0x" + Math.random().toString(16).substr(2, 64)
+    res.json({ success: true, txHash, message: 'Transaction sent successfully' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.get('/wallet/transactions', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real transaction service
+    const transactions = []
+    res.json({ success: true, data: transactions })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+/**
+ * Notifications Routes
+ */
+router.get('/notifications', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real notifications service
+    const notifications = []
+    res.json({ success: true, data: notifications })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.patch('/notifications/:id/read', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real notifications service
+    res.json({ success: true, message: 'Notification marked as read' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.post('/notifications/mark-all-read', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real notifications service
+    res.json({ success: true, message: 'All notifications marked as read' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+/**
+ * Settings Routes
+ */
+router.get('/settings', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real settings service
+    const settings = {
+      displayName: '',
+      emailNotifications: true,
+      pushNotifications: false,
+      language: 'english',
+    }
+    res.json({ success: true, data: settings })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.put('/settings', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real settings service and persist
+    res.json({ success: true, message: 'Settings saved successfully' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
 module.exports = router;

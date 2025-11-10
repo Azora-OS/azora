@@ -4,6 +4,7 @@ import { BookOpen, ArrowLeft, Play } from "lucide-react"
 import { useQuery } from "@azora/shared-api/hooks"
 import { getAPIClient } from "@azora/shared-api/client"
 import { Loader2 } from "lucide-react"
+import { Navigation } from "@/components/navigation"
 
 export default function CoursesPage() {
   const { data: coursesData, loading: coursesLoading, error: coursesError } = useQuery(
@@ -13,6 +14,7 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation currentPath="/courses" />
       <div className="container mx-auto px-6 py-8">
         <Button 
           variant="ghost" 
