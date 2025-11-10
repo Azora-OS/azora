@@ -353,4 +353,74 @@ router.put('/settings', authenticateSession, async (req, res) => {
   }
 })
 
+/**
+ * Infrastructure Routes
+ */
+router.get('/infrastructure/status', async (req, res) => {
+  try {
+    const { treeArchitecture } = require('@azora/shared-infrastructure/tree-architecture');
+    const status = treeArchitecture.getInfrastructureStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/cdn/status', async (req, res) => {
+  try {
+    const { africaCDN } = require('@azora/shared-infrastructure/africa-cdn');
+    const status = africaCDN.getNetworkStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/rivers/status', async (req, res) => {
+  try {
+    const { riverFlows } = require('@azora/shared-infrastructure/river-flows');
+    const status = riverFlows.getNetworkStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/mycelium/status', async (req, res) => {
+  try {
+    const { myceliumNetwork } = require('@azora/shared-infrastructure/mycelium-network');
+    const topology = myceliumNetwork.getNetworkTopology();
+    res.json({ success: true, data: topology });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/tree/status', async (req, res) => {
+  try {
+    const { treeArchitecture } = require('@azora/shared-infrastructure/tree-architecture');
+    const status = treeArchitecture.getTreeStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * CDN Asset Routes
+ */
+router.get('/cdn/*', async (req, res) => {
+  try {
+    const { africaCDN } = require('@azora/shared-infrastructure/africa-cdn');
+    const path = req.path.replace('/cdn', '');
+    const region = req.query.region || req.headers['x-region'];
+    const cdnUrl = africaCDN.getAssetURL(path, region);
+    
+    // Redirect to CDN or proxy
+    res.redirect(302, cdnUrl);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
