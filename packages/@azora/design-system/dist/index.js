@@ -8,6 +8,12 @@
 import { AZORA_CORE, UBUNTU_PRINCIPLES, CONSTITUTIONAL_ARTICLES } from '@azora/core';
 // Re-export tokens
 export * from './tokens';
+// Re-export components
+export * from './components';
+// Re-export utilities
+export { cn } from './utils/cn';
+// Re-export lib
+export { UbuntuEngine } from './lib/ubuntu-engine';
 // Re-export core constants
 export { AZORA_CORE, UBUNTU_PRINCIPLES, CONSTITUTIONAL_ARTICLES };
 /**

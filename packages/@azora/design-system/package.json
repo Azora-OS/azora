@@ -16,10 +16,18 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/core": "file:../core"
+    "@azora/core": "file:../core",
+    "react": "^18.3.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
+    "@types/react": "^18.3.0",
     "typescript": "^5.3.3",
     "eslint": "^8.55.0"
   }
