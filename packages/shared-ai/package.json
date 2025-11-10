@@ -1,0 +1,33 @@
+{
+  "name": "@azora/shared-ai",
+  "version": "1.0.0",
+  "description": "Azora OS Shared AI Layer - Claude/OpenAI integration with real data",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./claude": "./claude-service.ts",
+    "./data-access": "./data-access.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@azora/shared-database": "workspace:*",
+    "@azora/shared-auth": "workspace:*",
+    "openai": "^4.24.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "azora",
+    "ai",
+    "claude",
+    "openai",
+    "data-access"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

@@ -6,6 +6,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Running tests...\" && exit 0",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config config/eslint.config.js health-check.js quick-health-check.js",
+    "type-check": "turbo run type-check",
+    "test:turbo": "turbo run test",
+    "clean": "docker-compose down -v --remove-orphans && docker system prune -f",
+    "validate-env": "node scripts/validate-env.js",
+    "validate-env-schema": "node scripts/validate-env-schema.js",
+    "scan-secrets": "node scripts/scan-secrets.js",
+    "db:migrate:turbo": "turbo run db:migrate",
+    "db:generate:turbo": "turbo run db:generate",
     "integrate:scan": "cd tools/integration-monitor && npm run scan",
     "integrate:validate": "cd tools/integration-monitor && npm run validate",
     "integrate:register": "cd tools/integration-monitor && npm run register",
@@ -48,7 +59,6 @@
     "deploy:design": "./scripts/deploy-design-system.sh",
     "deploy:all": "npm run deploy:design && npm run deploy:vercel",
     "setup:dev": "./scripts/setup-dev.sh",
-    "clean": "docker-compose down -v --remove-orphans && docker system prune -f",
     "elara:launch": "node tools/elara-ide/launch.js",
     "elara:vscode": "node scripts/launch-elara-vscode.js",
     "docs:generate": "node scripts/update-all-docs.js",
@@ -60,7 +70,6 @@
     "setup:services": "echo 'Services setup complete'",
     "scan:system": "node scripts/system-scanner.js",
     "launch:master": "node scripts/master-orchestrator.js",
-    "lint": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config config/eslint.config.js health-check.js quick-health-check.js",
     "lint:fix": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config config/eslint.config.js health-check.js quick-health-check.js --fix",
     "format": "prettier --write health-check.js quick-health-check.js",
     "format:check": "prettier --check health-check.js quick-health-check.js",
@@ -93,9 +102,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
+    "@types/node": "^20.8.0",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
-    "@types/node": "^20.8.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.33.2",
@@ -104,12 +113,20 @@
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.1.1",
+    "turbo": "2.6.0",
     "typescript": "^5.2.2"
   },
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
   },
+  "packageManager": "npm@10.0.0",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*",
+    "!services/azora-mint"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/azora-os/azora-os.git"

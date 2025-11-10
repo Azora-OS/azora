@@ -52,7 +52,13 @@ module.exports = {
   // Authentication Configuration
   auth: {
     jwt: {
-      secret: process.env.JWT_SECRET || 'azora-education-secret-key-change-in-production',
+      secret: (() => {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error('JWT_SECRET environment variable is required');
+        }
+        return secret;
+      })(),
       expiresIn: process.env.JWT_EXPIRES_IN || '7d',
       refreshTokenExpiresIn: '30d',
       issuer: 'azora-education',

@@ -47,8 +47,11 @@ app.post('/api/auth/login', async (req, res) => {
             });
         }
 
-        // Simulate authentication (replace with real auth logic)
-        if (username === 'demo' && password === 'demo') {
+        // TODO: Replace with real authentication logic
+        // For now, this is a placeholder that should never work in production
+        // Real auth should query database and verify password hash
+        if (process.env.NODE_ENV === 'development' && username === 'demo' && password === 'demo') {
+            console.warn('⚠️  Using demo credentials - this should never work in production!');
             const token = crypto.randomBytes(32).toString('hex');
             const tokenData = {
                 token,
