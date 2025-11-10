@@ -6,7 +6,7 @@
     "package.json",
     "turbo.json"
   ],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build", "db:generate"],
       "outputs": [
