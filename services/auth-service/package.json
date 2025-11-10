@@ -11,6 +11,9 @@
     "db:seed": "node prisma/seed.js"
   },
   "dependencies": {
+    "@azora/branding": "file:../../packages/branding",
+    "@azora/design-system": "file:../../packages/@azora/design-system",
+    "@azora/telemetry": "file:../../packages/@azora/telemetry",
     "@prisma/client": "^5.8.0",
     "axios": "^1.6.2",
     "bcrypt": "^6.0.0",
