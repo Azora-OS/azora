@@ -1,7 +1,9 @@
-// 🛡️ Azora Database Schema - Ubuntu Data Model
+// Azora OS Database Schema
+// Last Updated: November 10, 2025
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -9,103 +11,108 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 👤 User & Identity
+// ==========================================
+// USER MANAGEMENT
+// ==========================================
+
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  username      String   @unique
+  id            String    @id @default(uuid())
+  email         String    @unique
   passwordHash  String
-  role          Role     @default(STUDENT)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
+  name          String
+  role          UserRole  @default(STUDENT)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
   profile       Profile?
-  wallets       Wallet[]
   enrollments   Enrollment[]
+  wallet        Wallet?
   transactions  Transaction[]
-  jobs          Job[]
-  applications  Application[]
+  progress      Progress[]
   
   @@index([email])
-  @@index([username])
+  @@index([role])
+}
+
+enum UserRole {
+  STUDENT
+  EDUCATOR
+  ADMIN
+  INSTITUTION
 }
 
 model Profile {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firstName String
-  lastName  String
-  avatar    String?
-  bio       String?
-  country   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  phone       String?
+  avatar      String?
+  bio         String?
+  country     String?
+  city        String?
+  timezone    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-// 💰 Financial System
-model Wallet {
-  id           String        @id @default(uuid())
-  userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  currency     Currency      @default(AZR)
-  balance      Decimal       @default(0)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  
-  transactions Transaction[]
-  
-  @@unique([userId, currency])
-  @@index([userId])
-}
+// ==========================================
+// EDUCATION
+// ==========================================
 
-model Transaction {
-  id          String      @id @default(uuid())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  walletId    String
-  wallet      Wallet      @relation(fields: [walletId], references: [id], onDelete: Cascade)
-  type        TxType
-  amount      Decimal
-  currency    Currency
-  status      TxStatus    @default(PENDING)
-  metadata    Json?
-  createdAt   DateTime    @default(now())
-  
-  @@index([userId])
-  @@index([walletId])
-  @@index([createdAt])
-}
-
-// 🎓 Education System
 model Course {
-  id          String       @id @default(uuid())
-  title       String
-  description String
-  price       Decimal      @default(0)
-  currency    Currency     @default(AZR)
-  published   Boolean      @default(false)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id              String         @id @default(uuid())
+  title           String
+  description     String
+  instructorId    String
+  duration        Int            // in hours
+  price           Decimal        @db.Decimal(10, 2)
+  currency        String         @default("AZR")
+  difficulty      Difficulty     @default(BEGINNER)
+  isPublished     Boolean        @default(false)
   
-  lessons     Lesson[]
-  enrollments Enrollment[]
+  topics          String[]
+  thumbnailUrl    String?
   
-  @@index([published])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  lessons         Lesson[]
+  enrollments     Enrollment[]
+  
+  @@index([instructorId])
+  @@index([isPublished])
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
 }
 
 model Lesson {
   id          String   @id @default(uuid())
   courseId    String
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
   title       String
   content     String
   order       Int
-  duration    Int
+  duration    Int      // in minutes
+  videoUrl    String?
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Relations
+  progress    Progress[]
   
   @@index([courseId])
+  @@index([order])
 }
 
 model Enrollment {
@@ -114,94 +121,185 @@ model Enrollment {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId    String
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  progress    Int      @default(0)
-  completed   Boolean  @default(false)
-  enrolledAt  DateTime @default(now())
-  completedAt DateTime?
   
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  status      EnrollmentStatus @default(ACTIVE)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
-}
-
-// 💼 Marketplace System
-model Job {
-  id           String        @id @default(uuid())
-  userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title        String
-  description  String
-  budget       Decimal
-  currency     Currency      @default(AZR)
-  status       JobStatus     @default(OPEN)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  
-  applications Application[]
-  
-  @@index([userId])
   @@index([status])
 }
 
-model Application {
-  id        String    @id @default(uuid())
-  jobId     String
-  job       Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  proposal  String
-  status    AppStatus @default(PENDING)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model Progress {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId        String
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   
-  @@unique([jobId, userId])
-  @@index([jobId])
+  completed       Boolean  @default(false)
+  timeSpent       Int      @default(0) // in seconds
+  lastAccessedAt  DateTime @default(now())
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+}
+
+// ==========================================
+// FINANCE
+// ==========================================
+
+model Wallet {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  balance     Decimal  @default(0) @db.Decimal(18, 8)
+  currency    String   @default("AZR")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   @@index([userId])
 }
 
-// 📊 Enums
-enum Role {
-  STUDENT
-  EDUCATOR
-  BUSINESS
-  ADMIN
+model Transaction {
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  amount        Decimal           @db.Decimal(18, 8)
+  currency      String            @default("AZR")
+  type          TransactionType
+  status        TransactionStatus @default(PENDING)
+  description   String?
+  
+  // Metadata
+  reference     String?           @unique
+  metadata      Json?
+  
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
 }
 
-enum Currency {
-  AZR
-  USD
-  EUR
-  BTC
-  ETH
-}
-
-enum TxType {
-  DEPOSIT
-  WITHDRAWAL
+enum TransactionType {
+  CREDIT
+  DEBIT
+  EARN
+  SPEND
   TRANSFER
-  MINING_REWARD
-  UBI_PAYMENT
-  COURSE_PAYMENT
-  JOB_PAYMENT
+  REFUND
 }
 
-enum TxStatus {
+enum TransactionStatus {
   PENDING
   COMPLETED
   FAILED
   CANCELLED
 }
 
-enum JobStatus {
-  OPEN
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
+// ==========================================
+// SAFETY & SECURITY
+// ==========================================
+
+model SafetyIncident {
+  id          String           @id @default(uuid())
+  type        IncidentType
+  severity    IncidentSeverity
+  latitude    Float
+  longitude   Float
+  description String
+  reportedBy  String?
+  status      IncidentStatus   @default(OPEN)
+  
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([type])
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt])
 }
 
-enum AppStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-  WITHDRAWN
+enum IncidentType {
+  CRIME
+  ACCIDENT
+  EMERGENCY
+  HARASSMENT
+  THEFT
+  OTHER
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+// ==========================================
+// CHRONICLE PROTOCOL
+// ==========================================
+
+model ChronicleEntry {
+  id            String   @id @default(uuid())
+  type          String
+  data          Json
+  hash          String   @unique
+  previousHash  String?
+  blockchainTx  String?
+  
+  createdAt     DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+  @@index([hash])
+}
+
+// ==========================================
+// SESSIONS
+// ==========================================
+
+model Session {
+  id            String   @id @default(uuid())
+  userId        String
+  token         String   @unique
+  refreshToken  String?  @unique
+  expiresAt     DateTime
+  ipAddress     String?
+  userAgent     String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
 }
