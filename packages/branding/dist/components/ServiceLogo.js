@@ -1,4 +1,17 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+/**
+ * Service Logo Component
+ * Displays Azora OS service logos from packages/public/branding
+ *
+ * All 21 service logos available
+ */
+import * as React from 'react';
+const sizeMap = {
+    sm: 64,
+    md: 120,
+    lg: 200,
+    xl: 300,
+};
 const serviceNames = {
     sapiens: 'Azora Sapiens',
     forge: 'Azora Forge',
@@ -24,23 +37,17 @@ const serviceNames = {
 /**
  * Service Logo Component
  *
- * Displays the logo for a specific Azora service.
- * Each service has its own unique branding and symbolism.
- *
  * @example
  * ```tsx
- * <ServiceLogo service="sapiens" size={200} animated showName />
+ * <ServiceLogo service="sapiens" size="lg" showName />
+ * <ServiceLogo service="forge" size={150} animated />
  * ```
  */
-export const ServiceLogo = ({ service, size = 200, animated = false, showName = false, className = '', }) => {
-    const logoPath = `/packages/public/branding/azora-${service}-logo.svg`;
+export const ServiceLogo = React.forwardRef(({ service, size = 'md', showName = false, animated = false, className = '' }, ref) => {
+    const computedSize = typeof size === 'number' ? size : sizeMap[size];
     const serviceName = serviceNames[service];
-    return (_jsxs("div", { className: `service-logo service-logo-${service} ${animated ? 'service-logo-animated' : ''} ${className}`, style: { width: size, display: 'inline-block' }, children: [_jsx("img", { src: logoPath, alt: serviceName, width: size, height: size * 0.3, style: { width: '100%', height: 'auto', objectFit: 'contain' } }), showName && (_jsx("p", { className: "service-logo-name", style: {
-                    marginTop: '0.5rem',
-                    fontSize: '0.875rem',
-                    color: '#94a3b8',
-                    textAlign: 'center',
-                    fontWeight: 600,
-                }, children: serviceName }))] }));
-};
+    const logoPath = `/packages/public/branding/services/azora-${service}-logo.svg`;
+    return (_jsxs("div", { ref: ref, className: `service-logo inline-flex flex-col items-center gap-2 ${animated ? 'animate-pulse-premium' : ''} ${className}`, children: [_jsx("img", { src: logoPath, alt: serviceName, width: computedSize, height: computedSize, className: "object-contain", style: { width: computedSize, height: computedSize } }), showName && (_jsx("span", { className: "service-logo-name text-sm font-semibold text-foreground tracking-wide", style: { fontSize: Math.max(12, computedSize * 0.1) }, children: serviceName }))] }));
+});
+ServiceLogo.displayName = "ServiceLogo";
 export default ServiceLogo;
