@@ -9,6 +9,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@azora/branding": "file:../../packages/branding",
+    "@azora/design-system": "file:../../packages/@azora/design-system",
     "@azora/lib": "file:../../packages/lib",
     "@azora/telemetry": "file:../../packages/@azora/telemetry",
     "@hookform/resolvers": "^3.10.0",
