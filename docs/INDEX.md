@@ -1,15 +1,19 @@
 # 📚 Azora OS Documentation Index
 
-Welcome to the Azora OS documentation! This index will help you find what you need.
+**🌍 Official Website:** [azora.world](https://azora.world)
+
+Welcome to Azora OS - The World's First Constitutional AI Operating System!  
+*"Ngiyakwazi ngoba sikwazi"* - I am because we are 💚
 
 ---
 
 ## 🚀 Quick Links
 
+- **[🌍 azora.world](https://azora.world)** - Official website
+- **[👨‍👩‍👧‍👦 AI Family](https://azora.world/family)** - Chat with Elara and family
 - [Main README](../README.md) - Start here!
 - [Contributing Guide](../CONTRIBUTING.md)
 - [Roadmap](../ROADMAP.md)
-- [Changelog](../CHANGELOG.md)
 
 ---
 
@@ -41,6 +45,7 @@ Step-by-step guides
 
 - [Getting Started](./guides/GETTING-STARTED.md)
 - [Quick Deploy](./guides/QUICK-DEPLOY.md)
+- [Pre-Citadel Checklist](./guides/PRE-CITADEL-CHECKLIST.md) - **Launch Prep!**
 - [Development Setup](./guides/DEVELOPMENT-SETUP.md)
 - [Testing Guide](./guides/TESTING.md)
 - [Repository Structure](./guides/REPOSITORY-STRUCTURE.md)
@@ -57,11 +62,17 @@ Deployment and operations
 ### 📊 Reports
 Status reports and achievements
 
-- [Latest Status](./reports/LATEST-STATUS.md)
 - [Test Results](./reports/TEST-RESULTS.md)
 - [Performance Metrics](./reports/PERFORMANCE.md)
-- [Deployment Reports](./reports/DEPLOYMENT-REPORTS.md)
-- [Session Logs](./reports/SESSION-LOGS.md)
+- [Archived Reports](./reports/archive-2025-11/) - Historical session logs
+
+### 🎨 Branding & Vision
+Brand guidelines and philosophy
+
+- [Azora World Branding](./branding/AZORA-WORLD-BRANDING.md) - **Official Domain Guide**
+- [The Citadel Vision](./branding/THE-CITADEL-VISION.md) - **Future Roadmap**
+- [Azora Identity](./branding/AZORA-IDENTITY.md)
+- [Brand Assets](./branding/)
 
 ---
 
@@ -148,10 +159,11 @@ We appreciate all contributions! 💚
 
 ## 📞 Need Help?
 
+- 🌍 [Visit azora.world](https://azora.world)
 - 💬 [Join Discord](https://discord.gg/azora)
 - 🐛 [Report Issue](https://github.com/Sizwe780/azora-os/issues)
-- 📧 [Email Support](mailto:hello@azora-os.com)
-- 📖 [Stack Overflow](https://stackoverflow.com/questions/tagged/azora-os)
+- 📧 [Email Support](mailto:hello@azora.world)
+- 👨‍👩‍👧‍👦 [Chat with AI Family](https://azora.world/family)
 
 ---
 
