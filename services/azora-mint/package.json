@@ -1,5 +1,5 @@
 {
-  "name": "azora-mint",
+  "name": "@azora/mint-service",
   "version": "1.0.0",
   "description": "Azora Mint - AI-Driven Credit Protocol & Economic Engine",
   "main": "dist/index.js",
