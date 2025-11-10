@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS - Component Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+            opacity: 0.9;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Component Analytics Dashboard</h1>
+            <p class="subtitle">Real-time usage tracking across Azora OS applications</p>
+        </header>
+
+        <div id="error-container"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">Total Events</div>
+                <div class="stat-value" id="total-events">-</div>
+                <div class="stat-change positive" id="events-change">Loading...</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">Active Services</div>
+                <div class="stat-value" id="active-services">-</div>
+                <div class="stat-change" id="services-list">Loading...</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">Component Mounts</div>
+                <div class="stat-value" id="component-mounts">-</div>
+                <div class="stat-change positive" id="mounts-change">Loading...</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">Interactions</div>
+                <div class="stat-value" id="interactions">-</div>
+                <div class="stat-change positive" id="interactions-change">Loading...</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div class="chart-title">Top Components by Usage</div>
+                <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+            </div>
+            
+            <table id="components-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Service</th>
+                        <th>Mounts</th>
+                        <th>Interactions</th>
+                        <th>Errors</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="components-tbody">
+                    <tr>
+                        <td colspan="6" class="loading">Loading component data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Recent Events</div>
+            <table id="events-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Component</th>
+                        <th>Service</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="events-tbody">
+                    <tr>
+                        <td colspan="5" class="loading">Loading events...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const ANALYTICS_URL = 'http://localhost:8086';
+
+        async function loadData() {
+            try {
+                // Clear any errors
+                document.getElementById('error-container').innerHTML = '';
+
+                // Load metrics
+                const metricsResponse = await fetch(`${ANALYTICS_URL}/metrics`);
+                const metrics = await metricsResponse.json();
+
+                // Process metrics
+                let totalEvents = 0;
+                let componentMounts = 0;
+                let interactions = 0;
+                const services = new Set();
+                const components = {};
+
+                Object.entries(metrics).forEach(([key, value]) => {
+                    if (key.startsWith('counter:')) {
+                        totalEvents += value;
+                        
+                        const parts = key.split(':');
+                        const eventType = parts[1];
+                        const service = parts[2];
+
+                        if (service) services.add(service);
+
+                        if (eventType === 'component.mount') componentMounts += value;
+                        if (eventType === 'component.interaction') interactions += value;
+                    }
+                });
+
+                // Update stats
+                document.getElementById('total-events').textContent = totalEvents.toLocaleString();
+                document.getElementById('events-change').textContent = `${componentMounts + interactions} tracked`;
+                
+                document.getElementById('active-services').textContent = services.size;
+                document.getElementById('services-list').textContent = Array.from(services).join(', ') || 'None';
+
+                document.getElementById('component-mounts').textContent = componentMounts.toLocaleString();
+                document.getElementById('mounts-change').textContent = `Across ${services.size} services`;
+
+                document.getElementById('interactions').textContent = interactions.toLocaleString();
+                document.getElementById('interactions-change').textContent = `${Math.round(interactions / (componentMounts || 1))} per component`;
+
+                // Mock component table (in real implementation, would aggregate from events)
+                const mockComponents = [
+                    { name: 'Button', service: 'azora-ui', mounts: 145, interactions: 432, errors: 0, status: 'healthy' },
+                    { name: 'Card', service: 'azora-ui', mounts: 89, interactions: 178, errors: 0, status: 'healthy' },
+                    { name: 'Input', service: 'enterprise-ui', mounts: 67, interactions: 523, errors: 2, status: 'warning' },
+                    { name: 'AzoraLogo', service: 'marketplace-ui', mounts: 45, interactions: 23, errors: 0, status: 'healthy' },
+                    { name: 'ServiceLogo', service: 'azora-ui', mounts: 34, interactions: 12, errors: 0, status: 'healthy' },
+                ];
+
+                const componentsTbody = document.getElementById('components-tbody');
+                componentsTbody.innerHTML = mockComponents.map(comp => `
+                    <tr>
+                        <td><strong>${comp.name}</strong></td>
+                        <td>${comp.service}</td>
+                        <td>${comp.mounts}</td>
+                        <td>${comp.interactions}</td>
+                        <td>${comp.errors}</td>
+                        <td>
+                            <span class="badge ${comp.status === 'healthy' ? 'badge-success' : comp.status === 'warning' ? 'badge-warning' : 'badge-primary'}">
+                                ${comp.status}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Mock recent events
+                const now = Date.now();
+                const mockEvents = [
+                    { time: now - 5000, type: 'component.mount', component: 'Button', service: 'azora-ui', details: 'variant: primary' },
+                    { time: now - 8000, type: 'component.interaction', component: 'Button', service: 'azora-ui', details: 'click' },
+                    { time: now - 12000, type: 'component.mount', component: 'Input', service: 'enterprise-ui', details: 'type: text' },
+                    { time: now - 15000, type: 'component.interaction', component: 'Input', service: 'enterprise-ui', details: 'focus' },
+                    { time: now - 20000, type: 'component.mount', component: 'Card', service: 'azora-ui', details: 'glass variant' },
+                ];
+
+                const eventsTbody = document.getElementById('events-tbody');
+                eventsTbody.innerHTML = mockEvents.map(event => `
+                    <tr>
+                        <td>${new Date(event.time).toLocaleTimeString()}</td>
+                        <td><span class="badge badge-primary">${event.type.split('.')[1]}</span></td>
+                        <td><strong>${event.component}</strong></td>
+                        <td>${event.service}</td>
+                        <td><code style="opacity: 0.8">${event.details}</code></td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('error-container').innerHTML = `
+                    <div class="error">
+                        ⚠️ Failed to connect to analytics service at ${ANALYTICS_URL}<br>
+                        Make sure the analytics service is running on port 8086
+                    </div>
+                `;
+            }
+        }
+
+        // Load data on page load
+        loadData();
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadData, 10000);
+    </script>
+</body>
+</html>

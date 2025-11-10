@@ -1,0 +1,26 @@
+{
+  "name": "@azora/core",
+  "version": "1.0.0",
+  "description": "Azora OS Core System - Sankofa Engine & Ubuntu Protocol",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./ubuntu": "./dist/ubuntu/index.js",
+    "./constitutional": "./dist/constitutional/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint src",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "eslint": "^8.55.0"
+  }
+}

@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "azora-pay-ui",
   "version": "1.0.0",
   "description": "Azora OS - Sovereign Operating System UI Portal",
@@ -20,7 +20,9 @@
   "author": "Azora ES",
   "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
-    "@azora/branding": "workspace:*",
+    "@azora/branding": "file:../../packages/branding",
+    "@azora/design-system": "file:../../packages/@azora/design-system",
+    "@azora/telemetry": "file:../../packages/@azora/telemetry",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
