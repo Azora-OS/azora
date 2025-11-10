@@ -1,9 +1,5 @@
-/**
- * @azora/design-system/components
- * React Component Exports
- *
- * "Ubuntu in every component - beauty multiplied through consistency"
- */
-// Core Components
+// Export all components
 export * from './Button';
 export * from './Card';
+export * from './TrinityGem';
+export * from './SankofaEngine';
