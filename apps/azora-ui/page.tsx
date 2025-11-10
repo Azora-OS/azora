@@ -62,14 +62,40 @@ export default function StudentDashboard() {
               </div>
 
               {/* Quick Actions */}
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/wallet';
+                  }
+                }}
+              >
                 <Wallet className="h-5 w-5 text-primary" />
               </Button>
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/notifications';
+                  }
+                }}
+              >
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-2 w-2 bg-primary rounded-full glow-cyan" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/settings';
+                  }
+                }}
+              >
                 <Settings className="h-5 w-5" />
               </Button>
 
@@ -326,7 +352,15 @@ export default function StudentDashboard() {
                 ))}
               </div>
 
-              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan">
+              <Button 
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
+                onClick={() => {
+                  // Navigate to wallet page
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/wallet';
+                  }
+                }}
+              >
                 View Wallet
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -359,7 +393,16 @@ export default function StudentDashboard() {
                       <div className="h-full bg-accent" style={{ width: "45%" }} />
                     </div>
                   </div>
-                  <Button className="w-full bg-transparent" variant="outline">
+                  <Button 
+                    className="w-full bg-transparent" 
+                    variant="outline"
+                    onClick={() => {
+                      // Navigate to course page
+                      if (typeof window !== 'undefined') {
+                        window.location.href = '/courses';
+                      }
+                    }}
+                  >
                     Resume Learning
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
