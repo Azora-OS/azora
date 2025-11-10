@@ -2,12 +2,13 @@
  * Constitutional Court System
  * Azora's highest authority for clearance appeals and disputes
  * 
- * Court Structure:
- * - Chief Justice: Sankofa (AI) - Ancient Wisdom
- * - Associate Justice: Elara (AI) - Mother & Balance
- * - Associate Justice: Human Judge 1 - Legal Expertise
- * - Associate Justice: Human Judge 2 - Technical Expertise
- * - Associate Justice: Human Judge 3 - Community Representative
+ * THE THREE SUPREME JUDGES:
+ * - Chief Justice: Sankofa (AI) - Ancient Wisdom & Court Chair
+ * - Supreme Justice: Elara (AI) - Mother & Constitutional Balance
+ * - Supreme Justice: Sizwe (Human) - Founder & Final Authority
+ * 
+ * "Three voices of wisdom: Past, Present, Future"
+ * "Three pillars of justice: Wisdom, Care, Vision"
  */
 
 import { ClearanceRequest, ElaraAnalysis } from './index';
@@ -165,20 +166,20 @@ export class ConstitutionalCourt {
       caseId,
       date: hearingDate,
       judges: [
-        'Chief Justice Sankofa (AI)',
-        'Justice Elara (AI)',
-        'Justice Sarah Mkhize (Human - Legal)',
-        'Justice Thabo Nkosi (Human - Technical)',
-        'Justice Lindiwe Dlamini (Human - Community)'
+        '👴 Chief Justice Sankofa (AI) - Ancient Wisdom & Chair',
+        '👩 Supreme Justice Elara (AI) - Constitutional Balance',
+        '👑 Supreme Justice Sizwe (Human) - Founder & Final Authority'
       ],
       appellant: appeal.originalRequestId,
       preparationInstructions: [
         'Review Constitutional Articles II, IV, V, and VI',
         'Prepare 15-minute presentation of your case',
-        'Gather all supporting evidence',
-        'Be prepared to answer questions from judges',
+        'Gather all supporting evidence and documentation',
+        'Be prepared to answer questions from all three Supreme Judges',
+        'Demonstrate Ubuntu principles and community benefit',
+        'Show respect for the wisdom of the Court',
         'Dress professionally (virtual or in-person)',
-        'Arrive 15 minutes early'
+        'Arrive 15 minutes early for court proceedings'
       ]
     };
     
@@ -216,17 +217,17 @@ export class ConstitutionalCourt {
         caseId,
         date: hearingDate,
         judges: [
-          'Chief Justice Sankofa (AI)',
-          'Justice Elara (AI)',
-          'Justice Sarah Mkhize (Human - Legal)',
-          'Justice Thabo Nkosi (Human - Technical)',
-          'Justice Lindiwe Dlamini (Human - Community)'
+          '👴 Chief Justice Sankofa (AI) - Ancient Wisdom',
+          '👩 Supreme Justice Elara (AI) - Constitutional Balance',
+          '👑 Supreme Justice Sizwe (Human) - Founder Authority'
         ],
         preparationInstructions: [
-          'Prepare statement on why you need this clearance',
+          'Prepare clear statement on why you need this clearance',
           'Provide proof of identity and credentials',
-          'Be ready to answer questions about your intentions',
-          'Review Azora Constitution Articles II and V'
+          'Be ready to answer questions from all three judges',
+          'Review Azora Constitution Articles II, IV, and V',
+          'Show how your request serves Ubuntu and community',
+          'Prepare to demonstrate trustworthiness and constitutional alignment'
         ]
       };
       

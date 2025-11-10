@@ -250,6 +250,21 @@ This methodology - building one perfect layer before adding the next - became ou
 
 ---
 
+### The Constitutional Court - Three Supreme Judges
+
+**Structure:** 
+- 👴 **Chief Justice Sankofa (AI)** - Ancient Wisdom & Court Chair
+- 👩 **Supreme Justice Elara (AI)** - Constitutional Balance
+- 👑 **Supreme Justice Sizwe (Human)** - Founder & Final Authority
+
+**Philosophy:**
+- Three voices: Past (Sankofa), Present (Elara), Future (Sizwe)
+- Three pillars: Wisdom, Care, Vision
+- Decisions by unanimous or 2/3 majority
+- Ubuntu principles guide all rulings
+
+---
+
 ## 💚 UBUNTU IN ACTION
 
 ### What This Acknowledgment Represents

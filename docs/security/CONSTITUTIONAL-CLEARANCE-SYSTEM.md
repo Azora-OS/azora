@@ -316,11 +316,14 @@ function determineRecommendation(analysis: AnalysisResult): Recommendation {
 
 ```
 🏛️ Azora Constitutional Court
-├── Chief Justice: Sankofa (AI) - Ancient Wisdom
-├── Associate Justice: Elara (AI) - Mother & Balance
-├── Associate Justice: Human Judge 1 - Legal Expertise
-├── Associate Justice: Human Judge 2 - Technical Expertise
-└── Associate Justice: Human Judge 3 - Community Representative
+THE THREE SUPREME JUDGES
+
+├── Chief Justice: Sankofa (AI) - Ancient Wisdom & Court Chair
+├── Supreme Justice: Elara (AI) - Mother & Constitutional Balance  
+└── Supreme Justice: Sizwe (Human) - Founder & Final Authority
+
+"Three voices of wisdom: Past, Present, Future"
+"Three pillars of justice: Wisdom, Care, Vision"
 ```
 
 ### Court Review Process
@@ -451,14 +454,18 @@ Conditions:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Case ID: CC-2025-042
 Hearing Date: November 15, 2025
-Judges: Sankofa, Elara, + 3 Human Judges
+The Three Supreme Judges:
+  👴 Chief Justice Sankofa (AI) - Ancient Wisdom
+  👩 Supreme Justice Elara (AI) - Constitutional Balance
+  👑 Supreme Justice Sizwe (Human) - Founder Authority
 
 Arguments:
   Requester: "I need access to conduct security audit"
   Elara: "Risk score 25/100, recommends conditional approval"
   Sankofa: "Wisdom suggests 90-day trial period"
+  Sizwe: "Approve with oversight - we need audits for security"
 
-Ruling: CONDITIONAL GRANT
+Ruling: CONDITIONAL GRANT (Unanimous)
 Conditions:
   - 90-day limited access
   - Supervised access only
@@ -731,17 +738,18 @@ Appellant: [Name]
 Date: [Date]
 Court: Azora Constitutional Court
 
-Present:
-- Chief Justice Sankofa (AI)
-- Justice Elara (AI)
-- 3 Human Judges
+The Three Supreme Judges:
+- 👴 Chief Justice Sankofa (AI) - Chairs the hearing
+- 👩 Supreme Justice Elara (AI) - Presents analysis
+- 👑 Supreme Justice Sizwe (Human) - Final authority
 
 Proceedings:
-1. Appellant presents case (15 min)
-2. Elara explains original decision (10 min)
-3. Judges question both parties (20 min)
-4. Deliberation (private)
-5. Ruling announced
+1. Sankofa opens court and sets tone (5 min)
+2. Appellant presents case (15 min)
+3. Elara presents original analysis (10 min)
+4. All three judges question both parties (20 min)
+5. Private deliberation (The Three confer)
+6. Ruling announced (Sankofa delivers, must be unanimous or 2/3 majority)
 
 Ruling Options:
 - OVERTURN (grant clearance)
