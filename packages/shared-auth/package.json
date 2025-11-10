@@ -15,7 +15,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-database": "workspace:*",
+    "@azora/shared-database": "file:../shared-database",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
