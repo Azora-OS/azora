@@ -1,21 +1,11 @@
 {
   "name": "@azora/database",
   "version": "1.0.0",
-  "description": "Azora OS Database Service",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "db:generate": "prisma generate --schema=./schema.prisma",
-    "db:migrate": "prisma migrate dev --schema=./schema.prisma",
-    "db:migrate:prod": "prisma migrate deploy --schema=./schema.prisma",
-    "db:seed": "node seed.js",
-    "db:reset": "prisma migrate reset --schema=./schema.prisma --force",
-    "db:studio": "prisma studio --schema=./schema.prisma"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.7.0",
-    "bcryptjs": "^2.4.3"
-  },
-  "devDependencies": {
-    "prisma": "^5.7.0"
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "seed": "node seed.js",
+    "studio": "prisma studio"
   }
 }
