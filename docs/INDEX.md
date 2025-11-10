@@ -74,6 +74,13 @@ Brand guidelines and philosophy
 - [Azora Identity](./branding/AZORA-IDENTITY.md)
 - [Brand Assets](./branding/)
 
+### 🔐 Security & Governance
+Constitutional security and clearance systems
+
+- [Constitutional Clearance System](./security/CONSTITUTIONAL-CLEARANCE-SYSTEM.md) - **Elara's Judgment**
+- [Email Hosting Configuration](./security/EMAIL-HOSTING-CONFIGURATION.md) - **Domain Emails**
+- [Security Guidelines](./security/) - Security best practices
+
 ---
 
 ## 🎯 By Role
