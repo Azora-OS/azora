@@ -309,7 +309,16 @@ const authenticateToken = async (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      logger.error('JWT_SECRET environment variable is required');
+      return res.status(500).json({ 
+        success: false,
+        error: 'Server configuration error' 
+      });
+    }
+    
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
 
     // Cache valid token for 5 minutes

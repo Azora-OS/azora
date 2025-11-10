@@ -192,9 +192,13 @@ passport.use(
         // Check if MFA is required
         if (user.mfaEnabled) {
           // Store temp session for MFA verification
+          const jwtSecret = process.env.JWT_SECRET;
+          if (!jwtSecret) {
+            throw new Error('JWT_SECRET environment variable is required');
+          }
           const tempToken = jwt.sign(
             { userId: user.id, mfaRequired: true },
-            process.env.JWT_SECRET || 'your-secret-key',
+            jwtSecret,
             { expiresIn: '5m' }
           );
           return done(null, false, {
@@ -220,7 +224,13 @@ passport.use(
         const authHeader = req.headers['authorization'];
         return authHeader && authHeader.split(' ')[1];
       },
-      secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
+      secretOrKey: (() => {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error('JWT_SECRET environment variable is required');
+        }
+        return secret;
+      })(),
     },
     async (payload, done) => {
       try {

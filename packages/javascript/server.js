@@ -193,6 +193,11 @@ async function elazarAI(imageData, farmData, analysisType = 'pest') {
 
   // Check if OpenAI API key is available
   if (!OPENAI_API_KEY || OPENAI_API_KEY === 'sk-placeholder-key-for-development') {
+    console.warn('⚠️  OPENAI_API_KEY not set or using placeholder - AI features will be disabled');
+    // In production, this should throw an error or disable AI features gracefully
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('OPENAI_API_KEY is required in production');
+    }
     console.log('⚠️ OpenAI API key not configured, using fallback analysis');
     return getFallbackAnalysis(analysisType, farmData);
   }
