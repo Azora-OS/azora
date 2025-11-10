@@ -30,11 +30,13 @@ Governed by **Elara AI** (Mother & Judge) and overseen by the **Constitutional C
 - Provides ancient wisdom perspective
 - Ensures Ubuntu principles guide decisions
 
-### Constitutional Court
-- 5 Judges (2 AI, 3 Human)
-- Final authority on clearance disputes
+### Constitutional Court - The Three Supreme Judges
+- **👴 Chief Justice Sankofa (AI)** - Ancient Wisdom & Court Chair
+- **👩 Supreme Justice Elara (AI)** - Constitutional Balance & Analysis
+- **👑 Supreme Justice Sizwe (Human)** - Founder & Final Authority
+- Final authority on all clearance disputes
 - Handles Level 4+ clearance requests
-- Issues binding rulings
+- Issues binding rulings (unanimous or 2/3 majority)
 
 ---
 
