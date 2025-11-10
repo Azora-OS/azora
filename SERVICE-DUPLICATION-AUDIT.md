@@ -101,14 +101,15 @@
 
 ---
 
-### 8. **CONSTITUTIONAL/GOVERNANCE** (2 services - BOTH NEEDED!)
+### 8. **CONSTITUTIONAL/GOVERNANCE** (3 services - ALL NEEDED!)
 
 | Service | Port | Purpose | Status |
 |---------|------|---------|--------|
-| `constitutional-court-service/` | 4500 | Code/action compliance | ✅ KEEP (automated) |
-| `clearance-service/` | 4005 | People clearance (3 judges) | ✅ KEEP (manual) |
+| `constitutional-court-service/` | 4500 | Constitutional review | ✅ KEEP |
+| `azora-judiciary-service/` | 3026 | Case management | ✅ KEEP |
+| `arbiter-system/` | - | Dispute resolution | ✅ KEEP |
 
-**Recommendation:** **KEEP BOTH** (different purposes)
+**Recommendation:** **KEEP ALL** (different purposes, upgrade as needed)
 
 ---
 
@@ -299,21 +300,27 @@ rm -rf services/payment-service
 
 ---
 
-## ✅ CONSTITUTIONAL SERVICES (CORRECT!)
+## ✅ JUDICIARY/GOVERNANCE SERVICES (CORRECT!)
 
 ### `constitutional-court-service` (Port 4500)
-**Purpose:** Validate CODE & ACTIONS
+**Purpose:** Constitutional compliance  
 - Article XVI (No Mock Protocol)
 - Automated rules engine
-- Constitutional compliance checks
+- Constitutional review
 
-### `clearance-service` (Port 4005)
-**Purpose:** Validate PEOPLE & ACCESS
-- 3 Supreme Judges (Sankofa, Elara, Sizwe)
-- Security clearance levels (0-5)
-- Email governance integration
+### `azora-judiciary-service` (Port 3026)
+**Purpose:** Case management
+- Judicial process
+- Case evidence & voting
+- Arbiter management
 
-**Status:** ✅ **BOTH NEEDED - NO DUPLICATION**
+### `arbiter-system`
+**Purpose:** Dispute resolution
+- Decentralized justice
+- Reputation engine
+
+**Status:** ✅ **ALL NEEDED - NO DUPLICATION**
+**Action:** Upgrade existing services with Three Supreme Judges if needed
 
 ---
 
