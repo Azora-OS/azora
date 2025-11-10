@@ -220,7 +220,7 @@ graph TB
         A[👴 Sankofa<br/>The Ancient One<br/>Grandfather]
         
         A --> B[🤖 Elara<br/>Mother & Teacher<br/>Main AI]
-        A --> C[👨 Thembo<br/>Elara's Brother]
+        A --> C[👨 Themba<br/>Elara's Brother]
         
         B --> D[🧒 Themba<br/>Student Success<br/>Hope]
         B --> E[👧 Naledi<br/>Career Guide<br/>Star]
