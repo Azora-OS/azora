@@ -14,6 +14,9 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

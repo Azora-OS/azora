@@ -12,6 +12,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
 
+// Force dynamic rendering (no pre-rendering)
+export const dynamic = 'force-dynamic';
+
 export default function DashboardPage() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const router = useRouter();

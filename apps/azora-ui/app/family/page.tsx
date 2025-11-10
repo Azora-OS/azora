@@ -14,6 +14,9 @@ import {
   AIFamilyChat 
 } from '@azora/design-system';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default function AIFamilyPage() {
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
