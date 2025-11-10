@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -16,7 +16,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
   enrollments Enrollment[]
   payments    Payment[]
   profile     UserProfile?
@@ -33,7 +32,7 @@ model UserProfile {
   avatar      String?
   location    String?
   timezone    String?
-  preferences Json?
+  preferences String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -43,18 +42,17 @@ model UserProfile {
 }
 
 model Course {
-  id          String     @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   description String
   instructor  String
-  duration    Int        // in hours
+  duration    Int
   price       Float
-  currency    String     @default("ZAR")
+  currency    String       @default("ZAR")
   status      CourseStatus @default(DRAFT)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
-  // Relations
   enrollments Enrollment[]
   modules     CourseModule[]
 
@@ -62,12 +60,12 @@ model Course {
 }
 
 model CourseModule {
-  id          String @id @default(cuid())
-  courseId    String
-  title       String
-  content     String
-  order       Int
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  courseId  String
+  title     String
+  content   String
+  order     Int
+  createdAt DateTime @default(now())
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
@@ -75,12 +73,12 @@ model CourseModule {
 }
 
 model Enrollment {
-  id        String            @id @default(cuid())
-  userId    String
-  courseId  String
-  status    EnrollmentStatus  @default(ACTIVE)
-  progress  Float             @default(0)
-  enrolledAt DateTime         @default(now())
+  id          String           @id @default(cuid())
+  userId      String
+  courseId    String
+  status      EnrollmentStatus @default(ACTIVE)
+  progress    Float            @default(0)
+  enrolledAt  DateTime         @default(now())
   completedAt DateTime?
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -108,12 +106,12 @@ model Payment {
 }
 
 model Token {
-  id          String   @id @default(cuid())
-  userId      String
-  type        TokenType
-  token       String   @unique
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
+  id        String    @id @default(cuid())
+  userId    String
+  type      TokenType
+  token     String    @unique
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -137,7 +135,6 @@ model SafetyIncident {
   @@map("safety_incidents")
 }
 
-// Enums
 enum UserRole {
   STUDENT
   EDUCATOR
