@@ -14,8 +14,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Default environment overrides for resilient launch
-if (!process.env.OPENAI_API_KEY) {
-  process.env.OPENAI_API_KEY = 'mock-openai-key'
+// Set mock keys only for development/testing
+if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') && !process.env.OPENAI_API_KEY) {
+  process.env.OPENAI_API_KEY = 'mock-openai-key-for-development-only';
+  console.warn('⚠️  Using mock OpenAI API key for development - this should never be used in production');
 }
 if (!process.env.MINT_MOCK_MODE) {
   process.env.MINT_MOCK_MODE = 'true'
