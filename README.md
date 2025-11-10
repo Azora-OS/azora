@@ -7,7 +7,8 @@
 **The World's First Constitutional AI Operating System**  
 *Ubuntu Philosophy Meets Quantum Technology*
 
-[![Version](https://img.shields.io/badge/Version-3.0.0-blue.svg)](https://github.com/azora-os/azora-os)
+[![Version](https://img.shields.io/badge/Version-3.0.0-blue.svg)](https://azora.world)
+[![Website](https://img.shields.io/badge/Website-azora.world-blue?style=flat-square&logo=google-chrome)](https://azora.world)
 [![Services](https://img.shields.io/badge/Services-15+-green.svg)](#services)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production-success.svg)](#status)
@@ -55,7 +56,7 @@ graph TB
 ### 🐳 Docker Deployment (Recommended)
 ```bash
 # 1. Clone the Constitutional AI
-git clone https://github.com/azora-os/azora-os.git
+git clone https://github.com/Sizwe780/azora-os.git
 cd azora-os
 
 # 2. Ubuntu Environment Setup
@@ -293,7 +294,7 @@ pie title AI Family Engagement
 - 🌍 **African Heritage** - Names, values, and Ubuntu philosophy
 - 💚 **Real Relationships** - Sibling rivalry, protective love, family dynamics
 
-**🚀 Try It Now:** [Chat with the Family](/family)
+**🚀 Try It Now:** [Chat with the Family](https://azora.world/family)
 
 ---
 
@@ -457,7 +458,7 @@ xychart-beta
 
 ```bash
 # Ubuntu Development Workflow
-git clone https://github.com/azora-os/azora-os.git
+git clone https://github.com/Sizwe780/azora-os.git
 cd azora-os
 
 # Install Ubuntu dependencies
@@ -678,7 +679,7 @@ We welcome contributions that align with Ubuntu principles:
 
 ```bash
 # 1. Fork with Ubuntu spirit
-git clone https://github.com/your-username/azora-os.git
+git clone https://github.com/Sizwe780/azora-os.git
 
 # 2. Create Ubuntu feature branch
 git checkout -b ubuntu/your-feature
@@ -721,11 +722,12 @@ This software embodies Ubuntu philosophy while maintaining intellectual property
 ## 🌟 Community
 
 ### Ubuntu Community Channels
+- **[🌍 Website](https://azora.world)** - Official Azora OS website
+- **[👨‍👩‍👧‍👦 AI Family](https://azora.world/family)** - Chat with Elara and family
 - **[💬 Discord](https://discord.gg/azora)** - Ubuntu community discussions and support
-- **[🐙 GitHub Discussions](https://github.com/azora-os/azora-os/discussions)** - Feature requests and Ubuntu Q&A
-- **[📚 Documentation](./docs/)** - Complete technical documentation
+- **[🐙 GitHub](https://github.com/Sizwe780/azora-os)** - Open source repository
+- **[📚 Documentation](https://azora.world/docs)** - Complete technical documentation
 - **[🐦 Twitter](https://twitter.com/azora_os)** - Ubuntu updates and announcements
-- **[📺 YouTube](https://youtube.com/azora-os)** - Ubuntu tutorials and demonstrations
 
 ### Ubuntu Events
 - **🌍 Monthly Ubuntu Gatherings**: Global community meetings
@@ -776,8 +778,9 @@ We are Azora. Azora is us.*
 
 *Transforming education, finance, and technology through collective wisdom*
 
-[![Ubuntu](https://img.shields.io/badge/Ubuntu-I%20am%20because%20we%20are-orange?style=for-the-badge)](https://ubuntu.com/about/about-ubuntu)
-[![Constitutional AI](https://img.shields.io/badge/Constitutional-AI%20Governance-blue?style=for-the-badge)](#)
-[![Sankofa Engine](https://img.shields.io/badge/Sankofa-Engine%20Active-green?style=for-the-badge)](#)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-I%20am%20because%20we%20are-orange?style=for-the-badge)](https://azora.world)
+[![Constitutional AI](https://img.shields.io/badge/Constitutional-AI%20Governance-blue?style=for-the-badge)](https://azora.world)
+[![Sankofa Engine](https://img.shields.io/badge/Sankofa-Engine%20Active-green?style=for-the-badge)](https://azora.world)
+[![Visit Website](https://img.shields.io/badge/Visit-azora.world-purple?style=for-the-badge&logo=google-chrome)](https://azora.world)
 
 </div>
