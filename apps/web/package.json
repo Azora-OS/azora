@@ -25,6 +25,9 @@
         "npm": ">=7.0.0"
     },
     "dependencies": {
+        "@azora/branding": "file:../../packages/branding",
+        "@azora/design-system": "file:../../packages/@azora/design-system",
+        "@azora/telemetry": "file:../../packages/@azora/telemetry",
         "serve": "^14.2.1"
     },
     "devDependencies": {
