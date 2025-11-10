@@ -7,7 +7,7 @@ Consistent navigation across all pages
 */
 
 import { Button } from "@/components/ui/button"
-import { Bell, Wallet, Settings, Home, BookOpen, Menu, X } from "lucide-react"
+import { Bell, Wallet, Settings, Home, BookOpen, Menu, X, Activity } from "lucide-react"
 import { useState } from "react"
 
 interface NavigationProps {
@@ -22,6 +22,7 @@ export function Navigation({ currentPath }: NavigationProps) {
     { icon: BookOpen, label: "Courses", path: "/courses" },
     { icon: Wallet, label: "Wallet", path: "/wallet" },
     { icon: Bell, label: "Notifications", path: "/notifications" },
+    { icon: Activity, label: "Infrastructure", path: "/infrastructure" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ]
 
