@@ -1,0 +1,32 @@
+{
+  "name": "@azora/shared-services",
+  "version": "1.0.0",
+  "description": "Azora OS Shared Services Layer - Service Registry, Master Integrator, Health Checks",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./registry": "./service-registry.ts",
+    "./integrator": "./master-integrator.ts",
+    "./health": "./health-check.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@azora/shared-database": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "azora",
+    "services",
+    "registry",
+    "health-check",
+    "integration"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}
