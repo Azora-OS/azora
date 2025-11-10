@@ -13,7 +13,16 @@ import (
 )
 
 var rdb *redis.Client
-var jwtSecret = []byte("your-secret-key") // TODO: Use env var
+var jwtSecret []byte
+
+func init() {
+	// Load JWT secret from environment variable
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		log.Fatal("JWT_SECRET environment variable is required")
+	}
+	jwtSecret = []byte(secret)
+}
 
 func main() {
 	initRedis()
@@ -33,11 +42,15 @@ func main() {
 }
 
 func initRedis() {
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL == "" {
+		redisURL = "localhost:6379" // Default for development
+	}
 	rdb = redis.NewClient(&redis.Options{
-		Addr: os.Getenv("REDIS_URL"),
+		Addr: redisURL,
 	})
 	if err := rdb.Ping(context.Background()).Err(); err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to connect to Redis: ", err)
 	}
 }
 

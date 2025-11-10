@@ -99,6 +99,20 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Infrastructure middleware
+try {
+  const { 
+    cdnRoutingMiddleware, 
+    riverFlowMiddleware, 
+    infrastructureHealthMiddleware 
+  } = require('@azora/shared-infrastructure/middleware');
+  app.use(cdnRoutingMiddleware);
+  app.use(riverFlowMiddleware);
+  app.use(infrastructureHealthMiddleware);
+} catch (error) {
+  logger.warn('Infrastructure middleware not available:', error.message);
+}
+
 // Enhanced rate limiting with different tiers
 const createRateLimiter = (windowMs, max, message, type) => rateLimit({
   windowMs,
@@ -327,6 +341,10 @@ const verifyToken = async (req, res, next) => {
 };
 
 app.use(verifyToken);
+
+// Unified API routes
+const unifiedRoutes = require('./routes/unified-routes');
+app.use('/api', unifiedRoutes);
 
 // Service proxy with enhanced error handling and retries
 app.all('/api/:service/:path(*)', async (req, res) => {

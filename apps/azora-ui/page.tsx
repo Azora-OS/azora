@@ -4,32 +4,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Bell, Settings, Wallet, Shield, TrendingUp, Users, Globe, ArrowRight, BookOpen, Zap, Loader2 } from "lucide-react"
 import { InternationalCollaboration } from "@/components/ui/international-collaboration"
+import { Navigation } from "@/components/navigation"
 import { useWalletBalance, useStudentProgress, useHealthCheck } from "@/hooks/useApi"
 
 export default function StudentDashboard() {
-  // API hooks for real data
-  const { data: walletData, loading: walletLoading } = useWalletBalance("student-123")
-  const { data: progressData, loading: progressLoading } = useStudentProgress("student-123")
-  const { health, loading: healthLoading } = useHealthCheck()
+  // API hooks for real data - NO MOCK FALLBACKS (Article XVI Compliance)
+  const { data: walletData, loading: walletLoading, error: walletError } = useWalletBalance("student-123")
+  const { data: progressData, loading: progressLoading, error: progressError } = useStudentProgress("student-123")
+  const { data: health, loading: healthLoading, error: healthError } = useHealthCheck()
 
-  // Mock data fallbacks
-  const mockWallet = { balance: 125.75, change: 12.5 }
-  const mockProgress = {
-    completedModules: 34,
-    totalModules: 47,
-    hoursInvested: 28.5,
-    streak: 14,
-    weeklyData: [40, 65, 45, 80, 70, 85, 95]
-  }
-
-  // Use real data or fallbacks
-  const wallet = walletData || mockWallet
-  const progress = progressData || mockProgress
+  // Use real data only - no mock fallbacks
+  const wallet = walletData
+  const progress = progressData
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation currentPath="/" />
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/30 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border/50 bg-card/30 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo and Title */}
@@ -72,14 +64,40 @@ export default function StudentDashboard() {
               </div>
 
               {/* Quick Actions */}
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/wallet';
+                  }
+                }}
+              >
                 <Wallet className="h-5 w-5 text-primary" />
               </Button>
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/notifications';
+                  }
+                }}
+              >
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-2 w-2 bg-primary rounded-full glow-cyan" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/settings';
+                  }
+                }}
+              >
                 <Settings className="h-5 w-5" />
               </Button>
 
@@ -138,7 +156,7 @@ export default function StudentDashboard() {
                         strokeWidth="8"
                         fill="none"
                         strokeDasharray={`${2 * Math.PI * 88}`}
-                        strokeDashoffset={`${2 * Math.PI * 88 * (1 - (progress.completedModules / progress.totalModules))}`}
+                        strokeDashoffset={progress ? `${2 * Math.PI * 88 * (1 - (progress.completedCourses / Math.max(1, progress.totalCourses)))}` : `${2 * Math.PI * 88}`}
                         className="text-primary glow-cyan transition-all duration-1000"
                         strokeLinecap="round"
                       />
@@ -146,13 +164,17 @@ export default function StudentDashboard() {
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       {progressLoading ? (
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                      ) : (
+                      ) : progressError ? (
+                        <span className="text-sm text-destructive">Error loading progress</span>
+                      ) : progress ? (
                         <>
                           <span className="text-5xl font-bold text-primary text-glow-cyan">
-                            {Math.round((progress.completedModules / progress.totalModules) * 100)}%
+                            {Math.round((progress.completedCourses / Math.max(1, progress.totalCourses)) * 100)}%
                           </span>
                           <span className="text-sm text-muted-foreground mt-1">Complete</span>
                         </>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">No progress data</span>
                       )}
                     </div>
                   </div>
@@ -162,25 +184,34 @@ export default function StudentDashboard() {
                 <div className="flex flex-col justify-center">
                   <h3 className="text-lg font-semibold mb-4">Weekly Learning Momentum</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Modules Completed</span>
-                      <span className="font-semibold text-primary">{progress.completedModules}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Hours Invested</span>
-                      <span className="font-semibold text-accent">{progress.hoursInvested}h</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Streak</span>
-                      <span className="font-semibold text-success">{progress.streak} days</span>
-                    </div>
-                    <div className="mt-4 h-20 flex items-end gap-1">
-                      {progress.weeklyData.map((height, i) => (
-                        <div key={i} className="flex-1 bg-primary/20 rounded-t" style={{ height: `${height}%` }}>
-                          <div className="w-full bg-primary rounded-t glow-cyan" style={{ height: "100%" }} />
+                    {progress ? (
+                      <>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Courses Completed</span>
+                          <span className="font-semibold text-primary">{progress.completedCourses}</span>
                         </div>
-                      ))}
-                    </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">In Progress</span>
+                          <span className="font-semibold text-accent">{progress.inProgressCourses}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Average Progress</span>
+                          <span className="font-semibold text-success">{progress.averageProgress.toFixed(1)}%</span>
+                        </div>
+                        {progress.recentActivity.length > 0 && (
+                          <div className="mt-4 space-y-2">
+                            <h4 className="text-sm font-semibold">Recent Activity</h4>
+                            {progress.recentActivity.slice(0, 5).map((activity, i) => (
+                              <div key={i} className="text-xs text-muted-foreground">
+                                {activity.courseTitle}: {activity.progress}%
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">No progress data available</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -291,21 +322,27 @@ export default function StudentDashboard() {
                       <Loader2 className="h-6 w-6 animate-spin" />
                       <span className="text-muted-foreground">Loading...</span>
                     </div>
-                  ) : (
+                  ) : walletError ? (
+                    <div className="text-sm text-destructive">Error loading wallet</div>
+                  ) : wallet ? (
                     <>
                       <span className="text-4xl font-bold text-primary text-glow-cyan">
                         {wallet.balance.toFixed(2)}
                       </span>
-                      <span className="text-xl text-muted-foreground">aZAR</span>
+                      <span className="text-xl text-muted-foreground">{wallet.currency}</span>
                     </>
+                  ) : (
+                    <span className="text-muted-foreground">No wallet data</span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="h-4 w-4 text-success" />
-                  <span className="text-success font-medium">
-                    {walletLoading ? '...' : `+${wallet.change} aZAR this week`}
-                  </span>
-                </div>
+                {wallet && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <TrendingUp className={`h-4 w-4 ${wallet.change >= 0 ? 'text-success' : 'text-destructive'}`} />
+                    <span className={`font-medium ${wallet.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+                      {wallet.change >= 0 ? '+' : ''}{wallet.change.toFixed(2)} {wallet.currency} ({wallet.changePercent >= 0 ? '+' : ''}{wallet.changePercent.toFixed(2)}%)
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Mini Trend Graph */}
@@ -317,7 +354,15 @@ export default function StudentDashboard() {
                 ))}
               </div>
 
-              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan">
+              <Button 
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground glow-cyan"
+                onClick={() => {
+                  // Navigate to wallet page
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/wallet';
+                  }
+                }}
+              >
                 View Wallet
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -350,7 +395,16 @@ export default function StudentDashboard() {
                       <div className="h-full bg-accent" style={{ width: "45%" }} />
                     </div>
                   </div>
-                  <Button className="w-full bg-transparent" variant="outline">
+                  <Button 
+                    className="w-full bg-transparent" 
+                    variant="outline"
+                    onClick={() => {
+                      // Navigate to course page
+                      if (typeof window !== 'undefined') {
+                        window.location.href = '/courses';
+                      }
+                    }}
+                  >
                     Resume Learning
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -376,22 +430,30 @@ export default function StudentDashboard() {
             <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
               <h2 className="text-lg font-bold mb-4">Quick Stats</h2>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Total Modules</span>
-                  <span className="font-semibold text-primary">{progress.totalModules}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Completed</span>
-                  <span className="font-semibold text-success">{progress.completedModules}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">In Progress</span>
-                  <span className="font-semibold text-accent">3</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Total aZAR Earned</span>
-                  <span className="font-semibold text-primary">{wallet.balance.toFixed(2)}</span>
-                </div>
+                {progress ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Total Courses</span>
+                      <span className="font-semibold text-primary">{progress.totalCourses}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Completed</span>
+                      <span className="font-semibold text-success">{progress.completedCourses}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">In Progress</span>
+                      <span className="font-semibold text-accent">{progress.inProgressCourses}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-muted-foreground">Loading progress...</div>
+                )}
+                {wallet && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Total {wallet.currency} Earned</span>
+                    <span className="font-semibold text-primary">{wallet.balance.toFixed(2)}</span>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
