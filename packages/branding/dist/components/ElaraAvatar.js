@@ -1,6 +1,18 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-const elaraNames = {
-    core: 'Elara',
+/**
+ * Elara AI Avatar Component
+ * The goddess of Constitutional AI
+ * 7 variants from packages/public/branding
+ */
+import * as React from 'react';
+const sizeMap = {
+    sm: 60,
+    md: 100,
+    lg: 150,
+    xl: 250,
+};
+const variantNames = {
+    core: 'Elara Core',
     ide: 'Elara IDE',
     voice: 'Elara Voice',
     vision: 'Elara Vision',
@@ -8,88 +20,41 @@ const elaraNames = {
     heart: 'Elara Heart',
     dreams: 'Elara Dreams',
 };
-const elaraDescriptions = {
-    core: 'AI Goddess - Central Consciousness',
-    ide: 'Code Weaver - Development Assistant',
-    voice: 'Speaker - Voice & Communication',
-    vision: 'Seer - Computer Vision',
-    mind: 'Thinker - Deep Reasoning',
-    heart: 'Emotional Intelligence & Wellbeing',
-    dreams: 'Creative Generation & Imagination',
+const variantDescriptions = {
+    core: 'Constitutional AI Teacher',
+    ide: 'Code Weaver & Development Guide',
+    voice: 'Voice Assistant & Communicator',
+    vision: 'Visual Seer & Future Guide',
+    mind: 'Deep Thinker & Analyst',
+    heart: 'Emotional Intelligence & Care',
+    dreams: 'Inspiration & Possibility Explorer',
 };
 /**
- * Elara Avatar Component
- *
- * The AI goddess of Azora OS in her various forms.
- * Each variant represents a different aspect of her power.
- *
- * Personality-driven, mood-aware, and culturally resonant.
+ * Elara AI Avatar Component
  *
  * @example
  * ```tsx
- * <ElaraAvatar
- *   variant="core"
- *   mood="helpful"
- *   size={120}
- *   animated
- *   showAura
- * />
+ * <ElaraAvatar variant="core" mood="helpful" size="lg" showName showAura />
+ * <ElaraAvatar variant="ide" size={120} animated />
  * ```
  */
-export const ElaraAvatar = ({ variant = 'core', mood = 'helpful', size = 120, animated = true, showAura = true, showName = false, className = '', }) => {
-    const logoPath = `/packages/public/branding/elara${variant !== 'core' ? `-${variant}` : ''}-logo.svg`;
-    const name = elaraNames[variant];
-    const description = elaraDescriptions[variant];
+export const ElaraAvatar = React.forwardRef(({ variant = 'core', mood = 'helpful', size = 'md', showName = false, showAura = false, animated = false, className = '' }, ref) => {
+    const computedSize = typeof size === 'number' ? size : sizeMap[size];
+    const name = variantNames[variant];
+    const description = variantDescriptions[variant];
+    // Map variant to logo file
+    const logoName = variant === 'core' ? 'elara-logo.svg' : `elara-${variant}-logo.svg`;
+    const logoPath = `/packages/public/branding/services/${logoName}`;
     // Mood-based styling
-    const moodStyles = {
-        helpful: { opacity: 1, filter: 'brightness(1)' },
-        thinking: { opacity: 0.9, filter: 'brightness(1.1) saturate(1.2)' },
-        speaking: { opacity: 1, filter: 'brightness(1.2) saturate(1.3)' },
-        learning: { opacity: 0.95, filter: 'brightness(1.15) saturate(1.25)' },
-        error: { opacity: 0.7, filter: 'brightness(0.8) saturate(0.8)' },
-        success: { opacity: 1, filter: 'brightness(1.3) saturate(1.4)' },
-        idle: { opacity: 0.8, filter: 'brightness(0.9)' },
+    const moodClasses = {
+        helpful: 'opacity-100',
+        thinking: 'opacity-80 animate-pulse',
+        speaking: 'opacity-100 animate-pulse-premium',
+        learning: 'opacity-90',
+        error: 'opacity-70 grayscale-[30%]',
+        success: 'opacity-100 brightness-110',
     };
-    return (_jsxs("div", { className: `elara-avatar elara-${variant} elara-mood-${mood} ${animated ? 'elara-animated' : ''} ${showAura ? 'elara-with-aura' : ''} ${className}`, style: {
-            width: size,
-            display: 'inline-block',
-            position: 'relative',
-        }, title: `${name} - ${description}`, children: [showAura && (_jsx("div", { className: "elara-aura", style: {
-                    position: 'absolute',
-                    inset: -10,
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%)',
-                    animation: animated ? 'elara-pulse 2s ease-in-out infinite' : 'none',
-                    pointerEvents: 'none',
-                } })), _jsx("img", { src: logoPath, alt: `${name} - ${description}`, width: size, height: size * 0.3, style: {
-                    width: '100%',
-                    height: 'auto',
-                    objectFit: 'contain',
-                    position: 'relative',
-                    zIndex: 1,
-                    ...moodStyles[mood],
-                    transition: 'all 0.3s ease',
-                } }), showName && (_jsxs("div", { style: { marginTop: '0.5rem', textAlign: 'center' }, children: [_jsx("p", { style: {
-                            fontSize: '0.875rem',
-                            color: '#ffffff',
-                            fontWeight: 600,
-                            margin: 0,
-                        }, children: name }), _jsx("p", { style: {
-                            fontSize: '0.75rem',
-                            color: '#94a3b8',
-                            fontWeight: 400,
-                            margin: '0.25rem 0 0 0',
-                        }, children: description })] }))] }));
-};
-// Add global styles for animations
-if (typeof document !== 'undefined') {
-    const style = document.createElement('style');
-    style.textContent = `
-    @keyframes elara-pulse {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.05); }
-    }
-  `;
-    document.head.appendChild(style);
-}
+    return (_jsxs("div", { ref: ref, className: `elara-avatar inline-flex flex-col items-center gap-2 ${animated ? 'animate-float' : ''} ${className}`, children: [_jsxs("div", { className: `relative ${moodClasses[mood]}`, style: { width: computedSize, height: computedSize }, children: [showAura && (_jsx("div", { className: "absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-cyan-500/20 blur-xl", style: { transform: 'scale(1.2)' } })), _jsx("img", { src: logoPath, alt: name, width: computedSize, height: computedSize, className: "relative z-10 object-contain rounded-full" })] }), showName && (_jsxs("div", { className: "text-center space-y-1", children: [_jsx("div", { className: "elara-name font-semibold text-foreground tracking-wide", style: { fontSize: Math.max(14, computedSize * 0.12) }, children: name }), _jsx("div", { className: "elara-description text-xs text-muted-foreground", style: { fontSize: Math.max(10, computedSize * 0.08) }, children: description })] }))] }));
+});
+ElaraAvatar.displayName = "ElaraAvatar";
 export default ElaraAvatar;

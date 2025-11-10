@@ -1,19 +1,49 @@
-import React from 'react';
+/**
+ * Service Logo Component
+ * Displays Azora OS service logos from packages/public/branding
+ * 
+ * All 21 service logos available
+ */
+import * as React from 'react';
 
 export type ServiceName = 
-  | 'sapiens' | 'forge' | 'covenant' | 'aegis' | 'oracle' 
-  | 'mint' | 'nexus' | 'synapse' | 'pay' | 'education'
-  | 'scriptorium' | 'workspace' | 'careers' | 'classroom'
-  | 'community' | 'innovation-hub' | 'library' | 'mint-mine'
-  | 'research-center' | 'student-life';
+  | 'sapiens'
+  | 'forge'
+  | 'covenant'
+  | 'aegis'
+  | 'oracle'
+  | 'mint'
+  | 'nexus'
+  | 'synapse'
+  | 'pay'
+  | 'education'
+  | 'scriptorium'
+  | 'workspace'
+  | 'careers'
+  | 'classroom'
+  | 'community'
+  | 'innovation-hub'
+  | 'library'
+  | 'mint-mine'
+  | 'research-center'
+  | 'student-life';
+
+export type ServiceLogoSize = 'sm' | 'md' | 'lg' | 'xl' | number;
 
 export interface ServiceLogoProps {
   service: ServiceName;
-  size?: number;
-  animated?: boolean;
+  size?: ServiceLogoSize;
   showName?: boolean;
+  animated?: boolean;
   className?: string;
 }
+
+const sizeMap: Record<Exclude<ServiceLogoSize, number>, number> = {
+  sm: 64,
+  md: 120,
+  lg: 200,
+  xl: 300,
+};
 
 const serviceNames: Record<ServiceName, string> = {
   sapiens: 'Azora Sapiens',
@@ -41,49 +71,44 @@ const serviceNames: Record<ServiceName, string> = {
 /**
  * Service Logo Component
  * 
- * Displays the logo for a specific Azora service.
- * Each service has its own unique branding and symbolism.
- * 
  * @example
  * ```tsx
- * <ServiceLogo service="sapiens" size={200} animated showName />
+ * <ServiceLogo service="sapiens" size="lg" showName />
+ * <ServiceLogo service="forge" size={150} animated />
  * ```
  */
-export const ServiceLogo: React.FC<ServiceLogoProps> = ({
-  service,
-  size = 200,
-  animated = false,
-  showName = false,
-  className = '',
-}) => {
-  const logoPath = `/packages/public/branding/azora-${service}-logo.svg`;
-  const serviceName = serviceNames[service];
+export const ServiceLogo = React.forwardRef<HTMLDivElement, ServiceLogoProps>(
+  ({ service, size = 'md', showName = false, animated = false, className = '' }, ref) => {
+    const computedSize = typeof size === 'number' ? size : sizeMap[size];
+    const serviceName = serviceNames[service];
+    const logoPath = `/packages/public/branding/services/azora-${service}-logo.svg`;
 
-  return (
-    <div 
-      className={`service-logo service-logo-${service} ${animated ? 'service-logo-animated' : ''} ${className}`}
-      style={{ width: size, display: 'inline-block' }}
-    >
-      <img
-        src={logoPath}
-        alt={serviceName}
-        width={size}
-        height={size * 0.3} // Maintain aspect ratio (240/800)
-        style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-      />
-      {showName && (
-        <p className="service-logo-name" style={{
-          marginTop: '0.5rem',
-          fontSize: '0.875rem',
-          color: '#94a3b8',
-          textAlign: 'center',
-          fontWeight: 600,
-        }}>
-          {serviceName}
-        </p>
-      )}
-    </div>
-  );
-};
+    return (
+      <div 
+        ref={ref}
+        className={`service-logo inline-flex flex-col items-center gap-2 ${animated ? 'animate-pulse-premium' : ''} ${className}`}
+      >
+        <img
+          src={logoPath}
+          alt={serviceName}
+          width={computedSize}
+          height={computedSize}
+          className="object-contain"
+          style={{ width: computedSize, height: computedSize }}
+        />
+        {showName && (
+          <span 
+            className="service-logo-name text-sm font-semibold text-foreground tracking-wide"
+            style={{ fontSize: Math.max(12, computedSize * 0.1) }}
+          >
+            {serviceName}
+          </span>
+        )}
+      </div>
+    );
+  }
+);
+
+ServiceLogo.displayName = "ServiceLogo";
 
 export default ServiceLogo;

@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@azora/branding": "workspace:*",
+    "@azora/branding": "file:../../packages/branding",
+    "@azora/design-system": "file:../../packages/design-system",
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-query": "^5.14.0",
     "autoprefixer": "^10.4.16",
