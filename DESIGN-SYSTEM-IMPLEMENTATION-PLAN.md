@@ -524,21 +524,72 @@ import { colors } from '@azora/design-system';
 
 ---
 
-### Task 1.3: Configure Workspace
+### Task 1.3: Configure Workspace with Turborepo ⚡
 
 **Time**: 30 minutes  
-**Owner**: Architect
+**Owner**: Architect (Composer 1)
+
+#### Architectural Decision: Turborepo ✅
+
+Per Senior Architect recommendation:
+- **Build System**: Turborepo (3-5x faster)
+- **Philosophy Alignment**: Ubuntu (shared cache benefits all)
+- **Constitutional**: Self-hosted cache option
+- **Performance**: Fastest in class
+
+#### Install Turborepo
+
+```bash
+cd /workspace
+npm install turbo --save-dev --workspace-root
+```
+
+#### Create `turbo.json`
+
+```json
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "@azora/design-system#build": {
+      "dependsOn": [],
+      "outputs": ["dist/**"]
+    },
+    "@azora/branding#build": {
+      "dependsOn": ["@azora/design-system#build"],
+      "outputs": ["dist/**"]
+    }
+  }
+}
+```
 
 #### Update Root `package.json`
 
 ```json
 {
+  "name": "azora-os",
+  "version": "3.0.0",
+  "private": true,
   "workspaces": [
     "packages/*",
-    "packages/design-system",
-    "packages/branding",
     "apps/*"
-  ]
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "design-system:build": "turbo run build --filter=@azora/design-system",
+    "branding:build": "turbo run build --filter=@azora/branding"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.0"
+  }
 }
 ```
 
@@ -546,9 +597,11 @@ import { colors } from '@azora/design-system';
 
 ```bash
 npm install
-cd packages/design-system && npm install
-cd ../branding && npm install
+turbo run build --filter=@azora/design-system
+turbo run build --filter=@azora/branding
 ```
+
+**See**: `TURBOREPO-SETUP-GUIDE.md` for complete Turborepo configuration
 
 ---
 
