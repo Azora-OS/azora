@@ -75,11 +75,11 @@ Brand guidelines and philosophy
 - [Brand Assets](./branding/)
 
 ### 🔐 Security & Governance
-Constitutional security and clearance systems
+Constitutional security and governance systems
 
-- [Constitutional Clearance System](./security/CONSTITUTIONAL-CLEARANCE-SYSTEM.md) - **Elara's Judgment**
-- [Email Hosting Configuration](./security/EMAIL-HOSTING-CONFIGURATION.md) - **Domain Emails**
 - [Security Guidelines](./security/) - Security best practices
+- Constitutional Court Service (Port 4500) - Code compliance
+- Judiciary Service (Port 3026) - Case management
 
 ---
 
