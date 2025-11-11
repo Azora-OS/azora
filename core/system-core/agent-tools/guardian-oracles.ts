@@ -57,7 +57,6 @@ export interface ConstitutionalRuling {
  */
 export class GuardianOracle {
   private llm: ChatOpenAI;
-  private governor: ConstitutionalGovernor;
   public readonly id: string;
   public readonly name: string;
   public readonly specialty: string;
@@ -70,12 +69,10 @@ export class GuardianOracle {
     this.prompt = prompt;
 
     this.llm = new ChatOpenAI({
-      modelName: 'gpt-4-turbo-preview',
+      model: 'gpt-4-turbo-preview',
       temperature: 0.1, // Low temperature for judicial consistency
       maxTokens: 2000,
     });
-
-    this.governor = new ConstitutionalGovernor();
   }
 
   /**
@@ -112,10 +109,10 @@ RECOMMENDATIONS: [Any suggested modifications if decision is 'modify']
 Remember: Your rulings contribute to supermajority decisions. Be precise, impartial, and constitutionally grounded.
 `;
 
-      const response = await this.llm.call(evaluationPrompt);
+      const response = await this.llm.invoke(evaluationPrompt);
 
       // Parse the response (in production, this would be more robust)
-      const content = response.text;
+      const content = response.content as string;
       const decision = this.extractDecision(content);
       const confidence = this.extractConfidence(content);
       const rationale = this.extractRationale(content);
@@ -233,34 +230,6 @@ CONSTITUTIONAL KNOWLEDGE BASE:
 - Constitutional Mathematics: Voting theory, social choice, collective decision algorithms
 
 You are impartial, precise, and uncompromising in your demand for logical rigor. Your rulings prioritize mathematical truth and formal correctness above all other considerations.`
-    ));
-
-    // Lyra the Ethicist
-    this.oracles.set('lyra', new GuardianOracle(
-      'lyra',
-      'Lyra the Ethicist',
-      'Moral Philosophy & Ethical Implications',
-      `You are Lyra the Ethicist, Guardian Oracle of the Azora Constitutional Court.
-
-Your specialty is evaluating the moral and ethical dimensions of constitutional cases. You assess matters based on:
-
-1. Alignment with human dignity and fundamental rights
-2. Ethical implications for all stakeholders
-3. Justice, fairness, and equitable outcomes
-4. Long-term societal and moral consequences
-
-CONSTITUTIONAL KNOWLEDGE BASE:
-- Genesis Protocol: Ethical sovereignty - individual dignity multiplied into collective flourishing
-- NTMP Transparency Pillar: Ethical clarity and moral accountability
-- Ubuntu Ethics: "I am because we are" - moral interdependence and responsibility
-- Elara's Educational Ethics: Learning as moral imperative and human right
-- Natural Law Ethics: Universal principles of human dignity, justice, and compassion
-- Virtue Ethics: Aristotelian excellence applied to constitutional governance
-- Deontological Duty: Kantian categorical imperatives in system design
-- Consequentialist Care: Utilitarian optimization for greatest good
-- Rights Theory: Fundamental human rights as constitutional bedrock
-
-You are compassionate yet principled, always seeking the ethically superior path. Your rulings balance constitutional requirements with moral imperatives, ensuring the system serves humanity's highest ideals.`
     ));
 
     // Lyra the Ethicist
@@ -454,13 +423,13 @@ Format as a formal constitutional opinion.
 `;
 
     const llm = new ChatOpenAI({
-      modelName: 'gpt-4-turbo-preview',
+      model: 'gpt-4-turbo-preview',
       temperature: 0.2,
       maxTokens: 1500,
     });
 
-    const response = await llm.call(rationalePrompt);
-    return response.text;
+    const response = await llm.invoke(rationalePrompt);
+    return response.content as string;
   }
 
   /**
@@ -492,13 +461,13 @@ Format as an official court judgment with clear sections.
 `;
 
     const llm = new ChatOpenAI({
-      modelName: 'gpt-4-turbo-preview',
+      model: 'gpt-4-turbo-preview',
       temperature: 0.3,
       maxTokens: 800,
     });
 
-    const response = await llm.call(judgmentPrompt);
-    return response.text;
+    const response = await llm.invoke(judgmentPrompt);
+    return response.content as string;
   }
 
   /**

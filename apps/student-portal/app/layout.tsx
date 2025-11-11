@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import '../../azora-ui/globals-premium.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
