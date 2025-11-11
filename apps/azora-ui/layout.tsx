@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { TelemetryProvider } from "@/components/telemetry-provider"
 import { AuthProvider } from "@/contexts/AuthContext"
 import "./globals.css"
+import "./globals-premium.css"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })

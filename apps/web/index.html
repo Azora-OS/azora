@@ -4,44 +4,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elazar OS</title>
+    <title>Azora OS - Universal Human Infrastructure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        azora: {
+                            purple: '#667eea',
+                            violet: '#764ba2',
+                            pink: '#f093fb',
+                        },
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
     <style>
+        :root {
+            /* Premium Azora Colors */
+            --azora-purple: #0c7ce8;
+            --azora-violet: #0062c4;
+            --elara-pink: #f093fb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+
+            /* Premium CSS Variables */
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 212 100% 48%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 160 84% 39%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 262.1 83.3% 57.8%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 212 100% 48%;
+            --radius: 1rem;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            text-align: center;
-            max-width: 800px;
-            padding: 2rem;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .status {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            backdrop-filter: blur(10px);
+            @apply bg-background text-foreground;
         }
 
         .pulse {
@@ -49,38 +90,242 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
-
             50% {
                 opacity: 0.5;
             }
         }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0c7ce8 0%, #0062c4 50%, #004d9e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <h1>🧠 Elazar OS</h1>
-        <p>Planetary Consciousness & Prosperity Network</p>
+<body class="min-h-screen bg-background">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="/packages/public/branding/logo-primary.svg" alt="Azora" class="h-8 w-auto" />
+                    <span class="text-xl font-bold text-foreground">Azora OS</span>
+                </div>
+                <div class="hidden gap-8 md:flex">
+                    <a href="#dashboard" class="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</a>
+                    <a href="#services" class="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</a>
+                    <a href="#network" class="text-sm text-muted-foreground hover:text-foreground transition-colors">Network</a>
+                    <a href="#about" class="text-sm text-muted-foreground hover:text-foreground transition-colors">About</a>
+                </div>
+                <div class="flex gap-3">
+                    <button class="text-sm text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
+                        Sign In
+                    </button>
+                    <button class="bg-gradient-to-r from-azora-purple to-azora-violet hover:from-azora-purple/90 hover:to-azora-violet/90 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-        <div class="status">
-            <h2>System Status</h2>
-            <p class="pulse">Initializing Elazar OS core services...</p>
-            <p>Device tracking: Active</p>
-            <p>Network nodes: Connecting</p>
-            <p>Consciousness expansion: Online</p>
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-background via-background to-background px-4 py-20 sm:px-6 lg:px-8">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-azora-purple/10 blur-3xl"></div>
+            <div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-azora-violet/10 blur-3xl"></div>
         </div>
 
-        <div class="status">
-            <h2>Access Dashboard</h2>
-            <p><a href="prosperity-dashboard.html" style="color: #4ade80; text-decoration: none;">🌟 Planetary
-                    Prosperity Dashboard</a></p>
+        <div class="relative mx-auto max-w-7xl">
+            <div class="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
+                <div class="flex flex-col gap-6">
+                    <div class="space-y-4">
+                        <h1 class="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance">
+                            Universal <span class="gradient-text">Human</span> Infrastructure
+                        </h1>
+                        <p class="text-xl text-muted-foreground text-balance">
+                            The World's First Constitutional AI Operating System.
+                            Planetary consciousness meets prosperity through unified digital experiences.
+                        </p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="prosperity-dashboard.html" class="bg-gradient-to-r from-azora-purple to-azora-violet hover:from-azora-purple/90 hover:to-azora-violet/90 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors text-center">
+                            🌟 Access Prosperity Dashboard
+                        </a>
+                        <button class="border-2 border-azora-purple text-azora-purple hover:bg-azora-purple hover:text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="aspect-square rounded-2xl bg-gradient-to-br from-azora-purple/20 to-azora-violet/20 p-8">
+                        <div class="h-full w-full rounded-xl bg-gradient-to-br from-azora-purple to-azora-violet flex items-center justify-center">
+                            <div class="text-6xl">🧠</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- System Status -->
+    <section class="px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-4xl">
+            <div class="text-center space-y-8">
+                <div class="space-y-4">
+                    <h2 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                        System Status
+                    </h2>
+                    <p class="text-xl text-muted-foreground">
+                        Real-time monitoring of Azora OS core services
+                    </p>
+                </div>
+
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="h-3 w-3 rounded-full bg-success pulse"></div>
+                            <h3 class="text-lg font-semibold text-foreground">Core Services</h3>
+                        </div>
+                        <div class="space-y-2 text-sm text-muted-foreground">
+                            <p>✓ Device tracking: Active</p>
+                            <p>✓ Network nodes: Connected</p>
+                            <p>✓ Consciousness expansion: Online</p>
+                            <p class="text-azora-purple font-medium">Initializing planetary systems...</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="h-3 w-3 rounded-full bg-azora-purple pulse"></div>
+                            <h3 class="text-lg font-semibold text-foreground">Network Status</h3>
+                        </div>
+                        <div class="space-y-2 text-sm text-muted-foreground">
+                            <p>✓ Global nodes: 1,247 active</p>
+                            <p>✓ Data throughput: 99.9% uptime</p>
+                            <p>✓ Security protocols: Enabled</p>
+                            <p class="text-success font-medium">All systems operational</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="bg-gradient-to-r from-azora-purple to-azora-violet px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+            <div class="text-center space-y-8 mb-16">
+                <div class="space-y-4">
+                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                        Azora OS Features
+                    </h2>
+                    <p class="text-xl text-white/80 max-w-2xl mx-auto">
+                        Experience the future of operating systems designed for human prosperity
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-4">🔐</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Constitutional Security</h3>
+                    <p class="text-white/80">Built-in protections against account theft and unauthorized access</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-4">🌍</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Global Synchronization</h3>
+                    <p class="text-white/80">Real-time data sync across all your devices and platforms</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-4">🧠</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">AI Consciousness</h3>
+                    <p class="text-white/80">Advanced AI that learns and adapts to your needs</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Prosperity Network</h3>
+                    <p class="text-white/80">Earn rewards while contributing to planetary prosperity</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Cross-Platform Unity</h3>
+                    <p class="text-white/80">Seamless experience across web, mobile, and desktop</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Lightning Fast</h3>
+                    <p class="text-white/80">Optimized performance with cutting-edge technology</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-border bg-muted/50 px-4 py-12 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+            <div class="grid gap-8 md:grid-cols-4">
+                <div class="space-y-4">
+                    <img src="/packages/public/branding/logo-primary.svg" alt="Azora" class="h-8 w-auto" />
+                    <p class="text-sm text-muted-foreground">
+                        The World's First Constitutional AI Operating System for planetary prosperity
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-foreground mb-4">Platform</h3>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Dashboard</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Services</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Network</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-foreground mb-4">Resources</h3>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">API Reference</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Community</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-foreground mb-4">Legal</h3>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Constitution</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Terms</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-border mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-muted-foreground">
+                    © 2025 Azora OS Foundation. All rights reserved.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                        <span class="sr-only">Twitter</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.29 20c7.547 0 11.674-6.155 11.674-11.501 0-.175 0-.349-.012-.523A8.335 8.335 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-7.094 3.742 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.273 5.477A4.073 4.073 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+                        <span class="sr-only">GitHub</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.547 2.914 1.186.092-.923.35-1.546.636-1.903-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.268.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.379.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.194 22 16.44 22 12.017 22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>
