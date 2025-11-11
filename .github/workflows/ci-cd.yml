@@ -126,6 +126,7 @@ jobs:
 
     - name: Check secrets availability
       id: check-secrets
+      if: github.event_name == 'push'
       run: |
         if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && [ -n "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
           echo "aws_available=true" >> $GITHUB_OUTPUT
@@ -200,6 +201,7 @@ jobs:
 
     - name: Check secrets availability
       id: check-secrets
+      if: github.event_name == 'release'
       run: |
         if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && [ -n "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
           echo "aws_available=true" >> $GITHUB_OUTPUT
@@ -273,6 +275,7 @@ jobs:
 
     - name: Check secrets availability
       id: check-secrets
+      if: github.event_name == 'workflow_dispatch'
       run: |
         if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && [ -n "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
           echo "aws_available=true" >> $GITHUB_OUTPUT
