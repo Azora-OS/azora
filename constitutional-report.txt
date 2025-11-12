@@ -1,0 +1,4 @@
+
+> azora-os@3.0.0 constitutional:check
+> ts-node infrastructure/constitutional-enforcement-engine.ts
+

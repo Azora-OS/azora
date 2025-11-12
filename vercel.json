@@ -1,46 +1,24 @@
 {
   "version": 2,
-  "buildCommand": "npm run deploy:design && cd apps/app && npm install && npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "outputDirectory": "apps/app/.next",
-  "regions": ["iad1"],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "src": "apps/web/package.json",
+      "use": "@vercel/next"
     }
   ],
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
+      "src": "/(.*)",
+      "dest": "apps/web/$1"
     }
-  ]
+  ],
+  "env": {
+    "AZORA_VERSION": "1.0.0",
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "apps/web/app/**": {
+      "maxDuration": 30
+    }
+  }
 }
