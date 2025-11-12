@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "name": "azora-api-gateway",
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "AUTH_SERVICE_URL": "@auth_service_url",
+    "EDUCATION_SERVICE_URL": "@education_service_url",
+    "PAYMENT_SERVICE_URL": "@payment_service_url"
+  }
+}
