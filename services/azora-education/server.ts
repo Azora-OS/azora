@@ -245,10 +245,11 @@ app.get('/health', async (req, res) => {
       }
     })
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     res.status(503).json({
       status: 'unhealthy',
       service: 'Azora Education System',
-      error: error.message,
+      error: errorMessage,
       timestamp: new Date()
     })
   }
@@ -265,7 +266,7 @@ app.post('/api/primary/enroll', async (req, res) => {
   }
 })
 
-app.get('/api/primary/grades', (req, res) => {
+app.get('/api/primary/grades', (_req, res) => {
   const grades = Array.from(primaryEducation.getAllGrades().values())
   res.json({ grades })
 })
@@ -276,6 +277,7 @@ app.get('/api/primary/student/:studentId', (req, res) => {
     return res.status(404).json({ error: 'Student not found' })
   }
   res.json(progress)
+  return
 })
 
 app.post('/api/primary/assessment', async (req, res) => {
@@ -299,17 +301,17 @@ app.post('/api/secondary/enroll', async (req, res) => {
   }
 })
 
-app.get('/api/secondary/grades', (req, res) => {
+app.get('/api/secondary/grades', (_req, res) => {
   const grades = Array.from(secondaryEducation.getAllGrades().values())
   res.json({ grades })
 })
 
-app.get('/api/secondary/streams', (req, res) => {
+app.get('/api/secondary/streams', (_req, res) => {
   const streams = Array.from(secondaryEducation.getAllStreams().values())
   res.json({ streams })
 })
 
-app.get('/api/secondary/nsc-requirements', (req, res) => {
+app.get('/api/secondary/nsc-requirements', (_req, res) => {
   const requirements = secondaryEducation.getNSCRequirements()
   res.json(requirements)
 })
@@ -320,6 +322,7 @@ app.get('/api/secondary/student/:studentId', (req, res) => {
     return res.status(404).json({ error: 'Student not found' })
   }
   res.json(record)
+  return
 })
 
 // ========== UNIVERSITY ==========
@@ -333,17 +336,17 @@ app.post('/api/university/enroll', async (req, res) => {
   }
 })
 
-app.get('/api/university/programmes', (req, res) => {
+app.get('/api/university/programmes', (_req, res) => {
   const programmes = azoraSapiensUniversity.getAllProgrammes()
   res.json({ programmes })
 })
 
-app.get('/api/university/details', (req, res) => {
+app.get('/api/university/details', (_req, res) => {
   const details = azoraSapiensUniversity.getUniversityDetails()
   res.json(details)
 })
 
-app.get('/api/university/faculties', (req, res) => {
+app.get('/api/university/faculties', (_req, res) => {
   const details = azoraSapiensUniversity.getUniversityDetails()
   res.json({ faculties: details.faculties })
 })
@@ -354,6 +357,7 @@ app.get('/api/university/student/:studentId', (req, res) => {
     return res.status(404).json({ error: 'Student not found' })
   }
   res.json(student)
+  return
 })
 
 // ========== ENHANCED MINT ==========
@@ -373,6 +377,7 @@ app.get('/api/mint/wallet/:walletId', (req, res) => {
     return res.status(404).json({ error: 'Wallet not found' })
   }
   res.json(wallet)
+  return
 })
 
 app.post('/api/mint/transaction', async (req, res) => {
@@ -394,12 +399,12 @@ app.post('/api/mint/stake', async (req, res) => {
   }
 })
 
-app.get('/api/mint/staking/:userId', (req, res) => {
-  const positions = enhancedMint.getUserStakingPositions(req.params.userId)
+app.get('/api/mint/staking/:userId', (_req, res) => {
+  const positions = enhancedMint.getUserStakingPositions(_req.params.userId)
   res.json({ positions })
 })
 
-app.get('/api/mint/tvl', (req, res) => {
+app.get('/api/mint/tvl', (_req, res) => {
   const tvl = enhancedMint.getTotalValueLocked()
   res.json({ tvl })
 })
@@ -444,12 +449,12 @@ app.get('/api/student/:studentId/record', async (req, res) => {
   }
 })
 
-app.get('/api/programmes/all', (req, res) => {
+app.get('/api/programmes/all', (_req, res) => {
   const programmes = azoraEducation.getAllProgrammes()
   res.json(programmes)
 })
 
-app.get('/api/statistics', (req, res) => {
+app.get('/api/statistics', (_req, res) => {
   const stats = azoraEducation.getStatistics()
   res.json(stats)
 })
