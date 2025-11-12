@@ -9,7 +9,7 @@ Azora Mail is a complete email infrastructure service that replaces Google/Gmail
 ## 🚀 Features
 
 ### Email Infrastructure
-- ✅ **SMTP Server** - Send emails from @azora-os.ai
+- ✅ **SMTP Server** - Send emails from @azora.world
 - ✅ **Bulk Campaigns** - Send to thousands at once
 - ✅ **Personalization** - Dynamic content per recipient
 - ✅ **Rate Limiting** - Prevent spam, ensure delivery
