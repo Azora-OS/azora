@@ -1,15 +1,11 @@
-# Azora SDK
+# @azora/sdk
 
-The official TypeScript/JavaScript SDK for the Azora OS platform. Build applications that integrate with Azora's comprehensive suite of services including education, payments, retail AI, cold chain monitoring, community safety, and decentralized justice.
+Official TypeScript/JavaScript SDK for the Azora OS platform.
 
 ## Installation
 
 ```bash
 npm install @azora/sdk
-# or
-yarn add @azora/sdk
-# or
-pnpm add @azora/sdk
 ```
 
 ## Quick Start
@@ -17,136 +13,275 @@ pnpm add @azora/sdk
 ```typescript
 import { AzoraClient } from '@azora/sdk';
 
-const client = new AzoraClient({
+// Initialize the client
+const azora = new AzoraClient({
   apiKey: 'your-api-key',
-  environment: 'production'
-});
-
-// List courses
-const courses = await client.education.listCourses();
-
-// Create a payment
-const payment = await client.payments.createPayment({
-  amount: 1000,
-  currency: 'ZAR',
-  userId: 'user-123'
-});
-
-// Report a safety incident
-const incident = await client.safety.reportIncident({
-  type: 'crime',
-  severity: 'high',
-  location: { latitude: -26.2041, longitude: 28.0473 },
-  description: 'Suspicious activity reported'
-});
-```
-
-## Features
-
-### 🎓 Education APIs
-- Course management
-- Enrollment tracking
-- Progress monitoring
-- Certificate generation
-
-### 💰 Payment APIs
-- Payment processing
-- Subscription management
-- Reward distribution
-- Transaction tracking
-
-### 🏪 Retail AI APIs
-- Customer analytics
-- Footfall tracking
-- Loss prevention
-- Inventory optimization
-
-### ❄️ Cold Chain APIs
-- Temperature monitoring
-- Shipment tracking
-- Compliance reporting
-- Alert management
-
-### 🛡️ Safety APIs
-- Incident reporting
-- Community alerts
-- Emergency response
-- Safety analytics
-
-### ⚖️ Arbiter APIs
-- Dispute resolution
-- Reputation management
-- Staking protocol
-- Case management
-
-## Authentication
-
-```typescript
-const client = new AzoraClient({
-  apiKey: 'your-api-key'
+  environment: 'development', // or 'staging', 'production'
+  debug: true // Enable debug logging
 });
 
 // Login
-const { data } = await client.auth.login('email@example.com', 'password');
+const loginResult = await azora.auth.login('user@example.com', 'password');
+if (loginResult.success) {
+  console.log('Logged in as:', loginResult.data?.user.name);
+  
+  // Store tokens
+  azora.setAuthToken(
+    loginResult.data!.accessToken,
+    loginResult.data!.refreshToken
+  );
+}
 
-// Use the access token
-client.updateConfig({
-  apiKey: data.accessToken
+// Get courses
+const courses = await azora.education.getCourses();
+if (courses.success) {
+  console.log('Available courses:', courses.data);
+}
+
+// Enroll in a course
+const enrollment = await azora.education.enrollInCourse('course-id', 'user-id');
+if (enrollment.success) {
+  console.log('Enrolled! ID:', enrollment.enrollmentId);
+}
+
+// Check wallet balance
+const balance = await azora.payment.getBalance('user-id');
+if (balance.success) {
+  console.log('Balance:', balance.data);
+}
+```
+
+## Services
+
+### Authentication Service
+
+```typescript
+// Register
+const result = await azora.auth.register(
+  'user@example.com',
+  'password',
+  'John Doe',
+  'student' // or 'educator'
+);
+
+// Login
+const login = await azora.auth.login('user@example.com', 'password');
+
+// Get profile
+const profile = await azora.auth.profile();
+
+// Update profile
+const updated = await azora.auth.updateProfile({ name: 'Jane Doe' });
+
+// Logout
+await azora.auth.logout();
+```
+
+### Education Service
+
+```typescript
+// List courses
+const courses = await azora.education.getCourses({
+  difficulty: 'beginner',
+  limit: 10
+});
+
+// Get specific course
+const course = await azora.education.getCourse('course-id');
+
+// Enroll
+const enrollment = await azora.education.enrollInCourse('course-id', 'user-id');
+
+// Check progress
+const progress = await azora.education.getProgress('user-id', 'course-id');
+
+// Update progress
+const updated = await azora.education.updateProgress(
+  'user-id',
+  'course-id',
+  'lesson-id'
+);
+
+// Get enrollments
+const enrolled = await azora.education.getEnrollments('user-id');
+
+// Create course (educators only)
+const newCourse = await azora.education.createCourse({
+  title: 'Introduction to Python',
+  description: 'Learn Python basics',
+  instructor: 'instructor-id',
+  duration: 20,
+  price: 99,
+  currency: 'AZR'
 });
 ```
 
-## Error Handling
+### Payment Service
 
 ```typescript
-try {
-  const result = await client.education.getCourse('course-id');
-  if (!result.success) {
-    console.error('Error:', result.error);
-  }
-} catch (error) {
-  console.error('Request failed:', error);
-}
+// Create payment
+const payment = await azora.payment.createPayment(
+  99.99,
+  'AZR',
+  'user-id',
+  'Course enrollment'
+);
+
+// Get balance
+const balance = await azora.payment.getBalance('user-id');
+
+// List transactions
+const transactions = await azora.payment.listTransactions('user-id', {
+  limit: 20,
+  type: 'credit'
+});
+
+// Earn tokens (learn-to-earn)
+const earned = await azora.payment.earnTokens(
+  'user-id',
+  10,
+  'Completed lesson'
+);
+
+// Transfer tokens
+const transfer = await azora.payment.transfer(
+  'from-user-id',
+  'to-user-id',
+  50,
+  'AZR'
+);
+
+// Refund
+const refund = await azora.payment.refund('transaction-id', 'User request');
+```
+
+### Safety Service
+
+```typescript
+// Report incident
+const incident = await azora.safety.reportIncident({
+  type: 'emergency',
+  severity: 'high',
+  location: {
+    latitude: -26.2041,
+    longitude: 28.0473
+  },
+  description: 'Medical emergency at campus',
+  reportedBy: 'user-id'
+});
+
+// Get incidents
+const incidents = await azora.safety.getIncidents({
+  severity: 'high',
+  status: 'open'
+});
+
+// Get nearby incidents
+const nearby = await azora.safety.getNearbyIncidents(
+  -26.2041,
+  28.0473,
+  5 // radius in km
+);
+
+// Update incident
+const updated = await azora.safety.updateIncident('incident-id', {
+  status: 'resolved'
+});
 ```
 
 ## Configuration
 
 ```typescript
-const client = new AzoraClient({
-  apiKey: 'your-api-key',
-  environment: 'production', // 'development' | 'staging' | 'production'
-  timeout: 30000, // Request timeout in ms
-  retries: 3, // Number of retry attempts
-  debug: false // Enable debug logging
+const azora = new AzoraClient({
+  apiKey: 'your-api-key',              // Required
+  environment: 'production',            // Optional: 'development', 'staging', 'production'
+  baseURL: 'https://custom-api.com',   // Optional: Override default base URL
+  timeout: 30000,                       // Optional: Request timeout in ms (default: 30000)
+  retries: 3,                          // Optional: Number of retries (default: 3)
+  debug: false                         // Optional: Enable debug logs (default: false)
 });
+```
+
+## Error Handling
+
+All SDK methods return responses with a `success` field:
+
+```typescript
+const result = await azora.auth.login('email', 'password');
+
+if (result.success) {
+  // Operation succeeded
+  console.log(result.data);
+} else {
+  // Operation failed
+  console.error(result.error);
+}
+```
+
+## Token Management
+
+The SDK automatically handles token storage and refresh:
+
+```typescript
+// Tokens are automatically stored after login
+await azora.auth.login('email', 'password');
+
+// Manually set tokens
+azora.setAuthToken('access-token', 'refresh-token');
+
+// Clear tokens
+azora.clearAuth();
+
+// Tokens are automatically refreshed on 401 errors
 ```
 
 ## TypeScript Support
 
-The SDK is written in TypeScript and provides full type definitions:
+Full TypeScript support with complete type definitions:
 
 ```typescript
-import type { Course, Payment, SafetyIncident } from '@azora/sdk';
+import { 
+  AzoraClient, 
+  User, 
+  Course, 
+  ApiResponse 
+} from '@azora/sdk';
 
-const course: Course = await client.education.getCourse('id');
+const azora = new AzoraClient({ apiKey: 'key' });
+
+// All responses are typed
+const result: ApiResponse<User> = await azora.auth.profile();
 ```
 
-## API Documentation
+## Health Check
 
-For detailed API documentation, visit [https://docs.azora.co.za/sdk](https://docs.azora.co.za/sdk)
+```typescript
+const health = await azora.healthCheck();
+if (health.healthy) {
+  console.log('API is healthy. Version:', health.version);
+}
+```
 
-## Examples
+## Ubuntu Philosophy
 
-Check out the [examples](./examples) directory for complete working examples.
+This SDK embodies the Ubuntu philosophy: **"I am because we are"**
+
+- All operations consider collective benefit
+- Token earnings support community prosperity
+- Safety features protect everyone
+- Learning advances shared knowledge
 
 ## Support
 
-- 📧 Email: support@azora.co.za
-- 💬 Discord: [https://discord.gg/azora](https://discord.gg/azora)
-- 📚 Docs: [https://docs.azora.co.za](https://docs.azora.co.za)
+- **Documentation**: https://docs.azora.world
+- **Issues**: https://github.com/Sizwe780/azora-os/issues
+- **Discord**: https://discord.gg/azora
+- **Email**: sdk@azora.world
 
 ## License
 
-AZORA PROPRIETARY LICENSE  
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+MIT License - See LICENSE file for details
 
-See LICENSE file for details.
+---
+
+**"Ngiyakwazi ngoba sikwazi" - I can because we can**

@@ -1,0 +1,39 @@
+{
+  "name": "@azora/shared-design",
+  "version": "1.0.0",
+  "description": "Azora OS Shared Design Layer - Real data access for Head of Design (Sonnet Claude)",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./data": "./data-service.ts",
+    "./hooks": "./hooks.ts",
+    "./api": "./api-routes.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@azora/shared-database": "file:../shared-database",
+    "@azora/shared-auth": "file:../shared-auth",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "express": "^4.18.0"
+  },
+  "keywords": [
+    "azora",
+    "design",
+    "ui",
+    "data-access",
+    "hooks"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

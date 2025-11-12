@@ -1,0 +1,38 @@
+{
+  "name": "@azora/shared-services",
+  "version": "1.0.0",
+  "description": "Azora OS Shared Services Layer - Service Registry, Master Integrator, Health Checks, Event Bus, API Layer",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./registry": "./service-registry.ts",
+    "./integrator": "./master-integrator.ts",
+    "./health": "./health-check.ts",
+    "./api": "./unified-api-router.ts",
+    "./docs": "./api-documentation.ts",
+    "./validation": "./validation.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@azora/shared-database": "file:../shared-database",
+    "@azora/shared-auth": "file:../shared-auth",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "azora",
+    "services",
+    "registry",
+    "health-check",
+    "api",
+    "validation"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

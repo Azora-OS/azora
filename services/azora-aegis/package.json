@@ -13,6 +13,9 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
+    "@azora/branding": "file:../../packages/branding",
+    "@azora/design-system": "file:../../packages/@azora/design-system",
+    "@azora/telemetry": "file:../../packages/@azora/telemetry",
     "@langchain/core": "^1.0.2",
     "@langchain/openai": "^1.0.0",
     "@prisma/client": "^5.0.0",

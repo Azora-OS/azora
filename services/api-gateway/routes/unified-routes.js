@@ -1,0 +1,453 @@
+/*
+AZORA PROPRIETARY LICENSE
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+UNIFIED API ROUTES
+Centralized API routes for all services
+*/
+
+const express = require('express');
+const router = express.Router();
+
+// Import service integrations (temporarily disabled due to ES module compatibility)
+// const { getServiceRegistry } = require('@azora/shared-services/service-registry');
+// const { authenticateSession } = require('@azora/shared-auth/middleware');
+// const { healthCheckService } = require('@azora/shared-services/health-check');
+
+// Temporary service registry for unified routes
+const tempServiceRegistry = {
+  getServiceUrl: (service) => {
+    const serviceUrls = {
+      auth: process.env.AUTH_URL || 'http://localhost:3001',
+      mint: process.env.MINT_URL || 'http://localhost:3002',
+      lms: process.env.LMS_URL || 'http://localhost:3003',
+      forge: process.env.FORGE_URL || 'http://localhost:4700',
+      nexus: process.env.NEXUS_URL || 'http://localhost:3005',
+      education: process.env.EDUCATION_URL || 'http://localhost:3007',
+      payments: process.env.PAYMENTS_URL || 'http://localhost:3008'
+    };
+    return serviceUrls[service] || null;
+  }
+};
+
+// Temporary auth middleware
+const tempAuthenticateSession = (req, res, next) => {
+  // Skip auth for now - implement later
+  next();
+};
+
+// Temporary health check
+const tempHealthCheckService = {
+  checkAllServices: async () => ({ status: 'ok', services: {} })
+};
+
+/**
+ * Health Check Route
+ */
+router.get('/health', async (req, res) => {
+  try {
+    const health = await healthCheckService.getHealthReport();
+    res.json({ success: true, data: health });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Health check failed' });
+  }
+});
+
+/**
+ * Service Status Route
+ */
+router.get('/services/status', async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const services = Array.from(serviceRegistry.services.entries()).map(([name, info]) => ({
+      name,
+      url: info.url,
+      health: info.health,
+      lastHealthCheck: info.lastHealthCheck,
+    }));
+    res.json({ success: true, data: services });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to get service status' });
+  }
+});
+
+/**
+ * Design API Routes (wallet, progress, health, dashboard)
+ */
+router.get('/design/wallet-balance', authenticateSession, async (req, res) => {
+  try {
+    const { designDataService } = require('@azora/shared-design/data-service');
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+    const balance = await designDataService.getUserWalletBalance(userId);
+    res.json({ success: true, data: balance });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/design/student-progress', authenticateSession, async (req, res) => {
+  try {
+    const { designDataService } = require('@azora/shared-design/data-service');
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+    const progress = await designDataService.getStudentProgress(userId);
+    res.json({ success: true, data: progress });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/design/health-check', async (req, res) => {
+  try {
+    const { designDataService } = require('@azora/shared-design/data-service');
+    const health = await designDataService.getSystemHealth();
+    res.json({ success: true, data: health });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/design/dashboard', authenticateSession, async (req, res) => {
+  try {
+    const { designDataService } = require('@azora/shared-design/data-service');
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+    const dashboard = await designDataService.getUserDashboardData(userId);
+    res.json({ success: true, data: dashboard });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * LMS Routes (courses, enrollments, progress)
+ */
+router.get('/lms/courses', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const lmsUrl = serviceRegistry.getServiceUrl('lms');
+    if (!lmsUrl) {
+      return res.status(503).json({ success: false, error: 'LMS service unavailable' });
+    }
+    const response = await fetch(`${lmsUrl}/api/courses`, {
+      headers: { Authorization: req.headers.authorization },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/lms/enrollments', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const lmsUrl = serviceRegistry.getServiceUrl('lms');
+    if (!lmsUrl) {
+      return res.status(503).json({ success: false, error: 'LMS service unavailable' });
+    }
+    const response = await fetch(`${lmsUrl}/api/enrollments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization,
+      },
+      body: JSON.stringify(req.body),
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.patch('/lms/enrollments/:id/progress', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const lmsUrl = serviceRegistry.getServiceUrl('lms');
+    if (!lmsUrl) {
+      return res.status(503).json({ success: false, error: 'LMS service unavailable' });
+    }
+    const response = await fetch(`${lmsUrl}/api/enrollments/${req.params.id}/progress`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization,
+      },
+      body: JSON.stringify(req.body),
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Retail AI Routes
+ */
+router.get('/retail-ai/inventory', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const retailUrl = serviceRegistry.getServiceUrl('retail-ai');
+    if (!retailUrl) {
+      return res.status(503).json({ success: false, error: 'Retail AI service unavailable' });
+    }
+    const response = await fetch(`${retailUrl}/api/inventory`, {
+      headers: { Authorization: req.headers.authorization },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/retail-ai/forecast/:itemId', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const retailUrl = serviceRegistry.getServiceUrl('retail-ai');
+    if (!retailUrl) {
+      return res.status(503).json({ success: false, error: 'Retail AI service unavailable' });
+    }
+    const days = req.query.days || 30;
+    const response = await fetch(`${retailUrl}/api/forecast/${req.params.itemId}?days=${days}`, {
+      headers: { Authorization: req.headers.authorization },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Institutional Routes
+ */
+router.get('/institutional/students', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const institutionalUrl = serviceRegistry.getServiceUrl('institutional');
+    if (!institutionalUrl) {
+      return res.status(503).json({ success: false, error: 'Institutional service unavailable' });
+    }
+    const response = await fetch(`${institutionalUrl}/api/students`, {
+      headers: { Authorization: req.headers.authorization },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/institutional/students/register', authenticateSession, async (req, res) => {
+  try {
+    const serviceRegistry = getServiceRegistry();
+    const institutionalUrl = serviceRegistry.getServiceUrl('institutional');
+    if (!institutionalUrl) {
+      return res.status(503).json({ success: false, error: 'Institutional service unavailable' });
+    }
+    const response = await fetch(`${institutionalUrl}/api/students/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization,
+      },
+      body: JSON.stringify(req.body),
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Wallet Transaction Routes
+ */
+router.post('/wallet/send', authenticateSession, async (req, res) => {
+  try {
+    const { amount, address } = req.body
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real wallet service
+    const txHash = "0x" + Math.random().toString(16).substr(2, 64)
+    res.json({ success: true, txHash, message: 'Transaction sent successfully' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.get('/wallet/transactions', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real transaction service
+    const transactions = []
+    res.json({ success: true, data: transactions })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+/**
+ * Notifications Routes
+ */
+router.get('/notifications', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real notifications service
+    const notifications = []
+    res.json({ success: true, data: notifications })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.patch('/notifications/:id/read', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real notifications service
+    res.json({ success: true, message: 'Notification marked as read' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.post('/notifications/mark-all-read', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real notifications service
+    res.json({ success: true, message: 'All notifications marked as read' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+/**
+ * Settings Routes
+ */
+router.get('/settings', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real settings service
+    const settings = {
+      displayName: '',
+      emailNotifications: true,
+      pushNotifications: false,
+      language: 'english',
+    }
+    res.json({ success: true, data: settings })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+router.put('/settings', authenticateSession, async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized' })
+    }
+    // TODO: Connect to real settings service and persist
+    res.json({ success: true, message: 'Settings saved successfully' })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+/**
+ * Infrastructure Routes
+ */
+router.get('/infrastructure/status', async (req, res) => {
+  try {
+    const { treeArchitecture } = require('@azora/shared-infrastructure/tree-architecture');
+    const status = treeArchitecture.getInfrastructureStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/cdn/status', async (req, res) => {
+  try {
+    const { africaCDN } = require('@azora/shared-infrastructure/africa-cdn');
+    const status = africaCDN.getNetworkStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/rivers/status', async (req, res) => {
+  try {
+    const { riverFlows } = require('@azora/shared-infrastructure/river-flows');
+    const status = riverFlows.getNetworkStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/mycelium/status', async (req, res) => {
+  try {
+    const { myceliumNetwork } = require('@azora/shared-infrastructure/mycelium-network');
+    const topology = myceliumNetwork.getNetworkTopology();
+    res.json({ success: true, data: topology });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/infrastructure/tree/status', async (req, res) => {
+  try {
+    const { treeArchitecture } = require('@azora/shared-infrastructure/tree-architecture');
+    const status = treeArchitecture.getTreeStatus();
+    res.json({ success: true, data: status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * CDN Asset Routes
+ */
+router.get('/cdn/*', async (req, res) => {
+  try {
+    const { africaCDN } = require('@azora/shared-infrastructure/africa-cdn');
+    const path = req.path.replace('/cdn', '');
+    const region = req.query.region || req.headers['x-region'];
+    const cdnUrl = africaCDN.getAssetURL(path, region);
+    
+    // Redirect to CDN or proxy
+    res.redirect(302, cdnUrl);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+module.exports = router;

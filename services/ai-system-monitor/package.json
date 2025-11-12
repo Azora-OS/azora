@@ -23,6 +23,9 @@
     "author": "Azora OS",
     "license": "MIT",
     "dependencies": {
+        "@azora/branding": "file:../../packages/branding",
+        "@azora/design-system": "file:../../packages/@azora/design-system",
+        "@azora/telemetry": "file:../../packages/@azora/telemetry",
         "node-fetch": "^2.6.7"
     },
     "engines": {

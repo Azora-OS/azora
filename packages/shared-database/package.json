@@ -1,0 +1,37 @@
+{
+  "name": "@azora/shared-database",
+  "version": "1.0.0",
+  "description": "Azora OS Shared Database Layer - Prisma, Redis, Repository Pattern",
+  "type": "module",
+  "main": "./database/index.ts",
+  "exports": {
+    ".": "./database/index.ts",
+    "./prisma": "./database/prisma-client.ts",
+    "./redis": "./database/redis-client.ts",
+    "./repository": "./database/repository.ts",
+    "./migrations": "./database/migrations.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "redis": "^5.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^5.20.0"
+  },
+  "keywords": [
+    "azora",
+    "database",
+    "prisma",
+    "redis",
+    "repository"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

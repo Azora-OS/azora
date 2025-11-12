@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { AzoraLogo, ServiceLogo, ElaraAvatar, colors } from "@azora/branding"
+import { AzoraLogo, ServiceLogo, ElaraAvatar } from "@azora/branding"
+import { colors } from "@azora/design-system"
 import { GraduationCap, DollarSign, TrendingUp, Users, Award, BookOpen, Target, Zap } from "lucide-react"
 
 const stats = [

@@ -14,7 +14,6 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import winston from 'winston'
 import crypto from 'crypto'
 import { createDatabasePool, createRedisCache, createSupabaseClient } from '../azora-database-layer.js'
 import { EventBus } from '../azora-event-bus.js'
@@ -53,16 +52,15 @@ interface ValidationResult {
 export class AzoraBlockchainLogger extends EventEmitter {
   private dbPool: any
   private redisCache: any
-  private supabaseClient: any
-  private eventBus: EventBus
-  private logger: winston.Logger
+  private eventBus!: EventBus
+  private logger: any
 
   private currentBlock: Block | null = null
   private pendingEntries: BlockchainEntry[] = []
   private blockHeight: number = 0
   private genesisHash: string
-  private privateKey: string
-  private publicKey: string
+  private privateKey!: string
+  private publicKey!: string
 
   // Configuration
   private readonly ENTRIES_PER_BLOCK = 100
@@ -77,17 +75,13 @@ export class AzoraBlockchainLogger extends EventEmitter {
 
     this.genesisHash = this.calculateGenesisHash()
 
-    this.logger = winston.createLogger({
-      level: 'info',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-      transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'blockchain-logger.log' })
-      ]
-    })
+    // Simple logger using console
+    this.logger = {
+      info: (message: string, ...args: any[]) => console.log(`[INFO] ${message}`, ...args),
+      error: (message: string, ...args: any[]) => console.error(`[ERROR] ${message}`, ...args),
+      debug: (message: string, ...args: any[]) => console.debug(`[DEBUG] ${message}`, ...args),
+      warn: (message: string, ...args: any[]) => console.warn(`[WARN] ${message}`, ...args)
+    }
   }
 
   private initializeCryptography(): void {
@@ -119,10 +113,6 @@ export class AzoraBlockchainLogger extends EventEmitter {
       // Initialize Azora infrastructure
       this.dbPool = createDatabasePool(process.env.AZORA_DB_URL || 'postgresql://localhost:5432/azora')
       this.redisCache = createRedisCache(process.env.AZORA_REDIS_URL || 'redis://localhost:6379')
-      this.supabaseClient = createSupabaseClient(
-        process.env.AZORA_SUPABASE_URL || '',
-        process.env.AZORA_SUPABASE_KEY || ''
-      )
       this.eventBus = new EventBus(process.env.AZORA_EVENT_BUS_URL || 'redis://localhost:6379', 'blockchain-logger')
 
       // Setup event listeners
@@ -160,7 +150,7 @@ export class AzoraBlockchainLogger extends EventEmitter {
     }
 
     // Listen for blockchain-specific events
-    this.eventBus.subscribe('blockchain.validation.request', async (event: any) => {
+    this.eventBus.subscribe('blockchain.validation.request', async (_event: any) => {
       const result = await this.validateBlockchain()
       await this.eventBus.publish('blockchain.validation.complete', result)
     })
@@ -371,9 +361,9 @@ export class AzoraBlockchainLogger extends EventEmitter {
   private getLastEntryHash(): string {
     if (this.pendingEntries.length === 0) {
       // Get last entry from database
-      return this.currentBlock?.entries[this.currentBlock.entries.length - 1]?.hash || '0'.repeat(64)
+      return this.currentBlock?.entries?.[this.currentBlock.entries.length - 1]?.hash || '0'.repeat(64)
     }
-    return this.pendingEntries[this.pendingEntries.length - 1].hash
+    return this.pendingEntries[this.pendingEntries.length - 1]?.hash || '0'.repeat(64)
   }
 
   private signData(data: string): string {
@@ -476,6 +466,7 @@ export class AzoraBlockchainLogger extends EventEmitter {
           id: blockRow.id,
           height: blockRow.height,
           timestamp: new Date(blockRow.timestamp),
+          entries: [], // Not needed for hash calculation
           previousBlockHash: blockRow.previous_block_hash,
           merkleRoot: blockRow.merkle_root,
           hash: blockRow.hash,
@@ -508,7 +499,7 @@ export class AzoraBlockchainLogger extends EventEmitter {
           [block.height]
         )
 
-        const calculatedMerkleRoot = this.calculateMerkleRoot(entries.rows.map(row => ({
+        const calculatedMerkleRoot = this.calculateMerkleRoot(entries.rows.map((row: any) => ({
           id: row.id,
           timestamp: new Date(row.timestamp),
           eventType: row.event_type,
@@ -625,7 +616,7 @@ export class AzoraBlockchainLogger extends EventEmitter {
         id: row.id,
         height: row.height,
         timestamp: new Date(row.timestamp),
-        entries: entries.rows.map(entryRow => ({
+        entries: entries.rows.map((entryRow: any) => ({
           id: entryRow.id,
           timestamp: new Date(entryRow.timestamp),
           eventType: entryRow.event_type,
@@ -677,7 +668,7 @@ export class AzoraBlockchainLogger extends EventEmitter {
         [eventType, limit]
       )
 
-      return result.rows.map(row => ({
+      return result.rows.map((row: any) => ({
         id: row.id,
         timestamp: new Date(row.timestamp),
         eventType: row.event_type,

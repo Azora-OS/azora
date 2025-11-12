@@ -297,8 +297,8 @@ export function getMockData(service: string, endpoint: string): any {
   if (!serviceData) return null;
 
   if (typeof serviceData === 'object' && endpoint in serviceData) {
-    const endpointFn = serviceData[endpoint as keyof typeof serviceData];
-    return typeof endpointFn === 'function' ? endpointFn() : endpointFn;
+    const endpointValue = serviceData[endpoint as keyof typeof serviceData];
+    return typeof endpointValue === 'function' ? (endpointValue as any)() : endpointValue;
   }
 
   return null;
