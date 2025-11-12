@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -55,8 +56,10 @@ func main() {
 
 	r.GET("/health", healthCheck)
 	r.POST("/events", ingestEvent)
+	r.POST("/events/batch", ingestBatchEvents)
 	r.POST("/query", queryAnalytics)
 	r.GET("/metrics", getMetrics)
+	r.GET("/metrics/detailed", getDetailedMetrics)
 	r.GET("/realtime", getRealtimeStream)
 
 	log.Println("Analytics Service starting on :8086")
@@ -114,6 +117,29 @@ func consumeEvents() {
 		eventKey := fmt.Sprintf("event:%s", event.ID)
 		eventJSON, _ := json.Marshal(event)
 		rdb.Set(context.Background(), eventKey, eventJSON, 24*time.Hour)
+
+		// Store event data as hash for field-based queries
+		eventHashKey := fmt.Sprintf("event:data:%s", event.ID)
+		eventData := map[string]interface{}{
+			"type":      event.Type,
+			"service":   event.Service,
+			"user_id":   event.UserID,
+			"timestamp": event.Timestamp.Unix(),
+		}
+
+		// Flatten data map
+		for k, v := range event.Data {
+			if str, ok := v.(string); ok {
+				eventData[fmt.Sprintf("data_%s", k)] = str
+			} else if num, ok := v.(float64); ok {
+				eventData[fmt.Sprintf("data_%s", k)] = fmt.Sprintf("%f", num)
+			} else if num, ok := v.(int); ok {
+				eventData[fmt.Sprintf("data_%s", k)] = fmt.Sprintf("%d", num)
+			}
+		}
+
+		rdb.HMSet(context.Background(), eventHashKey, eventData)
+		rdb.Expire(context.Background(), eventHashKey, 24*time.Hour)
 
 		// Update aggregations
 		updateAggregations(&event)
@@ -184,6 +210,49 @@ func ingestEvent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, gin.H{"status": "ingested", "event_id": event.ID})
+}
+
+func ingestBatchEvents(c *gin.Context) {
+	var events []AnalyticsEvent
+	if err := c.ShouldBindJSON(&events); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var ingestedIDs []string
+	for _, event := range events {
+		// Set defaults
+		if event.ID == "" {
+			event.ID = fmt.Sprintf("%d", time.Now().UnixNano())
+		}
+		if event.Timestamp.IsZero() {
+			event.Timestamp = time.Now()
+		}
+
+		// Send to Kafka
+		eventJSON, err := json.Marshal(event)
+		if err != nil {
+			continue
+		}
+
+		err = kafkaWriter.WriteMessages(context.Background(),
+			kafka.Message{
+				Key:   []byte(event.ID),
+				Value: eventJSON,
+			},
+		)
+		if err != nil {
+			continue
+		}
+
+		ingestedIDs = append(ingestedIDs, event.ID)
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"status": "batch_ingested",
+		"count": len(ingestedIDs),
+		"event_ids": ingestedIDs,
+	})
 }
 
 func queryAnalytics(c *gin.Context) {
@@ -270,18 +339,113 @@ func executeCountQuery(query *AnalyticsQuery) ([]map[string]interface{}, error) 
 	return results, nil
 }
 
-func executeSumQuery(_ *AnalyticsQuery) ([]map[string]interface{}, error) {
-	// Simplified implementation - would aggregate numeric fields
-	return []map[string]interface{}{
-		{"message": "Sum aggregation not fully implemented"},
-	}, nil
+func executeSumQuery(query *AnalyticsQuery) ([]map[string]interface{}, error) {
+	var results []map[string]interface{}
+
+	// Get hourly buckets in range
+	startHour := query.StartTime.Unix() / 3600
+	endHour := query.EndTime.Unix() / 3600
+
+	for hour := startHour; hour <= endHour; hour++ {
+		timeKey := fmt.Sprintf("events:%s:%d", query.EventType, hour)
+		if query.EventType == "" {
+			timeKey = fmt.Sprintf("events:*:%d", hour)
+		}
+
+		keys, err := rdb.Keys(context.Background(), timeKey).Result()
+		if err != nil {
+			continue
+		}
+
+		sum := 0.0
+		for _, key := range keys {
+			eventIDs, err := rdb.SMembers(context.Background(), key).Result()
+			if err != nil {
+				continue
+			}
+
+			for _, eventID := range eventIDs {
+				eventKey := fmt.Sprintf("event:%s", eventID)
+				eventData, err := rdb.HGetAll(context.Background(), eventKey).Result()
+				if err != nil {
+					continue
+				}
+
+				if value, exists := eventData[query.Field]; exists {
+					if numericValue, err := strconv.ParseFloat(value, 64); err == nil {
+						sum += numericValue
+					}
+				}
+			}
+		}
+
+		if sum > 0 {
+			results = append(results, map[string]interface{}{
+				"timestamp": time.Unix(hour*3600, 0).Format(time.RFC3339),
+				"sum":       sum,
+			})
+		}
+	}
+
+	return results, nil
 }
 
-func executeAvgQuery(_ *AnalyticsQuery) ([]map[string]interface{}, error) {
-	// Simplified implementation - would calculate averages
-	return []map[string]interface{}{
-		{"message": "Average aggregation not fully implemented"},
-	}, nil
+func executeAvgQuery(query *AnalyticsQuery) ([]map[string]interface{}, error) {
+	var results []map[string]interface{}
+
+	// Get hourly buckets in range
+	startHour := query.StartTime.Unix() / 3600
+	endHour := query.EndTime.Unix() / 3600
+
+	for hour := startHour; hour <= endHour; hour++ {
+		timeKey := fmt.Sprintf("events:%s:%d", query.EventType, hour)
+		if query.EventType == "" {
+			timeKey = fmt.Sprintf("events:*:%d", hour)
+		}
+
+		keys, err := rdb.Keys(context.Background(), timeKey).Result()
+		if err != nil {
+			continue
+		}
+
+		var values []float64
+		for _, key := range keys {
+			eventIDs, err := rdb.SMembers(context.Background(), key).Result()
+			if err != nil {
+				continue
+			}
+
+			for _, eventID := range eventIDs {
+				eventKey := fmt.Sprintf("event:%s", eventID)
+				eventData, err := rdb.HGetAll(context.Background(), eventKey).Result()
+				if err != nil {
+					continue
+				}
+
+				if value, exists := eventData[query.Field]; exists {
+					if numericValue, err := strconv.ParseFloat(value, 64); err == nil {
+						values = append(values, numericValue)
+					}
+				}
+			}
+		}
+
+		if len(values) > 0 {
+			sum := 0.0
+			for _, v := range values {
+				sum += v
+			}
+			avg := sum / float64(len(values))
+
+			results = append(results, map[string]interface{}{
+				"timestamp": time.Unix(hour*3600, 0).Format(time.RFC3339),
+				"average":   avg,
+				"count":     len(values),
+			})
+		}
+	}
+
+	return results, nil
 }
 
 func getMetrics(c *gin.Context) {
@@ -307,6 +471,75 @@ func getMetrics(c *gin.Context) {
 			metrics[key] = count
 		}
 	}
+
+	c.JSON(http.StatusOK, metrics)
+}
+
+func getDetailedMetrics(c *gin.Context) {
+	service := c.Query("service")
+	timeRange := c.Query("range") // "1h", "24h", "7d"
+
+	if timeRange == "" {
+		timeRange = "24h"
+	}
+
+	// Parse time range
+	var duration time.Duration
+	switch timeRange {
+	case "1h":
+		duration = time.Hour
+	case "24h":
+		duration = 24 * time.Hour
+	case "7d":
+		duration = 7 * 24 * time.Hour
+	default:
+		duration = 24 * time.Hour
+	}
+
+	endTime := time.Now()
+	startTime := endTime.Add(-duration)
+
+	metrics := make(map[string]interface{})
+
+	// Get event counts by type
+	eventTypes := []string{"page_view", "api_call", "user_action", "error", "performance"}
+	for _, eventType := range eventTypes {
+		key := fmt.Sprintf("counter:%s:%s", eventType, service)
+		if service == "" {
+			key = fmt.Sprintf("counter:%s:*", eventType)
+		}
+		count, _ := rdb.Get(context.Background(), key).Int()
+		metrics[fmt.Sprintf("%s_count", eventType)] = count
+	}
+
+	// Get hourly trends
+	var hourlyData []map[string]interface{}
+	startHour := startTime.Unix() / 3600
+	endHour := endTime.Unix() / 3600
+
+	for hour := startHour; hour <= endHour; hour++ {
+		hourKey := fmt.Sprintf("metrics:hourly:%d", hour)
+		data, err := rdb.HGetAll(context.Background(), hourKey).Result()
+		if err != nil {
+			continue
+		}
+
+		hourData := map[string]interface{}{
+			"timestamp": time.Unix(hour*3600, 0).Format(time.RFC3339),
+		}
+
+		for k, v := range data {
+			if count, err := strconv.Atoi(v); err == nil {
+				hourData[k] = count
+			}
+		}
+
+		hourlyData = append(hourlyData, hourData)
+	}
+
+	metrics["hourly_trends"] = hourlyData
+	metrics["time_range"] = timeRange
+	metrics["service"] = service
 
 	c.JSON(http.StatusOK, metrics)
 }

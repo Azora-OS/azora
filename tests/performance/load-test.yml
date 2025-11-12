@@ -1,0 +1,158 @@
+{
+  "config": {
+    "target": "http://localhost:3000",
+    "phases": [
+      {
+        "duration": 60,
+        "arrivalRate": 5,
+        "name": "Warm up phase"
+      },
+      {
+        "duration": 120,
+        "arrivalRate": 5,
+        "rampTo": 50,
+        "name": "Ramp up load"
+      },
+      {
+        "duration": 300,
+        "arrivalRate": 50,
+        "name": "Sustained load"
+      },
+      {
+        "duration": 60,
+        "arrivalRate": 100,
+        "name": "Spike test"
+      }
+    ],
+    "defaults": {
+      "headers": {
+        "Authorization": "Bearer {{token}}"
+      }
+    },
+    "variables": {
+      "token": "azora-test-token-2025"
+    }
+  },
+  "scenarios": [
+    {
+      "name": "Student Portal Load Test",
+      "weight": 40,
+      "flow": [
+        {
+          "get": {
+            "url": "/api/auth/login",
+            "json": {
+              "email": "test-student@azora.world",
+              "password": "test-password"
+            },
+            "capture": [
+              {
+                "json": "$.token",
+                "as": "token"
+              }
+            ]
+          }
+        },
+        {
+          "get": {
+            "url": "/api/student/dashboard"
+          }
+        },
+        {
+          "get": {
+            "url": "/api/courses"
+          }
+        },
+        {
+          "post": {
+            "url": "/api/courses/enroll",
+            "json": {
+              "courseId": "test-course-{{randomInt}}"
+            }
+          }
+        },
+        {
+          "get": {
+            "url": "/api/wallet/balance"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Gateway Load Test",
+      "weight": 30,
+      "flow": [
+        {
+          "get": {
+            "url": "/api/health"
+          }
+        },
+        {
+          "get": {
+            "url": "/api/services"
+          }
+        },
+        {
+          "post": {
+            "url": "/api/analytics/events",
+            "json": {
+              "type": "page_view",
+              "service": "load-test",
+              "data": {
+                "page": "/test-page",
+                "userAgent": "Artillery/{{$randomInt}}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Education Service Load Test",
+      "weight": 20,
+      "flow": [
+        {
+          "get": {
+            "url": "/api/education/courses"
+          }
+        },
+        {
+          "get": {
+            "url": "/api/education/assessments"
+          }
+        },
+        {
+          "post": {
+            "url": "/api/education/progress",
+            "json": {
+              "courseId": "course-{{randomInt}}",
+              "progress": "{{randomInt}}",
+              "timestamp": "{{$timestamp}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment Service Load Test",
+      "weight": 10,
+      "flow": [
+        {
+          "get": {
+            "url": "/api/payments/balance"
+          }
+        },
+        {
+          "post": {
+            "url": "/api/payments/transfer",
+            "json": {
+              "to": "recipient-{{randomInt}}",
+              "amount": "{{randomInt}}",
+              "currency": "AZR"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
