@@ -15,10 +15,10 @@ async function connectDatabase() {
   const client = getPrismaClient();
   try {
     await client.$connect();
-    console.log('✅ Database connected');
+    // Database connected successfully
     return client;
   } catch (error) {
-    console.error('❌ Database connection failed:', error);
+    // Database connection failed
     throw error;
   }
 }
@@ -26,7 +26,7 @@ async function connectDatabase() {
 async function disconnectDatabase() {
   if (prisma) {
     await prisma.$disconnect();
-    console.log('🔌 Database disconnected');
+    // Database disconnected
   }
 }
 

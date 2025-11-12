@@ -17,11 +17,23 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "node prisma/seed.js",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "start:all": "concurrently \"npm run start:auth\" \"npm run start:education\" \"npm run start:payment\" \"npm run start:gateway\"",
+    "deploy:prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "deploy:build": "docker-compose -f docker-compose.prod.yml build",
+    "deploy:stop": "docker-compose -f docker-compose.prod.yml down",
+    "deploy:logs": "docker-compose -f docker-compose.prod.yml logs -f",
+    "health:check": "curl -f http://localhost:4000/health",
+    "prod:setup": "cp .env.production .env && npm run db:generate && npm run db:migrate && npm run db:seed"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "bcryptjs": "^2.4.3",
+    "concurrently": "8.2.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
@@ -39,10 +51,17 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "coveragePathIgnorePatterns": ["/node_modules/"],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
     "testTimeout": 10000
   },
-  "keywords": ["azora", "microservices", "education", "finance"],
+  "keywords": [
+    "azora",
+    "microservices",
+    "education",
+    "finance"
+  ],
   "author": "Azora Team",
   "license": "MIT"
 }
