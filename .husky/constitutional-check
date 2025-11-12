@@ -1,14 +1,18 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+# Constitutional Compliance Pre-Commit Hook
+# Ensures all commits comply with Azora Constitution
 
-echo "🏛️  Running Constitutional Compliance Check..."
-node infrastructure/constitutional-compliance-checker.js
+echo "🛡️ Running Constitutional Compliance Check..."
 
+# Run constitutional enforcement
+npx ts-node infrastructure/constitutional-enforcement-engine.ts
+
+# Check exit code
 if [ $? -ne 0 ]; then
-  echo ""
   echo "❌ Constitutional violations detected!"
-  echo "Please fix all violations before committing."
+  echo "Please fix violations before committing."
   exit 1
 fi
 
-echo "✅ Constitutionally compliant!"
+echo "✅ Constitutional compliance verified"
+exit 0

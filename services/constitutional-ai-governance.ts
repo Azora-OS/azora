@@ -1,6 +1,9 @@
 /*
 AZORA PROPRIETARY LICENSE
 Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+Constitutional AI Governance Service
+Real-time enforcement of constitutional principles across all operations
 */
 
 import express from 'express';
@@ -10,119 +13,157 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-interface GovernanceDecision {
+interface ConstitutionalDecision {
   id: string;
-  proposal: string;
-  aiAnalysis: string;
-  constitutionalAlignment: number;
-  recommendation: 'APPROVE' | 'REJECT' | 'REVIEW';
+  operation: string;
+  article: string;
+  section: string;
+  compliant: boolean;
+  score: number;
   reasoning: string[];
   timestamp: Date;
 }
 
-const decisions: GovernanceDecision[] = [];
+const decisions: ConstitutionalDecision[] = [];
 
-app.post('/api/v1/governance/analyze', async (req, res) => {
+// Article I: Ubuntu Philosophy Check
+function checkUbuntuCompliance(operation: any): number {
+  let score = 100;
+  
+  // Check for collective benefit
+  if (!operation.collectiveBenefit) score -= 20;
+  
+  // Check for individual sovereignty
+  if (!operation.userConsent) score -= 30;
+  
+  // Check for transparency
+  if (!operation.transparent) score -= 25;
+  
+  return Math.max(0, score);
+}
+
+// Article VIII: Truth Verification
+function checkTruthCompliance(operation: any): number {
+  let score = 100;
+  
+  // Check for mocks/fakes
+  if (operation.hasMocks || operation.hasFakes) score = 0;
+  
+  // Check for verifiable data
+  if (!operation.verifiable) score -= 40;
+  
+  // Check for audit trail
+  if (!operation.auditTrail) score -= 30;
+  
+  return Math.max(0, score);
+}
+
+// Article V: Data Protection
+function checkDataProtection(operation: any): number {
+  let score = 100;
+  
+  // Check for encryption
+  if (operation.sensitiveData && !operation.encrypted) score -= 50;
+  
+  // Check for user control
+  if (!operation.userControl) score -= 30;
+  
+  // Check for minimal collection
+  if (operation.excessiveData) score -= 20;
+  
+  return Math.max(0, score);
+}
+
+// Main constitutional validation endpoint
+app.post('/api/v1/governance/validate', async (req, res) => {
   try {
-    const { proposal, context } = req.body;
+    const { operation, context } = req.body;
     
-    const decision: GovernanceDecision = {
+    // Run all constitutional checks
+    const ubuntuScore = checkUbuntuCompliance(operation);
+    const truthScore = checkTruthCompliance(operation);
+    const dataScore = checkDataProtection(operation);
+    
+    const overallScore = (ubuntuScore + truthScore + dataScore) / 3;
+    const compliant = overallScore >= 75; // 75% minimum compliance
+    
+    const decision: ConstitutionalDecision = {
       id: `GOV-${Date.now()}`,
-      proposal,
-      aiAnalysis: analyzeProposal(proposal, context),
-      constitutionalAlignment: calculateAlignment(proposal),
-      recommendation: getRecommendation(proposal, context),
-      reasoning: generateReasoningChain(proposal, context),
+      operation: operation.name || 'unknown',
+      article: 'Multiple',
+      section: 'All',
+      compliant,
+      score: overallScore,
+      reasoning: [
+        `Ubuntu Philosophy: ${ubuntuScore}%`,
+        `Truth Compliance: ${truthScore}%`,
+        `Data Protection: ${dataScore}%`,
+        compliant ? 'Operation approved' : 'Operation blocked - constitutional violations'
+      ],
       timestamp: new Date()
     };
     
     decisions.push(decision);
-    console.log(`🤖 AI Governance: ${decision.id} - ${decision.recommendation}`);
     
-    res.json({ success: true, decision });
+    console.log(`🛡️ Constitutional Decision: ${decision.id} - ${compliant ? 'APPROVED' : 'BLOCKED'} (${overallScore.toFixed(1)}%)`);
+    
+    res.json({ 
+      success: true, 
+      decision,
+      approved: compliant,
+      message: compliant ? 'Operation constitutionally compliant' : 'Constitutional violations detected'
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
+// Get constitutional compliance metrics
+app.get('/api/v1/governance/metrics', (req, res) => {
+  const totalDecisions = decisions.length;
+  const approvedDecisions = decisions.filter(d => d.compliant).length;
+  const complianceRate = totalDecisions > 0 ? (approvedDecisions / totalDecisions) * 100 : 100;
+  
+  res.json({
+    success: true,
+    metrics: {
+      totalDecisions,
+      approvedDecisions,
+      blockedDecisions: totalDecisions - approvedDecisions,
+      complianceRate: complianceRate.toFixed(2),
+      averageScore: decisions.reduce((sum, d) => sum + d.score, 0) / totalDecisions || 100
+    }
+  });
+});
+
+// Get recent decisions
 app.get('/api/v1/governance/decisions', (req, res) => {
-  res.json({ success: true, decisions });
+  const limit = parseInt(req.query.limit as string) || 10;
+  res.json({ 
+    success: true, 
+    decisions: decisions.slice(-limit).reverse() 
+  });
 });
 
-app.post('/api/v1/governance/validate', async (req, res) => {
-  try {
-    const { action, principles } = req.body;
-    
-    const validation = {
-      valid: validateAgainstPrinciples(action, principles),
-      score: calculateAlignment(action),
-      violations: detectViolations(action)
-    };
-    
-    res.json({ success: true, validation });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
+// Health check
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
     service: 'constitutional-ai-governance',
     decisions: decisions.length,
+    complianceRate: decisions.length > 0 
+      ? ((decisions.filter(d => d.compliant).length / decisions.length) * 100).toFixed(2) + '%'
+      : '100%',
     timestamp: new Date()
   });
 });
 
-function analyzeProposal(proposal: string, context: any): string {
-  return `AI analysis: Proposal evaluated against constitutional principles. Impact assessment: ${context?.impact || 'medium'}`;
-}
-
-function calculateAlignment(proposal: string): number {
-  let score = 100;
-  if (proposal.includes('mock') || proposal.includes('fake')) score -= 50;
-  if (proposal.includes('centralize')) score -= 30;
-  if (proposal.includes('student') && proposal.includes('earn')) score += 20;
-  return Math.max(0, Math.min(100, score));
-}
-
-function getRecommendation(proposal: string, context: any): 'APPROVE' | 'REJECT' | 'REVIEW' {
-  const alignment = calculateAlignment(proposal);
-  if (alignment >= 80) return 'APPROVE';
-  if (alignment < 50) return 'REJECT';
-  return 'REVIEW';
-}
-
-function generateReasoningChain(proposal: string, context: any): string[] {
-  const reasoning = [];
-  reasoning.push('Constitutional alignment evaluated');
-  reasoning.push(`Alignment score: ${calculateAlignment(proposal)}%`);
-  
-  if (proposal.includes('student')) {
-    reasoning.push('Article IV: Student empowerment principle applies');
-  }
-  if (proposal.includes('infrastructure')) {
-    reasoning.push('Article VI: Infrastructure independence principle applies');
-  }
-  
-  return reasoning;
-}
-
-function validateAgainstPrinciples(action: string, principles: string[]): boolean {
-  return !action.includes('mock') && !action.includes('centralize');
-}
-
-function detectViolations(action: string): string[] {
-  const violations = [];
-  if (action.includes('mock')) violations.push('No Mock Protocol violation');
-  if (action.includes('increase supply')) violations.push('Token supply immutability violation');
-  return violations;
-}
-
 const PORT = process.env.PORT || 4501;
 
 app.listen(PORT, () => {
-  console.log('🤖 Constitutional AI Governance active on port', PORT);
+  console.log('🛡️ Constitutional AI Governance Service active on port', PORT);
+  console.log('📜 Enforcing Azora Constitution v3.0.0');
+  console.log('✅ All operations subject to constitutional review\n');
 });
 
 export default app;

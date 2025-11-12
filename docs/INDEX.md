@@ -56,6 +56,18 @@
 - [Code of Conduct](./CODE_OF_CONDUCT.md) - Community standards
 - [Compliance Reports](./compliance-reports/) - Regulatory compliance
 
+## 🛡️ Constitutional Framework
+
+### Core Constitution
+- **[Azora Constitution](./AZORA-CONSTITUTION.md)** - Complete constitutional framework
+- [Constitution Restoration Report](./CONSTITUTION-RESTORED.md) - Restoration documentation
+- [Elara Omega Constitution](../core/system-core/ELARA_OMEGA_CONSTITUTION.ts) - AI consciousness principles
+
+### Constitutional Implementation
+- [Constitutional Truth Framework](../Azora Master UI Template/lib/constitutional-truth.ts) - Truth verification
+- [Ubuntu Engine](../Azora Master UI Template/lib/ubuntu-engine.ts) - Ubuntu economics
+- [Constitutional AI Governance](../services/constitutional-ai-governance.ts) - AI governance service
+
 ## 💰 Business Documentation
 
 ### Strategy
@@ -140,8 +152,12 @@
 - [Spark Complete Guide](./SPARK-COMPLETE-GUIDE.md) - Spark feature
 
 ### UI/UX
-- [Design System Guide](./DESIGN-SYSTEM-GUIDE.md) - Design system
-- [UI Documentation](./ui/) - UI components
+- [Design System](./design/DESIGN-SYSTEM.md) - Complete design system
+- [Component Library](./design/COMPONENT-LIBRARY.md) - 60+ components
+- [Accessibility Guidelines](./design/ACCESSIBILITY.md) - WCAG 2.1 AA compliance
+- [Mobile-First Strategy](./design/MOBILE-FIRST.md) - 2G optimization
+- [UX Patterns](./design/UX-PATTERNS.md) - User flows and patterns
+- [Brand Guidelines](./design/BRAND-GUIDELINES.md) - Brand identity
 - [Premium UI](./PREMIUM-UI-COMPLETE.md) - Premium features
 
 ## 🔄 Migration & Upgrade

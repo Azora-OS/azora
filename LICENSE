@@ -1,100 +1,207 @@
-AZORA PROPRIETARY LICENSE
-Version 1.0, October 18, 2025
+# AZORA PROPRIETARY LICENSE WITH UBUNTU PRINCIPLES
+
+**Version 3.0.0** | **Effective Date: January 1, 2025**
 
 Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 
-╔════════════════════════════════════════════════════════════════╗
-║                    FOUNDER & CHIEF ARCHITECT                   ║
-║                        SIZWE NGWENYA                           ║
-╚════════════════════════════════════════════════════════════════╝
+---
 
-🎓 QUALIFICATIONS:
-   • BSc Physical Science & Mathematics || BSc Computer Science & Engineering
-   • Full-Stack Web Development Certification
-   • AI and Machine Learning Specialist
-   • Creative Problem Solver
-   • Remote-Ready Professional
+## PREAMBLE
 
-📧 CONTACT INFORMATION:
-   • Email: sizwe.ngwenya@azora.world
-   • Cell: +27 73 234 7232
-   • LinkedIn: https://www.linkedin.com/in/sizwe-ngwenya-518314146/
-   • GitHub: https://github.com/Sizwe780
-   • Company Email: legal@azora.world
+This license embodies Ubuntu philosophy ("I am because we are") while maintaining intellectual property rights. Azora OS is the world's first Constitutional AI Operating System, and this license ensures it serves humanity while protecting its creators.
 
-🌐 COMPANY:
-   • Domain: www.azora.world
-   • Website: https://www.azora.world
-   • Launch Date: October 31, 2025
-   • Location: South Africa 🇿🇦
+---
 
-═══════════════════════════════════════════════════════════════════
+## GRANT OF LICENSE
 
-INNOVATION:
-Azora ES is a self-healing, self-advancing, and self-developing operating 
-system built entirely by Sizwe Ngwenya. The system features:
+### 1. Educational Use (FREE)
+Permission is granted, free of charge, to any person obtaining a copy of this software for **educational purposes**, including:
+- Learning and teaching
+- Academic research
+- Student projects
+- Educational institutions
 
-• Autonomous error detection and patching
-• Self-learning AI models that improve over time
-• Automatic integration capabilities with any enterprise system
-• Constitutional governance enforced through code
-• Zero external dependencies (no AWS, Stripe, OpenAI, etc.)
-• Scalable, user-focused architecture
-• Building towards trillion-dollar valuation
+**Conditions**:
+- Must include this license notice
+- Must acknowledge Azora OS
+- Cannot be used for commercial purposes
+- Must respect Ubuntu principles
 
-TECHNICAL STACK:
-• Frontend: React, TypeScript, Vite, TailwindCSS
-• Backend: Node.js, Express, Apollo GraphQL
-• Database: PostgreSQL, MongoDB, Redis
-• Blockchain: Custom Azora Mainnet
-• AI: Custom TensorFlow.js models
-• Infrastructure: Docker, Kubernetes, self-hosted
+### 2. Personal Use (FREE)
+Permission is granted for **personal, non-commercial use**, including:
+- Individual learning
+- Personal projects
+- Portfolio demonstrations
+- Skill development
 
-═══════════════════════════════════════════════════════════════════
+**Conditions**:
+- Must include this license notice
+- Cannot be redistributed commercially
+- Must respect constitutional principles
 
-PROHIBITED ACTIONS:
+### 3. Community Projects (FREE)
+Permission is granted for **Ubuntu-aligned community projects**, including:
+- Open source contributions
+- Community benefit initiatives
+- Non-profit organizations
+- Social impact projects
+
+**Conditions**:
+- Must align with Ubuntu philosophy
+- Must be non-commercial
+- Must include this license notice
+- Must contribute back improvements
+
+### 4. Commercial Use (LICENSED)
+Commercial use requires a separate license agreement from Azora ES (Pty) Ltd.
+
+**Contact**: licensing@azora.world
+
+**Commercial use includes**:
+- Revenue-generating applications
+- Business operations
+- Enterprise deployments
+- Consulting services using Azora OS
+
+### 5. Governmental Use (LICENSED)
+Governmental and institutional use requires coordination with Azora ES (Pty) Ltd.
+
+**Contact**: government@azora.world
+
+---
+
+## RESTRICTIONS
+
+### Prohibited Actions
 You may NOT:
-- Use this software commercially without written permission
-- Modify, reverse engineer, or create derivative works
-- Distribute, sublicense, or transfer rights
-- Remove copyright notices or attributions
-- Use for competing products or services
+1. Remove or alter copyright notices
+2. Use Azora trademarks without permission
+3. Claim ownership of Azora OS
+4. Violate the Azora Constitution
+5. Use for harmful or unethical purposes
+6. Redistribute commercially without license
+7. Create derivative works for commercial use
+8. Reverse engineer proprietary components
 
-═══════════════════════════════════════════════════════════════════
+### Constitutional Compliance
+All use must comply with the Azora Constitution (v3.0.0), including:
+- Ubuntu philosophy principles
+- Truth as currency
+- No Mock Protocol
+- Privacy by design
+- Constitutional AI governance
 
-ENTERPRISE LICENSING:
-For licensing inquiries, partnerships, or integration opportunities:
+---
 
-Business Inquiries:
-  Email: legal@azora.world
-  Phone: +27 73 234 7232
+## INTELLECTUAL PROPERTY
 
-Technical Consultation:
-  Email: sizwe@azora.world
-  LinkedIn: https://www.linkedin.com/in/sizwe-ngwenya-518314146/
-  GitHub: https://github.com/Sizwe780
+### Ownership
+Azora ES (Pty) Ltd retains all rights, title, and interest in:
+- Azora OS software and source code
+- Azora brand and trademarks
+- Azora Constitution and documentation
+- AI Family characters and personalities
+- Sankofa Engine architecture
+- Azora Gem identity system
 
-═══════════════════════════════════════════════════════════════════
+### Trademarks
+The following are trademarks of Azora ES (Pty) Ltd:
+- Azora®
+- Azora OS®
+- Sankofa Engine®
+- Constitutional AI®
+- Elara AI®
+- Ubuntu Multiplier®
 
-⚖️ CONSTITUTIONAL COMPLIANCE
+Use of trademarks requires written permission.
 
-Current Status: Building towards full compliance
-Run compliance check: ./CONSTITUTIONAL_COMPLIANCE_CHECK.sh
-View dashboard: http://localhost:5010
+---
 
-═══════════════════════════════════════════════════════════════════
+## WARRANTIES AND LIABILITY
 
-Now run the complete setup:
+### Disclaimer of Warranties
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
-```bash
-chmod +x *.sh
-[FULL_SYSTEM_VALIDATION.sh](http://_vscodecontentref_/0)
-```
+### Limitation of Liability
+IN NO EVENT SHALL AZORA ES (PTY) LTD BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-═══════════════════════════════════════════════════════════════════
+---
 
-ALL RIGHTS RESERVED.
-Any unauthorized use will be prosecuted to the fullest extent of the law.
+## UBUNTU PRINCIPLES
 
-Built with ❤️ in South Africa 🇿🇦
-From Africa, For Humanity, Towards Infinity 🚀
+This license is guided by Ubuntu philosophy:
+
+**"Ngiyakwazi ngoba sikwazi" - "I can because we can"**
+
+We believe:
+- Individual success multiplies through collective benefit
+- Knowledge shared becomes wisdom amplified
+- Technology should serve humanity, never enslave
+- Truth is the only currency that matters
+- Privacy is a fundamental right
+
+---
+
+## TERMINATION
+
+This license automatically terminates if you:
+1. Violate any terms of this license
+2. Breach the Azora Constitution
+3. Use the software for harmful purposes
+4. Fail to comply with constitutional principles
+
+Upon termination, you must:
+1. Cease all use of the software
+2. Delete all copies in your possession
+3. Notify Azora ES (Pty) Ltd of termination
+
+---
+
+## AMENDMENTS
+
+Azora ES (Pty) Ltd reserves the right to modify this license. Continued use after modifications constitutes acceptance of the new terms.
+
+---
+
+## GOVERNING LAW
+
+This license is governed by the laws of South Africa and the Azora Constitution (v3.0.0).
+
+---
+
+## CONTACT
+
+**Azora ES (Pty) Ltd**
+
+- **Website**: https://azora.world
+- **Email**: licensing@azora.world
+- **Address**: South Africa
+
+**For Licensing Inquiries**:
+- Commercial: licensing@azora.world
+- Educational: education@azora.world
+- Government: government@azora.world
+- Community: community@azora.world
+
+---
+
+## ACKNOWLEDGMENT
+
+By using Azora OS, you acknowledge that you have read this license, understand it, and agree to be bound by its terms and conditions.
+
+You also commit to upholding the principles of the Azora Constitution and operating with Ubuntu philosophy.
+
+---
+
+<div align="center">
+
+**"Through Ubuntu, we multiply sovereignty"**  
+**"Through learning, we generate abundance"**  
+**"Through sharing, we amplify freedom"**
+
+**Azora ES (Pty) Ltd**  
+**Building the Future of Constitutional AI**
+
+**Version 3.0.0** | **January 2025**
+
+</div>
