@@ -1,39 +1,44 @@
-# Next.js
-.next/
-out/
-build/
-*.tsbuildinfo
-
-# Environment variables (NEVER COMMIT!)
-.env
-.env.*
-!.env.example
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.supabase
-secrets/
-
-# Testing
-coverage/
-.nyc_output/
-*.log
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
 
-# IDEs and editors
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# Database
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Build outputs
+dist/
+build/
+.next/
+
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
-*.sublime-project
-*.sublime-workspace
-*.code-workspace
 
-# OS files
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -41,126 +46,7 @@ lerna-debug.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
-desktop.ini
-
-# TypeScript
-*.tsbuildinfo
-
-# Hardhat
-cache/
-artifacts/
-typechain-types/
-typechain/
-
-# Vercel
-.vercel/
-
-# Nx
-.nx/
-.nx/cache
-.nx/workspace-data
-
-# Python (if any Python scripts exist)
-__pycache__/
-*.py[cod]
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-*.egg
-*.egg-info/
-.venv/
-venv/
-ENV/
-
-# Large files (keep these for safety)
-*.exe
-*.apk
-*.ipa
-*.dmg
-
-# Build artifacts
-os-build/
 
 # Temporary files
 tmp/
 temp/
-*.tmp
-*.bak
-*.backup
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Secrets and sensitive data
-*.pem
-*.key
-*.cert
-
-# Local development
-local/
-.local
-
-# Reports and audits (keep in docs/reports but ignore generated ones)
-docs/reports/*.json
-!docs/reports/README.md
-
-# Cache directories
-.cache/
-.eslintcache
-.stylelintcache
-
-# Archives
-archive/
-codex/archive/
-
-# Logs
-logs/
-*.log
-*.pid
-
-# Offline caches
-.offline-cache/
-
-# Private/Internal Documentation (NOT FOR PUBLIC)
-.private/
-*CLOAKING*.md
-*TRANSMUT*.md
-*WEAKPOINT*.md
-*SINGULARITY*.md
-*RHU*.md
-*BAPTISM*.md
-*AEGIS-POLICIES*.rego
-*elara-omega-prompts*.md
-*DEPLOYMENT-COMPLETE*.md
-*FINAL-LAUNCH*.md
-*PRODUCTION-DEPLOYMENT*.md
-*DOCUMENTATION-COMPLIANCE*.md
-
-# Backup files
-*.backup
-*.old
-
-# Git merge conflict files
-*.orig
-
-# Node modules
-node_modules/
-
-# External tools and dependencies (not for version control)
-tools/launchers/external/
-
-# Cache
-*.cache
-
-# Compiled binaries
-services/*/main
-services/*/*-service
-*.exe
-*.dll
-*.so
-*.dylib
-.vercel
