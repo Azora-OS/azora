@@ -745,7 +745,7 @@ This software embodies Ubuntu philosophy while maintaining intellectual property
 - **[💬 Discord](https://discord.gg/azora)** - Ubuntu community discussions and support
 - **[🐙 GitHub](https://github.com/Sizwe780/azora-os)** - Open source repository
 - **[📚 Documentation](https://azora.world/docs)** - Complete technical documentation
-- **[🐦 Twitter](https://twitter.com/azora_os)** - Ubuntu updates and announcements
+- **[🐦 X/Twitter](https://x.com/Azora_OS)** - Ubuntu updates and announcements
 
 ### Ubuntu Events
 - **🌍 Monthly Ubuntu Gatherings**: Global community meetings
