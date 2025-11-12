@@ -6,9 +6,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Running tests...\" && exit 0",
+    "test": "cd production && npm test",
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "cd production && npm run start:all",
     "lint": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint --config config/eslint.config.js health-check.js quick-health-check.js",
     "type-check": "turbo run type-check",
     "test:turbo": "turbo run test",
@@ -123,10 +123,9 @@
   },
   "packageManager": "npm@10.0.0",
   "workspaces": [
+    "production",
     "apps/*",
-    "services/*",
-    "packages/*",
-    "!services/azora-mint"
+    "packages/*"
   ],
   "repository": {
     "type": "git",
