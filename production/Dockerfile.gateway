@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production && \
+    npm install http-proxy-middleware
+
+COPY shared ./shared
+COPY api-gateway ./api-gateway
+
+EXPOSE 4000
+
+CMD ["node", "api-gateway/index.js"]

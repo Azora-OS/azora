@@ -13,7 +13,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-services": "workspace:*"
+    "@azora/shared-services": "file:../shared-services"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

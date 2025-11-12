@@ -13,8 +13,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-database": "workspace:*",
-    "@azora/shared-auth": "workspace:*",
+    "@azora/shared-database": "file:../shared-database",
+    "@azora/shared-auth": "file:../shared-auth",
     "openai": "^4.24.7"
   },
   "devDependencies": {

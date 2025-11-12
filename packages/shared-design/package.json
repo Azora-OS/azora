@@ -14,8 +14,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-database": "workspace:*",
-    "@azora/shared-auth": "workspace:*",
+    "@azora/shared-database": "file:../shared-database",
+    "@azora/shared-auth": "file:../shared-auth",
     "react": "^18.2.0"
   },
   "devDependencies": {
