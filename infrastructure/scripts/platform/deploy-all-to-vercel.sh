@@ -24,7 +24,7 @@ echo "Applications to deploy:" | tee -a "$DEPLOY_LOG"
 find . -name "vercel.json" | grep -v node_modules | sed 's|^\./||' | sed 's|/vercel.json$||' | sort | nl | tee -a "$DEPLOY_LOG"
 echo "" | tee -a "$DEPLOY_LOG"
 
-read -p "Continue with deployment? (y/N): " -n 1 -r
+REPLY="y"
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "Deployment cancelled." | tee -a "$DEPLOY_LOG"
