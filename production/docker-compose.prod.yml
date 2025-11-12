@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: azora-postgres
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-azora_secure_password_change_me}
+      POSTGRES_DB: azora_production
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - azora-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: azora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - azora-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.auth
+    container_name: azora-auth
+    ports:
+      - "4001:4001"
+    environment:
+      - NODE_ENV=production
+      - AUTH_PORT=4001
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azora_secure_password_change_me}@postgres:5432/azora_production
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - azora-network
+
+  education-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.education
+    container_name: azora-education
+    ports:
+      - "4002:4002"
+    environment:
+      - NODE_ENV=production
+      - EDUCATION_PORT=4002
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azora_secure_password_change_me}@postgres:5432/azora_production
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - azora-network
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.payment
+    container_name: azora-payment
+    ports:
+      - "4003:4003"
+    environment:
+      - NODE_ENV=production
+      - PAYMENT_PORT=4003
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azora_secure_password_change_me}@postgres:5432/azora_production
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - azora-network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    container_name: azora-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - GATEWAY_PORT=4000
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - EDUCATION_SERVICE_URL=http://education-service:4002
+      - PAYMENT_SERVICE_URL=http://payment-service:4003
+    depends_on:
+      - auth-service
+      - education-service
+      - payment-service
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - azora-network
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  azora-network:
+    driver: bridge

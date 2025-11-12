@@ -15,7 +15,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-services": "workspace:*"
+    "@azora/shared-services": "file:../shared-services"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
