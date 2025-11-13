@@ -32,3 +32,42 @@ model AuditLog {
   createdAt DateTime @default(now())
   userId    String?
 }
+
+model SecurityScan {
+  id              String   @id @default(cuid())
+  target          String
+  vulnerabilities Json
+  threatLevel     String
+  threatScore     Int
+  compliant       Boolean
+  recommendations Json
+  createdAt       DateTime @default(now())
+}
+
+model ThreatAlert {
+  id          String   @id @default(cuid())
+  userId      String
+  severity    String
+  description String
+  anomalies   Json
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  resolvedAt  DateTime?
+}
+
+model PenetrationTest {
+  id        String   @id @default(cuid())
+  endpoint  String
+  results   Json
+  passed    Boolean
+  createdAt DateTime @default(now())
+}
+
+model ConstitutionalCheck {
+  id         String   @id @default(cuid())
+  action     String
+  context    Json
+  compliant  Boolean
+  violations Json
+  createdAt  DateTime @default(now())
+}

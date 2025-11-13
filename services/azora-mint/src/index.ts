@@ -28,6 +28,7 @@ import stakingRoutes from './routes/staking.js';
 import defiRoutes from './routes/defi.js';
 import liquidityRoutes from './routes/liquidity.js';
 import paymentRoutes from './routes/payment.js';
+import agentRoutes from './routes/agent.js';
 import { processKnowledgeReward } from './controllers/rewardController.js';
 
 // Import services
@@ -143,6 +144,7 @@ app.use('/api/v1/staking', authenticateToken, stakingRoutes);
 app.use('/api/v1/defi', authenticateToken, defiRoutes);
 app.use('/api/v1/liquidity', authenticateToken, liquidityRoutes);
 app.use('/api/v1/payment', authenticateToken, paymentRoutes);
+app.use('/api/v1/agent', agentRoutes);
 
 // Proof-of-Knowledge Protocol Endpoints
 app.post('/api/v2/knowledge-reward', processKnowledgeReward);
