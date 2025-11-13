@@ -1,48 +1,41 @@
 const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 4018;
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
+require('dotenv').config();
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+const SERVICE_NAME = process.env.SERVICE_NAME || 'service';
+
+app.use(helmet());
+app.use(cors());
+app.use(compression());
 app.use(express.json());
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'healthy', 
-    service: 'health-monitor',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0'
-  });
-});
-
-// System health endpoints
-app.get('/api/system/health', (req, res) => {
-  res.json({
-    system: 'healthy',
-    services: {
-      'api-gateway': 'healthy',
-      'auth-service': 'healthy',
-      'azora-mint': 'healthy',
-      'azora-oracle': 'healthy'
-    },
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
+    service: SERVICE_NAME,
     timestamp: new Date().toISOString()
   });
 });
 
-app.get('/api/metrics', (req, res) => {
-  res.json({
-    activeServices: 15,
-    totalRequests: 1250,
-    averageResponseTime: '85ms',
-    errorRate: '0.2%',
-    timestamp: new Date().toISOString()
+app.get('/api/status', (req, res) => {
+  res.json({ 
+    service: SERVICE_NAME,
+    version: '1.0.0',
+    status: 'operational'
   });
+});
+
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: err.message });
 });
 
 app.listen(PORT, () => {
-  console.log(`🏥 Health Monitor service running on port ${PORT}`);
-  console.log(`📊 System Health: http://localhost:${PORT}/api/system/health`);
-  console.log(`📈 Metrics: http://localhost:${PORT}/api/metrics`);
-  console.log(`🏥 Health: http://localhost:${PORT}/health`);
+  console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
 });
+
+module.exports = app;

@@ -1,144 +1,49 @@
-#!/usr/bin/env node
-
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
-const app = express();
+const compression = require('compression');
 
+const app = express();
+app.use(helmet());
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 
-class AnalyticsService {
-  constructor() {
-    this.metrics = new Map();
-    this.events = [];
-    this.dashboards = new Map();
-    this.initMetrics();
-  }
-
-  initMetrics() {
-    this.metrics.set('users.active', { value: 1250, trend: '+12%' });
-    this.metrics.set('courses.completed', { value: 450, trend: '+8%' });
-    this.metrics.set('tokens.earned', { value: 125000, trend: '+25%' });
-    this.metrics.set('jobs.matched', { value: 380, trend: '+15%' });
-  }
-
-  trackEvent(eventType, data) {
-    const event = {
-      id: `event_${Date.now()}`,
-      type: eventType,
-      data,
-      timestamp: new Date(),
-      userId: data.userId || 'anonymous'
-    };
-    this.events.push(event);
-    this.updateMetrics(eventType, data);
-    return event;
-  }
-
-  updateMetrics(eventType, data) {
-    switch (eventType) {
-      case 'user.login':
-        this.incrementMetric('users.active');
-        break;
-      case 'course.completed':
-        this.incrementMetric('courses.completed');
-        break;
-      case 'token.earned':
-        this.incrementMetric('tokens.earned', data.amount || 1);
-        break;
-      case 'job.matched':
-        this.incrementMetric('jobs.matched');
-        break;
-    }
-  }
-
-  incrementMetric(key, amount = 1) {
-    const metric = this.metrics.get(key);
-    if (metric) {
-      metric.value += amount;
-      metric.lastUpdated = new Date();
-    }
-  }
-
-  generateDashboard(type = 'overview') {
-    const dashboard = {
-      id: `dashboard_${Date.now()}`,
-      type,
-      generatedAt: new Date(),
-      metrics: Array.from(this.metrics.entries()).map(([key, value]) => ({
-        key,
-        ...value
-      })),
-      recentEvents: this.events.slice(-10)
-    };
-    this.dashboards.set(dashboard.id, dashboard);
-    return dashboard;
-  }
-
-  getInsights() {
-    return {
-      totalUsers: this.metrics.get('users.active')?.value || 0,
-      growthRate: '+18%',
-      topCourses: ['JavaScript Fundamentals', 'Python Basics', 'Blockchain 101'],
-      userEngagement: 94.5,
-      revenueGrowth: '+25%'
-    };
-  }
-}
-
-const analytics = new AnalyticsService();
+const events = [];
+const metrics = new Map();
 
 app.post('/api/track', (req, res) => {
-  try {
-    const { eventType, data } = req.body;
-    const event = analytics.trackEvent(eventType, data);
-    res.json({ success: true, data: event });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
+  const event = { ...req.body, timestamp: Date.now() };
+  events.push(event);
+  if (events.length > 10000) events.shift();
+  res.json({ tracked: true });
 });
 
-app.get('/api/metrics', (req, res) => {
-  const metrics = Array.from(analytics.metrics.entries()).map(([key, value]) => ({
-    key,
-    ...value
-  }));
-  res.json({ success: true, data: metrics });
+app.get('/api/metrics/:key', (req, res) => {
+  const data = metrics.get(req.params.key) || { count: 0, sum: 0, avg: 0 };
+  res.json(data);
 });
 
-app.get('/api/dashboard/:type?', (req, res) => {
-  try {
-    const dashboard = analytics.generateDashboard(req.params.type);
-    res.json({ success: true, data: dashboard });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
-app.get('/api/insights', (req, res) => {
-  const insights = analytics.getInsights();
-  res.json({ success: true, data: insights });
+app.post('/api/metrics/:key', (req, res) => {
+  const { value } = req.body;
+  const current = metrics.get(req.params.key) || { count: 0, sum: 0, avg: 0 };
+  current.count++;
+  current.sum += value;
+  current.avg = current.sum / current.count;
+  metrics.set(req.params.key, current);
+  res.json(current);
 });
 
 app.get('/api/events', (req, res) => {
-  const limit = parseInt(req.query.limit) || 50;
-  const events = analytics.events.slice(-limit);
-  res.json({ success: true, data: events });
+  const { type, limit = 100 } = req.query;
+  let filtered = type ? events.filter(e => e.type === type) : events;
+  res.json({ events: filtered.slice(-limit) });
 });
 
 app.get('/health', (req, res) => {
-  res.json({
-    service: 'Analytics Service',
-    status: 'healthy',
-    timestamp: new Date(),
-    stats: { metrics: analytics.metrics.size, events: analytics.events.length },
-    version: '1.0.0'
-  });
+  res.json({ status: 'healthy', service: 'analytics-service', events: events.length, metrics: metrics.size });
 });
 
-const PORT = process.env.PORT || 4017;
-app.listen(PORT, () => {
-  console.log(`📊 Analytics Service running on port ${PORT}`);
-});
-
+const PORT = process.env.PORT || 3050;
+app.listen(PORT, () => console.log(`Analytics Service on ${PORT}`));
 module.exports = app;

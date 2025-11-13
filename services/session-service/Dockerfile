@@ -1,20 +1,7 @@
-# Build stage
-FROM golang:1.21-alpine AS builder
-
+FROM node:20-alpine
 WORKDIR /app
-
-COPY go.mod go.sum ./
-RUN go mod download
-
+COPY package*.json ./
+RUN npm ci --only=production
 COPY . .
-RUN go build -o session-service .
-
-# Runtime stage
-FROM alpine:latest
-
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-
-COPY --from=builder /app/session-service .
-
-CMD ["./session-service"]
+EXPOSE 3304
+CMD ["npm", "start"]

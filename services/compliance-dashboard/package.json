@@ -1,28 +1,17 @@
 {
-  "name": "azora-compliance-dashboard",
+  "name": "compliance-dashboard",
   "version": "1.0.0",
-  "description": "Enterprise compliance monitoring and reporting dashboard API",
+  "description": "Compliance tracking, reporting",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "node ../../tests/integration/compliance-dashboard-test.js"
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "cors": "^2.8.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "keywords": [
-    "compliance",
-    "gdpr",
-    "hipaa",
-    "enterprise",
-    "monitoring",
-    "dashboard"
-  ],
-  "author": "Azora ES",
-  "license": "PROPRIETARY"
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
+  }
 }

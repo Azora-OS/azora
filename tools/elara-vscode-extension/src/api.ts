@@ -11,7 +11,7 @@ export class ElaraAPI {
     async getFamilyMembers() {
         try {
             const response = await fetch(`${this.baseUrl}/api/family`);
-            const data = await response.json();
+            const data: any = await response.json();
             return Object.values(data.family || {}).map((m: any) => ({
                 id: m.id,
                 name: m.name,
@@ -29,7 +29,7 @@ export class ElaraAPI {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message, userId: 'vscode-user' })
             });
-            const data = await response.json();
+            const data: any = await response.json();
             return data.data || data;
         } catch (error: any) {
             throw new Error(`Failed to chat with ${memberId}: ${error.message}`);

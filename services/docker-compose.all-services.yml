@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports: ["4000:4000"]
+    environment:
+      - PORT=4000
+    restart: unless-stopped
+    networks: [azora-network]
+
+  # Auth Service
+  auth-service:
+    build: ./auth-service
+    ports: ["3001:3001"]
+    environment:
+      - PORT=3001
+    restart: unless-stopped
+    networks: [azora-network]
+
+  # Education Services (3100-3114)
+  azora-education:
+    build: ./azora-education
+    ports: ["3100:3100"]
+    environment: { PORT: 3100, SERVICE_NAME: azora-education }
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-lms:
+    build: ./azora-lms
+    ports: ["3101:3101"]
+    environment: { PORT: 3101, SERVICE_NAME: azora-lms }
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-sapiens:
+    build: ./azora-sapiens
+    ports: ["3102:3102"]
+    environment: { PORT: 3102, SERVICE_NAME: azora-sapiens }
+    restart: unless-stopped
+    networks: [azora-network]
+
+  # Marketplace Services (3200-3207)
+  azora-forge:
+    build: ./azora-forge
+    ports: ["3200:3200"]
+    environment: { PORT: 3200, SERVICE_NAME: azora-forge }
+    restart: unless-stopped
+    networks: [azora-network]
+
+  # Infrastructure Services (3300-3313)
+  azora-nexus:
+    build: ./azora-nexus
+    ports: ["3300:3300"]
+    environment: { PORT: 3300, SERVICE_NAME: azora-nexus }
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-aegis:
+    build: ./azora-aegis
+    ports: ["3301:3301"]
+    environment: { PORT: 3301, SERVICE_NAME: azora-aegis }
+    restart: unless-stopped
+    networks: [azora-network]
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-network

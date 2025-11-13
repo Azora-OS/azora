@@ -1,6 +1,6 @@
 # @azora/api-client
 
-Unified API client for Azora OS backend services.
+Unified TypeScript API client for all Azora OS services.
 
 ## Installation
 
@@ -10,86 +10,115 @@ npm install @azora/api-client
 
 ## Usage
 
-### Basic Client
-
 ```typescript
-import { AzoraApiClient } from '@azora/api-client';
+import { createApiClient } from '@azora/api-client';
 
-const client = new AzoraApiClient({
-  baseUrl: 'http://localhost:4000',
+const client = createApiClient({
+  baseUrl: 'https://api.azora.world',
   timeout: 30000
 });
 
-// Set auth token
+// Set authentication token
 client.setAuthToken('your-jwt-token');
 
-// Use services
+// Use the client
+const students = await client.education.getStudents();
 const courses = await client.lms.getCourses();
-const wallet = await client.mint.getWallet('user-id');
 ```
 
-### React Hooks
+## API Reference
+
+### Authentication
+- `auth.login(email, password)` - User login
+- `auth.register(data)` - User registration
+- `auth.profile()` - Get user profile
+
+### Education
+- `education.getStudents()` - Get all students
+- `education.createStudent(data)` - Create new student
+- `education.getCurriculum(params)` - Get curriculum
+
+### LMS
+- `lms.getCourses(params)` - Get courses
+- `lms.getCourse(id)` - Get course by ID
+- `lms.enroll(courseId, studentId)` - Enroll student
+- `lms.getEnrollments(studentId)` - Get enrollments
+
+### Sapiens (AI Tutoring)
+- `sapiens.startTutoring(studentId, subject)` - Start tutoring session
+- `sapiens.sendMessage(sessionId, message)` - Send message
+- `sapiens.getLearningPaths()` - Get learning paths
+
+### Assessment
+- `assessment.createAssessment(data)` - Create assessment
+- `assessment.submitAssessment(id, studentId, answers)` - Submit answers
+- `assessment.getGradebook(studentId)` - Get gradebook
+
+### Billing
+- `billing.getPlans()` - Get subscription plans
+- `billing.createSubscription(data)` - Create subscription
+- `billing.getSubscription(userId)` - Get subscription
+- `billing.cancelSubscription(userId)` - Cancel subscription
+
+### Lending
+- `lending.applyForLoan(data)` - Apply for loan
+- `lending.getLoans(userId)` - Get user loans
+- `lending.repayLoan(loanId, amount)` - Repay loan
+
+### Exchange
+- `exchange.getRates(base)` - Get exchange rates
+- `exchange.convert(amount, from, to)` - Convert currency
+
+### Virtual Cards
+- `virtualCard.issueCard(data)` - Issue virtual card
+- `virtualCard.getCard(cardId)` - Get card details
+- `virtualCard.freezeCard(cardId)` - Freeze card
+- `virtualCard.processTransaction(cardId, data)` - Process transaction
+
+### KYC/AML
+- `kyc.verifyKYC(data)` - Verify KYC
+- `kyc.getKYCStatus(userId)` - Get KYC status
+- `kyc.checkAML(data)` - Check AML
+
+### Security
+- `security.scanThreat(data)` - Scan for threats
+- `security.validateSession(data)` - Validate session
+- `security.encryptData(data, key)` - Encrypt data
+
+### Student Earnings
+- `earnings.getEarnings(studentId)` - Get earnings
+- `earnings.getMilestones(studentId)` - Get milestones
+- `earnings.requestWithdrawal(studentId, amount, method)` - Request withdrawal
+- `earnings.getWithdrawals(studentId)` - Get withdrawals
+
+## Configuration
 
 ```typescript
-import { useAuth, useCourses, useTutoring } from '@azora/api-client/hooks';
+const client = createApiClient({
+  baseUrl: 'https://api.azora.world',  // API base URL
+  timeout: 30000,                       // Request timeout in ms
+  headers: {                            // Custom headers
+    'X-Custom-Header': 'value'
+  }
+});
+```
 
-function MyComponent() {
-  const { user, login, logout } = useAuth();
-  const { courses, loading } = useCourses({ level: 'beginner' });
-  const { session, messages, startSession, sendMessage } = useTutoring();
+## Error Handling
 
-  return (
-    <div>
-      {courses.map(course => (
-        <div key={course.id}>{course.title}</div>
-      ))}
-    </div>
-  );
+```typescript
+try {
+  const result = await client.education.getStudents();
+} catch (error) {
+  console.error('API Error:', error);
 }
 ```
 
-## Available Services
-
-### Auth
-- `auth.login(email, password)`
-- `auth.register(data)`
-- `auth.profile()`
-
-### Education
-- `education.getStudents()`
-- `education.createStudent(data)`
-- `education.getCurriculum(params)`
-
-### LMS
-- `lms.getCourses(params)`
-- `lms.getCourse(id)`
-- `lms.enroll(courseId, studentId)`
-- `lms.getEnrollments(studentId)`
-
-### Sapiens (AI Tutor)
-- `sapiens.startTutoring(studentId, subject)`
-- `sapiens.sendMessage(sessionId, message)`
-- `sapiens.getLearningPaths()`
-
-### Assessment
-- `assessment.createAssessment(data)`
-- `assessment.submitAssessment(id, studentId, answers)`
-- `assessment.getGradebook(studentId)`
-
-### Payment
-- `payment.getBalance(userId)`
-- `payment.createPayment(data)`
-
-### Mint
-- `mint.getWallet(userId)`
-- `mint.startMining(userId)`
-
-### Marketplace
-- `marketplace.getJobs(params)`
-- `marketplace.applyToJob(jobId, userId)`
-
-## Environment Variables
+## Testing
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:4000
+npm test
 ```
+
+---
+
+**"Ngiyakwazi ngoba sikwazi" - "I can because we can"**

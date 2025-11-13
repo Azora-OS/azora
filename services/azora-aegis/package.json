@@ -1,38 +1,17 @@
 {
   "name": "azora-aegis",
   "version": "1.0.0",
-  "description": "Aegis Citadel - Global Genesis Mandate Implementation",
-  "main": "citadel.js",
+  "description": "Security framework, threat detection, compliance",
+  "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "premium": "ts-node src/index.ts",
-    "citadel": "node citadel.js",
-    "guardian": "node guardian.js",
-    "test": "jest",
-    "prisma:migrate": "prisma migrate dev --name init",
-    "prisma:generate": "prisma generate"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
-    "@azora/branding": "file:../../packages/branding",
-    "@azora/design-system": "file:../../packages/@azora/design-system",
-    "@azora/telemetry": "file:../../packages/@azora/telemetry",
-    "@langchain/core": "^1.0.2",
-    "@langchain/openai": "^1.0.0",
-    "@prisma/client": "^5.0.0",
-    "bullmq": "^5.61.2",
-    "cors": "^2.8.5",
-    "ethers": "^6.15.0",
     "express": "^4.18.2",
-    "pg": "^8.16.3",
-    "redis": "^5.9.0",
-    "ws": "^8.18.3"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.5",
-    "prisma": "^5.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.0"
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
   }
 }

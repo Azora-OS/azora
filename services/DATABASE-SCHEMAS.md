@@ -14,10 +14,11 @@ All Azora OS services now have proper Prisma database schemas with:
 - ✅ Data integrity constraints
 
 **Statistics:**
-- 📦 Total Services with Schemas: **13**
-- 🗄️ Total Database Models: **54**
+- 📦 Total Services with Schemas: **18**
+- 🗄️ Total Database Models: **60**
 - 💰 Financial Services: 9 services, 27 models
 - 🎓 Education Services: 4 services, 27 models
+- 🔧 Infrastructure Services: 5 services, 6 models
 
 ## 🗄️ Service Schemas
 
@@ -418,6 +419,113 @@ Gradebook {
 - Auto-grading system
 - Multiple attempt tracking
 - Comprehensive gradebook
+
+---
+
+### 14. Cache Service (Port 3070)
+
+**Models:** CacheEntry
+
+```prisma
+CacheEntry {
+  - Key-value storage
+  - TTL expiration
+  - Timestamp tracking
+}
+```
+
+**Key Features:**
+- Distributed caching
+- TTL-based expiration
+- High-performance lookups
+
+---
+
+### 15. Notification Service (Port 3037)
+
+**Models:** Notification
+
+```prisma
+Notification {
+  - User notifications
+  - Read/unread status
+  - Type categorization
+}
+```
+
+**Key Features:**
+- Multi-channel notifications
+- Read status tracking
+- User-scoped queries
+
+---
+
+### 16. Analytics Service
+
+**Models:** Event, Metric
+
+```prisma
+Event {
+  - User events
+  - Event properties
+  - Timestamp tracking
+}
+
+Metric {
+  - System metrics
+  - Value tracking
+  - Tag-based filtering
+}
+```
+
+**Key Features:**
+- Event tracking
+- Metrics aggregation
+- Time-series data
+
+---
+
+### 17. API Gateway (Port 4000)
+
+**Models:** ApiLog, RateLimit
+
+```prisma
+ApiLog {
+  - Request logging
+  - Performance tracking
+  - User attribution
+}
+
+RateLimit {
+  - Rate limiting
+  - Reset tracking
+  - Key-based limits
+}
+```
+
+**Key Features:**
+- Request logging
+- Rate limiting
+- Performance monitoring
+
+---
+
+### 18. Email Service (Port 3030)
+
+**Models:** Email
+
+```prisma
+Email {
+  - Email queue
+  - Delivery status
+  - Timestamp tracking
+}
+```
+
+**Key Features:**
+- Email queue management
+- Delivery tracking
+- Status monitoring
 
 ---
 
