@@ -1,70 +1,62 @@
-/*
-AZORA PROPRIETARY LICENSE
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-See LICENSE file for details.
-*/
-
-import express from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
 import cors from 'cors';
+import compression from 'compression';
+import dotenv from 'dotenv';
+
 import qualificationRoutes from './routes/qualificationRoutes';
 import tutoringRoutes from './routes/tutoringRoutes';
 
-const app: express.Application = express();
-const PORT = process.env.PORT || 4011;
+dotenv.config();
+
+const app: Express = express();
+const PORT: number = parseInt(process.env.PORT || '3000', 10);
+const SERVICE_NAME: string = process.env.SERVICE_NAME || 'service';
 
 // Middleware
-app.use(express.json());
+app.use(helmet());
 app.use(cors());
+app.use(compression());
+app.use(express.json());
 
-// Routes
-app.use('/api/qualifications', qualificationRoutes);
-app.use('/api/tutoring', tutoringRoutes);
+// Request logging
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
 
 // Health check
-app.get('/health', (_req, res) => {
-  res.json({
-    success: true,
-    status: 'healthy',
-    service: 'azora-sapiens',
+app.get('/health', (req: Request, res: Response) => {
+  res.json({ 
+    status: 'healthy', 
+    service: SERVICE_NAME,
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
 });
 
-// Root endpoint
-app.get('/', (_req, res) => {
-  res.json({
-    service: 'Azora Sapiens - Universal Education Platform',
-    version: '1.0.0',
-    description: 'Global qualifications database and education management system',
-    endpoints: {
-      health: '/health',
-      qualifications: '/api/qualifications',
-      tutoring: '/api/tutoring',
-      sessions: '/api/tutoring/sessions',
-      learningPaths: '/api/tutoring/learning-paths',
-      assessments: '/api/tutoring/assessments'
-    },
-    features: [
-      'AI-powered tutoring with Elara',
-      'Personalized learning paths',
-      'Real-time Q&A assistance',
-      'Adaptive assessments',
-      'Progress tracking',
-      'Subject-specific guidance',
-      'Global qualifications database',
-      'Blockchain-based verification',
-      'AZR token rewards for achievements'
-    ]
+// API routes
+app.use('/api/qualifications', qualificationRoutes);
+app.use('/api/tutoring', tutoringRoutes);
+
+// Error handling
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('Error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: err.message 
   });
 });
 
+// 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`\n🎓 Azora Sapiens - Universal Education Platform`);
-  console.log(`📡 Server running on port ${PORT}`);
-  console.log(`🌍 Global Qualifications Database: http://localhost:${PORT}/api/qualifications`);
-  console.log(`🔍 Search Qualifications: http://localhost:${PORT}/api/qualifications/search`);
-  console.log(`✅ Verify Credentials: http://localhost:${PORT}/api/qualifications/verify\n`);
+  console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
+  console.log(`🌍 Health check: http://localhost:${PORT}/health`);
 });
 
 export default app;

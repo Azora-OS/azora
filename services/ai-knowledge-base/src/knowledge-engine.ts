@@ -1,4 +1,4 @@
-import { ChromaClient } from 'chromadb';
+import { ChromaClient, Collection } from 'chromadb';
 import { OpenAI } from 'openai';
 import { WebSearchService } from './web-search';
 import { logger } from './logger';
@@ -7,7 +7,7 @@ export class KnowledgeBaseEngine {
   private chroma: ChromaClient;
   private openai: OpenAI;
   private webSearch: WebSearchService;
-  private collection: any;
+  private collection: Collection | undefined;
 
   constructor() {
     this.chroma = new ChromaClient();
@@ -31,13 +31,15 @@ export class KnowledgeBaseEngine {
   }
 
   private async seedUbuntuKnowledge() {
+    if (!this.collection) return;
+
     const ubuntuPrinciples = [
       {
         content: 'Ubuntu Philosophy: I am because we are. Individual sovereignty multiplies into collective prosperity.',
         metadata: { type: 'philosophy', source: 'constitution' }
       },
       {
-        content: 'Azora OS is the world\'s first Constitutional AI Operating System built on Ubuntu principles.',
+        content: "Azora OS is the world's first Constitutional AI Operating System built on Ubuntu principles.",
         metadata: { type: 'identity', source: 'core' }
       },
       {
@@ -60,6 +62,9 @@ export class KnowledgeBaseEngine {
   }
 
   async addKnowledge(content: string, metadata: any = {}) {
+    if (!this.collection) {
+      throw new Error('Knowledge base collection is not initialized.');
+    }
     try {
       const embedding = await this.generateEmbedding(content);
       await this.collection.add({
@@ -76,6 +81,9 @@ export class KnowledgeBaseEngine {
   }
 
   async query(query: string, includeWeb: boolean = false) {
+    if (!this.collection) {
+      throw new Error('Knowledge base collection is not initialized.');
+    }
     try {
       const embedding = await this.generateEmbedding(query);
       const results = await this.collection.query({
@@ -88,8 +96,10 @@ export class KnowledgeBaseEngine {
         webResults = await this.webSearch.search(query);
       }
 
+      const localKnowledge = (results.documents && results.documents.length > 0) ? results.documents[0] : [];
+
       return {
-        localKnowledge: results.documents[0] || [],
+        localKnowledge,
         webKnowledge: webResults,
         ubuntu: 'Collective wisdom accessed'
       };
@@ -108,6 +118,11 @@ export class KnowledgeBaseEngine {
       model: 'text-embedding-3-small',
       input: text
     });
-    return response.data[0].embedding;
+    
+    if (response.data && response.data.length > 0) {
+        return response.data[0].embedding;
+    }
+    
+    throw new Error('Failed to generate embedding from OpenAI.');
   }
 }
