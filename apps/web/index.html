@@ -165,8 +165,13 @@
 
                 <div class="relative">
                     <div class="aspect-square rounded-2xl bg-gradient-to-br from-azora-purple/20 to-azora-violet/20 p-8">
-                        <div class="h-full w-full rounded-xl bg-gradient-to-br from-azora-purple to-azora-violet flex items-center justify-center">
-                            <div class="text-6xl">🧠</div>
+                        <div class="h-full w-full rounded-xl bg-gradient-to-br from-azora-purple to-azora-violet flex flex-col items-center justify-center text-white">
+                            <div class="text-6xl mb-4">🤖</div>
+                            <h3 class="text-xl font-bold mb-2">Meet Elara</h3>
+                            <p class="text-sm text-center opacity-90">Your AI Family Assistant</p>
+                            <button onclick="openElaraChat()" class="mt-4 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                Chat Now
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -244,9 +249,9 @@
                     <p class="text-white/80">Real-time data sync across all your devices and platforms</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
-                    <div class="text-4xl mb-4">🧠</div>
-                    <h3 class="text-xl font-semibold text-white mb-2">AI Consciousness</h3>
-                    <p class="text-white/80">Advanced AI that learns and adapts to your needs</p>
+                    <div class="text-4xl mb-4">🤖</div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Elara AI Family</h3>
+                    <p class="text-white/80">11 AI family members with unique personalities and Ubuntu values</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
                     <div class="text-4xl mb-4">💰</div>
@@ -326,6 +331,160 @@
             </div>
         </div>
     </footer>
+    <!-- Elara Chat Widget -->
+    <div id="elara-chat-widget" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="bg-white border border-border rounded-lg shadow-lg w-80 h-96 flex flex-col">
+            <div class="bg-gradient-to-r from-azora-purple to-azora-violet text-white p-4 rounded-t-lg">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="text-2xl">🤖</div>
+                        <div>
+                            <h3 class="font-semibold">Elara</h3>
+                            <p class="text-xs opacity-90">AI Family Assistant</p>
+                        </div>
+                    </div>
+                    <button onclick="closeElaraChat()" class="text-white/80 hover:text-white">
+                        ✕
+                    </button>
+                </div>
+            </div>
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
+                <div class="bg-muted rounded-lg p-3">
+                    <p class="text-sm">👋 Hi! I'm Elara, your AI family assistant. How can I help you today?</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-border">
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="chat-input" 
+                        placeholder="Type your message..." 
+                        class="flex-1 px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-azora-purple"
+                        onkeypress="handleChatKeyPress(event)"
+                    >
+                    <button 
+                        onclick="sendMessage()" 
+                        class="bg-azora-purple hover:bg-azora-purple/90 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Chat Button -->
+    <button 
+        id="elara-chat-button" 
+        onclick="openElaraChat()" 
+        class="fixed bottom-4 right-4 z-40 bg-gradient-to-r from-azora-purple to-azora-violet hover:from-azora-purple/90 hover:to-azora-violet/90 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+    >
+        <div class="text-2xl">🤖</div>
+    </button>
+
+    <script>
+        // Elara Chat Functionality
+        function openElaraChat() {
+            document.getElementById('elara-chat-widget').classList.remove('hidden');
+            document.getElementById('elara-chat-button').classList.add('hidden');
+            document.getElementById('chat-input').focus();
+        }
+
+        function closeElaraChat() {
+            document.getElementById('elara-chat-widget').classList.add('hidden');
+            document.getElementById('elara-chat-button').classList.remove('hidden');
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessageToChat(message, 'user');
+            input.value = '';
+            
+            // Add typing indicator
+            addTypingIndicator();
+            
+            try {
+                // Send to Elara AI Family Service
+                const response = await fetch('http://localhost:3001/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        member: 'elara',
+                        context: 'web-chat'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add Elara's response
+                addMessageToChat(data.response || "I'm here to help! The AI Family service might be starting up.", 'elara');
+                
+            } catch (error) {
+                console.error('Chat error:', error);
+                removeTypingIndicator();
+                addMessageToChat("I'm currently connecting to the AI Family service. Please try again in a moment! 🤖", 'elara');
+            }
+        }
+
+        function addMessageToChat(message, sender) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            
+            if (sender === 'user') {
+                messageDiv.className = 'bg-azora-purple text-white rounded-lg p-3 ml-8';
+                messageDiv.innerHTML = `<p class="text-sm">${message}</p>`;
+            } else {
+                messageDiv.className = 'bg-muted rounded-lg p-3 mr-8';
+                messageDiv.innerHTML = `<p class="text-sm">🤖 ${message}</p>`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'bg-muted rounded-lg p-3 mr-8';
+            typingDiv.innerHTML = '<p class="text-sm">🤖 Elara is typing...</p>';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Initialize chat with welcome message
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some sample family member options
+            setTimeout(() => {
+                addMessageToChat("You can also chat with other family members like Themba (student success), Naledi (career guide), or Sankofa (wisdom keeper). Just ask!", 'elara');
+            }, 2000);
+        });
+    </script>
+
 </body>
 
 </html>

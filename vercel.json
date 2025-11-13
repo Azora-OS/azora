@@ -2,8 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next"
+      "src": "apps/web/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -13,12 +13,27 @@
     }
   ],
   "env": {
-    "AZORA_VERSION": "1.0.0",
-    "NODE_ENV": "production"
+    "AZORA_VERSION": "3.0.0",
+    "NODE_ENV": "production",
+    "ELARA_FAMILY_API": "https://azora-os-api.vercel.app"
   },
-  "functions": {
-    "apps/web/app/**": {
-      "maxDuration": 30
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
     }
-  }
+  ]
 }

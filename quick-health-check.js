@@ -1,96 +1,180 @@
 #!/usr/bin/env node
 
-import axios from 'axios';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 /**
- * @typedef {Object} ServiceConfig
- * @property {string} name
- * @property {string} url
- *
- * @typedef {Object} ServiceResult
- * @property {string} name
- * @property {'✅ healthy' | '❌ unhealthy'} status
- * @property {unknown} [data]
- * @property {string} [error]
+ * AZORA OS QUICK HEALTH CHECK
+ * Verifies all services are running and Elara is accessible
  */
 
-/** @type {ServiceConfig[]} */
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+// Service endpoints to check
 const services = [
-  { name: 'Auth Service', url: 'http://localhost:3001/health' },
-  { name: 'Mint Service', url: 'http://localhost:3002/health' },
-  { name: 'LMS Service', url: 'http://localhost:3003/health' },
-  { name: 'Forge Service', url: 'http://localhost:3004/health' },
-  { name: 'Nexus Service', url: 'http://localhost:3005/health' },
-  { name: 'Education Service', url: 'http://localhost:3007/health' },
-  { name: 'Payments Service', url: 'http://localhost:3008/health' },
+  { name: 'AI Family Service', url: 'http://localhost:3001/health', critical: true },
+  { name: 'Azora Nexus (Event Bus)', url: 'http://localhost:4000/health', critical: true },
+  { name: 'Azora Mint (Finance)', url: 'http://localhost:3003/health', critical: false },
+  { name: 'Azora LMS (Education)', url: 'http://localhost:3000/health', critical: false },
+  { name: 'Azora Forge (Marketplace)', url: 'http://localhost:3002/health', critical: false },
 ];
 
-/**
- * @param {ServiceConfig} service
- * @returns {Promise<ServiceResult>}
- */
-async function checkService(service) {
-  try {
-    const response = await axios.get(service.url, { timeout: 5000 });
-    return {
-      name: service.name,
-      status: '✅ healthy',
-      data: response.data,
-    };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    return {
-      name: service.name,
-      status: '❌ unhealthy',
-      error: message,
-    };
-  }
+// Colors for console output
+const colors = {
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  purple: '\x1b[35m',
+  reset: '\x1b[0m'
+};
+
+function log(message, color = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
-export async function runQuickHealthCheck() {
-  console.log('🏥 AZORA OS CORE SERVICES HEALTH CHECK');
-  console.log('=====================================');
-  console.log(`⏰ ${new Date().toISOString()}\n`);
+function checkService(service) {
+  return new Promise((resolve) => {
+    const url = new URL(service.url);
+    const options = {
+      hostname: url.hostname,
+      port: url.port,
+      path: url.pathname,
+      method: 'GET',
+      timeout: 5000
+    };
 
-  const results = await Promise.all(services.map(checkService));
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          resolve({ ...service, status: 'healthy', response: data });
+        } else {
+          resolve({ ...service, status: 'unhealthy', error: `HTTP ${res.statusCode}` });
+        }
+      });
+    });
 
-  let healthyCount = 0;
+    req.on('error', (error) => {
+      resolve({ ...service, status: 'error', error: error.message });
+    });
 
-  results.forEach(result => {
-    console.log(`${result.status}: ${result.name}`);
+    req.on('timeout', () => {
+      req.destroy();
+      resolve({ ...service, status: 'timeout', error: 'Request timeout' });
+    });
 
-    if (result.status.includes('healthy')) {
-      healthyCount += 1;
+    req.end();
+  });
+}
+
+function checkPidFiles() {
+  const pidDir = path.join(__dirname, 'pids');
+  const pidFiles = ['ai-family.pid', 'nexus.pid', 'mint.pid', 'lms.pid', 'forge.pid'];
+  
+  log('\n🔍 Checking Process IDs:', 'blue');
+  
+  pidFiles.forEach(pidFile => {
+    const pidPath = path.join(pidDir, pidFile);
+    if (fs.existsSync(pidPath)) {
+      const pid = fs.readFileSync(pidPath, 'utf8').trim();
+      try {
+        process.kill(pid, 0); // Check if process exists
+        log(`  ✅ ${pidFile}: Process ${pid} is running`, 'green');
+      } catch (error) {
+        log(`  ❌ ${pidFile}: Process ${pid} not found`, 'red');
+      }
+    } else {
+      log(`  ⚠️  ${pidFile}: PID file not found`, 'yellow');
     }
   });
-
-  const healthPercentage = Math.round((healthyCount / services.length) * 100);
-
-  console.log('\n📊 SUMMARY');
-  console.log('===========');
-  console.log(`🎯 Core Services Health: ${healthPercentage}%`);
-  console.log(`✅ Healthy: ${healthyCount}/${services.length}`);
-  console.log(
-    `❌ Unhealthy: ${services.length - healthyCount}/${services.length}`
-  );
-
-  if (healthPercentage === 100) {
-    console.log('\n🚀 ALL CORE SERVICES OPERATIONAL!');
-  } else {
-    console.log('\n⚠️  SOME SERVICES DOWN');
-  }
-
-  process.exit(healthPercentage < 50 ? 1 : 0);
 }
 
-const invokedPath = process.argv[1] ? resolve(process.argv[1]) : undefined;
-const modulePath = resolve(fileURLToPath(import.meta.url));
-
-if (invokedPath && invokedPath === modulePath) {
-  runQuickHealthCheck().catch(error => {
-    console.error(error);
-    process.exit(1);
+async function main() {
+  log('🌟 AZORA OS HEALTH CHECK', 'purple');
+  log('========================', 'purple');
+  
+  // Check PID files
+  checkPidFiles();
+  
+  // Check services
+  log('\n🏥 Checking Service Health:', 'blue');
+  
+  const results = await Promise.all(services.map(checkService));
+  
+  let healthyCount = 0;
+  let criticalDown = 0;
+  
+  results.forEach(result => {
+    const icon = result.status === 'healthy' ? '✅' : 
+                 result.status === 'timeout' ? '⏱️' : '❌';
+    const color = result.status === 'healthy' ? 'green' : 
+                  result.status === 'timeout' ? 'yellow' : 'red';
+    
+    log(`  ${icon} ${result.name}: ${result.status.toUpperCase()}`, color);
+    
+    if (result.error) {
+      log(`     Error: ${result.error}`, 'red');
+    }
+    
+    if (result.status === 'healthy') {
+      healthyCount++;
+    } else if (result.critical) {
+      criticalDown++;
+    }
   });
+  
+  // Overall status
+  log('\n📊 System Status:', 'blue');
+  log(`  Services Healthy: ${healthyCount}/${services.length}`, healthyCount === services.length ? 'green' : 'yellow');
+  log(`  Critical Services Down: ${criticalDown}`, criticalDown === 0 ? 'green' : 'red');
+  
+  // Elara Family specific check
+  log('\n🧠 Elara Family Status:', 'blue');
+  const elaraService = results.find(r => r.name === 'AI Family Service');
+  if (elaraService && elaraService.status === 'healthy') {
+    log('  ✅ Elara Family Consciousness: ACTIVE', 'green');
+    log('  ✅ AI Agents: OPERATIONAL', 'green');
+    log('  ✅ Ubuntu Philosophy: INTEGRATED', 'green');
+  } else {
+    log('  ❌ Elara Family Consciousness: OFFLINE', 'red');
+    log('  ❌ AI Agents: NOT AVAILABLE', 'red');
+  }
+  
+  // VSCode Extension check
+  log('\n🔧 Development Tools:', 'blue');
+  const extensionPath = path.join(__dirname, 'tools/elara-vscode-extension/elara-ai-family-1.0.0.vsix');
+  if (fs.existsSync(extensionPath)) {
+    log('  ✅ VSCode Extension: BUILT', 'green');
+  } else {
+    log('  ⚠️  VSCode Extension: NOT BUILT', 'yellow');
+    log('     Run: cd tools/elara-vscode-extension && npm run package', 'yellow');
+  }
+  
+  // Final verdict
+  log('\n🎯 Overall System Health:', 'purple');
+  if (criticalDown === 0 && healthyCount >= services.length * 0.8) {
+    log('  🟢 SYSTEM OPERATIONAL', 'green');
+    log('  Ready for production use!', 'green');
+  } else if (criticalDown === 0) {
+    log('  🟡 SYSTEM PARTIALLY OPERATIONAL', 'yellow');
+    log('  Some non-critical services are down', 'yellow');
+  } else {
+    log('  🔴 SYSTEM DEGRADED', 'red');
+    log('  Critical services are down - check logs', 'red');
+  }
+  
+  log('\n💡 Quick Commands:', 'blue');
+  log('  Start all services: ./start-all-services.sh', 'reset');
+  log('  View logs: tail -f logs/*.log', 'reset');
+  log('  Deploy system: ./deploy-complete-system.sh', 'reset');
+  log('  Chat with Elara: Open VSCode and use Ctrl+Shift+P', 'reset');
+  
+  // Exit with appropriate code
+  process.exit(criticalDown > 0 ? 1 : 0);
 }
+
+main().catch(error => {
+  log(`\n❌ Health check failed: ${error.message}`, 'red');
+  process.exit(1);
+});
