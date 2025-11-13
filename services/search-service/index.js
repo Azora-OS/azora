@@ -3,58 +3,38 @@ const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
 
-class SearchService {
-  constructor() {
-    this.app = express();
-    this.port = process.env.PORT || 3068;
-    this.data = new Map();
-    this.setupMiddleware();
-    this.setupRoutes();
-  }
+const app = express();
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
 
-  setupMiddleware() {
-    this.app.use(helmet());
-    this.app.use(cors());
-    this.app.use(compression());
-    this.app.use(express.json());
-  }
+const index = new Map();
 
-  setupRoutes() {
-    this.app.get('/health', (req, res) => {
-      res.json({ status: 'healthy', service: 'search-service', timestamp: new Date().toISOString(), items: this.data.size });
-    });
+app.post('/api/index', (req, res) => {
+  const { id, type, content } = req.body;
+  index.set(id, { id, type, content: content.toLowerCase(), timestamp: Date.now() });
+  res.json({ indexed: true, id });
+});
 
-    this.app.post('/api/search', this.predict.bind(this));
-    this.app.post('/api/search', this.train.bind(this));
-    this.app.post('/api/search', this.evaluate.bind(this));
-  }
+app.get('/api/search', (req, res) => {
+  const { q, type, limit = 20 } = req.query;
+  const query = q.toLowerCase();
+  const results = Array.from(index.values())
+    .filter(doc => (!type || doc.type === type) && doc.content.includes(query))
+    .slice(0, limit);
+  res.json({ results, count: results.length });
+});
 
-  predict(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
+app.delete('/api/index/:id', (req, res) => {
+  const deleted = index.delete(req.params.id);
+  res.json({ deleted });
+});
 
-  train(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'search-service', documents: index.size });
+});
 
-  evaluate(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
-
-  start() {
-    this.app.listen(this.port, () => console.log(`search-service running on port ${this.port}`));
-  }
-}
-
-const service = new SearchService();
-if (require.main === module) service.start();
-module.exports = service;
+const PORT = process.env.PORT || 3051;
+app.listen(PORT, () => console.log(`Search Service on ${PORT}`));
+module.exports = app;

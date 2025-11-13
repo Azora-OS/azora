@@ -2,70 +2,40 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
+require('dotenv').config();
 
-class AuditLoggingService {
-  constructor() {
-    this.app = express();
-    this.port = process.env.PORT || 3045;
-    this.data = new Map();
-    this.setupMiddleware();
-    this.setupRoutes();
-  }
+const app = express();
+const PORT = process.env.PORT || 3000;
+const SERVICE_NAME = process.env.SERVICE_NAME || 'service';
 
-  setupMiddleware() {
-    this.app.use(helmet());
-    this.app.use(cors());
-    this.app.use(compression());
-    this.app.use(express.json());
-  }
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
 
-  setupRoutes() {
-    this.app.get('/health', (req, res) => {
-      res.json({ status: 'healthy', service: 'audit-logging-service', timestamp: new Date().toISOString() });
-    });
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    service: SERVICE_NAME,
+    timestamp: new Date().toISOString()
+  });
+});
 
-    this.app.get('/api/audit-logging', this.getAll.bind(this));
-    this.app.post('/api/audit-logging', this.create.bind(this));
-    this.app.get('/api/audit-logging/:id', this.getById.bind(this));
-    this.app.put('/api/audit-logging/:id', this.update.bind(this));
-    this.app.delete('/api/audit-logging/:id', this.delete.bind(this));
-  }
+app.get('/api/status', (req, res) => {
+  res.json({ 
+    service: SERVICE_NAME,
+    version: '1.0.0',
+    status: 'operational'
+  });
+});
 
-  getAll(req, res) {
-    res.json({ data: Array.from(this.data.values()) });
-  }
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: err.message });
+});
 
-  create(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
+app.listen(PORT, () => {
+  console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
+});
 
-  getById(req, res) {
-    const item = this.data.get(req.params.id);
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    res.json(item);
-  }
-
-  update(req, res) {
-    const item = this.data.get(req.params.id);
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    Object.assign(item, req.body, { updatedAt: new Date() });
-    res.json(item);
-  }
-
-  delete(req, res) {
-    if (!this.data.has(req.params.id)) return res.status(404).json({ error: 'Not found' });
-    this.data.delete(req.params.id);
-    res.json({ message: 'Deleted successfully' });
-  }
-
-  start() {
-    this.app.listen(this.port, () => console.log(`Audit Logging Service running on port ${this.port}`));
-  }
-}
-
-const service = new AuditLoggingService();
-if (require.main === module) service.start();
-module.exports = service;
+module.exports = app;
