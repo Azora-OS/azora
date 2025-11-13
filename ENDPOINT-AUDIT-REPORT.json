@@ -1,0 +1,502 @@
+{
+  "timestamp": "2025-11-13T16:06:57.071Z",
+  "totalServices": 190,
+  "problematicServices": 20,
+  "details": [
+    {
+      "service": "ai-ethics-monitor",
+      "files": {
+        "index.js": [
+          {
+            "line": 424,
+            "content": "disparateImpact: 1.0, // Placeholder - would calculate actual ratios",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 425,
+            "content": "statisticalParity: 0.0 // Placeholder - would calculate actual differences",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 488,
+            "content": "counterfactualScore: 0.85, // Placeholder",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 489,
+            "content": "causalEffect: {}, // Placeholder",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 491,
+            "content": "partialDependence: {}, // Placeholder",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 821,
+            "content": "fairnessCompliance: 0.85, // Placeholder",
+            "pattern": "/placeholder/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "ai-model-service",
+      "files": {
+        "index.js": [
+          {
+            "line": 310,
+            "content": "// For now, return mock compliance scores",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-community",
+      "files": {
+        "src/index.ts": [
+          {
+            "line": 104,
+            "content": "mentorship: '🚧 Coming soon',",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 105,
+            "content": "alumniNetwork: '🚧 Coming soon',",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 106,
+            "content": "forums: '🚧 Coming soon',",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 107,
+            "content": "events: '🚧 Coming soon'",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 136,
+            "content": "console.log('║   👨‍🏫 Mentorship: Coming soon              ║');",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 137,
+            "content": "console.log('║   🎓 Alumni Network: Coming soon          ║');",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 138,
+            "content": "console.log('║   💬 Forums: Coming soon                  ║');",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 139,
+            "content": "console.log('║   📅 Events: Coming soon                  ║');",
+            "pattern": "/coming soon/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-covenant",
+      "files": {
+        "src/index.js": [
+          {
+            "line": 81,
+            "content": "// TODO: Verify webhook signature!",
+            "pattern": "/TODO/i"
+          },
+          {
+            "line": 107,
+            "content": "// For now, we can mock it from an .env variable",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-education",
+      "files": {
+        "index.ts": [
+          {
+            "line": 141,
+            "content": "totalStudents: 100, // Placeholder - implement proper counters",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 143,
+            "content": "activeAgents: 15 // Placeholder - implement proper counters",
+            "pattern": "/placeholder/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-forge",
+      "files": {
+        "index.js": [
+          {
+            "line": 38,
+            "content": "if (!user?.skills) return [];",
+            "pattern": "/return \\[\\]/"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-innovation-hub",
+      "files": {
+        "src/index.ts": [
+          {
+            "line": 94,
+            "content": "ventureFunding: '🚧 Coming soon',",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 95,
+            "content": "ipManagement: '🚧 Coming soon',",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 96,
+            "content": "cofounderMatching: '🚧 Coming soon'",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 108,
+            "content": "funding: '/api/funding/* (coming soon)',",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 109,
+            "content": "ip: '/api/ip/* (coming soon)'",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 123,
+            "content": "console.log('║   💼 Funding: Coming soon                 ║');",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 124,
+            "content": "console.log('║   📜 IP Management: Coming soon           ║');",
+            "pattern": "/coming soon/i"
+          },
+          {
+            "line": 125,
+            "content": "console.log('║   🤝 Co-founder Matching: Coming soon     ║');",
+            "pattern": "/coming soon/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-mint",
+      "files": {
+        "src/index.ts": [
+          {
+            "line": 47,
+            "content": "const MINT_MOCK_MODE = (process.env.MINT_MOCK_MODE ?? 'true').toLowerCase() !== 'false';",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 48,
+            "content": "const ENABLE_BACKGROUND_JOBS = (process.env.MINT_ENABLE_BACKGROUND_JOBS ?? (MINT_MOCK_MODE ? 'false' : 'true')).toLowerCase() === 'true';",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 169,
+            "content": "if (!MINT_MOCK_MODE) {",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 181,
+            "content": "dbHealth = true; // Mock mode",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 187,
+            "content": "const mongoHealth = MINT_MOCK_MODE ? true : (mongoose.connection.readyState === 1);",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 261,
+            "content": "score: Math.floor(Math.random() * 1000) + 1, // Mock score",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 320,
+            "content": "if (!MINT_MOCK_MODE) {",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 364,
+            "content": "logger.info(`Mock mode: ${MINT_MOCK_MODE}`);",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-nexus",
+      "files": {
+        "src/index.ts": [
+          {
+            "line": 35,
+            "content": "const createMockAgent = (): AzoraNexusAgentContract => {",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 38,
+            "content": "status: 'mock-mode'",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 49,
+            "content": "logger.warn('Initialized mock Azora Nexus agent (agent tools unavailable)');",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 61,
+            "content": "mode: 'mock',",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 71,
+            "content": "mode: 'mock'",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 75,
+            "content": "logger.warn('Mock Azora Nexus agent started (no external tools)');",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 80,
+            "content": "let azoraNexusAgent: AzoraNexusAgentContract = createMockAgent();",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 91,
+            "content": "logger.warn('Loaded @genome/agent-tools but azoraNexusAgent export was missing. Using mock agent.');",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 93,
+            "content": "logger.warn('Failed to load @genome/agent-tools - falling back to mock agent', {",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 98,
+            "content": "return createMockAgent();",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-pay-service",
+      "files": {
+        "index.js": [
+          {
+            "line": 328,
+            "content": "return res.status(400).json({ error: 'Payment method not implemented' });",
+            "pattern": "/not implemented/i"
+          },
+          {
+            "line": 560,
+            "content": "// For now, return mock success",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 700,
+            "content": "return '1000.00'; // Mock balance",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "azora-scriptorium",
+      "files": {
+        "index.js": [
+          {
+            "line": 48,
+            "content": "// Simplified audit: Check if repo is public (placeholder)",
+            "pattern": "/placeholder/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "constitutional-court-service",
+      "files": {
+        "src/index.ts": [
+          {
+            "line": 55,
+            "content": "if (/mock|stub|TODO|FIXME|placeholder/i.test(code)) {",
+            "pattern": "/TODO/i"
+          },
+          {
+            "line": 55,
+            "content": "if (/mock|stub|TODO|FIXME|placeholder/i.test(code)) {",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 55,
+            "content": "if (/mock|stub|TODO|FIXME|placeholder/i.test(code)) {",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 56,
+            "content": "violations.push('Article XVI violation: Mock/placeholder code detected');",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 56,
+            "content": "violations.push('Article XVI violation: Mock/placeholder code detected');",
+            "pattern": "/placeholder/i"
+          },
+          {
+            "line": 88,
+            "content": "if (action.includes('mock') || action.includes('stub')) return false;",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "exchange-rate-service",
+      "files": {
+        "index.js": [
+          {
+            "line": 137,
+            "content": "// Generate mock historical data",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "institutional-service",
+      "files": {
+        "index.ts": [
+          {
+            "line": 6,
+            "content": "Removes all mocks and implements real student/institutional management",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 33,
+            "content": "constitutionalCompliance: 'Article XVI: No Mock Protocol - ENFORCED',",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 167,
+            "content": "const passwordHash = password; // TODO: Hash password",
+            "pattern": "/TODO/i"
+          },
+          {
+            "line": 448,
+            "content": "console.log('Constitutional Compliance: Article XVI - NO MOCK PROTOCOL');",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "lms-service",
+      "files": {
+        "index.ts": [
+          {
+            "line": 6,
+            "content": "Removes all mocks and implements real business logic",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 33,
+            "content": "constitutionalCompliance: 'Article XVI: No Mock Protocol - ENFORCED',",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 404,
+            "content": "console.log('Constitutional Compliance: Article XVI - NO MOCK PROTOCOL');",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "nexus-service",
+      "files": {
+        "index.js": [
+          {
+            "line": 340,
+            "content": "// For now, just return a mock result",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "payments-service",
+      "files": {
+        "index.js": [
+          {
+            "line": 618,
+            "content": "// Mock plan data - in production, this would come from your database",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "personalization-engine",
+      "files": {
+        "index.js": [
+          {
+            "line": 512,
+            "content": "return [];",
+            "pattern": "/return \\[\\]/"
+          }
+        ]
+      }
+    },
+    {
+      "service": "quantum-ai-orchestrator",
+      "files": {
+        "index.js": [
+          {
+            "line": 1,
+            "content": "// quantum-ai-orchestrator service placeholder",
+            "pattern": "/placeholder/i"
+          }
+        ]
+      }
+    },
+    {
+      "service": "retail-ai-service",
+      "files": {
+        "src/index.ts": [
+          {
+            "line": 6,
+            "content": "Replaces all mocks with real database queries and business logic",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 34,
+            "content": "constitutionalCompliance: 'Article XVI: No Mock Protocol - ENFORCED',",
+            "pattern": "/MOCK/i"
+          },
+          {
+            "line": 542,
+            "content": "console.log('Constitutional Compliance: Article XVI - NO MOCK PROTOCOL');",
+            "pattern": "/MOCK/i"
+          }
+        ]
+      }
+    }
+  ]
+}
