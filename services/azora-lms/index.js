@@ -1,126 +1,62 @@
-#!/usr/bin/env node
-
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
-const app = express();
+const compression = require('compression');
+require('dotenv').config();
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+const SERVICE_NAME = process.env.SERVICE_NAME || 'service';
+
+// Middleware
+app.use(helmet());
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 
-class AzoraLMS {
-  constructor() {
-    this.courses = new Map();
-    this.enrollments = new Map();
-    this.certificates = new Map();
-    this.initSampleData();
-  }
-
-  initSampleData() {
-    this.courses.set('js-101', {
-      id: 'js-101',
-      title: 'JavaScript Fundamentals',
-      description: 'Learn JavaScript from scratch with Ubuntu principles',
-      instructor: 'Elara AI',
-      duration: '8 weeks',
-      modules: 12,
-      enrolled: 245,
-      rating: 4.8
-    });
-  }
-
-  createCourse(courseData) {
-    const course = {
-      id: `course_${Date.now()}`,
-      ...courseData,
-      createdAt: new Date(),
-      enrolled: 0,
-      rating: 0
-    };
-    this.courses.set(course.id, course);
-    return course;
-  }
-
-  enrollStudent(courseId, studentId) {
-    const enrollment = {
-      id: `enrollment_${Date.now()}`,
-      courseId,
-      studentId,
-      enrolledAt: new Date(),
-      progress: 0,
-      status: 'active'
-    };
-    this.enrollments.set(enrollment.id, enrollment);
-    
-    const course = this.courses.get(courseId);
-    if (course) {
-      course.enrolled += 1;
-    }
-    
-    return enrollment;
-  }
-
-  generateCertificate(courseId, studentId) {
-    const certificate = {
-      id: `cert_${Date.now()}`,
-      courseId,
-      studentId,
-      issuedAt: new Date(),
-      blockchainHash: `0x${Math.random().toString(16).substr(2, 40)}`,
-      verified: true
-    };
-    this.certificates.set(certificate.id, certificate);
-    return certificate;
-  }
-}
-
-const lms = new AzoraLMS();
-
-app.get('/api/courses', (req, res) => {
-  res.json({ success: true, data: Array.from(lms.courses.values()) });
+// Request logging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
 });
 
-app.post('/api/courses', (req, res) => {
-  try {
-    const course = lms.createCourse(req.body);
-    res.json({ success: true, data: course });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/enroll', (req, res) => {
-  try {
-    const { courseId, studentId } = req.body;
-    const enrollment = lms.enrollStudent(courseId, studentId);
-    res.json({ success: true, data: enrollment });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/certificates', (req, res) => {
-  try {
-    const { courseId, studentId } = req.body;
-    const certificate = lms.generateCertificate(courseId, studentId);
-    res.json({ success: true, data: certificate });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
+// Health check
 app.get('/health', (req, res) => {
-  res.json({
-    service: 'Azora LMS',
-    status: 'healthy',
-    timestamp: new Date(),
-    stats: { courses: lms.courses.size, enrollments: lms.enrollments.size },
-    version: '1.0.0'
+  res.json({ 
+    status: 'healthy', 
+    service: SERVICE_NAME,
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
   });
 });
 
-const PORT = process.env.PORT || 4015;
+// API routes
+app.get('/api/status', (req, res) => {
+  res.json({ 
+    service: SERVICE_NAME,
+    version: '1.0.0',
+    status: 'operational'
+  });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: err.message 
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`🎓 Azora LMS running on port ${PORT}`);
+  console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
+  console.log(`🌍 Health check: http://localhost:${PORT}/health`);
 });
 
 module.exports = app;

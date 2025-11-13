@@ -1,41 +1,22 @@
 {
   "name": "tamper-proof-data-service",
-  "version": "3.0.0",
-  "description": "Azora Tamper-Proof Data Service - Cryptographic Data Integrity & Blockchain Anchoring",
+  "version": "1.0.0",
+  "description": "Tamper Proof Data Service",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest",
-    "health": "curl http://localhost:3004/health"
+    "test": "jest"
   },
-  "keywords": [
-    "azora",
-    "tamper-proof",
-    "cryptography",
-    "blockchain",
-    "merkle-tree",
-    "zero-knowledge-proofs",
-    "genetic-metadata",
-    "constitutional",
-    "data-integrity"
-  ],
-  "author": "Azora ES (Pty) Ltd",
-  "license": "PROPRIETARY",
   "dependencies": {
     "express": "^4.18.2",
-    "web3": "^4.2.0",
-    "merkletreejs": "^0.3.11",
-    "crypto": "^1.0.1",
-    "uuid": "^9.0.1",
-    "cors": "^2.8.5"
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
   }
 }

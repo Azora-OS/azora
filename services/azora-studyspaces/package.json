@@ -1,33 +1,25 @@
 {
-  "name": "@azora/studyspaces",
+  "name": "azora-studyspaces",
   "version": "1.0.0",
-  "description": "Virtual study rooms with collaborative learning and AI integration",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Virtual study rooms, collaborative spaces",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "start": "node dist/index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest"
   },
-  "keywords": ["studyspaces", "collaboration", "virtual-rooms", "ai-tutor", "peer-learning"],
+  "keywords": ["azora", "education", "ubuntu", "constitutional-ai"],
   "author": "Azora ES (Pty) Ltd",
-  "license": "PROPRIETARY",
+  "license": "Proprietary",
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.6.0",
-    "uuid": "^9.0.1",
-    "axios": "^1.6.0",
+    "helmet": "^7.1.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "simple-peer": "^9.11.1"
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.10.0",
-    "@types/cors": "^2.8.17",
-    "typescript": "^5.3.3",
-    "ts-node-dev": "^2.0.0",
+    "nodemon": "^3.0.2",
     "jest": "^29.7.0"
   }
 }

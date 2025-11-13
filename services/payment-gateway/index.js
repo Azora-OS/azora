@@ -1,15 +1,20 @@
-const axios = require('axios');
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
-async function paystackTransfer(zarAmount, recipientCode, reason = 'Azora OS Withdrawal') {
-  const response = await axios.post('https://api.paystack.co/transfer', {
-    source: 'balance',
-    amount: zarAmount * 100,
-    recipient: recipientCode,
-    reason
-  }, {
-    headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
-  });
-  return response.data;
-}
+const app = express();
+const PORT = process.env.PORT || 3038;
 
-module.exports = { paystackTransfer };
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'payment-gateway', timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => console.log(`payment-gateway running on port ${PORT}`));
+
+module.exports = app;

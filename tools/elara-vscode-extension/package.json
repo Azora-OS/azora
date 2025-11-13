@@ -1,277 +1,104 @@
 {
-  "name": "elara-vscode-extension",
-  "displayName": "Elara - AI Development Companion",
-  "description": "Elara is your friendly AI development companion that integrates seamlessly into VS Code, providing intelligent code assistance, chat support, and development guidance.",
+  "name": "elara-ai-family",
+  "displayName": "Elara AI Family",
+  "description": "AI-powered coding assistant with Ubuntu philosophy - Meet Elara and her family",
   "version": "1.0.0",
+  "publisher": "azora",
+  "icon": "media/elara-icon.png",
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.80.0"
   },
-  "categories": [
-    "AI",
-    "Programming Languages",
-    "Snippets",
-    "Other"
-  ],
-  "keywords": [
-    "ai",
-    "assistant",
-    "companion",
-    "chat",
-    "code-completion",
-    "intellisense",
-    "elara",
-    "azora",
-    "development",
-    "coding-assistant"
-  ],
-  "publisher": "Azora-ES",
-  "author": {
-    "name": "Azora ES (Pty) Ltd",
-    "email": "contact@azora.es"
-  },
-  "license": "SEE LICENSE IN LICENSE",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Azora-ES/Azora-OS"
-  },
-  "homepage": "https://github.com/Azora-ES/Azora-OS/tree/main/elara-vscode-extension",
-  "bugs": {
-    "url": "https://github.com/Azora-ES/Azora-OS/issues"
-  },
+  "categories": ["AI", "Education", "Programming Languages"],
+  "activationEvents": ["onStartupFinished"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "elara.helloWorld",
-        "title": "Elara: Hello World",
-        "category": "Elara"
+        "command": "elara.openChat",
+        "title": "Chat with Elara",
+        "icon": "$(comment-discussion)"
       },
       {
-        "command": "elara.askQuestion",
-        "title": "Elara: Ask Question",
-        "category": "Elara"
-      },
-      {
-        "command": "elara.completeCode",
-        "title": "Elara: Complete Code",
-        "category": "Elara"
+        "command": "elara.selectFamily",
+        "title": "Choose AI Family Member",
+        "icon": "$(organization)"
       },
       {
         "command": "elara.explainCode",
-        "title": "Elara: Explain Code",
-        "category": "Elara"
+        "title": "Elara: Explain This Code"
+      },
+      {
+        "command": "elara.fixCode",
+        "title": "Elara: Fix This Code"
       },
       {
         "command": "elara.optimizeCode",
-        "title": "Elara: Optimize Code",
-        "category": "Elara"
-      },
-      {
-        "command": "elara.refactorCode",
-        "title": "Elara: Refactor Code",
-        "category": "Elara"
-      },
-      {
-        "command": "elara.generateTests",
-        "title": "Elara: Generate Tests",
-        "category": "Elara"
-      },
-      {
-        "command": "elara.debugCode",
-        "title": "Elara: Debug Code",
-        "category": "Elara"
-      },
-      {
-        "command": "elara.reviewCode",
-        "title": "Elara: Review Code",
-        "category": "Elara"
-      },
-      {
-        "command": "elara.showStatus",
-        "title": "Elara: Show Status",
-        "category": "Elara"
+        "title": "Elara: Optimize This Code"
       }
     ],
-    "menus": {
-      "commandPalette": [
-        {
-          "command": "elara.helloWorld",
-          "when": "workspaceFolderCount != 0"
-        },
-        {
-          "command": "elara.askQuestion",
-          "when": "workspaceFolderCount != 0"
-        },
-        {
-          "command": "elara.completeCode",
-          "when": "editorTextFocus && !editorReadonly"
-        },
-        {
-          "command": "elara.explainCode",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "elara.optimizeCode",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "elara.refactorCode",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "elara.generateTests",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "elara.debugCode",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "elara.reviewCode",
-          "when": "editorTextFocus"
-        },
-        {
-          "command": "elara.showStatus",
-          "when": "workspaceFolderCount != 0"
-        }
-      ],
-      "editor/context": [
-        {
-          "command": "elara.explainCode",
-          "when": "editorHasSelection",
-          "group": "7_modification@1"
-        },
-        {
-          "command": "elara.optimizeCode",
-          "when": "editorHasSelection",
-          "group": "7_modification@2"
-        },
-        {
-          "command": "elara.refactorCode",
-          "when": "editorHasSelection",
-          "group": "7_modification@3"
-        },
-        {
-          "command": "elara.generateTests",
-          "when": "editorHasSelection",
-          "group": "7_modification@4"
-        },
-        {
-          "command": "elara.debugCode",
-          "when": "editorHasSelection",
-          "group": "7_modification@5"
-        }
-      ]
-    },
-    "configuration": {
-      "title": "Elara",
-      "properties": {
-        "elara.serverUrl": {
-          "type": "string",
-          "default": "http://localhost:4000",
-          "description": "URL of the Elara server"
-        },
-        "elara.apiKey": {
-          "type": "string",
-          "default": "",
-          "description": "API key for Elara server authentication"
-        },
-        "elara.enableAutoComplete": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable automatic code completion"
-        },
-        "elara.enableInlineSuggestions": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable inline code suggestions"
-        },
-        "elara.enableRealTimeCollaboration": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable real-time collaboration features"
-        },
-        "elara.maxTokens": {
-          "type": "number",
-          "default": 100,
-          "minimum": 10,
-          "maximum": 1000,
-          "description": "Maximum tokens for code completion"
-        },
-        "elara.timeout": {
-          "type": "number",
-          "default": 5000,
-          "minimum": 1000,
-          "maximum": 30000,
-          "description": "Request timeout in milliseconds"
-        }
-      }
-    },
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "elara-sidebar",
-          "title": "Elara",
-          "icon": "$(comment-discussion)"
+          "id": "elara-family",
+          "title": "Elara AI Family",
+          "icon": "media/elara-icon.svg"
         }
       ]
     },
     "views": {
-      "elara-sidebar": [
+      "elara-family": [
         {
           "type": "webview",
           "id": "elara.chatView",
           "name": "Chat"
+        },
+        {
+          "id": "elara.familyTree",
+          "name": "Family Members"
         }
       ]
     },
-    "viewsWelcome": [
-      {
-        "view": "elaraChat",
-        "contents": "Welcome to Elara!\n\nElara is your AI development companion, ready to chat and help with coding tasks.\n\n[Get Started](command:elara.helloWorld)\n\nStart chatting below or use commands from the palette."
+    "menus": {
+      "editor/context": [
+        {
+          "command": "elara.explainCode",
+          "group": "elara@1",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "elara.fixCode",
+          "group": "elara@2",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Elara AI Family",
+      "properties": {
+        "elara.apiUrl": {
+          "type": "string",
+          "default": "http://localhost:4010",
+          "description": "Elara AI Family API URL"
+        },
+        "elara.defaultMember": {
+          "type": "string",
+          "default": "elara",
+          "enum": ["elara", "themba", "naledi", "jabari", "amara", "sankofa", "kofi", "zola", "abeni", "thembo", "nexus"],
+          "description": "Default AI family member to chat with"
+        }
       }
-    ]
+    }
   },
-  "activationEvents": [
-    "onStartupFinished",
-    "onCommand:elara.helloWorld",
-    "onCommand:elara.askQuestion",
-    "onCommand:elara.completeCode",
-    "onCommand:elara.explainCode",
-    "onCommand:elara.optimizeCode",
-    "onCommand:elara.refactorCode",
-    "onCommand:elara.generateTests",
-    "onCommand:elara.debugCode",
-    "onCommand:elara.reviewCode",
-    "onCommand:elara.showStatus",
-    "onView:elaraChat"
-  ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "dependencies": {
-    "axios": "^1.6.0"
+    "package": "vsce package"
   },
   "devDependencies": {
-    "@types/vscode": "^1.74.0",
-    "@types/node": "18.x",
-    "@types/mocha": "^10.0.1",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
-    "eslint": "^8.47.0",
-    "glob": "^10.3.3",
-    "mocha": "^10.2.0",
-    "typescript": "^5.1.6",
-    "@vscode/test-electron": "^2.3.4"
-  },
-  "extensionDependencies": [],
-  "galleryBanner": {
-    "color": "#1e1e1e",
-    "theme": "dark"
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0",
+    "vsce": "^2.15.0"
   }
 }

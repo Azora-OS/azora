@@ -1,30 +1,20 @@
-// email-service service placeholder
-import nodemailer from 'nodemailer';
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
-class EmailService {
-  constructor() {
-    this.transporter = nodemailer.createTransporter({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER, // Add to .env: your_gmail@gmail.com
-        pass: process.env.EMAIL_PASS  // Add to .env: your_gmail_app_password
-      }
-    });
-  }
+const app = express();
+const PORT = process.env.PORT || 3030;
 
-  async sendEmail(to, subject, text) {
-    try {
-      await this.transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to,
-        subject,
-        text
-      });
-      return { success: true };
-    } catch (err) {
-      return { error: err.message };
-    }
-  }
-}
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
 
-export default new EmailService();
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'email-service', timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => console.log(`email-service running on port ${PORT}`));
+
+module.exports = app;

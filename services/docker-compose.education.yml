@@ -1,0 +1,278 @@
+version: '3.8'
+
+services:
+  # Core Education Services
+  azora-education:
+    build: ./azora-education
+    container_name: azora-education
+    ports:
+      - "3100:3100"
+    environment:
+      - PORT=3100
+      - SERVICE_NAME=azora-education
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-lms:
+    build: ./azora-lms
+    container_name: azora-lms
+    ports:
+      - "3101:3101"
+    environment:
+      - PORT=3101
+      - SERVICE_NAME=azora-lms
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3101/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-sapiens:
+    build: ./azora-sapiens
+    container_name: azora-sapiens
+    ports:
+      - "3102:3102"
+    environment:
+      - PORT=3102
+      - SERVICE_NAME=azora-sapiens
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3102/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-assessment:
+    build: ./azora-assessment
+    container_name: azora-assessment
+    ports:
+      - "3103:3103"
+    environment:
+      - PORT=3103
+      - SERVICE_NAME=azora-assessment
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-classroom:
+    build: ./azora-classroom
+    container_name: azora-classroom
+    ports:
+      - "3104:3104"
+    environment:
+      - PORT=3104
+      - SERVICE_NAME=azora-classroom
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3104/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-content:
+    build: ./azora-content
+    container_name: azora-content
+    ports:
+      - "3105:3105"
+    environment:
+      - PORT=3105
+      - SERVICE_NAME=azora-content
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3105/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-library:
+    build: ./azora-library
+    container_name: azora-library
+    ports:
+      - "3106:3106"
+    environment:
+      - PORT=3106
+      - SERVICE_NAME=azora-library
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3106/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-credentials:
+    build: ./azora-credentials
+    container_name: azora-credentials
+    ports:
+      - "3107:3107"
+    environment:
+      - PORT=3107
+      - SERVICE_NAME=azora-credentials
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3107/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-collaboration:
+    build: ./azora-collaboration
+    container_name: azora-collaboration
+    ports:
+      - "3108:3108"
+    environment:
+      - PORT=3108
+      - SERVICE_NAME=azora-collaboration
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3108/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-academic-integrity:
+    build: ./azora-academic-integrity
+    container_name: azora-academic-integrity
+    ports:
+      - "3109:3109"
+    environment:
+      - PORT=3109
+      - SERVICE_NAME=azora-academic-integrity
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3109/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-studyspaces:
+    build: ./azora-studyspaces
+    container_name: azora-studyspaces
+    ports:
+      - "3110:3110"
+    environment:
+      - PORT=3110
+      - SERVICE_NAME=azora-studyspaces
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3110/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-student-life:
+    build: ./azora-student-life
+    container_name: azora-student-life
+    ports:
+      - "3111:3111"
+    environment:
+      - PORT=3111
+      - SERVICE_NAME=azora-student-life
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3111/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-research-center:
+    build: ./azora-research-center
+    container_name: azora-research-center
+    ports:
+      - "3112:3112"
+    environment:
+      - PORT=3112
+      - SERVICE_NAME=azora-research-center
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3112/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-innovation-hub:
+    build: ./azora-innovation-hub
+    container_name: azora-innovation-hub
+    ports:
+      - "3113:3113"
+    environment:
+      - PORT=3113
+      - SERVICE_NAME=azora-innovation-hub
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3113/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  azora-corporate-learning:
+    build: ./azora-corporate-learning
+    container_name: azora-corporate-learning
+    ports:
+      - "3114:3114"
+    environment:
+      - PORT=3114
+      - SERVICE_NAME=azora-corporate-learning
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3114/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-network

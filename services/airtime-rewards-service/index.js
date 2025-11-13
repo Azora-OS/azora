@@ -1,55 +1,20 @@
-import axios from 'axios';
-import AzoraPayService from '../azora-pay-service/index.js';
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
-class AirtimeRewardsService {
-  constructor() {
-    this.apiKey = process.env.AIRTIME_API_KEY; // Add to .env
-    this.apiUrl = 'https://api.airtime.com/purchase'; // Example API for purchasing
-  }
+const app = express();
+const PORT = process.env.PORT || 3023;
 
-  async buyAirtimeWithAZR(userAddress, phoneNumber, zarAmount) {
-    try {
-      // Calculate AZR needed (assume 1 AZR = 10 ZAR)
-      const azrAmount = zarAmount / 10;
+app.use(helmet());
+app.use(cors());
+app.use(compression());
+app.use(express.json());
 
-      // Check balance and burn AZR
-      const balance = await AzoraPayService.getAZRBalance(userAddress);
-      if (balance.balance < azrAmount) return { error: 'Insufficient AZR balance' };
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'airtime-rewards-service', timestamp: new Date().toISOString() });
+});
 
-      const burnResult = await AzoraPayService.burnAZR(userAddress, azrAmount);
-      if (burnResult.error) return burnResult;
+app.listen(PORT, () => console.log(`airtime-rewards-service running on port ${PORT}`));
 
-      // Purchase airtime
-      const response = await axios.post(this.apiUrl, {
-        phone: phoneNumber,
-        amount: zarAmount,
-        currency: 'ZAR'
-      }, {
-        headers: { Authorization: `Bearer ${this.apiKey}` }
-      });
-
-      return { success: true, data: response.data, burnedAZR: azrAmount };
-    } catch (err) {
-      return { error: err.message };
-    }
-  }
-
-  async rewardStudentAirtime(userAddress, zarAmount) {
-    try {
-      // Assume user has a phone number linked; placeholder
-      const phoneNumber = '27XXXXXXXXX'; // Replace with real lookup
-      const response = await axios.post(this.apiUrl, {
-        phone: phoneNumber,
-        amount: zarAmount,
-        currency: 'ZAR'
-      }, {
-        headers: { Authorization: `Bearer ${this.apiKey}` }
-      });
-      return { success: true, data: response.data };
-    } catch (err) {
-      return { error: err.message };
-    }
-  }
-}
-
-export default new AirtimeRewardsService();
+module.exports = app;

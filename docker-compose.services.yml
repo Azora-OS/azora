@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Auth Service
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped
+
+  # Education Services
+  azora-education:
+    build: ./services/azora-education
+    ports:
+      - "4200:4200"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI}
+    restart: unless-stopped
+
+  azora-lms:
+    build: ./services/azora-lms
+    ports:
+      - "4015:4015"
+    restart: unless-stopped
+
+  azora-sapiens:
+    build: ./services/azora-sapiens
+    ports:
+      - "4011:4011"
+    restart: unless-stopped
+
+  azora-assessment:
+    build: ./services/azora-assessment
+    ports:
+      - "4016:4016"
+    restart: unless-stopped
+
+  # Financial Services
+  payment-gateway:
+    build: ./services/payment-gateway
+    ports:
+      - "3038:3038"
+    environment:
+      - STRIPE_KEY=${STRIPE_KEY}
+    restart: unless-stopped
+
+  billing-service:
+    build: ./services/billing-service
+    ports:
+      - "3009:3009"
+    restart: unless-stopped
+
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=azora
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

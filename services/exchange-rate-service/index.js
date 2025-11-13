@@ -1,17 +1,12 @@
-/*
-AZORA PROPRIETARY LICENSE
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-*/
-
-import express from 'express';
-import axios from 'axios';
-import NodeCache from 'node-cache';
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
 class ExchangeRateService {
   constructor() {
     this.app = express();
-    this.port = process.env.EXCHANGE_RATE_PORT || 3008;
-    this.cache = new NodeCache({ stdTTL: 300 }); // 5 min cache
+    this.port = process.env.PORT || 3008;
     this.baseCurrency = 'USD';
     this.rates = new Map();
     this.setupMiddleware();
@@ -20,13 +15,10 @@ class ExchangeRateService {
   }
 
   setupMiddleware() {
+    this.app.use(helmet());
+    this.app.use(cors());
+    this.app.use(compression());
     this.app.use(express.json());
-    this.app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET, POST');
-      res.header('Access-Control-Allow-Headers', 'Content-Type');
-      next();
-    });
   }
 
   setupRoutes() {
@@ -171,8 +163,8 @@ class ExchangeRateService {
 }
 
 const service = new ExchangeRateService();
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   service.start();
 }
 
-export default service;
+module.exports = service;

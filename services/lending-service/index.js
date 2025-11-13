@@ -1,10 +1,8 @@
-/*
-AZORA PROPRIETARY LICENSE
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-*/
-
-import express from 'express';
-import crypto from 'crypto';
+const express = require('express');
+const crypto = require('crypto');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
 class LendingService {
   constructor() {
@@ -24,13 +22,10 @@ class LendingService {
   }
 
   setupMiddleware() {
+    this.app.use(helmet());
+    this.app.use(cors());
+    this.app.use(compression());
     this.app.use(express.json());
-    this.app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-      next();
-    });
   }
 
   setupRoutes() {
@@ -268,8 +263,8 @@ class LendingService {
 }
 
 const service = new LendingService();
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   service.start();
 }
 
-export default service;
+module.exports = service;

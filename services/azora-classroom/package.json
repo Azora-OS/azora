@@ -1,36 +1,25 @@
 {
-  "name": "@azora/classroom",
+  "name": "azora-classroom",
   "version": "1.0.0",
-  "description": "Live lecture and virtual classroom system for Azora Education",
-  "main": "live-lecture-system.js",
-  "types": "live-lecture-system.d.ts",
+  "description": "Live video lectures, screen sharing, whiteboard",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "ts-node-dev --respawn live-lecture-system.ts",
-    "start": "node dist/live-lecture-system.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest"
   },
-  "keywords": [
-    "virtual-classroom",
-    "live-lecture",
-    "video-conferencing",
-    "webrtc",
-    "education",
-    "azora"
-  ],
+  "keywords": ["azora", "education", "ubuntu", "constitutional-ai"],
   "author": "Azora ES (Pty) Ltd",
-  "license": "PROPRIETARY",
+  "license": "Proprietary",
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.6.0",
-    "uuid": "^9.0.1",
-    "simple-peer": "^9.11.1",
-    "jitsi-meet-api": "^0.0.2"
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.10.0",
-    "typescript": "^5.3.3",
-    "ts-node-dev": "^2.0.0"
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
   }
 }
