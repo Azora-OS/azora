@@ -1,89 +1,67 @@
-import { Router } from 'express';
-import { TutoringEngine } from '../engines/TutoringEngine';
-import { LearningPathEngine } from '../engines/LearningPathEngine';
-import { AssessmentEngine } from '../engines/AssessmentEngine';
+import { Router, Request, Response } from 'express';
+import TutorEngine from '../engines/tutor-engine';
+import LearningPathEngine from '../engines/learning-paths';
+import AssessmentEngine from '../engines/assessment-engine';
 
 const router = Router();
-const tutoringEngine = new TutoringEngine();
-const learningPathEngine = new LearningPathEngine();
-const assessmentEngine = new AssessmentEngine();
 
-router.post('/sessions', (req, res) => {
-  const { studentId, subject } = req.body;
-  const session = tutoringEngine.createSession(studentId, subject);
-  res.json({ success: true, session });
+// Tutoring Routes
+router.post('/tutor', async (req: Request, res: Response) => {
+    try {
+        const { studentId, subject, question, context } = req.body;
+        const result = await TutorEngine.tutorSession(studentId, subject, question, context);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Error in tutor session:', error);
+        res.status(500).json({ success: false, error: 'Failed to get tutor response' });
+    }
 });
 
-router.post('/sessions/:sessionId/message', (req, res) => {
-  const { sessionId } = req.params;
-  const { content } = req.body;
-  const message = tutoringEngine.sendMessage(sessionId, content, 'student');
-  const session = tutoringEngine.getSession(sessionId);
-  res.json({ success: true, message, session });
+router.post('/explain', async (req: Request, res: Response) => {
+    try {
+        const { concept, level } = req.body;
+        const explanation = await TutorEngine.explainConcept(concept, level);
+        res.json({ success: true, data: { explanation } });
+    } catch (error) {
+        console.error('Error explaining concept:', error);
+        res.status(500).json({ success: false, error: 'Failed to get explanation' });
+    }
 });
 
-router.get('/sessions/:sessionId', (req, res) => {
-  const session = tutoringEngine.getSession(req.params.sessionId);
-  if (!session) return res.status(404).json({ error: 'Session not found' });
-  res.json({ success: true, session });
+
+// Learning Path Routes
+router.post('/learning-path', (req: Request, res: Response) => {
+    try {
+        const { studentProfile, goal } = req.body;
+        const path = LearningPathEngine.generatePath(studentProfile, goal);
+        res.json({ success: true, data: path });
+    } catch (error) {
+        console.error('Error generating learning path:', error);
+        res.status(500).json({ success: false, error: 'Failed to generate learning path' });
+    }
 });
 
-router.get('/students/:studentId/sessions', (req, res) => {
-  const sessions = tutoringEngine.getStudentSessions(req.params.studentId);
-  res.json({ success: true, sessions });
+// Assessment Routes
+router.post('/assessment', (req: Request, res: Response) => {
+    try {
+        const { subject, level, questionCount } = req.body;
+        const assessment = AssessmentEngine.createAssessment(subject, level, questionCount);
+        res.json({ success: true, data: assessment });
+    } catch (error) {
+        console.error('Error creating assessment:', error);
+        res.status(500).json({ success: false, error: 'Failed to create assessment' });
+    }
 });
 
-router.post('/learning-paths', (req, res) => {
-  const { studentId, subject, difficulty } = req.body;
-  const path = learningPathEngine.createPath(studentId, subject, difficulty);
-  res.json({ success: true, path });
-});
-
-router.post('/learning-paths/:pathId/steps/:stepId/complete', (req, res) => {
-  const { pathId, stepId } = req.params;
-  learningPathEngine.completeStep(pathId, stepId);
-  const path = learningPathEngine.getPath(pathId);
-  res.json({ success: true, path });
-});
-
-router.get('/learning-paths/:pathId', (req, res) => {
-  const path = learningPathEngine.getPath(req.params.pathId);
-  if (!path) return res.status(404).json({ error: 'Path not found' });
-  res.json({ success: true, path });
-});
-
-router.get('/students/:studentId/learning-paths', (req, res) => {
-  const paths = learningPathEngine.getStudentPaths(req.params.studentId);
-  res.json({ success: true, paths });
-});
-
-router.post('/assessments', (req, res) => {
-  const { studentId, subject, difficulty } = req.body;
-  const assessment = assessmentEngine.createAssessment(studentId, subject, difficulty);
-  res.json({ success: true, assessment });
-});
-
-router.post('/assessments/:assessmentId/answers', (req, res) => {
-  const { assessmentId } = req.params;
-  const { questionId, answer } = req.body;
-  assessmentEngine.submitAnswer(assessmentId, questionId, answer);
-  res.json({ success: true });
-});
-
-router.post('/assessments/:assessmentId/complete', (req, res) => {
-  const result = assessmentEngine.completeAssessment(req.params.assessmentId);
-  res.json({ success: true, result });
-});
-
-router.get('/assessments/:assessmentId', (req, res) => {
-  const assessment = assessmentEngine.getAssessment(req.params.assessmentId);
-  if (!assessment) return res.status(404).json({ error: 'Assessment not found' });
-  res.json({ success: true, assessment });
-});
-
-router.get('/students/:studentId/assessments', (req, res) => {
-  const assessments = assessmentEngine.getStudentAssessments(req.params.studentId);
-  res.json({ success: true, assessments });
+router.post('/grade', (req: Request, res: Response) => {
+    try {
+        const { answers, assessment } = req.body;
+        const result = AssessmentEngine.gradeAssessment(answers, assessment);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Error grading assessment:', error);
+        res.status(500).json({ success: false, error: 'Failed to grade assessment' });
+    }
 });
 
 export default router;

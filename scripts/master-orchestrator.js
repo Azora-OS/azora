@@ -1,4 +1,3 @@
-
 #!/usr/bin/env node
 
 /*
@@ -133,7 +132,7 @@ class AzoraOrchestrator {
 
     for (const serviceName of coreOrder) {
       if (this.services.has(serviceName)) {
-        await this.launchService(serviceName, this.services.get(serviceName));
+        await this.launchProcess(serviceName, this.services.get(serviceName));
         await this.delay(2000); // 2 second delay between core services
       }
     }
@@ -141,7 +140,7 @@ class AzoraOrchestrator {
     // Launch remaining services
     for (const [name, service] of this.services) {
       if (!coreOrder.includes(name)) {
-        await this.launchService(name, service);
+        await this.launchProcess(name, service);
         await this.delay(1000); // 1 second delay
       }
     }
@@ -151,24 +150,24 @@ class AzoraOrchestrator {
     console.log('🎨 Launching frontend applications...');
 
     for (const [name, app] of this.frontends) {
-      await this.launchFrontend(name, app);
+      await this.launchProcess(name, app);
       await this.delay(1500); // 1.5 second delay between frontends
     }
   }
 
-  async launchService(name, service) {
-    const servicePath = path.join(rootDir, service.path);
+  async launchProcess(name, config) {
+    const processPath = path.join(rootDir, config.path);
 
-    if (!(await this.pathExists(servicePath))) {
-      console.log(`⚠️  Service ${name} path not found: ${servicePath}`);
+    if (!(await this.pathExists(processPath))) {
+      console.log(`⚠️  Process ${name} path not found: ${processPath}`);
       return;
     }
 
-    console.log(`🔥 Starting ${name} on port ${service.port}...`);
+    console.log(`🔥 Starting ${name} on port ${config.port}...`);
 
-    const [command, ...args] = service.cmd.split(' ');
+    const [command, ...args] = config.cmd.split(' ');
     const process = spawn(command, args, {
-      cwd: servicePath,
+      cwd: processPath,
       stdio: ['ignore', 'pipe', 'pipe'],
       shell: true
     });
@@ -187,41 +186,7 @@ class AzoraOrchestrator {
       }
     });
 
-    this.processes.push({ name, process, port: service.port });
-  }
-
-  async launchFrontend(name, app) {
-    const appPath = path.join(rootDir, app.path);
-
-    if (!(await this.pathExists(appPath))) {
-      console.log(`⚠️  Frontend ${name} path not found: ${appPath}`);
-      return;
-    }
-
-    console.log(`🎨 Starting ${name} on port ${app.port}...`);
-
-    const [command, ...args] = app.cmd.split(' ');
-    const process = spawn(command, args, {
-      cwd: appPath,
-      stdio: ['ignore', 'pipe', 'pipe'],
-      shell: true
-    });
-
-    process.stdout.on('data', (data) => {
-      console.log(`[${name}] ${data.toString().trim()}`);
-    });
-
-    process.stderr.on('data', (data) => {
-      console.log(`[${name}] ERROR: ${data.toString().trim()}`);
-    });
-
-    process.on('close', (code) => {
-      if (!this.isShuttingDown) {
-        console.log(`❌ ${name} exited with code ${code}`);
-      }
-    });
-
-    this.processes.push({ name, process, port: app.port });
+    this.processes.push({ name, process, port: config.port });
   }
 
   async healthCheck() {
@@ -255,69 +220,8 @@ class AzoraOrchestrator {
     console.log(`🌊 Knowledge: 414K+ nodes (160MB)`);
     console.log(`🚀 Services: ${this.services.size}`);
     console.log(`🎨 Frontends: ${this.frontends.size}`);
-    console.log('\n✅ Azora OS is LIVE!');
-  }
 
-  async shutdown() {
-    this.isShuttingDown = true;
-    console.log('\n🛑 Shutting down Azora OS...');
-    
-    for (const { name, process } of this.processes) {
-      console.log(`Stopping ${name}...`);
-      process.kill();
-    }
-    
-    console.log('✅ Shutdown complete');
-    process.exit(0);
-  }
-
-  async execAsync(cmd, options = {}) {
-    return new Promise((resolve, reject) => {
-      exec(cmd, options, (error, stdout, stderr) => {
-        if (error) reject(error);
-        else resolve(stdout);
-      });
-    });
-  }
-
-  async pathExists(path) {
-    try {
-      await fs.access(path);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-}
-
-async function main() {
-  const orchestrator = new AzoraOrchestrator();
-  
-  process.on('SIGINT', () => orchestrator.shutdown());
-  process.on('SIGTERM', () => orchestrator.shutdown());
-  
-  await orchestrator.scanServices();
-  await orchestrator.checkDependencies();
-  
-  const args = process.argv.slice(2);
-  
-  if (args.includes('--install')) {
-    await orchestrator.installDependencies();
-  }
-  
-  await orchestrator.launchServices();
-  await orchestrator.launchFrontends();
-  
-  await orchestrator.delay(5000);
-  await orchestrator.healthCheck();
-  await orchestrator.showStatus();
-}
-
-main().catch(console.error);');
+    console.log('\n✅ CORE SERVICES:');
     const coreServices = ['api-gateway', 'auth-service', 'azora-mint', 'azora-oracle'];
     coreServices.forEach(name => {
       const service = this.services.get(name);
@@ -363,7 +267,7 @@ main().catch(console.error);');
       proc.process.kill('SIGTERM');
     }
 
-    setTimeout(() => {
+    setTimeout((). => {
       console.log('✅ Azora OS shutdown complete');
       process.exit(0);
     }, 2000);

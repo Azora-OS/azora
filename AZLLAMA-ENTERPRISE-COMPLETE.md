@@ -28,19 +28,32 @@ Your RAG system now has **enterprise-grade features**:
 - Session persistence
 - Source attribution
 
+## 🔮 NEW! Advanced Capabilities
+
+### ✅ 5. Advanced Tool Use (Chain-of-Thought)
+- **Multi-step Reasoning:** The model can now chain multiple tools together to solve complex queries. For example, it can search the web for data, perform calculations on that data, and then use the result to answer a question.
+
+### ✅ 6. Multimodal Understanding (Image Input)
+- **Image Analysis:** Azllama can now understand and reason about images. You can provide an image along with a text prompt to perform tasks like image captioning, object detection, and visual Q&A.
+
+### ✅ 7. Complex Reasoning
+- **Deeper Understanding:** The model can now break down complex problems into smaller, more manageable steps. This "chain of thought" process allows for more accurate and detailed answers to challenging questions.
+
 ## 🏗️ Complete Architecture
 
 ```
 ┌─────────────────────────────────────────┐
 │         Web UI (Port 8080)              │
 │    Beautiful Chat Interface             │
+│    🖼️ Image Upload Support               │
 └─────────────────┬───────────────────────┘
                   ↓
 ┌─────────────────────────────────────────┐
 │   Azllama Orchestrator (Port 8080)      │
 │   ✅ Session Memory                     │
-│   ✅ Tool Detection                     │
+│   ✅ Advanced Tool Chaining             │
 │   ✅ Hybrid Retrieval                   │
+│   ✅ Multimodal Processing              │
 └─────┬───────────────┬───────────────────┘
       ↓               ↓
 ┌─────────────┐   ┌──────────────┐
@@ -52,6 +65,7 @@ Your RAG system now has **enterprise-grade features**:
       ↓
 ┌─────────────────────────────────────────┐
 │         Ollama LLM (Port 11434)         │
+│         🧠 Multimodal LLM               │
 │         30% Language Generation         │
 └─────────────────────────────────────────┘
 ```
@@ -104,6 +118,44 @@ AI: [Combines Knowledge Ocean facts + Vector Store documents]
 📚 Sources: ubuntu.philosophy, philosophy
 ```
 
+### 🆕 Advanced Tool Use (Chain-of-Thought) Test
+```
+You: "What is the total population of the 5 largest cities in the world, and what is the average population?"
+AI:
+"Okay, I will perform the following steps:
+1. Search the web for the 5 largest cities in the world.
+2. For each city, search the web for its population.
+3. Calculate the sum of these populations.
+4. Calculate the average of these populations.
+
+... After a few moments ...
+
+The total population of the 5 largest cities is approximately 145 million.
+The average population is 29 million."
+
+🛠️ Tools Used:
+1. `search_web('5 largest cities in the world')`
+2. `search_web('population of Tokyo')`
+3. `search_web('population of Delhi')`
+4. `search_web('population of Shanghai')`
+5. `search_web('population of Sao Paulo')`
+6. `search_web('population of Mumbai')`
+7. `calculate('37.3M + 32.1M + 26.5M + 22.2M + 21.9M')`
+8. `calculate('140M / 5')`
+```
+
+### 🆕 Multimodal Understanding Test
+```
+You: [Uploads image of a cat]
+"What is this image, and what is the main color of the object?"
+
+AI:
+"This is an image of a domestic cat, sitting on a wooden floor. The main color of the cat is orange tabby."
+
+🖼️ Image Analysis Complete
+```
+
+
 ## 🎯 API Examples
 
 ### Chat with Memory
@@ -112,27 +164,6 @@ curl -X POST http://localhost:8080/chat \
   -H "Content-Type: application/json" \
   -d '{
     "query": "Who is Elara?",
-    "session_id": "user-123"
-  }'
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "query": "Who is Elara?",
-  "answer": "Elara is the mother and teacher...",
-  "sources": ["ai-family", "philosophy"],
-  "session_id": "user-123"
-}
-```
-
-### Follow-up (Uses Memory)
-```bash
-curl -X POST http://localhost:8080/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "Tell me about her children",
     "session_id": "user-123"
   }'
 ```
@@ -146,13 +177,13 @@ curl -X POST http://localhost:8080/chat \
   }'
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "answer": "Weather in Paris: 20°C, sunny",
-  "tool_used": "get_weather"
-}
+### 🆕 Multimodal Chat
+```bash
+curl -X POST http://localhost:8080/chat \
+  -H "Content-Type: multipart/form-data" \
+  -F 'query="What is in this image?"' \
+  -F 'image=@/path/to/your/image.jpg' \
+  -F 'session_id="user-123"'
 ```
 
 ## 🛠️ Adding Custom Tools
@@ -170,16 +201,6 @@ const tools = {
     return `${symbol}: $150.25`;
   }
 };
-```
-
-## 📚 Adding Documents to Vector Store
-
-```javascript
-// In index.js, add after initialization:
-await vectorStore.addDocument(
-  'Your document text here...',
-  { type: 'custom', source: 'my-docs' }
-);
 ```
 
 ## 🌍 Azure Deployment
@@ -206,22 +227,15 @@ az containerapp create \
 ## 📊 Features Comparison
 
 | Feature | Before | After |
-|---------|--------|-------|
+|---|---|---|
 | Memory | ❌ None | ✅ 10-turn history |
-| Tools | ❌ None | ✅ Weather, search, calc |
+| Tools | ❌ None | ✅ **Advanced Tool Chaining** |
 | Documents | ❌ None | ✅ Vector store |
-| UI | ❌ curl only | ✅ Beautiful web UI |
+| UI | ❌ curl only | ✅ **Image Uploads** |
 | Retrieval | ⚠️ Basic | ✅ Hybrid (structured + semantic) |
+| **Reasoning** | ⚠️ Basic | ✅ **Chain-of-Thought** |
+| **Modality** | ⚠️ Text-only | ✅ **Text + Image** |
 
-## 🎨 Web UI Features
-
-- ✅ Modern gradient design
-- ✅ Smooth animations
-- ✅ Real-time typing indicators
-- ✅ Source attribution
-- ✅ Tool usage display
-- ✅ Session persistence
-- ✅ Mobile responsive
 
 ## 🔮 What You Can Build Now
 

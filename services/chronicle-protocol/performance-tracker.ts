@@ -1,4 +1,3 @@
-
 /*
 AZORA PROPRIETARY LICENSE
 Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
@@ -301,17 +300,19 @@ export class PerformanceTracker {
     }
 
     // Check system thresholds
-    const heapUsedPercent = memoryUsage.heapUsed / memoryUsage.heapTotal;
-    if (heapUsedPercent > this.THRESHOLDS.memoryUsage) {
-      this.addAlert({
-        level: 'critical',
-        metric: 'memory_usage',
-        value: heapUsedPercent * 100,
-        threshold: this.THRESHOLDS.memoryUsage * 100,
-        message: `Memory usage (${Math.round(heapUsedPercent * 100)}%) is critical`,
-        recommendation: 'Restart service or increase memory allocation',
-        timestamp: new Date(),
-      });
+    if (memoryUsage && memoryUsage.heapTotal > 0) {
+        const heapUsedPercent = memoryUsage.heapUsed / memoryUsage.heapTotal;
+        if (heapUsedPercent > this.THRESHOLDS.memoryUsage) {
+          this.addAlert({
+            level: 'critical',
+            metric: 'memory_usage',
+            value: heapUsedPercent * 100,
+            threshold: this.THRESHOLDS.memoryUsage * 100,
+            message: `Memory usage (${Math.round(heapUsedPercent * 100)}%) is critical`,
+            recommendation: 'Restart service or increase memory allocation',
+            timestamp: new Date(),
+          });
+        }
     }
 
     return snapshot;
@@ -415,13 +416,14 @@ export class PerformanceTracker {
     }
 
     // Check memory usage
-    if (snapshots.length > 0) {
-      const latestSnapshot = snapshots[snapshots.length - 1];
-      const heapUsedPercent = latestSnapshot.system.memoryUsage.heapUsed / latestSnapshot.system.memoryUsage.heapTotal;
-      
-      if (heapUsedPercent > 0.8) {
-        recommendations.push('🔸 Memory usage above 80%. Consider increasing cache size limits or Node.js memory allocation.');
-      }
+    if (snapshots && snapshots.length > 0) {
+        const latestSnapshot = snapshots[snapshots.length - 1];
+        if (latestSnapshot && latestSnapshot.system && latestSnapshot.system.memoryUsage && latestSnapshot.system.memoryUsage.heapTotal > 0) {
+            const heapUsedPercent = latestSnapshot.system.memoryUsage.heapUsed / latestSnapshot.system.memoryUsage.heapTotal;
+            if (heapUsedPercent > 0.8) {
+                recommendations.push('🔸 Memory usage above 80%. Consider increasing cache size limits or Node.js memory allocation.');
+            }
+        }
     }
 
     // Check critical alerts
@@ -456,7 +458,7 @@ export class PerformanceTracker {
    * Calculate average
    */
   private average(numbers: number[]): number {
-    if (numbers.length === 0) return 0;
+    if (!numbers || numbers.length === 0) return 0;
     return numbers.reduce((a, b) => a + b, 0) / numbers.length;
   }
 
