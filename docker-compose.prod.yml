@@ -1,0 +1,261 @@
+version: '3.8'
+
+services:
+  # API Gateway - Ubuntu Entry Point
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - UBUNTU_MODE=active
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Student Portal - Ubuntu Learning
+  student-portal:
+    build:
+      context: ./apps/student-portal
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
+      - NEXT_PUBLIC_UBUNTU_MODE=active
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Enterprise UI - Ubuntu Business
+  enterprise-ui:
+    build:
+      context: ./apps/enterprise-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
+      - NEXT_PUBLIC_UBUNTU_MODE=active
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Marketplace UI - Ubuntu Opportunities
+  marketplace-ui:
+    build:
+      context: ./apps/marketplace-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
+      - NEXT_PUBLIC_UBUNTU_MODE=active
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Pay UI - Ubuntu Finance
+  pay-ui:
+    build:
+      context: ./apps/pay-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
+      - NEXT_PUBLIC_UBUNTU_MODE=active
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Auth Service - Ubuntu Identity
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Education Service - Ubuntu Learning
+  education-service:
+    build:
+      context: ./services/azora-education
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Payment Service - Ubuntu Finance
+  payment-service:
+    build:
+      context: ./services/azora-mint
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - BLOCKCHAIN_RPC_URL=${BLOCKCHAIN_RPC_URL}
+    depends_on:
+      - postgres
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Marketplace Service - Ubuntu Opportunities
+  marketplace-service:
+    build:
+      context: ./services/azora-forge
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - AI_MATCHING_API=${AI_MATCHING_API}
+    depends_on:
+      - postgres
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # PostgreSQL Database - Ubuntu Data
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=azora_production
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d azora_production"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Redis Cache - Ubuntu Memory
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Load Balancer - Ubuntu Gateway
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - api-gateway
+      - student-portal
+      - enterprise-ui
+      - marketplace-ui
+      - pay-ui
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Prometheus Monitoring - Ubuntu Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # Grafana Dashboard - Ubuntu Insights
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3004:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  ubuntu-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

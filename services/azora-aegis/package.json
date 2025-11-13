@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "start": "node citadel.js",
+    "start": "node dist/index.js",
+    "premium": "ts-node src/index.ts",
     "citadel": "node citadel.js",
     "guardian": "node guardian.js",
+    "test": "jest",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:generate": "prisma generate"
   },
