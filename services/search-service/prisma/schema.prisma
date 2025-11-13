@@ -1,0 +1,36 @@
+// Azora OS - Search Service Schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model SearchIndex {
+  id         String   @id @default(uuid())
+  entityType String
+  entityId   String
+  title      String
+  content    String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([entityType, entityId])
+  @@index([entityType])
+  @@map("search_index")
+}
+
+model SearchQuery {
+  id        String   @id @default(uuid())
+  userId    String?
+  query     String
+  results   Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@map("search_queries")
+}

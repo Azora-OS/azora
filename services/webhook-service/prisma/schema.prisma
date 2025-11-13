@@ -1,0 +1,51 @@
+// Azora OS - Webhook Service Schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Webhook {
+  id        String        @id @default(uuid())
+  userId    String
+  url       String
+  events    String[]
+  secret    String
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  
+  deliveries WebhookDelivery[]
+  
+  @@index([userId])
+  @@map("webhooks")
+}
+
+model WebhookDelivery {
+  id         String          @id @default(uuid())
+  webhookId  String
+  event      String
+  payload    Json
+  status     DeliveryStatus  @default(PENDING)
+  attempts   Int             @default(0)
+  response   String?
+  createdAt  DateTime        @default(now())
+  deliveredAt DateTime?
+  
+  webhook    Webhook         @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+  
+  @@index([webhookId])
+  @@index([status])
+  @@map("webhook_deliveries")
+}
+
+enum DeliveryStatus {
+  PENDING
+  DELIVERED
+  FAILED
+  RETRYING
+}
