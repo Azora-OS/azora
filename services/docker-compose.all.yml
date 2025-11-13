@@ -1,0 +1,298 @@
+version: '3.8'
+
+services:
+  # Infrastructure Services
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora2024
+      POSTGRES_DB: azora_os
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Core Services
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://azora:azora2024@postgres:5432/azora_os
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  # AI Services
+  ai-ethics-monitor:
+    build: ./ai-ethics-monitor
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=production
+      - PORT=3010
+      - DATABASE_URL=postgresql://azora:azora2024@postgres:5432/azora_os
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  ai-enhancement-service:
+    build: ./ai-enhancement-service
+    ports:
+      - "3020:3020"
+    environment:
+      - NODE_ENV=production
+      - PORT=3020
+    restart: unless-stopped
+
+  ai-ml-service:
+    build: ./ai-ml-service
+    ports:
+      - "3021:3021"
+    environment:
+      - NODE_ENV=production
+      - PORT=3021
+    restart: unless-stopped
+
+  ai-orchestrator:
+    build: ./ai-orchestrator
+    ports:
+      - "3022:3022"
+    environment:
+      - NODE_ENV=production
+      - PORT=3022
+    restart: unless-stopped
+
+  # Financial Services
+  airtime-rewards-service:
+    build: ./airtime-rewards-service
+    ports:
+      - "3023:3023"
+    environment:
+      - NODE_ENV=production
+      - PORT=3023
+    restart: unless-stopped
+
+  payment-gateway:
+    build: ./payment-gateway
+    ports:
+      - "3038:3038"
+    environment:
+      - NODE_ENV=production
+      - PORT=3038
+    restart: unless-stopped
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "3039:3039"
+    environment:
+      - NODE_ENV=production
+      - PORT=3039
+    restart: unless-stopped
+
+  # Integration Services
+  api-integration-service:
+    build: ./api-integration-service
+    ports:
+      - "3024:3024"
+    environment:
+      - NODE_ENV=production
+      - PORT=3024
+    restart: unless-stopped
+
+  blockchain-service:
+    build: ./blockchain-service
+    ports:
+      - "3025:3025"
+    environment:
+      - NODE_ENV=production
+      - PORT=3025
+    restart: unless-stopped
+
+  # Data Services
+  database-service:
+    build: ./database-service
+    ports:
+      - "3026:3026"
+    environment:
+      - NODE_ENV=production
+      - PORT=3026
+      - DATABASE_URL=postgresql://azora:azora2024@postgres:5432/azora_os
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  logger-service:
+    build: ./logger-service
+    ports:
+      - "3034:3034"
+    environment:
+      - NODE_ENV=production
+      - PORT=3034
+    restart: unless-stopped
+
+  # Operations Services
+  devops-service:
+    build: ./devops-service
+    ports:
+      - "3027:3027"
+    environment:
+      - NODE_ENV=production
+      - PORT=3027
+    restart: unless-stopped
+
+  dna-service:
+    build: ./dna-service
+    ports:
+      - "3028:3028"
+    environment:
+      - NODE_ENV=production
+      - PORT=3028
+    restart: unless-stopped
+
+  documentation-service:
+    build: ./documentation-service
+    ports:
+      - "3029:3029"
+    environment:
+      - NODE_ENV=production
+      - PORT=3029
+    restart: unless-stopped
+
+  # Communication Services
+  email-service:
+    build: ./email-service
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=production
+      - PORT=3030
+    restart: unless-stopped
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "3037:3037"
+    environment:
+      - NODE_ENV=production
+      - PORT=3037
+    restart: unless-stopped
+
+  # Business Services
+  enterprise-service:
+    build: ./enterprise-service
+    ports:
+      - "3031:3031"
+    environment:
+      - NODE_ENV=production
+      - PORT=3031
+    restart: unless-stopped
+
+  global-service:
+    build: ./global-service
+    ports:
+      - "3032:3032"
+    environment:
+      - NODE_ENV=production
+      - PORT=3032
+    restart: unless-stopped
+
+  governance-service:
+    build: ./governance-service
+    ports:
+      - "3033:3033"
+    environment:
+      - NODE_ENV=production
+      - PORT=3033
+    restart: unless-stopped
+
+  # UI Services
+  master-ui-service:
+    build: ./master-ui-service
+    ports:
+      - "3035:3035"
+    environment:
+      - NODE_ENV=production
+      - PORT=3035
+    restart: unless-stopped
+
+  mobile-service:
+    build: ./mobile-service
+    ports:
+      - "3036:3036"
+    environment:
+      - NODE_ENV=production
+      - PORT=3036
+    restart: unless-stopped
+
+  ui-enhancement-service:
+    build: ./ui-enhancement-service
+    ports:
+      - "3042:3042"
+    environment:
+      - NODE_ENV=production
+      - PORT=3042
+    restart: unless-stopped
+
+  # Student Services
+  student-earnings-service:
+    build: ./student-earnings-service
+    ports:
+      - "3040:3040"
+    environment:
+      - NODE_ENV=production
+      - PORT=3040
+    restart: unless-stopped
+
+  # Testing Services
+  testing-service:
+    build: ./testing-service
+    ports:
+      - "3041:3041"
+    environment:
+      - NODE_ENV=production
+      - PORT=3041
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: azora-network

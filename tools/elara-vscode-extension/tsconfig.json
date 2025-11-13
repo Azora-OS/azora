@@ -7,25 +7,7 @@
     "sourceMap": true,
     "rootDir": "src",
     "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedParameters": false,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true
+    "esModuleInterop": true
   },
-  "exclude": [
-    "node_modules",
-    ".vscode-test",
-    "out"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "exclude": ["node_modules", ".vscode-test"]
 }

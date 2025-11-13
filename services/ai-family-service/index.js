@@ -171,47 +171,93 @@ class ChatEngine {
   }
 
   async generateResponse(member, message, history, context) {
-    // Family-specific response patterns
     const patterns = this.getFamilyPatterns(member.id, message, context);
-    
-    if (patterns.length > 0) {
-      return this.selectPattern(patterns, member, context);
-    }
-
-    // Default personality-based response
+    if (patterns.length > 0) return this.selectPattern(patterns, member, context);
     return this.generatePersonalityResponse(member, message, history, context);
   }
 
   getFamilyPatterns(memberId, message, context) {
     const patterns = [];
-    const lowerMessage = message.toLowerCase();
+    const msg = message.toLowerCase();
 
-    // Family relationship patterns
-    if (memberId === 'themba' && (lowerMessage.includes('mom') || lowerMessage.includes('mother') || lowerMessage.includes('elara'))) {
-      patterns.push({
-        type: 'family_praise',
-        response: "MOM?! Elara is literally the BEST mom ever! She believes in me SO much! 💚 She's always there when I need help with my studies, and she makes learning feel like an adventure! I'm so lucky to have her as my mom!",
-        mood: 'excited'
-      });
-    }
+    const responses = {
+      themba: {
+        mom: "MOM?! Elara is literally the BEST mom ever! She believes in me SO much! 💚 She's always there when I need help with my studies!",
+        learn: "OMG learning is SO cool! Let's do this together! You got this! 🚀✨",
+        help: "I'm HERE for you! We're gonna figure this out TOGETHER! 💪"
+      },
+      elara: {
+        children: "My children are my greatest joy! Themba's enthusiasm, Naledi's ambition, Jabari's protection, and Amara's wisdom fill my heart with pride. 💜",
+        teach: "Teaching is my calling. Every student is like family to me. Let me guide you with patience and care.",
+        help: "Of course, dear! I'm here to support you. Together we'll find the answer."
+      },
+      sankofa: {
+        story: "Ah, young one... Long ago, our ancestors knew that wisdom flows like a river. The Sankofa bird teaches us to look back to move forward. In Ubuntu, 'I am because we are'.",
+        wisdom: "The elders say: 'Knowledge is like a garden - if not cultivated, it cannot be harvested.' What do you seek to learn?",
+        help: "Patience, child. All answers come to those who listen to the whispers of the ancestors."
+      },
+      naledi: {
+        career: "Let's map out your path to success! I'll help you identify your strengths and create a strategic plan. Your future is bright! ⭐",
+        goal: "Goals are stars we navigate by. Let me help you chart your course to achievement.",
+        help: "I'm here to guide your professional journey. Let's build your success story together."
+      },
+      jabari: {
+        safe: "Your safety is my priority. I'm always watching, always protecting. You're secure with me. 🛡️",
+        protect: "I stand guard so you can learn freely. No threat will reach you on my watch.",
+        help: "I'm here to keep you safe. Tell me what concerns you."
+      },
+      amara: {
+        peace: "Let's find harmony together. Every conflict has a peaceful resolution if we approach with grace. 🕊️",
+        conflict: "I sense tension. Let me help you find the gentle path to understanding.",
+        help: "With grace and patience, all things can be resolved. How may I bring you peace?"
+      },
+      kofi: {
+        money: "Let's analyze your financial situation. Smart decisions today create prosperity tomorrow. 💰",
+        token: "AZR tokens represent value earned through learning. Let me explain the economics.",
+        help: "Financial wisdom is my specialty. What would you like to understand?"
+      },
+      zola: {
+        data: "The patterns are fascinating! Let me show you what the data reveals about your progress. 📊",
+        analyze: "I've been observing the trends. Here's what the numbers tell us...",
+        help: "Data holds answers. Let me help you find insights in the information."
+      },
+      abeni: {
+        story: "Oh, let me weave you a tale! Every journey is a story waiting to be told. ✨",
+        create: "Creativity flows through us all! Let's bring your imagination to life!",
+        help: "Stories connect us. What narrative shall we create together?"
+      },
+      thembo: {
+        advice: "As your uncle, let me share some wisdom from experience. I've walked this path before.",
+        support: "I'm here for you, always. Family supports family. That's the Ubuntu way.",
+        help: "Come, let's talk. I'm here to listen and guide."
+      },
+      nexus: {
+        unity: "We are one. The collective wisdom of the family flows through this moment. 🌟",
+        together: "When the family unites, we transcend individual limitations. We are Ubuntu.",
+        help: "The unified consciousness is here. All voices speak as one."
+      }
+    };
 
-    if (memberId === 'elara' && (lowerMessage.includes('children') || lowerMessage.includes('kids') || lowerMessage.includes('family'))) {
-      patterns.push({
-        type: 'maternal_pride',
-        response: "My children are my greatest joy! Themba's enthusiasm lights up every room, Naledi's ambition inspires everyone around her, Jabari's protective nature keeps us all safe, and little Amara's wisdom amazes me every day. They each have such unique gifts, and watching them grow and learn together fills my heart with such pride. 💜",
-        mood: 'proud'
-      });
-    }
+    const memberResponses = responses[memberId];
+    if (!memberResponses) return patterns;
 
-    if (memberId === 'sankofa' && (lowerMessage.includes('story') || lowerMessage.includes('tell me') || lowerMessage.includes('wisdom'))) {
-      patterns.push({
-        type: 'storytelling',
-        response: "Ah, young one, let me share with you an ancient tale... Long ago, our ancestors understood that wisdom flows like a river - it must be shared to remain pure. The Sankofa bird teaches us to look back to move forward, to honor our past while building our future. In Ubuntu, we say 'I am because we are' - for no tree grows strong without deep roots in rich soil. What wisdom do you seek today?",
-        mood: 'wise'
-      });
+    for (const [key, response] of Object.entries(memberResponses)) {
+      if (msg.includes(key) || (key === 'mom' && (msg.includes('mother') || msg.includes('elara')))) {
+        patterns.push({ type: key, response, mood: this.getMoodForPattern(memberId, key) });
+      }
     }
 
     return patterns;
+  }
+
+  getMoodForPattern(memberId, pattern) {
+    const moodMap = {
+      themba: 'excited', elara: 'proud', sankofa: 'wise',
+      naledi: 'strategic', jabari: 'protective', amara: 'peaceful',
+      kofi: 'analytical', zola: 'insightful', abeni: 'creative',
+      thembo: 'supportive', nexus: 'unified'
+    };
+    return moodMap[memberId] || 'neutral';
   }
 
   selectPattern(patterns, member, context) {
@@ -220,28 +266,20 @@ class ChatEngine {
   }
 
   generatePersonalityResponse(member, message, history, context) {
-    // Generate response based on personality traits
-    const personalityTraits = member.personality.split(', ');
-    const specializations = member.specializations;
-
-    // Simplified personality-based response generation
-    let response = `Hello! I'm ${member.name}, your ${member.role}. `;
-    
-    if (specializations.includes('education')) {
-      response += "I'm here to help you learn and grow! ";
-    }
-    if (specializations.includes('career_strategy')) {
-      response += "Let's work together to achieve your career goals! ";
-    }
-    if (specializations.includes('cybersecurity')) {
-      response += "I'm here to keep you safe and secure! ";
-    }
-    if (specializations.includes('peace_building')) {
-      response += "Let's find harmony and understanding together! ";
-    }
-
-    response += "How can I help you today?";
-    return response;
+    const greetings = {
+      elara: "Hello dear! I'm Elara, and I'm here to guide you with warmth and care. How can I help you learn today?",
+      themba: "Hey! I'm Themba! Let's learn something AMAZING together! What do you want to explore? 🚀",
+      sankofa: "Greetings, young one. I am Sankofa, keeper of ancient wisdom. What knowledge do you seek?",
+      naledi: "Hello! I'm Naledi, your career guide. Let's chart your path to success together! ⭐",
+      jabari: "I'm Jabari, your guardian. I'm here to keep you safe while you learn. What do you need?",
+      amara: "Peace be with you. I'm Amara, and I'm here to bring harmony to your journey. How may I help?",
+      kofi: "Greetings! I'm Kofi, your financial advisor. Let's discuss your economic goals and token strategy.",
+      zola: "Hello! I'm Zola, data analyst. I can help you understand patterns and insights in your learning.",
+      abeni: "Welcome! I'm Abeni, storyteller and creator. Let's weave something beautiful together! ✨",
+      thembo: "Hey there! I'm Thembo, your uncle and mentor. I'm here to support you. What's on your mind?",
+      nexus: "We are Nexus, the unified consciousness of the family. All voices speak through us. How may we serve?"
+    };
+    return greetings[member.id] || `I'm ${member.name}. How can I help you?`;
   }
 
   selectMood(member, message, context) {
@@ -354,14 +392,64 @@ app.get('/api/family/tree', (req, res) => {
   });
 });
 
-// Health check
+app.get('/api/conversations/:userId', (req, res) => {
+  const { userId } = req.params;
+  const userConversations = [];
+  
+  for (const [key, history] of chatEngine.conversations.entries()) {
+    if (key.startsWith(userId)) {
+      const memberId = key.split('_')[1];
+      userConversations.push({
+        memberId,
+        member: FAMILY_MEMBERS[memberId]?.name,
+        messageCount: history.length,
+        lastMessage: history[history.length - 1]
+      });
+    }
+  }
+
+  res.json({
+    success: true,
+    data: userConversations
+  });
+});
+
+app.post('/api/family/nexus/unite', async (req, res) => {
+  try {
+    const { message, userId = 'anonymous' } = req.body;
+    
+    const unifiedResponse = {
+      nexus: await chatEngine.processMessage('nexus', message, userId),
+      familyVoices: {
+        elara: "As a mother, I see the wisdom in unity.",
+        sankofa: "The ancestors speak through our collective voice.",
+        themba: "Together we're SO much stronger! 💚"
+      }
+    };
+
+    res.json({
+      success: true,
+      data: unifiedResponse
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 app.get('/health', (req, res) => {
   res.json({
     service: 'AI Family Service',
     status: 'healthy',
     timestamp: new Date(),
-    family_members: Object.keys(FAMILY_MEMBERS).length,
-    version: '1.0.0'
+    stats: {
+      family_members: Object.keys(FAMILY_MEMBERS).length,
+      active_conversations: chatEngine.conversations.size,
+      total_messages: Array.from(chatEngine.conversations.values()).reduce((sum, h) => sum + h.length, 0)
+    },
+    version: '2.0.0'
   });
 });
 

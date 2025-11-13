@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  azora-forge:
+    build: ./azora-forge
+    ports: ["3200:3200"]
+    environment:
+      - PORT=3200
+      - SERVICE_NAME=azora-forge
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-careers:
+    build: ./azora-careers
+    ports: ["3201:3201"]
+    environment:
+      - PORT=3201
+      - SERVICE_NAME=azora-careers
+    restart: unless-stopped
+    networks: [azora-network]
+
+  marketplace-service:
+    build: ./marketplace-service
+    ports: ["3202:3202"]
+    environment:
+      - PORT=3202
+      - SERVICE_NAME=marketplace-service
+    restart: unless-stopped
+    networks: [azora-network]
+
+  project-marketplace:
+    build: ./project-marketplace
+    ports: ["3203:3203"]
+    environment:
+      - PORT=3203
+      - SERVICE_NAME=project-marketplace
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-workspace:
+    build: ./azora-workspace
+    ports: ["3204:3204"]
+    environment:
+      - PORT=3204
+      - SERVICE_NAME=azora-workspace
+    restart: unless-stopped
+    networks: [azora-network]
+
+  arbiter-system:
+    build: ./arbiter-system
+    ports: ["3205:3205"]
+    environment:
+      - PORT=3205
+      - SERVICE_NAME=arbiter-system
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-pricing:
+    build: ./azora-pricing
+    ports: ["3206:3206"]
+    environment:
+      - PORT=3206
+      - SERVICE_NAME=azora-pricing
+    restart: unless-stopped
+    networks: [azora-network]
+
+  founder-ledger-service:
+    build: ./founder-ledger-service
+    ports: ["3207:3207"]
+    environment:
+      - PORT=3207
+      - SERVICE_NAME=founder-ledger-service
+    restart: unless-stopped
+    networks: [azora-network]
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-network

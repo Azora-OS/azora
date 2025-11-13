@@ -1,461 +1,322 @@
-# 🚀 AZORA OS - DEPLOYMENT GUIDE
+# 🚀 Deployment Guide
 
-**Complete guide for deploying Azora OS to production**
-
----
-
-## 🎯 QUICK START
-
-### One-Command Deployment
-```bash
-# Run the complete restoration and deployment script
-chmod +x restore-and-deploy.sh
-./restore-and-deploy.sh
-```
-
-This script will:
-1. ✅ Verify Constitution is present
-2. 🎨 Extract Master UI components
-3. 🧹 Clean repository
-4. 📦 Install dependencies
-5. 🛡️ Run constitutional compliance check
-6. 🧪 Run tests
-7. 🏗️ Build applications
-8. 🚀 Prepare for deployment
+**Production deployment for Azora OS services**
 
 ---
 
-## 📋 PRE-DEPLOYMENT CHECKLIST
+## 📋 Prerequisites
 
-### Required Files ✅
-- [x] `docs/AZORA-CONSTITUTION.md` - Constitution v3.0.0
-- [x] `MASTER-CONTEXT.md` - Complete system context
-- [x] `README.md` - Project overview
-- [x] `package.json` - Dependencies
-- [x] `.env.example` - Environment template
-- [x] `vercel.json` - Deployment configuration
-
-### Environment Variables
-Create `.env` file with:
-```bash
-# Database
-DATABASE_URL="postgresql://..."
-DIRECT_URL="postgresql://..."
-
-# Authentication
-NEXTAUTH_SECRET="your-secret-here"
-NEXTAUTH_URL="https://your-domain.com"
-
-# AI Services
-OPENAI_API_KEY="sk-..."
-
-# Blockchain
-ETHEREUM_RPC_URL="https://..."
-PRIVATE_KEY="0x..."
-
-# Services
-API_GATEWAY_URL="http://localhost:4000"
-```
-
-### System Requirements
-- Node.js 20+
-- npm 10+
-- Git
-- Vercel CLI (optional)
+- Docker & Docker Compose
+- Node.js 18+
+- PostgreSQL 15+
+- Redis 7+
+- 4GB RAM minimum
+- 20GB disk space
 
 ---
 
-## 🚀 DEPLOYMENT OPTIONS
+## 🐳 Docker Deployment (Recommended)
 
-### Option 1: Vercel (Recommended)
+### 1. Environment Setup
 
-#### Install Vercel CLI
 ```bash
-npm install -g vercel
+# Copy environment template
+cp .env.example .env
+
+# Edit with your values
+nano .env
 ```
 
-#### Login to Vercel
+Required variables:
 ```bash
-vercel login
+NODE_ENV=production
+JWT_SECRET=your-secret-key
+DB_USER=azora
+DB_PASSWORD=secure-password
+MONGODB_URI=mongodb://localhost:27017/azora
+STRIPE_KEY=your-stripe-key
 ```
 
-#### Deploy All Apps
+### 2. Start All Services
+
 ```bash
-# Student Portal
-cd apps/student-portal
-vercel --prod
-
-# Marketplace UI
-cd ../marketplace-ui
-vercel --prod
-
-# Pay UI
-cd ../pay-ui
-vercel --prod
-
-# Enterprise UI
-cd ../enterprise-ui
-vercel --prod
-
-# Learn UI
-cd ../learn-ui
-vercel --prod
-```
-
-#### Configure Custom Domains
-```bash
-# In each app directory
-vercel domains add student-portal.azora.world
-vercel domains add marketplace.azora.world
-vercel domains add pay.azora.world
-vercel domains add enterprise.azora.world
-vercel domains add learn.azora.world
-```
-
-### Option 2: Docker Deployment
-
-#### Build Docker Images
-```bash
-# Build all services
-docker-compose -f docker-compose.prod.yml build
-
 # Start all services
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-#### Verify Services
-```bash
-# Check running containers
-docker ps
+docker-compose -f docker-compose.services.yml up -d
 
 # Check logs
-docker-compose -f docker-compose.prod.yml logs -f
+docker-compose logs -f
+
+# Check health
+./scripts/health-check-all.sh
 ```
 
-### Option 3: Manual Deployment
+### 3. Verify Deployment
 
-#### Build Applications
 ```bash
-# Install dependencies
-npm install --legacy-peer-deps
+# API Gateway
+curl http://localhost:4000/health
 
-# Build all apps
-npm run build
+# Education Services
+curl http://localhost:4200/health  # Education
+curl http://localhost:4015/health  # LMS
+curl http://localhost:4011/health  # Sapiens
+curl http://localhost:4016/health  # Assessment
 
-# Start production server
-npm run start
+# Financial Services
+curl http://localhost:3038/health  # Payment Gateway
+curl http://localhost:3009/health  # Billing
 ```
 
 ---
 
-## 🎨 MASTER UI DEPLOYMENT
+## 🔧 Manual Deployment
 
-### Extract Components
-The `restore-and-deploy.sh` script automatically extracts Master UI components to:
-```
-packages/@azora/master-ui/
-├── components/     # All UI components
-├── lib/           # Utilities and helpers
-├── hooks/         # React hooks
-└── package.json   # Package configuration
-```
+### 1. Install Dependencies
 
-### Apply to Apps
-
-#### 1. Install Master UI Package
 ```bash
-cd apps/student-portal
-npm install @azora/master-ui
+# Install all service dependencies
+for dir in services/*/; do
+  cd "$dir"
+  npm install
+  cd ../..
+done
 ```
 
-#### 2. Import Components
-```typescript
-// In your app
-import { AzoraLogo, MobileNav, AccessibleCard } from '@azora/master-ui/components'
-import { cn } from '@azora/master-ui/lib/utils'
+### 2. Start Services
+
+```bash
+# Start in separate terminals or use PM2
+cd services/api-gateway && npm start &
+cd services/azora-education && npm start &
+cd services/azora-lms && npm start &
+cd services/azora-sapiens && npm start &
+cd services/azora-assessment && npm start &
 ```
 
-#### 3. Update Layout
-```typescript
-// app/layout.tsx
-import { AzoraLogo } from '@azora/master-ui/components'
+### 3. Using PM2 (Recommended)
 
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body>
-        <header>
-          <AzoraLogo />
-          <MobileNav />
-        </header>
-        <main>{children}</main>
-      </body>
-    </html>
-  )
-}
+```bash
+# Install PM2
+npm install -g pm2
+
+# Start all services
+pm2 start services/api-gateway/index.js --name api-gateway
+pm2 start services/azora-education/index.js --name education
+pm2 start services/azora-lms/index.js --name lms
+pm2 start services/azora-sapiens/index.js --name sapiens
+pm2 start services/azora-assessment/index.js --name assessment
+
+# Monitor
+pm2 monit
+
+# Save configuration
+pm2 save
+pm2 startup
 ```
 
 ---
 
-## 🛡️ CONSTITUTIONAL COMPLIANCE
+## 🌐 Production Deployment
 
-### Pre-Deployment Check
-```bash
-# Run constitutional compliance check
-./check-constitution.sh
+### Kubernetes
 
-# Expected output:
-# ✅ Constitution: PRESENT (v3.0.0)
-# ✅ Enforcement Engine: PRESENT
-# ✅ AI Governance Service: PRESENT
-# ✅ Pre-Commit Hook: PRESENT
-# ✅ Compliance Guide: PRESENT
-# 🎯 STATUS: PRODUCTION READY
+```yaml
+# k8s/deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azora-lms
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: azora-lms
+  template:
+    metadata:
+      labels:
+        app: azora-lms
+    spec:
+      containers:
+      - name: azora-lms
+        image: azora/lms:latest
+        ports:
+        - containerPort: 4015
+        env:
+        - name: NODE_ENV
+          value: "production"
 ```
 
-### Continuous Monitoring
-```bash
-# Start Constitutional AI Governance Service
-cd services
-node constitutional-ai-governance.ts
+### Deploy to Kubernetes
 
-# Service runs on port 4501
-# Monitors all operations in real-time
+```bash
+kubectl apply -f k8s/
+kubectl get pods
+kubectl get services
 ```
 
 ---
 
-## 🧪 TESTING
-
-### Run All Tests
-```bash
-npm test
-```
-
-### Run Specific Test Suites
-```bash
-# Unit tests
-npm run test:unit
-
-# Integration tests
-npm run test:integration
-
-# E2E tests
-npm run test:e2e
-
-# Constitutional compliance tests
-npm run test:constitutional
-```
-
-### Expected Results
-- Total Tests: 263
-- Passing: 263
-- Coverage: 89%
-- Status: ✅ Production Ready
-
----
-
-## 📊 MONITORING
+## 📊 Monitoring
 
 ### Health Checks
 
-#### Application Health
 ```bash
-# Check all services
-curl http://localhost:4000/api/health
+# Automated health check
+./scripts/health-check-all.sh
 
-# Expected response:
-{
-  "status": "healthy",
-  "services": {
-    "auth": "up",
-    "education": "up",
-    "mint": "up",
-    "forge": "up"
-  }
+# Individual service
+curl http://localhost:4015/health
+```
+
+### Logs
+
+```bash
+# Docker logs
+docker-compose logs -f service-name
+
+# PM2 logs
+pm2 logs service-name
+
+# Kubernetes logs
+kubectl logs -f pod-name
+```
+
+---
+
+## 🔒 Security
+
+### SSL/TLS Setup
+
+```bash
+# Using Let's Encrypt
+certbot --nginx -d api.azora.world
+```
+
+### Firewall Rules
+
+```bash
+# Allow only necessary ports
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw deny 4000:5000/tcp  # Block direct service access
+ufw enable
+```
+
+---
+
+## 🔄 Updates & Rollbacks
+
+### Update Services
+
+```bash
+# Pull latest code
+git pull origin main
+
+# Rebuild and restart
+docker-compose -f docker-compose.services.yml up -d --build
+
+# Or with PM2
+pm2 restart all
+```
+
+### Rollback
+
+```bash
+# Docker
+docker-compose down
+git checkout previous-version
+docker-compose up -d
+
+# PM2
+pm2 stop all
+git checkout previous-version
+pm2 restart all
+```
+
+---
+
+## 📈 Scaling
+
+### Horizontal Scaling
+
+```bash
+# Scale specific service
+docker-compose up -d --scale azora-lms=3
+
+# Kubernetes
+kubectl scale deployment azora-lms --replicas=5
+```
+
+### Load Balancing
+
+```nginx
+# nginx.conf
+upstream azora_lms {
+    server localhost:4015;
+    server localhost:4016;
+    server localhost:4017;
+}
+
+server {
+    listen 80;
+    location / {
+        proxy_pass http://azora_lms;
+    }
 }
 ```
 
-#### Constitutional Health
-```bash
-# Check constitutional compliance
-curl http://localhost:4501/api/v1/governance/health
-
-# Expected response:
-{
-  "status": "compliant",
-  "alignment": 100,
-  "truthScore": 100,
-  "ubuntuScore": 100
-}
-```
-
-### Metrics Dashboard
-Access Grafana dashboard at: `http://localhost:3001`
-
-Default credentials:
-- Username: `admin`
-- Password: `azora-admin`
-
 ---
 
-## 🔧 TROUBLESHOOTING
+## ✅ Post-Deployment Checklist
 
-### Common Issues
-
-#### 1. Build Failures
-```bash
-# Clear cache and rebuild
-rm -rf .next node_modules
-npm install --legacy-peer-deps
-npm run build
-```
-
-#### 2. Database Connection Issues
-```bash
-# Verify DATABASE_URL in .env
-# Test connection
-npm run db:test
-```
-
-#### 3. Port Conflicts
-```bash
-# Check running processes
-lsof -i :4000
-lsof -i :3000
-
-# Kill process if needed
-kill -9 <PID>
-```
-
-#### 4. Constitutional Violations
-```bash
-# Run enforcement engine
-npx ts-node infrastructure/constitutional-enforcement-engine.ts
-
-# Fix violations and re-run
-```
-
----
-
-## 🌍 PRODUCTION URLS
-
-### Primary Applications
-- **Student Portal**: https://student-portal.azora.world
-- **Marketplace**: https://marketplace.azora.world
-- **Pay**: https://pay.azora.world
-- **Enterprise**: https://enterprise.azora.world
-- **Learn**: https://learn.azora.world
-
-### API Endpoints
-- **API Gateway**: https://api.azora.world
-- **Constitutional AI**: https://constitutional.azora.world
-- **Documentation**: https://docs.azora.world
-
----
-
-## 📈 POST-DEPLOYMENT
-
-### 1. Verify Deployments
-```bash
-# Check all URLs
-curl -I https://student-portal.azora.world
-curl -I https://marketplace.azora.world
-curl -I https://pay.azora.world
-curl -I https://enterprise.azora.world
-curl -I https://learn.azora.world
-```
-
-### 2. Monitor Metrics
-- Response times < 100ms
-- Error rate < 0.1%
-- Uptime > 99.9%
-- Constitutional compliance = 100%
-
-### 3. Update Documentation
-- Add live URLs to README
-- Update deployment docs
-- Create release notes
-- Announce launch
-
-### 4. Tag Release
-```bash
-git tag -a v3.0.0 -m "Azora OS v3.0.0 - Production Ready"
-git push origin v3.0.0
-```
-
----
-
-## 🎉 SUCCESS CRITERIA
-
-### Technical ✅
-- [x] All apps deployed successfully
-- [x] Health checks passing
-- [x] Tests passing (89% coverage)
-- [x] Constitutional compliance 100%
-- [x] Performance targets met
-
-### Business ✅
-- [x] Student Portal accessible
-- [x] Marketplace functional
-- [x] Payment system operational
-- [x] Enterprise features available
-- [x] Learning platform active
-
-### Constitutional ✅
-- [x] Constitution enforced
-- [x] AI governance active
-- [x] Privacy protected
-- [x] Ubuntu philosophy embodied
-- [x] Truth verification operational
-
----
-
-## 📞 SUPPORT
-
-### Deployment Issues
-- **Email**: deploy@azora.world
-- **Discord**: https://discord.gg/azora
-- **GitHub Issues**: https://github.com/Sizwe780/azora-os/issues
-
-### Constitutional Questions
-- **Email**: constitution@azora.world
-- **Documentation**: https://azora.world/docs/constitution
-
-### Emergency
-- **Email**: emergency@azora.world
-- **Phone**: +27 (available in production)
-
----
-
-## 🌟 FINAL CHECKLIST
-
-Before going live:
-- [ ] All tests passing
-- [ ] Constitutional compliance 100%
+- [ ] All services healthy
+- [ ] Database migrations run
 - [ ] Environment variables set
-- [ ] Custom domains configured
-- [ ] SSL certificates active
-- [ ] Monitoring enabled
-- [ ] Backup systems ready
-- [ ] Team notified
+- [ ] SSL certificates installed
+- [ ] Monitoring configured
+- [ ] Backups scheduled
+- [ ] Logs aggregated
+- [ ] Alerts configured
 - [ ] Documentation updated
-- [ ] Launch announcement prepared
+- [ ] Team notified
 
 ---
 
-<div align="center">
+## 🆘 Troubleshooting
 
-## 🚀 READY FOR LAUNCH
+### Service Won't Start
 
-**"Ngiyakwazi ngoba sikwazi"**  
-**"I can because we can"**
+```bash
+# Check logs
+docker-compose logs service-name
 
-**Azora OS v3.0.0**  
-**Constitutional AI Operating System**  
-**Production Ready**
+# Check port conflicts
+netstat -tulpn | grep PORT
 
-[![Deploy](https://img.shields.io/badge/Deploy-Now-success?style=for-the-badge)](https://vercel.com)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)](https://azora.world)
+# Check environment
+docker-compose config
+```
 
-</div>
+### Database Connection Issues
+
+```bash
+# Test connection
+psql -h localhost -U azora -d azora
+
+# Check credentials
+echo $DB_PASSWORD
+```
+
+### High Memory Usage
+
+```bash
+# Check resource usage
+docker stats
+
+# Restart service
+docker-compose restart service-name
+```
+
+---
+
+**"Ngiyakwazi ngoba sikwazi"** - Deploying together! 🚀

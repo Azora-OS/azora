@@ -6,8 +6,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 COPY . .
-RUN npm run build
 
-EXPOSE 4300
+EXPOSE 3110
 
 CMD ["npm", "start"]

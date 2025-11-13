@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  firstName       String
+  lastName        String
+  email           String   @unique
+  grade           String?
+  status          String   @default("active")
+  enrolledAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  enrollments     Enrollment[]
+  progress        Progress[]
+  achievements    Achievement[]
+
+  @@index([email])
+  @@index([status])
+  @@map("students")
+}
+
+model Course {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  category        String
+  level           String   @default("beginner")
+  duration        Int
+  instructorId    String
+  status          String   @default("draft")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  enrollments     Enrollment[]
+  modules         Module[]
+
+  @@index([category])
+  @@index([status])
+  @@map("courses")
+}
+
+model Enrollment {
+  id              String   @id @default(uuid())
+  studentId       String
+  courseId        String
+  status          String   @default("active")
+  progress        Float    @default(0)
+  enrolledAt      DateTime @default(now())
+  completedAt     DateTime?
+
+  student         Student  @relation(fields: [studentId], references: [id])
+  course          Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+model Module {
+  id              String   @id @default(uuid())
+  courseId        String
+  title           String
+  description     String?
+  order           Int
+  duration        Int
+  createdAt       DateTime @default(now())
+
+  course          Course   @relation(fields: [courseId], references: [id])
+  lessons         Lesson[]
+
+  @@index([courseId])
+  @@map("modules")
+}
+
+model Lesson {
+  id              String   @id @default(uuid())
+  moduleId        String
+  title           String
+  content         String
+  type            String   @default("video")
+  order           Int
+  duration        Int
+  createdAt       DateTime @default(now())
+
+  module          Module   @relation(fields: [moduleId], references: [id])
+
+  @@index([moduleId])
+  @@map("lessons")
+}
+
+model Progress {
+  id              String   @id @default(uuid())
+  studentId       String
+  courseId        String
+  lessonId        String
+  completed       Boolean  @default(false)
+  timeSpent       Int      @default(0)
+  lastAccessedAt  DateTime @default(now())
+
+  student         Student  @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, lessonId])
+  @@index([studentId])
+  @@map("progress")
+}
+
+model Achievement {
+  id              String   @id @default(uuid())
+  studentId       String
+  type            String
+  title           String
+  description     String
+  points          Int      @default(0)
+  earnedAt        DateTime @default(now())
+
+  student         Student  @relation(fields: [studentId], references: [id])
+
+  @@index([studentId])
+  @@map("achievements")
+}

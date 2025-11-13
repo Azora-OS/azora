@@ -1,61 +1,71 @@
-require('dotenv').config();
-const AzoraPayService = require('./services/azora-pay-service/index.js');
-const LendingService = require('./services/lending-service/index.js');
-const VirtualCardService = require('./services/virtual-card-service/index.js');
-const DecentralizedBanking = require('./services/decentralized-banking/index.js');
-const EmailService = require('./services/email-service/index.js');
-const ComplianceService = require('./services/compliance-service/index.js');
-const ethers = require('ethers');
+const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
-class AzoraOS {
+class DecentralizedBanking {
   constructor() {
-    this.payService = AzoraPayService;
-    this.lending = LendingService;
-    this.cards = VirtualCardService;
-    this.banking = DecentralizedBanking;
-    this.email = EmailService;
-    this.compliance = ComplianceService;
+    this.app = express();
+    this.port = process.env.PORT || 3050;
+    this.data = new Map();
+    this.setupMiddleware();
+    this.setupRoutes();
   }
 
-  async mintAndLend(userAddress, amount) {
-    // Check compliance
-    const kyc = await this.compliance.checkKYC({ name: 'User', idNumber: '123' });
-    if (!kyc.approved) return { error: 'KYC failed' };
-
-    // Mint loan
-    const loan = await this.lending.approveLoan(userAddress, amount);
-    if (loan.error) return loan;
-
-    // Deposit to Aave pool
-    const deposit = await this.banking.depositToPool(process.env.AZR_CONTRACT_ADDRESS, amount);
-    if (deposit.error) return deposit;
-
-    // Send email
-    await this.email.sendEmail(userAddress, 'Loan Approved', `You received ${amount} AZR`);
-
-    return { status: 'Loan approved and deposited', loan, deposit };
+  setupMiddleware() {
+    this.app.use(helmet());
+    this.app.use(cors());
+    this.app.use(compression());
+    this.app.use(express.json());
   }
 
-  async withdrawAndCard(userAddress, amount) {
-    // Borrow from pool
-    const borrow = await this.banking.borrowFromPool(process.env.AZR_CONTRACT_ADDRESS, amount);
-    if (borrow.error) return borrow;
+  setupRoutes() {
+    this.app.get('/health', (req, res) => {
+      res.json({ status: 'healthy', service: 'decentralized-banking', timestamp: new Date().toISOString() });
+    });
 
-    // Issue virtual card
-    const card = await this.cards.issueCard(userAddress, amount);
-    if (card.error) return card;
+    this.app.get('/api/decentralized-banking', this.getAll.bind(this));
+    this.app.post('/api/decentralized-banking', this.create.bind(this));
+    this.app.get('/api/decentralized-banking/:id', this.getById.bind(this));
+    this.app.put('/api/decentralized-banking/:id', this.update.bind(this));
+    this.app.delete('/api/decentralized-banking/:id', this.delete.bind(this));
+  }
 
-    // Withdraw to Luno
-    const withdraw = await this.payService.withdrawToLuno(amount * 18.36); // Convert to ZAR
-    if (withdraw.error) return withdraw;
+  getAll(req, res) {
+    res.json({ data: Array.from(this.data.values()) });
+  }
 
-    return { status: 'Borrowed, card issued, withdrawn', borrow, card, withdraw };
+  create(req, res) {
+    const id = Date.now().toString();
+    const item = { id, ...req.body, createdAt: new Date() };
+    this.data.set(id, item);
+    res.status(201).json(item);
+  }
+
+  getById(req, res) {
+    const item = this.data.get(req.params.id);
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    res.json(item);
+  }
+
+  update(req, res) {
+    const item = this.data.get(req.params.id);
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    Object.assign(item, req.body, { updatedAt: new Date() });
+    res.json(item);
+  }
+
+  delete(req, res) {
+    if (!this.data.has(req.params.id)) return res.status(404).json({ error: 'Not found' });
+    this.data.delete(req.params.id);
+    res.json({ message: 'Deleted successfully' });
+  }
+
+  start() {
+    this.app.listen(this.port, () => console.log(`Decentralized Banking Service running on port ${this.port}`));
   }
 }
 
-module.exports = new AzoraOS();
-
-// Example usage
-const azora = require('./app.js');
-azora.mintAndLend('0xUserAddress', 1000).then(console.log);
-azora.withdrawAndCard('0xUserAddress', 500).then(console.log);
+const service = new DecentralizedBanking();
+if (require.main === module) service.start();
+module.exports = service;

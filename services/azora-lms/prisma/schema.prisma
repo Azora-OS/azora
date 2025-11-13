@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Faculty {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  firstName       String
+  lastName        String
+  email           String   @unique
+  department      String?
+  title           String?
+  bio             String?
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  courses         CourseManagement[]
+  assignments     Assignment[]
+
+  @@index([email])
+  @@map("faculty")
+}
+
+model CourseManagement {
+  id              String   @id @default(uuid())
+  facultyId       String
+  courseCode      String   @unique
+  courseName      String
+  description     String
+  credits         Int
+  semester        String
+  maxStudents     Int      @default(30)
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  faculty         Faculty  @relation(fields: [facultyId], references: [id])
+  assignments     Assignment[]
+  grades          Grade[]
+
+  @@index([facultyId])
+  @@index([courseCode])
+  @@map("course_management")
+}
+
+model Assignment {
+  id              String   @id @default(uuid())
+  courseId        String
+  facultyId       String
+  title           String
+  description     String
+  dueDate         DateTime
+  maxPoints       Int      @default(100)
+  type            String   @default("homework")
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+
+  course          CourseManagement @relation(fields: [courseId], references: [id])
+  faculty         Faculty  @relation(fields: [facultyId], references: [id])
+  submissions     Submission[]
+
+  @@index([courseId])
+  @@index([facultyId])
+  @@map("assignments")
+}
+
+model Submission {
+  id              String   @id @default(uuid())
+  assignmentId    String
+  studentId       String
+  content         String
+  submittedAt     DateTime @default(now())
+  status          String   @default("submitted")
+  grade           Float?
+  feedback        String?
+  gradedAt        DateTime?
+
+  assignment      Assignment @relation(fields: [assignmentId], references: [id])
+
+  @@unique([assignmentId, studentId])
+  @@index([assignmentId])
+  @@index([studentId])
+  @@map("submissions")
+}
+
+model Grade {
+  id              String   @id @default(uuid())
+  courseId        String
+  studentId       String
+  grade           Float
+  letterGrade     String?
+  semester        String
+  comments        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  course          CourseManagement @relation(fields: [courseId], references: [id])
+
+  @@unique([courseId, studentId, semester])
+  @@index([courseId])
+  @@index([studentId])
+  @@map("grades")
+}
+
+model Certificate {
+  id              String   @id @default(uuid())
+  studentId       String
+  courseId        String
+  certificateHash String   @unique
+  issuedAt        DateTime @default(now())
+  expiresAt       DateTime?
+  status          String   @default("active")
+
+  @@index([studentId])
+  @@index([certificateHash])
+  @@map("certificates")
+}

@@ -1,15 +1,13 @@
-/*
-AZORA PROPRIETARY LICENSE
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-*/
-
-import express from 'express';
-import crypto from 'crypto';
+const express = require('express');
+const crypto = require('crypto');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 
 class VirtualCardService {
   constructor() {
     this.app = express();
-    this.port = process.env.VIRTUAL_CARD_PORT || 3007;
+    this.port = process.env.PORT || 3007;
     this.cards = new Map();
     this.transactions = new Map();
     this.setupMiddleware();
@@ -17,18 +15,15 @@ class VirtualCardService {
   }
 
   setupMiddleware() {
+    this.app.use(helmet());
+    this.app.use(cors());
+    this.app.use(compression());
     this.app.use(express.json());
-    this.app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-      next();
-    });
   }
 
   setupRoutes() {
     this.app.get('/health', (req, res) => {
-      res.json({ status: 'healthy', service: 'Virtual Card Service', cards: this.cards.size });
+      res.json({ status: 'healthy', service: 'virtual-card-service', timestamp: new Date().toISOString() });
     });
 
     this.app.post('/api/cards/issue', this.issueCard.bind(this));
@@ -176,14 +171,14 @@ class VirtualCardService {
 
   start() {
     this.app.listen(this.port, () => {
-      console.log(`🎴 Virtual Card Service running on port ${this.port}`);
+      console.log(`Virtual Card Service running on port ${this.port}`);
     });
   }
 }
 
 const service = new VirtualCardService();
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   service.start();
 }
 
-export default service;
+module.exports = service;

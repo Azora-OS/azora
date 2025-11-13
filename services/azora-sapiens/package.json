@@ -1,38 +1,25 @@
 {
   "name": "azora-sapiens",
   "version": "1.0.0",
-  "description": "Azora Sapiens - Universal Education Platform with Global Qualifications Database",
-  "main": "src/index.ts",
+  "description": "AI tutoring, personalized learning, homework help",
+  "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest"
   },
-  "keywords": [
-    "education",
-    "qualifications",
-    "certifications",
-    "degrees",
-    "learning",
-    "blockchain",
-    "azora"
-  ],
+  "keywords": ["azora", "education", "ubuntu", "constitutional-ai"],
   "author": "Azora ES (Pty) Ltd",
-  "license": "PROPRIETARY",
+  "license": "Proprietary",
   "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.0.0",
-    "nodemon": "^3.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
   }
 }

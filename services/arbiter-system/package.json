@@ -1,26 +1,17 @@
 {
-  "name": "@azora/arbiter-system",
+  "name": "arbiter-system",
   "version": "1.0.0",
-  "description": "Decentralized dispute resolution and justice",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Dispute resolution, arbitration, fair judgment",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
-    "@azora/branding": "file:../../packages/branding",
-    "@azora/design-system": "file:../../packages/@azora/design-system",
-    "@azora/telemetry": "file:../../packages/@azora/telemetry",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.13",
-    "@types/express": "^4.17.17",
-    "@types/node": "^20.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
   }
 }

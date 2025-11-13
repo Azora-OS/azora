@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TutoringSession {
+  id              String   @id @default(uuid())
+  studentId       String
+  courseId        String?
+  topic           String
+  duration        Int      @default(0)
+  status          String   @default("active")
+  startedAt       DateTime @default(now())
+  endedAt         DateTime?
+
+  messages        Message[]
+  insights        LearningInsight[]
+
+  @@index([studentId])
+  @@map("tutoring_sessions")
+}
+
+model Message {
+  id              String   @id @default(uuid())
+  sessionId       String
+  role            String
+  content         String
+  timestamp       DateTime @default(now())
+
+  session         TutoringSession @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
+  @@map("messages")
+}
+
+model LearningInsight {
+  id              String   @id @default(uuid())
+  sessionId       String
+  studentId       String
+  insightType     String
+  description     String
+  confidence      Float    @default(0.5)
+  createdAt       DateTime @default(now())
+
+  session         TutoringSession @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
+  @@index([studentId])
+  @@map("learning_insights")
+}
+
+model LearningPath {
+  id              String   @id @default(uuid())
+  studentId       String
+  title           String
+  description     String?
+  difficulty      String   @default("beginner")
+  estimatedHours  Int
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  steps           PathStep[]
+
+  @@index([studentId])
+  @@map("learning_paths")
+}
+
+model PathStep {
+  id              String   @id @default(uuid())
+  pathId          String
+  title           String
+  description     String
+  order           Int
+  resourceType    String
+  resourceId      String?
+  completed       Boolean  @default(false)
+  completedAt     DateTime?
+
+  path            LearningPath @relation(fields: [pathId], references: [id])
+
+  @@index([pathId])
+  @@map("path_steps")
+}
+
+model Question {
+  id              String   @id @default(uuid())
+  studentId       String
+  question        String
+  answer          String?
+  topic           String?
+  difficulty      String?
+  askedAt         DateTime @default(now())
+  answeredAt      DateTime?
+
+  @@index([studentId])
+  @@index([topic])
+  @@map("questions")
+}

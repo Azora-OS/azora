@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model VirtualCard {
+  id              String   @id @default(uuid())
+  userId          String
+  cardNumber      String   @unique
+  cvv             String
+  expiryDate      String
+  balance         Float    @default(0)
+  currency        String   @default("AZR")
+  status          String   @default("active")
+  type            String   @default("standard")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  transactions    Transaction[]
+
+  @@index([userId])
+  @@map("virtual_cards")
+}
+
+model Transaction {
+  id              String   @id @default(uuid())
+  cardId          String
+  amount          Float
+  currency        String   @default("AZR")
+  merchant        String
+  status          String   @default("completed")
+  type            String   @default("purchase")
+  createdAt       DateTime @default(now())
+
+  card            VirtualCard @relation(fields: [cardId], references: [id])
+
+  @@index([cardId])
+  @@map("transactions")
+}
