@@ -1,84 +1,449 @@
 version: '3.8'
 
 services:
-  mongodb:
-    image: mongo:7
+  # AI Family Service - 11 AI personalities with relationships
+  ai-family-service:
+    build:
+      context: ./ai-family-service
+      dockerfile: Dockerfile
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
+      - "4010:4010"
     environment:
-      MONGO_INITDB_DATABASE: azora-education
+      - NODE_ENV=production
+      - PORT=4010
+      - SERVICE_NAME=ai-family-service
+    volumes:
+      - ./ai-family-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4010/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ai-family.rule=Host(`ai-family.azora.local`)"
+      - "traefik.http.services.ai-family.loadbalancer.server.port=4010"
 
+  # Azora Sapiens - AI Tutoring Service
+  azora-sapiens:
+    build:
+      context: ./azora-sapiens
+      dockerfile: Dockerfile
+    ports:
+      - "4011:4011"
+    environment:
+      - NODE_ENV=production
+      - PORT=4011
+      - SERVICE_NAME=azora-sapiens
+    volumes:
+      - ./azora-sapiens:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sapiens.rule=Host(`sapiens.azora.local`)"
+      - "traefik.http.services.sapiens.loadbalancer.server.port=4011"
+
+  # Azora Mint - Mining and Token Service
+  azora-mint:
+    build:
+      context: ./azora-mint
+      dockerfile: Dockerfile
+    ports:
+      - "4012:4012"
+    environment:
+      - NODE_ENV=production
+      - PORT=4012
+      - SERVICE_NAME=azora-mint
+    volumes:
+      - ./azora-mint:/app
+      - /app/node_modules
+      - blockchain-data:/app/data
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4012/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mint.rule=Host(`mint.azora.local`)"
+      - "traefik.http.services.mint.loadbalancer.server.port=4012"
+
+  # Azora Forge - Job Matching Service
+  azora-forge:
+    build:
+      context: ./azora-forge
+      dockerfile: Dockerfile
+    ports:
+      - "4013:4013"
+    environment:
+      - NODE_ENV=production
+      - PORT=4013
+      - SERVICE_NAME=azora-forge
+    volumes:
+      - ./azora-forge:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4013/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.forge.rule=Host(`forge.azora.local`)"
+      - "traefik.http.services.forge.loadbalancer.server.port=4013"
+
+  # Azora LMS - Learning Management System
+  azora-lms:
+    build:
+      context: ./azora-lms
+      dockerfile: Dockerfile
+    ports:
+      - "4015:4015"
+    environment:
+      - NODE_ENV=production
+      - PORT=4015
+      - SERVICE_NAME=azora-lms
+    volumes:
+      - ./azora-lms:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4015/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Azora Nexus - Event Bus and Service Orchestration
+  azora-nexus:
+    build:
+      context: ./azora-nexus
+      dockerfile: Dockerfile
+    ports:
+      - "4016:4016"
+    environment:
+      - NODE_ENV=production
+      - PORT=4016
+      - SERVICE_NAME=azora-nexus
+    volumes:
+      - ./azora-nexus:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4016/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Analytics Service - Real-time Analytics
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    ports:
+      - "4017:4017"
+    environment:
+      - NODE_ENV=production
+      - PORT=4017
+      - SERVICE_NAME=analytics-service
+    volumes:
+      - ./analytics-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4017/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Azora Aegis - Security Framework
+  azora-aegis:
+    build:
+      context: ./azora-aegis
+      dockerfile: Dockerfile
+    ports:
+      - "4018:4018"
+    environment:
+      - NODE_ENV=production
+      - PORT=4018
+      - SERVICE_NAME=azora-aegis
+    volumes:
+      - ./azora-aegis:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4018/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Master UI Service - UI Template Deployment
+  master-ui-service:
+    build:
+      context: ./master-ui-service
+      dockerfile: Dockerfile
+    ports:
+      - "4019:4019"
+    environment:
+      - NODE_ENV=production
+      - PORT=4019
+      - SERVICE_NAME=master-ui-service
+    volumes:
+      - ./master-ui-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4019/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Mobile Service - Mobile App Development
+  mobile-service:
+    build:
+      context: ./mobile-service
+      dockerfile: Dockerfile
+    ports:
+      - "4020:4020"
+    environment:
+      - NODE_ENV=production
+      - PORT=4020
+      - SERVICE_NAME=mobile-service
+    volumes:
+      - ./mobile-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4020/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # API Integration Service - Frontend-Backend Integration
+  api-integration-service:
+    build:
+      context: ./api-integration-service
+      dockerfile: Dockerfile
+    ports:
+      - "4021:4021"
+    environment:
+      - NODE_ENV=production
+      - PORT=4021
+      - SERVICE_NAME=api-integration-service
+    volumes:
+      - ./api-integration-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4021/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Database Service - Schema Management
+  database-service:
+    build:
+      context: ./database-service
+      dockerfile: Dockerfile
+    ports:
+      - "4022:4022"
+    environment:
+      - NODE_ENV=production
+      - PORT=4022
+      - SERVICE_NAME=database-service
+    volumes:
+      - ./database-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4022/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Testing Service - Automated Testing
+  testing-service:
+    build:
+      context: ./testing-service
+      dockerfile: Dockerfile
+    ports:
+      - "4023:4023"
+    environment:
+      - NODE_ENV=production
+      - PORT=4023
+      - SERVICE_NAME=testing-service
+    volumes:
+      - ./testing-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4023/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # DevOps Service - CI/CD Pipeline Management
+  devops-service:
+    build:
+      context: ./devops-service
+      dockerfile: Dockerfile
+    ports:
+      - "4024:4024"
+    environment:
+      - NODE_ENV=production
+      - PORT=4024
+      - SERVICE_NAME=devops-service
+    volumes:
+      - ./devops-service:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4024/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Redis for caching and session management
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - azora-network
+    command: redis-server --appendonly yes
+    restart: unless-stopped
 
-  assessment:
-    build: ./azora-assessment
+  # PostgreSQL for persistent data
+  postgres:
+    image: postgres:15-alpine
     ports:
-      - "4202:4202"
+      - "5432:5432"
     environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
-    depends_on:
-      - mongodb
+      - POSTGRES_DB=azora_os
+      - POSTGRES_USER=azora
+      - POSTGRES_PASSWORD=ubuntu_philosophy
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - azora-network
+    restart: unless-stopped
 
-  content:
-    build: ./azora-content
+  # Nginx reverse proxy and load balancer
+  nginx:
+    image: nginx:alpine
     ports:
-      - "4203:4203"
-    environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    networks:
+      - azora-network
     depends_on:
-      - mongodb
+      - ai-family-service
+      - azora-sapiens
+      - azora-mint
+      - azora-forge
+      - azora-lms
+      - azora-nexus
+      - analytics-service
+      - azora-aegis
+      - master-ui-service
+      - mobile-service
+      - api-integration-service
+      - database-service
+      - testing-service
+      - devops-service
+    restart: unless-stopped
 
-  analytics:
-    build: ./azora-analytics
+  # Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus:latest
     ports:
-      - "4204:4204"
-    environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
-    depends_on:
-      - mongodb
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - azora-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
 
-  credentials:
-    build: ./azora-credentials
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
     ports:
-      - "4205:4205"
+      - "3000:3000"
     environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
-    depends_on:
-      - mongodb
+      - GF_SECURITY_ADMIN_PASSWORD=ubuntu_philosophy
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - azora-network
+    restart: unless-stopped
 
-  collaboration:
-    build: ./azora-collaboration
-    ports:
-      - "4206:4206"
-    environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - mongodb
-      - redis
-
-  payments:
-    build: ./azora-education-payments
-    ports:
-      - "4207:4207"
-    environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
-    depends_on:
-      - mongodb
-
-  media:
-    build: ./azora-media
-    ports:
-      - "4208:4208"
-    environment:
-      - DATABASE_URI=mongodb://mongodb:27017/azora-education
-    depends_on:
-      - mongodb
+networks:
+  azora-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 volumes:
-  mongo-data:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  blockchain-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local

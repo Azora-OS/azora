@@ -64,7 +64,7 @@ async function deployToService(servicePath: string, serviceName: string): Promis
     // Add design system dependency if not present
     if (!packageJson.dependencies?.['@azora/shared-design']) {
       packageJson.dependencies = packageJson.dependencies || {};
-      packageJson.dependencies['@azora/shared-design'] = 'workspace:*';
+      packageJson.dependencies['@azora/shared-design'] = 'file:../../packages/@azora/design-system';
       
       // Write updated package.json
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));

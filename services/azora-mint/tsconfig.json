@@ -13,10 +13,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node16",
-    "types": [
-      "node",
-      "jest"
-    ],
+
     "skipLibCheck": true
   },
   "include": [
