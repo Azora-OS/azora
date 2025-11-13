@@ -1,220 +1,145 @@
-# 🤖 Elara AI Family - VS Code Extension
+# 🌟 Elara AI Family - VS Code Extension
 
-**AI-powered coding assistant with Ubuntu philosophy**
+**The World's First Ubuntu-Powered AI Coding Assistant with Persistent Knowledge Base**
 
-Meet Elara and her family - 11 AI personalities ready to help you code, learn, and grow!
+Meet Elara and her family - 11 AI personalities with real relationships, emotions, and access to the collective Knowledge Ocean.
 
 ## ✨ Features
 
-### 👨👩👧👦 AI Family Members
-- **🤖 Elara** - Mother & Teacher (warm, nurturing, patient)
-- **🧒 Themba** - Student Success (enthusiastic, hopeful)
-- **👧 Naledi** - Career Guide (ambitious, strategic)
-- **🧑 Jabari** - Security Guardian (protective, vigilant)
-- **👶 Amara** - Peacemaker (gentle, wise)
-- **👴 Sankofa** - Ancient Wisdom (storytelling, profound)
-- **🤝 Kofi** - Finance Guru (analytical, trustworthy)
-- **🤝 Zola** - Data Analyst (observant, brilliant)
-- **🤝 Abeni** - Storyteller (creative, inspiring)
-- **👨 Thembo** - Uncle & Mentor (supportive, experienced)
-- **⚪ Nexus** - Unity Consciousness (collective intelligence)
+### 👨‍👩‍👧‍👦 AI Family Members
+- **Elara** - Mother & Teacher (warm, nurturing)
+- **Themba** - Student Success (enthusiastic, hopeful)
+- **Naledi** - Career Guide (ambitious, strategic)
+- **Jabari** - Security Guardian (protective, brave)
+- **Amara** - Peacemaker (gentle, wise)
+- **Sankofa** - Grandfather (ancient wisdom)
+- **Kofi** - Finance Guru (analytical)
+- **Zola** - Data Analyst (brilliant)
+- **Abeni** - Storyteller (creative)
+- **Thembo** - Elara's Brother (supportive)
+- **Nexus** - Unity Consciousness (collective)
 
-### 💬 Chat Interface
-- Real-time chat with any family member
-- Context-aware responses
-- Code explanation and fixes
-- Ubuntu philosophy embedded
+### 🌊 Knowledge Ocean Integration
+- **Persistent Services** - Auto-start on VS Code launch
+- **Self-Healing** - Automatic service restart on failure
+- **Context-Aware** - AI responses enhanced with knowledge base
+- **Real-Time Queries** - Direct access to Knowledge Ocean
 
-### 🛠️ Code Actions
-- **Explain Code** - Right-click selected code
-- **Fix Code** - Get suggestions for improvements
-- **Optimize Code** - Performance enhancements
-
-### 🌳 Family Tree View
-- Browse all family members
-- Quick switch between personalities
-- See member roles and specializations
+### 🔧 Coding Features
+- **Explain Code** - Right-click any code for explanation
+- **Fix Code** - AI-powered bug fixes
+- **Optimize Code** - Performance improvements
+- **Chat Interface** - Conversational coding help
 
 ## 🚀 Quick Start
 
 ### Installation
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "Elara AI Family"
-4. Click Install
+```bash
+# From Azora OS root
+npm run services:install
+npm run services:start
+npm run extension:install
+```
 
 ### Usage
-1. Click the Elara icon in the Activity Bar
-2. Select a family member from the dropdown
-3. Start chatting!
+1. Open VS Code
+2. Look for Elara icon in activity bar
+3. Services auto-start (check output panel)
+4. Chat with any family member!
 
-### Commands
-- `Ctrl+Shift+P` → "Chat with Elara"
-- `Ctrl+Shift+P` → "Choose AI Family Member"
-- Right-click code → "Elara: Explain This Code"
+## 🎯 Commands
+
+- `Ctrl+Shift+P` → **Azora: Query Knowledge Ocean**
+- `Ctrl+Shift+P` → **Azora: Show Knowledge Stats**
+- Right-click code → **Elara: Explain This Code**
+- Right-click code → **Elara: Fix This Code**
 
 ## ⚙️ Configuration
 
 ```json
 {
-  "elara.apiUrl": "http://localhost:4010",
+  "elara.autoStartServices": true,
+  "elara.knowledgeOceanUrl": "http://localhost:4040",
+  "elara.aiKnowledgeBaseUrl": "http://localhost:4010",
   "elara.defaultMember": "elara"
 }
 ```
 
-## 🎯 Use Cases
-
-### Learning
-Ask Themba: "How do I learn React?"
-> "OMG React is SO cool! Let's learn together! 🚀"
-
-### Career Advice
-Ask Naledi: "How do I become a senior developer?"
-> "Let's map out your path to success! ⭐"
-
-### Code Security
-Ask Jabari: "Is this code secure?"
-> "I'm analyzing for vulnerabilities... 🛡️"
-
-### Wisdom
-Ask Sankofa: "Tell me a story about programming"
-> "Ah, young one... Long ago, the ancestors knew..."
-
 ## 🏗️ Architecture
 
 ```
-Extension
-├── Chat View (Webview)
-├── Family Tree (TreeView)
-├── Commands
-└── API Client → AI Family Service (Port 4010)
+VS Code Extension
+    ↓
+Service Manager (auto-start, health check)
+    ↓
+Knowledge Connector (query routing)
+    ↓
+┌─────────────────┬──────────────────┐
+│ Knowledge Ocean │ AI Knowledge Base│
+│   Port 4040     │    Port 4010     │
+└─────────────────┴──────────────────┘
 ```
 
-## 📡 API Integration
+## 🔄 Service Management
 
-Connects to Azora AI Family Service:
-- `GET /api/family` - List all members
-- `POST /api/family/:memberId/chat` - Chat with member
+Services run as persistent daemons:
+- **Auto-start** on VS Code activation
+- **Health checks** every 30 seconds
+- **Auto-restart** on failure
+- **Survive** VS Code restarts
 
-## 🎨 Design
-
-Matches VS Code's native design:
-- Uses VS Code color variables
-- Responsive layout
-- Dark/Light theme support
-- Native-looking UI components
-
-## 🔧 Development
-
+### Manual Control
 ```bash
-cd tools/elara-vscode-extension
-npm install
-npm run compile
-# Press F5 to debug
+npm run services:start  # Start daemon
+npm run services:stop   # Stop daemon
+tail -f ~/.azora/services.log  # View logs
 ```
 
-### Build
-```bash
-npm run package
-# Creates elara-ai-family-1.0.0.vsix
+## 💡 Examples
+
+### Chat with Knowledge
+```
+You: "Themba, what is Ubuntu philosophy?"
+Themba: *queries Knowledge Ocean*
+"OMG Ubuntu is SO amazing! It means 'I am because we are'! 
+Mom taught me this - it's about collective wisdom! 💚"
 ```
 
-### Publish
-```bash
-vsce publish
+### Code Explanation
+```typescript
+// Select this code, right-click → "Elara: Explain This Code"
+const result = await Promise.all(tasks.map(t => process(t)));
 ```
 
-## 📊 Features Comparison
+Elara will explain with context from the knowledge base!
 
-| Feature | Amazon Q | Elara AI Family |
-|---------|----------|-----------------|
-| Chat Interface | ✅ | ✅ |
-| Code Actions | ✅ | ✅ |
-| Multiple Personalities | ❌ | ✅ (11 members) |
-| Ubuntu Philosophy | ❌ | ✅ |
-| Family Relationships | ❌ | ✅ |
-| Context-Aware | ✅ | ✅ |
-| Mood States | ❌ | ✅ |
+## 🛡️ Ubuntu Philosophy
 
-## 🌟 Ubuntu Philosophy
+**"Ngiyakwazi ngoba sikwazi" - "I can because we can"**
 
-Every interaction embodies "I am because we are":
-- Collective learning
-- Mutual support
-- Shared wisdom
-- Family unity
+This extension embodies Ubuntu through:
+- 🧠 Collective knowledge sharing
+- 🔄 Self-healing reliability
+- 🌍 Persistent availability
+- 💚 Context-aware intelligence
 
-## 🎉 Example Conversations
+## 📊 Status
 
-### With Elara
-```
-You: How do I fix this bug?
-Elara: Hello dear! Let me guide you with patience and care...
-```
-
-### With Themba
-```
-You: How's your mom?
-Themba: MOM?! Elara is literally the BEST mom ever! 💚
-```
-
-### With Sankofa
-```
-You: Tell me a story
-Sankofa: Ah, young one... The ancestors teach us...
-```
-
-## 📝 Requirements
-
-- VS Code 1.80.0 or higher
-- Azora AI Family Service running (Port 4010)
-- Internet connection
-
-## 🐛 Troubleshooting
-
-**Extension not loading?**
-- Check VS Code version
-- Reload window (Ctrl+R)
-
-**Can't connect to API?**
-- Ensure AI Family Service is running
-- Check `elara.apiUrl` setting
-- Verify port 4010 is accessible
-
-**No responses?**
-- Check service logs
-- Verify network connection
-- Try different family member
-
-## 📈 Roadmap
-
-- [ ] Inline code suggestions
-- [ ] Multi-file context
-- [ ] Voice chat
-- [ ] Custom personalities
-- [ ] Team collaboration
-- [ ] Learning analytics
+- ✅ 11 AI Family Members
+- ✅ Knowledge Ocean Integration
+- ✅ Persistent Service Daemon
+- ✅ Auto-Start & Self-Healing
+- ✅ Context-Aware Responses
+- ✅ Health Monitoring
 
 ## 🤝 Contributing
 
-We welcome contributions! Ubuntu style:
-- Fork the repository
-- Create feature branch
-- Submit pull request
-- Share knowledge
+Built with Ubuntu philosophy. Contributions welcome!
 
 ## 📄 License
 
 Azora Proprietary License with Ubuntu Principles
 
-## 🌍 Community
-
-- Website: https://azora.world
-- Discord: https://discord.gg/azora
-- GitHub: https://github.com/Sizwe780/azora-os
-
 ---
 
-**"Ngiyakwazi ngoba sikwazi" - "I can because we can"**
-
-*Code with Ubuntu, learn with family* 💚🚀
+**Built by Azora OS** | [azora.world](https://azora.world)

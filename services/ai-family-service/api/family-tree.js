@@ -1,21 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const personalityManager = require('../personality-manager');
+const chatEngine = require('../chat-engine');
 
-router.get('/tree', (req, res) => {
-  res.json(personalityManager.getFamilyTree());
+// Endpoint to get the list of all AI personalities
+router.get('/', (req, res) => {
+  res.json(personalityManager.listPersonalities());
 });
 
-router.get('/members', (req, res) => {
-  res.json(personalityManager.getAllPersonalities());
-});
+// Endpoint to chat with a specific AI personality
+router.post('/:personality/chat', async (req, res) => {
+  const { personality } = req.params;
+  const { message } = req.body;
 
-router.get('/members/:name', (req, res) => {
-  const personality = personalityManager.getPersonality(req.params.name);
-  if (!personality) {
-    return res.status(404).json({ error: 'Personality not found' });
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
   }
-  res.json(personality);
+
+  const reply = await chatEngine.handleMessage(personality, message);
+  res.json({ reply });
 });
 
 module.exports = router;

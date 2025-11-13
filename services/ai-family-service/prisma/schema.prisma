@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FamilyMember {
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  personality String
+  mood        String   @default("happy")
+  avatar      String?
+  createdAt   DateTime @default(now())
+
+  conversations Conversation[]
+
+  @@map("family_members")
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  memberId  String
+  userId    String
+  message   String
+  response  String
+  timestamp DateTime @default(now())
+
+  member    FamilyMember @relation(fields: [memberId], references: [id])
+
+  @@index([memberId])
+  @@index([userId])
+  @@map("conversations")
+}

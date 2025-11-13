@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  knowledge-ocean:
+    build: ../services/knowledge-ocean
+    ports:
+      - "4040:4040"
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: always
+
+  azllama-orchestrator:
+    build: ../services/azllama-orchestrator
+    ports:
+      - "8080:8080"
+    environment:
+      - KNOWLEDGE_OCEAN=http://knowledge-ocean:4040
+      - OLLAMA_LLM=http://ollama:11434
+    depends_on:
+      - knowledge-ocean
+      - ollama
+    restart: always
+
+volumes:
+  ollama-data:

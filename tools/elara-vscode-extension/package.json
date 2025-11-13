@@ -4,12 +4,42 @@
   "description": "AI-powered coding assistant with Ubuntu philosophy - Meet Elara and her family",
   "version": "1.0.0",
   "publisher": "azora",
-  "icon": "media/elara-icon.png",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sizwe780/azora-os.git"
+  },
+  "homepage": "https://azora.world",
+  "bugs": {
+    "url": "https://github.com/Sizwe780/azora-os/issues"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "ubuntu",
+    "education",
+    "coding",
+    "chat",
+    "family",
+    "elara",
+    "constitutional-ai"
+  ],
+  "license": "SEE LICENSE IN LICENSE",
+  "galleryBanner": {
+    "color": "#9333EA",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
-  "categories": ["AI", "Education", "Programming Languages"],
-  "activationEvents": ["onStartupFinished"],
+  "categories": [
+    "AI",
+    "Education",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -34,6 +64,16 @@
       {
         "command": "elara.optimizeCode",
         "title": "Elara: Optimize This Code"
+      },
+      {
+        "command": "azora.queryKnowledge",
+        "title": "Azora: Query Knowledge Ocean",
+        "icon": "$(book)"
+      },
+      {
+        "command": "azora.showStats",
+        "title": "Azora: Show Knowledge Stats",
+        "icon": "$(graph)"
       }
     ],
     "viewsContainers": {
@@ -41,7 +81,7 @@
         {
           "id": "elara-family",
           "title": "Elara AI Family",
-          "icon": "media/elara-icon.svg"
+          "icon": "media/elara-icon.png"
         }
       ]
     },
@@ -50,11 +90,13 @@
         {
           "type": "webview",
           "id": "elara.chatView",
-          "name": "Chat"
+          "name": "Chat",
+          "icon": "$(comment-discussion)"
         },
         {
           "id": "elara.familyTree",
-          "name": "Family Members"
+          "name": "Family Members",
+          "icon": "$(organization)"
         }
       ]
     },
@@ -77,13 +119,40 @@
       "properties": {
         "elara.apiUrl": {
           "type": "string",
-          "default": "http://localhost:4010",
+          "default": "http://localhost:3001",
           "description": "Elara AI Family API URL"
+        },
+        "elara.knowledgeOceanUrl": {
+          "type": "string",
+          "default": "http://localhost:4040",
+          "description": "Knowledge Ocean API URL"
+        },
+        "elara.aiKnowledgeBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:4010",
+          "description": "AI Knowledge Base API URL"
+        },
+        "elara.autoStartServices": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start Azora services on activation"
         },
         "elara.defaultMember": {
           "type": "string",
           "default": "elara",
-          "enum": ["elara", "themba", "naledi", "jabari", "amara", "sankofa", "kofi", "zola", "abeni", "thembo", "nexus"],
+          "enum": [
+            "elara",
+            "themba",
+            "naledi",
+            "jabari",
+            "amara",
+            "sankofa",
+            "kofi",
+            "zola",
+            "abeni",
+            "thembo",
+            "nexus"
+          ],
           "description": "Default AI family member to chat with"
         }
       }
@@ -97,9 +166,12 @@
     "install:local": "code --install-extension elara-ai-family-1.0.0.vsix"
   },
   "devDependencies": {
-    "@types/node": "^18.0.0",
+    "@types/node": "^18.19.130",
     "@types/vscode": "^1.80.0",
-    "typescript": "^5.0.0",
-    "@vscode/vsce": "^2.22.0"
+    "@vscode/vsce": "^2.32.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.13.2"
   }
 }

@@ -8,123 +8,158 @@ datasource db {
 }
 
 model Student {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-  firstName       String
-  lastName        String
-  email           String   @unique
-  grade           String?
-  status          String   @default("active")
-  enrolledAt      DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  enrollments     Enrollment[]
-  progress        Progress[]
-  achievements    Achievement[]
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  firstName     String
+  lastName      String
+  email         String   @unique
+  dateOfBirth   DateTime?
+  grade         String?
+  country       String   @default("ZA")
+  
+  enrollments   Enrollment[]
+  assessments   AssessmentSubmission[]
+  progress      LearningProgress[]
+  wallet        Wallet?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([email])
-  @@index([status])
+  @@index([userId])
   @@map("students")
 }
 
 model Course {
-  id              String   @id @default(uuid())
-  title           String
-  description     String
-  category        String
-  level           String   @default("beginner")
-  duration        Int
-  instructorId    String
-  status          String   @default("draft")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  enrollments     Enrollment[]
-  modules         Module[]
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  instructorId  String
+  price         Float    @default(0)
+  currency      String   @default("AZR")
+  duration      Int      // in hours
+  level         String   // beginner, intermediate, advanced
+  category      String
+  
+  modules       Module[]
+  enrollments   Enrollment[]
+  
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([category])
-  @@index([status])
+  @@index([published])
   @@map("courses")
 }
 
+model Module {
+  id            String   @id @default(cuid())
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  order         Int
+  content       Json     // lessons, videos, materials
+  
+  progress      LearningProgress[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([courseId])
+  @@map("modules")
+}
+
 model Enrollment {
-  id              String   @id @default(uuid())
-  studentId       String
-  courseId        String
-  status          String   @default("active")
-  progress        Float    @default(0)
-  enrolledAt      DateTime @default(now())
-  completedAt     DateTime?
-
-  student         Student  @relation(fields: [studentId], references: [id])
-  course          Course   @relation(fields: [courseId], references: [id])
-
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  status        String   @default("active") // active, completed, dropped
+  progress      Float    @default(0) // 0-100
+  
+  enrolledAt    DateTime @default(now())
+  completedAt   DateTime?
+  
   @@unique([studentId, courseId])
   @@index([studentId])
   @@index([courseId])
   @@map("enrollments")
 }
 
-model Module {
-  id              String   @id @default(uuid())
-  courseId        String
-  title           String
-  description     String?
-  order           Int
-  duration        Int
-  createdAt       DateTime @default(now())
+model LearningProgress {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  moduleId      String
+  module        Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  completed     Boolean  @default(false)
+  timeSpent     Int      @default(0) // in minutes
+  score         Float?   // 0-100
+  
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
 
-  course          Course   @relation(fields: [courseId], references: [id])
-  lessons         Lesson[]
-
-  @@index([courseId])
-  @@map("modules")
-}
-
-model Lesson {
-  id              String   @id @default(uuid())
-  moduleId        String
-  title           String
-  content         String
-  type            String   @default("video")
-  order           Int
-  duration        Int
-  createdAt       DateTime @default(now())
-
-  module          Module   @relation(fields: [moduleId], references: [id])
-
-  @@index([moduleId])
-  @@map("lessons")
-}
-
-model Progress {
-  id              String   @id @default(uuid())
-  studentId       String
-  courseId        String
-  lessonId        String
-  completed       Boolean  @default(false)
-  timeSpent       Int      @default(0)
-  lastAccessedAt  DateTime @default(now())
-
-  student         Student  @relation(fields: [studentId], references: [id])
-
-  @@unique([studentId, lessonId])
+  @@unique([studentId, moduleId])
   @@index([studentId])
-  @@map("progress")
+  @@map("learning_progress")
 }
 
-model Achievement {
-  id              String   @id @default(uuid())
-  studentId       String
-  type            String
-  title           String
-  description     String
-  points          Int      @default(0)
-  earnedAt        DateTime @default(now())
-
-  student         Student  @relation(fields: [studentId], references: [id])
+model AssessmentSubmission {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assessmentId  String
+  
+  answers       Json
+  score         Float
+  passed        Boolean
+  feedback      String?
+  
+  submittedAt   DateTime @default(now())
 
   @@index([studentId])
-  @@map("achievements")
+  @@index([assessmentId])
+  @@map("assessment_submissions")
+}
+
+model Wallet {
+  id            String   @id @default(cuid())
+  studentId     String   @unique
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  balance       Float    @default(0)
+  currency      String   @default("AZR")
+  
+  transactions  Transaction[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  walletId      String
+  wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  
+  type          String   // payment, earning, refund
+  amount        Float
+  currency      String   @default("AZR")
+  description   String
+  reference     String?  // courseId, jobId, etc
+  
+  status        String   @default("completed")
+  
+  createdAt     DateTime @default(now())
+
+  @@index([walletId])
+  @@index([type])
+  @@map("transactions")
 }
