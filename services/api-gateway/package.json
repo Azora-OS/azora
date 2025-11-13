@@ -9,8 +9,8 @@
   "dependencies": {
     "@azora/branding": "file:../../packages/branding",
     "@azora/design-system": "file:../../packages/@azora/design-system",
-    "@azora/shared-infrastructure": "workspace:*",
-    "@azora/shared-services": "workspace:*",
+    "@azora/shared-infrastructure": "file:../../packages/shared-infrastructure",
+    "@azora/shared-services": "file:../../packages/shared-services",
     "@azora/telemetry": "file:../../packages/@azora/telemetry",
     "cors": "^2.8.5",
     "express": "^5.1.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@azora/mint-service",
+  "name": "@azora/mint-service-v2",
   "version": "1.0.0",
   "description": "NFT Minting service for Azora OS",
   "main": "index.js",
