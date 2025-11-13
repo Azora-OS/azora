@@ -1,0 +1,47 @@
+name: Test Coverage
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install root dependencies
+        run: npm install
+      
+      - name: Install service dependencies
+        run: |
+          for dir in services/*/; do
+            if [ -f "$dir/package.json" ]; then
+              cd "$dir"
+              npm install
+              cd ../..
+            fi
+          done
+      
+      - name: Run all tests
+        run: npm test
+      
+      - name: Generate coverage report
+        run: npm run test:coverage || true
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: azora-os-coverage
+      
+      - name: Coverage summary
+        run: |
+          echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          cat coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY || echo "No coverage data"

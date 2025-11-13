@@ -1,3 +1,4 @@
+
 /*
 AZORA PROPRIETARY LICENSE
 Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
@@ -7,6 +8,7 @@ Real-time performance monitoring and optimization recommendations
 */
 
 import { chronicleMetrics } from './metrics';
+import { hybridStorage } from './hybrid-storage';
 
 interface PerformanceSnapshot {
   timestamp: Date;
@@ -256,9 +258,21 @@ export class PerformanceTracker {
       ? (this.counters.apiErrors / this.counters.apiRequests) * 100
       : 0;
 
+    // Get storage statistics from HybridStorage
+    const storageStats = await hybridStorage.getStats();
+
     // Update Prometheus metrics
     chronicleMetrics.updateServiceUptime(uptime);
-
+    chronicleMetrics.updateBlockchainLatency(process.env.BLOCKCHAIN_NETWORK || 'unknown', avgBlockchainLatency);
+    chronicleMetrics.updateStorageStats({
+        memoriesInCache: storageStats.memoriesInCache,
+        thoughtsInCache: storageStats.thoughtsInCache,
+        memoriesOnChain: storageStats.memoriesOnChain,
+        thoughtsOnChain: storageStats.thoughtsOnChain,
+        cacheHitRate: storageStats.cacheHitRate,
+        evolutionLevel: storageStats.evolutionLevel,
+    });
+    
     const snapshot: PerformanceSnapshot = {
       timestamp: new Date(),
       metrics: {
@@ -266,7 +280,7 @@ export class PerformanceTracker {
         thoughtsPerSecond: this.counters.thoughtsRecorded / uptime,
         avgBlockchainLatency,
         avgCacheLatency,
-        cacheHitRate: 0, // Will be updated by hybrid storage
+        cacheHitRate: storageStats.cacheHitRate, // Will be updated by hybrid storage
         blockchainSuccessRate,
         apiRequestsPerSecond: this.counters.apiRequests / uptime,
         avgResponseTime,

@@ -1,60 +1,37 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
-const compression = require('compression');
 
-class MessagingService {
-  constructor() {
-    this.app = express();
-    this.port = process.env.PORT || 3061;
-    this.data = new Map();
-    this.setupMiddleware();
-    this.setupRoutes();
-  }
+const app = express();
+const port = process.env.PORT || 3046;
+const messages = [];
 
-  setupMiddleware() {
-    this.app.use(helmet());
-    this.app.use(cors());
-    this.app.use(compression());
-    this.app.use(express.json());
-  }
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
 
-  setupRoutes() {
-    this.app.get('/health', (req, res) => {
-      res.json({ status: 'healthy', service: 'messaging-service', timestamp: new Date().toISOString(), items: this.data.size });
-    });
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'messaging-service', messages: messages.length });
+});
 
-    this.app.post('/api/messaging', this.sendMessage.bind(this));
-    this.app.get('/api/messaging', this.getMessages.bind(this));
-    this.app.post('/api/messaging', this.subscribe.bind(this));
-  }
+app.post('/api/messages', (req, res) => {
+  const { from, to, content } = req.body;
+  const message = { id: Date.now().toString(), from, to, content, read: false, sentAt: new Date() };
+  messages.push(message);
+  res.json({ success: true, message });
+});
 
-  sendMessage(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
+app.get('/api/messages/:userId', (req, res) => {
+  const userMessages = messages.filter(m => m.to === req.params.userId || m.from === req.params.userId);
+  res.json({ success: true, messages: userMessages });
+});
 
-  getMessages(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
+app.patch('/api/messages/:id/read', (req, res) => {
+  const message = messages.find(m => m.id === req.params.id);
+  if (!message) return res.status(404).json({ error: 'Not found' });
+  message.read = true;
+  res.json({ success: true, message });
+});
 
-  subscribe(req, res) {
-    const id = Date.now().toString();
-    const item = { id, ...req.body, createdAt: new Date() };
-    this.data.set(id, item);
-    res.status(201).json(item);
-  }
-
-  start() {
-    this.app.listen(this.port, () => console.log(`messaging-service running on port ${this.port}`));
-  }
-}
-
-const service = new MessagingService();
-if (require.main === module) service.start();
-module.exports = service;
+app.listen(port, () => console.log(`Messaging Service on port ${port}`));
+module.exports = app;

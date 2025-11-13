@@ -74,7 +74,7 @@ router.get('/services/status', async (req, res) => {
 /**
  * Design API Routes (wallet, progress, health, dashboard)
  */
-router.get('/design/wallet-balance', authenticateSession, async (req, res) => {
+router.get('/design/wallet-balance', tempAuthenticateSession, async (req, res) => {
   try {
     const { designDataService } = require('@azora/shared-design/data-service');
     const userId = req.user?.userId;
@@ -88,7 +88,7 @@ router.get('/design/wallet-balance', authenticateSession, async (req, res) => {
   }
 });
 
-router.get('/design/student-progress', authenticateSession, async (req, res) => {
+router.get('/design/student-progress', tempAuthenticateSession, async (req, res) => {
   try {
     const { designDataService } = require('@azora/shared-design/data-service');
     const userId = req.user?.userId;
@@ -112,7 +112,7 @@ router.get('/design/health-check', async (req, res) => {
   }
 });
 
-router.get('/design/dashboard', authenticateSession, async (req, res) => {
+router.get('/design/dashboard', tempAuthenticateSession, async (req, res) => {
   try {
     const { designDataService } = require('@azora/shared-design/data-service');
     const userId = req.user?.userId;
@@ -129,7 +129,7 @@ router.get('/design/dashboard', authenticateSession, async (req, res) => {
 /**
  * LMS Routes (courses, enrollments, progress)
  */
-router.get('/lms/courses', authenticateSession, async (req, res) => {
+router.get('/lms/courses', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const lmsUrl = serviceRegistry.getServiceUrl('lms');
@@ -146,7 +146,7 @@ router.get('/lms/courses', authenticateSession, async (req, res) => {
   }
 });
 
-router.post('/lms/enrollments', authenticateSession, async (req, res) => {
+router.post('/lms/enrollments', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const lmsUrl = serviceRegistry.getServiceUrl('lms');
@@ -168,7 +168,7 @@ router.post('/lms/enrollments', authenticateSession, async (req, res) => {
   }
 });
 
-router.patch('/lms/enrollments/:id/progress', authenticateSession, async (req, res) => {
+router.patch('/lms/enrollments/:id/progress', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const lmsUrl = serviceRegistry.getServiceUrl('lms');
@@ -193,7 +193,7 @@ router.patch('/lms/enrollments/:id/progress', authenticateSession, async (req, r
 /**
  * Retail AI Routes
  */
-router.get('/retail-ai/inventory', authenticateSession, async (req, res) => {
+router.get('/retail-ai/inventory', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const retailUrl = serviceRegistry.getServiceUrl('retail-ai');
@@ -210,7 +210,7 @@ router.get('/retail-ai/inventory', authenticateSession, async (req, res) => {
   }
 });
 
-router.get('/retail-ai/forecast/:itemId', authenticateSession, async (req, res) => {
+router.get('/retail-ai/forecast/:itemId', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const retailUrl = serviceRegistry.getServiceUrl('retail-ai');
@@ -231,7 +231,7 @@ router.get('/retail-ai/forecast/:itemId', authenticateSession, async (req, res) 
 /**
  * Institutional Routes
  */
-router.get('/institutional/students', authenticateSession, async (req, res) => {
+router.get('/institutional/students', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const institutionalUrl = serviceRegistry.getServiceUrl('institutional');
@@ -248,7 +248,7 @@ router.get('/institutional/students', authenticateSession, async (req, res) => {
   }
 });
 
-router.post('/institutional/students/register', authenticateSession, async (req, res) => {
+router.post('/institutional/students/register', tempAuthenticateSession, async (req, res) => {
   try {
     const serviceRegistry = getServiceRegistry();
     const institutionalUrl = serviceRegistry.getServiceUrl('institutional');
@@ -273,7 +273,7 @@ router.post('/institutional/students/register', authenticateSession, async (req,
 /**
  * Wallet Transaction Routes
  */
-router.post('/wallet/send', authenticateSession, async (req, res) => {
+router.post('/wallet/send', tempAuthenticateSession, async (req, res) => {
   try {
     const { amount, address } = req.body
     const userId = req.user?.userId
@@ -288,7 +288,7 @@ router.post('/wallet/send', authenticateSession, async (req, res) => {
   }
 })
 
-router.get('/wallet/transactions', authenticateSession, async (req, res) => {
+router.get('/wallet/transactions', tempAuthenticateSession, async (req, res) => {
   try {
     const userId = req.user?.userId
     if (!userId) {
@@ -305,7 +305,7 @@ router.get('/wallet/transactions', authenticateSession, async (req, res) => {
 /**
  * Notifications Routes
  */
-router.get('/notifications', authenticateSession, async (req, res) => {
+router.get('/notifications', tempAuthenticateSession, async (req, res) => {
   try {
     const userId = req.user?.userId
     if (!userId) {
@@ -319,7 +319,7 @@ router.get('/notifications', authenticateSession, async (req, res) => {
   }
 })
 
-router.patch('/notifications/:id/read', authenticateSession, async (req, res) => {
+router.patch('/notifications/:id/read', tempAuthenticateSession, async (req, res) => {
   try {
     const userId = req.user?.userId
     if (!userId) {
@@ -332,7 +332,7 @@ router.patch('/notifications/:id/read', authenticateSession, async (req, res) =>
   }
 })
 
-router.post('/notifications/mark-all-read', authenticateSession, async (req, res) => {
+router.post('/notifications/mark-all-read', tempAuthenticateSession, async (req, res) => {
   try {
     const userId = req.user?.userId
     if (!userId) {
@@ -348,7 +348,7 @@ router.post('/notifications/mark-all-read', authenticateSession, async (req, res
 /**
  * Settings Routes
  */
-router.get('/settings', authenticateSession, async (req, res) => {
+router.get('/settings', tempAuthenticateSession, async (req, res) => {
   try {
     const userId = req.user?.userId
     if (!userId) {
@@ -367,7 +367,7 @@ router.get('/settings', authenticateSession, async (req, res) => {
   }
 })
 
-router.put('/settings', authenticateSession, async (req, res) => {
+router.put('/settings', tempAuthenticateSession, async (req, res) => {
   try {
     const userId = req.user?.userId
     if (!userId) {

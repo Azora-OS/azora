@@ -15,6 +15,7 @@
     "@azora/shared-infrastructure": "file:../../packages/shared-infrastructure",
     "@azora/shared-services": "file:../../packages/shared-services",
     "@azora/telemetry": "file:../../packages/@azora/telemetry",
+    "@prisma/client": "^5.7.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-rate-limit": "^7.1.5",
@@ -24,8 +25,7 @@
     "node-fetch": "^3.3.2",
     "opossum": "^8.0.0",
     "prom-client": "^15.1.3",
-    "winston": "^3.11.0",
-    "@prisma/client": "^5.7.1"
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",

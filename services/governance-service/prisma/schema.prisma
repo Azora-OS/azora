@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Proposal {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  proposer    String
+  status      String   @default("pending")
+  votesFor    Int      @default(0)
+  votesAgainst Int     @default(0)
+  createdAt   DateTime @default(now())
+
+  votes       Vote[]
+
+  @@index([status])
+  @@map("proposals")
+}
+
+model Vote {
+  id         String   @id @default(uuid())
+  proposalId String
+  voter      String
+  vote       Boolean
+  timestamp  DateTime @default(now())
+
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+
+  @@unique([proposalId, voter])
+  @@index([proposalId])
+  @@map("votes")
+}

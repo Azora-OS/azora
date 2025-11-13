@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Deployment {
+  id          String   @id @default(uuid())
+  service     String
+  version     String
+  environment String
+  status      String   @default("pending")
+  deployedAt  DateTime @default(now())
+
+  @@index([service])
+  @@index([status])
+  @@map("deployments")
+}
+
+model HealthCheck {
+  id        String   @id @default(uuid())
+  service   String
+  status    String
+  uptime    Int
+  timestamp DateTime @default(now())
+
+  @@index([service])
+  @@map("health_checks")
+}

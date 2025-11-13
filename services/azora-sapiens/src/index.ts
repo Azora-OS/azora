@@ -7,9 +7,10 @@ See LICENSE file for details.
 import express from 'express';
 import cors from 'cors';
 import qualificationRoutes from './routes/qualificationRoutes';
+import tutoringRoutes from './routes/tutoringRoutes';
 
 const app: express.Application = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4011;
 
 // Middleware
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use(cors());
 
 // Routes
 app.use('/api/qualifications', qualificationRoutes);
+app.use('/api/tutoring', tutoringRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
@@ -38,19 +40,19 @@ app.get('/', (_req, res) => {
     endpoints: {
       health: '/health',
       qualifications: '/api/qualifications',
-      search: '/api/qualifications/search',
-      categories: '/api/qualifications/categories',
-      verify: '/api/qualifications/verify'
+      tutoring: '/api/tutoring',
+      sessions: '/api/tutoring/sessions',
+      learningPaths: '/api/tutoring/learning-paths',
+      assessments: '/api/tutoring/assessments'
     },
     features: [
+      'AI-powered tutoring with Elara',
+      'Personalized learning paths',
+      'Real-time Q&A assistance',
+      'Adaptive assessments',
+      'Progress tracking',
+      'Subject-specific guidance',
       'Global qualifications database',
-      'Academic degrees from primary to doctoral',
-      'Professional certifications',
-      'Trade licenses',
-      'Language proficiency tests',
-      'IT & technology certifications',
-      'Medical & healthcare qualifications',
-      'Legal & engineering credentials',
       'Blockchain-based verification',
       'AZR token rewards for achievements'
     ]

@@ -1,3 +1,4 @@
+
 #!/usr/bin/env node
 
 /*
@@ -61,7 +62,8 @@ class AzoraOrchestrator {
       { name: 'azora-credentials', port: 4015, path: 'services/azora-credentials', cmd: 'npm run dev' },
       { name: 'azora-workspace', port: 4016, path: 'services/azora-workspace', cmd: 'npm run dev' },
       { name: 'azora-sapiens', port: 4017, path: 'services/azora-sapiens', cmd: 'npm run dev' },
-      { name: 'health-monitor', port: 4018, path: 'services/health-monitor', cmd: 'node index.js' }
+      { name: 'health-monitor', port: 4018, path: 'services/health-monitor', cmd: 'node index.js' },
+      { name: 'chronicle-protocol', port: 3015, path: 'services/chronicle-protocol', cmd: 'npm run dev' }
     ];
 
     coreServices.forEach(service => this.services.set(service.name, service));
@@ -249,8 +251,73 @@ class AzoraOrchestrator {
   async showStatus() {
     console.log('\n🌟 AZORA OS STATUS DASHBOARD 🌟');
     console.log('═══════════════════════════════════════');
+    console.log(`\n📊 Running: ${this.processes.length} processes`);
+    console.log(`🌊 Knowledge: 414K+ nodes (160MB)`);
+    console.log(`🚀 Services: ${this.services.size}`);
+    console.log(`🎨 Frontends: ${this.frontends.size}`);
+    console.log('\n✅ Azora OS is LIVE!');
+  }
 
-    console.log('\n🔧 CORE SERVICES:');
+  async shutdown() {
+    this.isShuttingDown = true;
+    console.log('\n🛑 Shutting down Azora OS...');
+    
+    for (const { name, process } of this.processes) {
+      console.log(`Stopping ${name}...`);
+      process.kill();
+    }
+    
+    console.log('✅ Shutdown complete');
+    process.exit(0);
+  }
+
+  async execAsync(cmd, options = {}) {
+    return new Promise((resolve, reject) => {
+      exec(cmd, options, (error, stdout, stderr) => {
+        if (error) reject(error);
+        else resolve(stdout);
+      });
+    });
+  }
+
+  async pathExists(path) {
+    try {
+      await fs.access(path);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+
+async function main() {
+  const orchestrator = new AzoraOrchestrator();
+  
+  process.on('SIGINT', () => orchestrator.shutdown());
+  process.on('SIGTERM', () => orchestrator.shutdown());
+  
+  await orchestrator.scanServices();
+  await orchestrator.checkDependencies();
+  
+  const args = process.argv.slice(2);
+  
+  if (args.includes('--install')) {
+    await orchestrator.installDependencies();
+  }
+  
+  await orchestrator.launchServices();
+  await orchestrator.launchFrontends();
+  
+  await orchestrator.delay(5000);
+  await orchestrator.healthCheck();
+  await orchestrator.showStatus();
+}
+
+main().catch(console.error);');
     const coreServices = ['api-gateway', 'auth-service', 'azora-mint', 'azora-oracle'];
     coreServices.forEach(name => {
       const service = this.services.get(name);

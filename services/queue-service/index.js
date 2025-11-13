@@ -1,92 +1,46 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
-const compression = require('compression');
 
-class QueueService {
-  constructor() {
-    this.app = express();
-    this.port = process.env.PORT || 3071;
-    this.queues = new Map();
-    this.setupMiddleware();
-    this.setupRoutes();
-  }
+const app = express();
+const port = process.env.PORT || 3047;
+const jobs = [];
 
-  setupMiddleware() {
-    this.app.use(helmet());
-    this.app.use(cors());
-    this.app.use(compression());
-    this.app.use(express.json());
-  }
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
 
-  setupRoutes() {
-    this.app.get('/health', (req, res) => {
-      res.json({ status: 'healthy', service: 'queue-service', timestamp: new Date().toISOString(), queues: this.queues.size });
-    });
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'queue-service', jobs: jobs.length });
+});
 
-    this.app.post('/api/queue/:name/enqueue', this.enqueue.bind(this));
-    this.app.post('/api/queue/:name/dequeue', this.dequeue.bind(this));
-    this.app.get('/api/queue/:name/peek', this.peek.bind(this));
-    this.app.get('/api/queue/:name/size', this.size.bind(this));
-    this.app.delete('/api/queue/:name/clear', this.clear.bind(this));
-  }
+app.post('/api/jobs', (req, res) => {
+  const { queue, data } = req.body;
+  const job = { id: Date.now().toString(), queue, data: JSON.stringify(data), status: 'pending', attempts: 0, createdAt: new Date() };
+  jobs.push(job);
+  res.json({ success: true, job });
+});
 
-  enqueue(req, res) {
-    const { name } = req.params;
-    const { data, priority = 0 } = req.body;
-    
-    if (!this.queues.has(name)) this.queues.set(name, []);
-    const queue = this.queues.get(name);
-    
-    const item = { id: Date.now().toString(), data, priority, enqueuedAt: new Date() };
-    queue.push(item);
-    queue.sort((a, b) => b.priority - a.priority);
-    
-    res.json({ enqueued: true, item, position: queue.indexOf(item) });
-  }
+app.get('/api/jobs/:queue', (req, res) => {
+  const queueJobs = jobs.filter(j => j.queue === req.params.queue);
+  res.json({ success: true, jobs: queueJobs });
+});
 
-  dequeue(req, res) {
-    const { name } = req.params;
-    const queue = this.queues.get(name);
-    
-    if (!queue || queue.length === 0) {
-      return res.status(404).json({ error: 'Queue empty' });
-    }
-    
-    const item = queue.shift();
-    res.json({ item });
-  }
+app.patch('/api/jobs/:id/process', (req, res) => {
+  const job = jobs.find(j => j.id === req.params.id);
+  if (!job) return res.status(404).json({ error: 'Not found' });
+  job.status = 'processing';
+  job.attempts++;
+  res.json({ success: true, job });
+});
 
-  peek(req, res) {
-    const { name } = req.params;
-    const queue = this.queues.get(name);
-    
-    if (!queue || queue.length === 0) {
-      return res.status(404).json({ error: 'Queue empty' });
-    }
-    
-    res.json({ item: queue[0] });
-  }
+app.patch('/api/jobs/:id/complete', (req, res) => {
+  const job = jobs.find(j => j.id === req.params.id);
+  if (!job) return res.status(404).json({ error: 'Not found' });
+  job.status = 'completed';
+  job.processedAt = new Date();
+  res.json({ success: true, job });
+});
 
-  size(req, res) {
-    const { name } = req.params;
-    const queue = this.queues.get(name);
-    res.json({ size: queue ? queue.length : 0 });
-  }
-
-  clear(req, res) {
-    const { name } = req.params;
-    const queue = this.queues.get(name);
-    const size = queue ? queue.length : 0;
-    this.queues.set(name, []);
-    res.json({ cleared: size });
-  }
-
-  start() {
-    this.app.listen(this.port, () => console.log(`Queue Service running on port ${this.port}`));
-  }
-}
-
-const service = new QueueService();
-if (require.main === module) service.start();
-module.exports = service;
+app.listen(port, () => console.log(`Queue Service on port ${port}`));
+module.exports = app;

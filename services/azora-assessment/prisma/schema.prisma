@@ -7,103 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Quiz {
-  id              String   @id @default(uuid())
-  courseId        String
-  title           String
-  description     String?
-  duration        Int
-  passingScore    Float    @default(70)
-  maxAttempts     Int      @default(3)
-  status          String   @default("draft")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  questions       Question[]
-  attempts        QuizAttempt[]
-
-  @@index([courseId])
-  @@map("quizzes")
+model Assessment {
+  id           String   @id @default(uuid())
+  title        String
+  subject      String
+  grade        Int?
+  type         String   @default("quiz")
+  duration     Int      @default(60)
+  passingScore Int      @default(70)
+  questions    Json
+  createdBy    String
+  createdAt    DateTime @default(now())
+  
+  submissions  Submission[]
 }
 
-model Question {
-  id              String   @id @default(uuid())
-  quizId          String
-  questionText    String
-  questionType    String   @default("multiple_choice")
-  points          Int      @default(1)
-  order           Int
-  createdAt       DateTime @default(now())
-
-  quiz            Quiz     @relation(fields: [quizId], references: [id])
-  options         QuestionOption[]
-  answers         Answer[]
-
-  @@index([quizId])
-  @@map("questions")
-}
-
-model QuestionOption {
-  id              String   @id @default(uuid())
-  questionId      String
-  optionText      String
-  isCorrect       Boolean  @default(false)
-  order           Int
-
-  question        Question @relation(fields: [questionId], references: [id])
-
-  @@index([questionId])
-  @@map("question_options")
-}
-
-model QuizAttempt {
-  id              String   @id @default(uuid())
-  quizId          String
-  studentId       String
-  score           Float    @default(0)
-  maxScore        Float
-  passed          Boolean  @default(false)
-  startedAt       DateTime @default(now())
-  completedAt     DateTime?
-  timeSpent       Int      @default(0)
-
-  quiz            Quiz     @relation(fields: [quizId], references: [id])
-  answers         Answer[]
-
-  @@index([quizId])
-  @@index([studentId])
-  @@map("quiz_attempts")
-}
-
-model Answer {
-  id              String   @id @default(uuid())
-  attemptId       String
-  questionId      String
-  selectedOption  String?
-  answerText      String?
-  isCorrect       Boolean  @default(false)
-  pointsEarned    Float    @default(0)
-  answeredAt      DateTime @default(now())
-
-  attempt         QuizAttempt @relation(fields: [attemptId], references: [id])
-  question        Question @relation(fields: [questionId], references: [id])
-
-  @@index([attemptId])
-  @@index([questionId])
-  @@map("answers")
+model Submission {
+  id           String   @id @default(uuid())
+  assessmentId String
+  studentId    String
+  answers      Json
+  score        Float
+  percentage   Float
+  passed       Boolean
+  feedback     Json?
+  submittedAt  DateTime @default(now())
+  gradedAt     DateTime @default(now())
+  
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
 }
 
 model Gradebook {
-  id              String   @id @default(uuid())
-  studentId       String
-  courseId        String
-  overallGrade    Float    @default(0)
-  letterGrade     String?
-  status          String   @default("in_progress")
-  updatedAt       DateTime @updatedAt
+  id          String   @id @default(uuid())
+  studentId   String
+  subject     String
+  grades      Json[]
+  average     Float
+  trend       String
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([studentId, subject])
+}
 
-  @@unique([studentId, courseId])
-  @@index([studentId])
-  @@index([courseId])
-  @@map("gradebook")
+model Analytics {
+  id          String   @id @default(uuid())
+  studentId   String   @unique
+  totalTests  Int      @default(0)
+  avgScore    Float    @default(0)
+  passRate    Float    @default(0)
+  trend       String   @default("stable")
+  strengths   String[]
+  weaknesses  String[]
+  updatedAt   DateTime @updatedAt
 }

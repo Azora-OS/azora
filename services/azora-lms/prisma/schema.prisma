@@ -7,117 +7,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Faculty {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-  firstName       String
-  lastName        String
-  email           String   @unique
-  department      String?
-  title           String?
-  bio             String?
-  status          String   @default("active")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  courses         CourseManagement[]
-  assignments     Assignment[]
-
-  @@index([email])
-  @@map("faculty")
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  instructor  String
+  level       String   @default("beginner")
+  price       Float    @default(0)
+  currency    String   @default("AZR")
+  enrolled    Int      @default(0)
+  rating      Float    @default(0)
+  modules     Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  assignments Assignment[]
 }
 
-model CourseManagement {
+model Lesson {
+  id        String   @id @default(uuid())
+  courseId  String
+  title     String
+  content   String?
+  videoUrl  String?
+  duration  Int      @default(0)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
   id              String   @id @default(uuid())
-  facultyId       String
-  courseCode      String   @unique
-  courseName      String
-  description     String
-  credits         Int
-  semester        String
-  maxStudents     Int      @default(30)
+  courseId        String
+  studentId       String
+  progress        Int      @default(0)
   status          String   @default("active")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  faculty         Faculty  @relation(fields: [facultyId], references: [id])
-  assignments     Assignment[]
-  grades          Grade[]
-
-  @@index([facultyId])
-  @@index([courseCode])
-  @@map("course_management")
+  enrolledAt      DateTime @default(now())
+  completedAt     DateTime?
+  lastAccessedAt  DateTime @default(now())
+  
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  @@unique([courseId, studentId])
 }
 
 model Assignment {
-  id              String   @id @default(uuid())
-  courseId        String
-  facultyId       String
-  title           String
-  description     String
-  dueDate         DateTime
-  maxPoints       Int      @default(100)
-  type            String   @default("homework")
-  status          String   @default("active")
-  createdAt       DateTime @default(now())
-
-  course          CourseManagement @relation(fields: [courseId], references: [id])
-  faculty         Faculty  @relation(fields: [facultyId], references: [id])
-  submissions     Submission[]
-
-  @@index([courseId])
-  @@index([facultyId])
-  @@map("assignments")
+  id          String   @id @default(uuid())
+  courseId    String
+  title       String
+  description String?
+  dueDate     DateTime?
+  points      Int      @default(100)
+  createdAt   DateTime @default(now())
+  
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  submissions Submission[]
 }
 
 model Submission {
-  id              String   @id @default(uuid())
-  assignmentId    String
-  studentId       String
-  content         String
-  submittedAt     DateTime @default(now())
-  status          String   @default("submitted")
-  grade           Float?
-  feedback        String?
-  gradedAt        DateTime?
-
-  assignment      Assignment @relation(fields: [assignmentId], references: [id])
-
-  @@unique([assignmentId, studentId])
-  @@index([assignmentId])
-  @@index([studentId])
-  @@map("submissions")
-}
-
-model Grade {
-  id              String   @id @default(uuid())
-  courseId        String
-  studentId       String
-  grade           Float
-  letterGrade     String?
-  semester        String
-  comments        String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  course          CourseManagement @relation(fields: [courseId], references: [id])
-
-  @@unique([courseId, studentId, semester])
-  @@index([courseId])
-  @@index([studentId])
-  @@map("grades")
+  id           String   @id @default(uuid())
+  assignmentId String
+  studentId    String
+  content      String
+  status       String   @default("pending")
+  grade        Float?
+  feedback     String?
+  submittedAt  DateTime @default(now())
+  gradedAt     DateTime?
+  
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 }
 
 model Certificate {
-  id              String   @id @default(uuid())
-  studentId       String
-  courseId        String
-  certificateHash String   @unique
-  issuedAt        DateTime @default(now())
-  expiresAt       DateTime?
-  status          String   @default("active")
-
-  @@index([studentId])
-  @@index([certificateHash])
-  @@map("certificates")
+  id          String   @id @default(uuid())
+  courseId    String
+  studentId   String
+  issuedAt    DateTime @default(now())
+  blockchainHash String?
+  verified    Boolean  @default(true)
+  
+  @@unique([courseId, studentId])
 }

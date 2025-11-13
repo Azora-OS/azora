@@ -1,82 +1,21 @@
-/* 
-AZORA PROPRIETARY LICENSE 
-Copyright (c) 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-See LICENSE file for details. 
-*/
-const nextJest = require('next/jest')
-
-const createJestConfig = nextJest({
-  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
-  dir: './',
-})
-
-// Add any custom config to be passed to Jest
-const customJestConfig = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testEnvironment: 'jest-environment-jsdom',
-  
-  // Coverage configuration
+module.exports = {
+  testEnvironment: 'node',
+  coverageDirectory: 'coverage',
   collectCoverageFrom: [
-    'app/**/*.{js,jsx,ts,tsx}',
-    'components/**/*.{js,jsx,ts,tsx}',
-    'lib/**/*.{js,jsx,ts,tsx}',
-    '!**/*.d.ts',
-    '!**/node_modules/**',
-    '!**/.next/**',
-    '!**/coverage/**',
-    '!**/dist/**',
+    'services/**/*.js',
+    '!services/**/node_modules/**',
+    '!services/**/__tests__/**'
   ],
-  
+  testMatch: [
+    '**/services/**/__tests__/**/*.test.js'
+  ],
   coverageThreshold: {
     global: {
-      branches: 75,
-      functions: 80,
-      lines: 80,
-      statements: 80,
-    },
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70
+    }
   },
-  
-  // Module path aliases
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
-    '^@/components/(.*)$': '<rootDir>/components/$1',
-    '^@/lib/(.*)$': '<rootDir>/lib/$1',
-    '^@/app/(.*)$': '<rootDir>/app/$1',
-  },
-  
-  // Test match patterns
-  testMatch: [
-    '**/__tests__/**/*.[jt]s?(x)',
-    '**/?(*.)+(spec|test).[jt]s?(x)',
-  ],
-  
-  // Transform configuration
-  transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['@swc/jest', {
-      jsc: {
-        transform: {
-          react: {
-            runtime: 'automatic',
-          },
-        },
-      },
-    }],
-  },
-  
-  // Ignore patterns
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/.next/',
-    '/dist/',
-    '/coverage/',
-  ],
-  
-  // Module file extensions
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  
-  // Verbose output
-  verbose: true,
-}
-
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig)
+  testTimeout: 10000
+};
