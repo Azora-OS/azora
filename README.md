@@ -1,4 +1,4 @@
-amazon# 🌟 Azora OS - Constitutional AI Operating System
+ Azora OS - Constitutional AI Operating System
 
 <div align="center">
 
