@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -16,11 +16,18 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  enrollments Enrollment[]
-  payments    Payment[]
-  profile     UserProfile?
-  tokens      Token[]
-  incidents   SafetyIncident[]
+  enrollments      Enrollment[]
+  payments         Payment[]
+  profile          UserProfile?
+  tokens           Token[]
+  incidents        SafetyIncident[]
+  wallets          Wallet[]
+  miningActivities MiningActivity[]
+  jobApplications  JobApplication[]
+  skills           UserSkill[]
+  assessments      Assessment[]
+  chatSessions     ChatSession[]
+  notifications    Notification[]
 
   @@map("users")
 }
@@ -191,4 +198,354 @@ enum IncidentStatus {
   INVESTIGATING
   RESOLVED
   CLOSED
+}
+
+// ============================================
+// FINANCIAL SERVICES (Azora Mint, Pay, Mining)
+// ============================================
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String
+  currency  String   // AZR, BTC, ETH, USD
+  balance   Decimal  @default(0) @db.Decimal(20, 8)
+  address   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@unique([userId, currency])
+  @@map("wallets")
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  walletId    String
+  type        TransactionType
+  amount      Decimal           @db.Decimal(20, 8)
+  currency    String
+  status      TransactionStatus @default(PENDING)
+  fromAddress String?
+  toAddress   String?
+  metadata    Json?
+  createdAt   DateTime          @default(now())
+  completedAt DateTime?
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@map("transactions")
+}
+
+model MiningActivity {
+  id           String        @id @default(cuid())
+  userId       String
+  activityType MiningType
+  tokensEarned Decimal       @db.Decimal(20, 8)
+  metadata     Json?
+  status       MiningStatus  @default(PENDING)
+  startedAt    DateTime      @default(now())
+  completedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("mining_activities")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  MINING_REWARD
+  PAYMENT
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum MiningType {
+  COURSE_COMPLETION
+  ASSESSMENT_PASS
+  PEER_TEACHING
+  CONTENT_CREATION
+  COMMUNITY_CONTRIBUTION
+}
+
+enum MiningStatus {
+  PENDING
+  VERIFIED
+  REWARDED
+  REJECTED
+}
+
+// ============================================
+// MARKETPLACE SERVICES (Azora Forge)
+// ============================================
+
+model Job {
+  id           String     @id @default(cuid())
+  title        String
+  description  String
+  company      String
+  location     String?
+  remote       Boolean    @default(false)
+  salary       Decimal?   @db.Decimal(12, 2)
+  currency     String     @default("ZAR")
+  status       JobStatus  @default(ACTIVE)
+  requirements Json?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  expiresAt    DateTime?
+
+  applications JobApplication[]
+  skills       JobSkill[]
+
+  @@index([status])
+  @@map("jobs")
+}
+
+model JobApplication {
+  id          String              @id @default(cuid())
+  userId      String
+  jobId       String
+  status      ApplicationStatus   @default(PENDING)
+  coverLetter String?
+  resume      String?
+  matchScore  Float?
+  appliedAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@map("job_applications")
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+
+  userSkills UserSkill[]
+  jobSkills  JobSkill[]
+
+  @@map("skills")
+}
+
+model UserSkill {
+  id          String      @id @default(cuid())
+  userId      String
+  skillId     String
+  level       SkillLevel
+  verified    Boolean     @default(false)
+  endorsements Int        @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@map("user_skills")
+}
+
+model JobSkill {
+  id       String     @id @default(cuid())
+  jobId    String
+  skillId  String
+  required Boolean    @default(true)
+  level    SkillLevel
+
+  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, skillId])
+  @@map("job_skills")
+}
+
+enum JobStatus {
+  ACTIVE
+  FILLED
+  CLOSED
+  EXPIRED
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  SHORTLISTED
+  INTERVIEWED
+  OFFERED
+  ACCEPTED
+  REJECTED
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+// ============================================
+// EDUCATION SERVICES (LMS, Assessments)
+// ============================================
+
+model Assessment {
+  id          String           @id @default(cuid())
+  userId      String
+  courseId    String?
+  type        AssessmentType
+  title       String
+  questions   Json
+  answers     Json?
+  score       Float?
+  maxScore    Float
+  status      AssessmentStatus @default(NOT_STARTED)
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("assessments")
+}
+
+model LearningPath {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  difficulty  String
+  duration    Int      // in hours
+  courses     Json     // array of course IDs
+  skills      Json     // array of skill IDs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("learning_paths")
+}
+
+enum AssessmentType {
+  QUIZ
+  EXAM
+  ASSIGNMENT
+  PROJECT
+  SKILL_TEST
+}
+
+enum AssessmentStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+}
+
+// ============================================
+// AI SERVICES (AI Family, Chat)
+// ============================================
+
+model ChatSession {
+  id           String        @id @default(cuid())
+  userId       String
+  aiPersona    String        // elara, themba, sankofa, etc.
+  title        String?
+  context      Json?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String   // user, assistant
+  content   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}
+
+model AIPersonality {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  role        String
+  personality String
+  mood        String   @default("neutral")
+  traits      Json
+  relationships Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("ai_personalities")
+}
+
+// ============================================
+// NOTIFICATION & EVENTS
+// ============================================
+
+model Notification {
+  id        String             @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  read      Boolean            @default(false)
+  createdAt DateTime           @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model Event {
+  id        String     @id @default(cuid())
+  type      String
+  source    String
+  data      Json
+  status    EventStatus @default(PENDING)
+  createdAt DateTime   @default(now())
+  processedAt DateTime?
+
+  @@index([type, status])
+  @@map("events")
+}
+
+enum NotificationType {
+  COURSE_UPDATE
+  PAYMENT_SUCCESS
+  MINING_REWARD
+  JOB_MATCH
+  APPLICATION_UPDATE
+  SYSTEM_ALERT
+}
+
+enum EventStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }

@@ -1,14 +1,14 @@
-FROM node:20-alpine
+FROM node:18-alpine
 
-WORKDIR /app
+# Install OpenSSL
+RUN apk add --no-cache openssl
+
+WORKDIR /usr/src/app
 
 COPY package*.json ./
+
 RUN npm install
 
 COPY . .
 
-RUN npx prisma generate
-
-EXPOSE 3001
-
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

@@ -1,14 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useApi } from "@/components/providers";
+import { useApi } from "@/lib/api-provider";
 
 export function useCourses() {
   const api = useApi();
   
   return useQuery({
     queryKey: ["courses"],
-    queryFn: () => api.lms.getCourses(),
+    queryFn: async () => {
+      const response = await api.lms.getCourses();
+      return response.success ? response.courses : [];
+    },
   });
 }
 

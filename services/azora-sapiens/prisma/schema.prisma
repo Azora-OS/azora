@@ -56,34 +56,44 @@ model LearningInsight {
 model LearningPath {
   id              String   @id @default(uuid())
   studentId       String
+  subject         String
   title           String
   description     String?
+  currentLevel    String
+  targetLevel     String
   difficulty      String   @default("beginner")
   estimatedHours  Int
+  totalSteps      Int      @default(0)
+  completedSteps  Int      @default(0)
   status          String   @default("active")
+  milestones      Json?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   steps           PathStep[]
+  progress        Progress[]
 
   @@index([studentId])
+  @@index([subject])
   @@map("learning_paths")
 }
 
 model PathStep {
-  id              String   @id @default(uuid())
-  pathId          String
-  title           String
-  description     String
-  order           Int
-  resourceType    String
-  resourceId      String?
-  completed       Boolean  @default(false)
-  completedAt     DateTime?
+  id                String   @id @default(uuid())
+  pathId            String
+  order             Int
+  title             String
+  description       String
+  estimatedHours    Float
+  resources         Json
+  assessmentCriteria Json
+  completed         Boolean  @default(false)
+  completedAt       DateTime?
 
-  path            LearningPath @relation(fields: [pathId], references: [id])
+  path              LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
 
   @@index([pathId])
+  @@index([order])
   @@map("path_steps")
 }
 
@@ -100,4 +110,59 @@ model Question {
   @@index([studentId])
   @@index([topic])
   @@map("questions")
+}
+
+model Assessment {
+  id              String   @id @default(uuid())
+  studentId       String
+  pathId          String?
+  type            String
+  subject         String
+  questions       Json
+  answers         Json?
+  score           Float?
+  maxScore        Float
+  passed          Boolean  @default(false)
+  difficulty      String
+  timeSpent       Int?
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  @@index([studentId])
+  @@index([subject])
+  @@map("assessments")
+}
+
+model Progress {
+  id              String   @id @default(uuid())
+  studentId       String
+  pathId          String
+  subject         String
+  currentStep     Int      @default(0)
+  totalSteps      Int
+  completionRate  Float    @default(0)
+  timeSpent       Int      @default(0)
+  lastActivity    DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  path            LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, pathId])
+  @@index([studentId])
+  @@map("progress")
+}
+
+model StudentProfile {
+  id              String   @id @default(uuid())
+  studentId       String   @unique
+  learningStyle   String?
+  strengths       String[]
+  weaknesses      String[]
+  interests       String[]
+  goals           Json?
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("student_profiles")
 }

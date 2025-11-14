@@ -11,8 +11,14 @@ fi
 echo "🛑 Stopping Azora Services..."
 
 # Read PIDs and stop services
+AUTH_PID=$(jq -r '.["auth-service"]' "$PID_FILE")
 OCEAN_PID=$(jq -r '.["knowledge-ocean"]' "$PID_FILE")
 KB_PID=$(jq -r '.["ai-knowledge-base"]' "$PID_FILE")
+
+if [ "$AUTH_PID" != "null" ]; then
+  echo "Stopping Auth Service (PID: $AUTH_PID)..."
+  kill $AUTH_PID 2>/dev/null || echo "Already stopped"
+fi
 
 if [ "$OCEAN_PID" != "null" ]; then
   echo "Stopping Knowledge Ocean (PID: $OCEAN_PID)..."

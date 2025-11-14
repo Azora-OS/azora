@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -8,75 +9,75 @@ datasource db {
 }
 
 model User {
-  id                String            @id @default(uuid())
-  email             String            @unique
-  passwordHash      String?
-  name              String
-  role              String            @default("user")
-  isEmailVerified   Boolean           @default(false)
-  emailVerificationToken String?
+  id                       String    @id @default(uuid())
+  email                    String    @unique
+  passwordHash             String?
+  name                     String
+  role                     String    @default("user")
+  isEmailVerified          Boolean   @default(false)
+  emailVerificationToken   String?
   emailVerificationExpires DateTime?
-  passwordResetToken String?
-  passwordResetExpires DateTime?
-  mfaEnabled        Boolean           @default(false)
-  mfaSecret         String?
-  mfaBackupCodes    String?           // JSON array of backup codes
-  lastLoginAt       DateTime?
-  loginAttempts     Int               @default(0)
-  lockoutUntil      DateTime?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  passwordResetToken       String?
+  passwordResetExpires     DateTime?
+  mfaEnabled               Boolean   @default(false)
+  mfaSecret                String?
+  mfaBackupCodes           String? // JSON array of backup codes
+  lastLoginAt              DateTime?
+  loginAttempts            Int       @default(0)
+  lockoutUntil             DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
 
   // OAuth fields
-  googleId          String?           @unique
-  githubId          String?           @unique
-  appleId           String?           @unique
-  avatar            String?
+  googleId String? @unique
+  githubId String? @unique
+  appleId  String? @unique
+  avatar   String?
 
   // Relations
-  sessions          Session[]
-  refreshTokens     RefreshToken[]
-  settings          UserSettings?
+  sessions      Session[]
+  refreshTokens RefreshToken[]
+  settings      UserSettings?
 
   @@map("users")
 }
 
 model UserSettings {
-  id                  String  @id @default(uuid())
-  userId              String  @unique
-  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName         String?
-  emailNotifications  Boolean @default(true)
-  pushNotifications   Boolean @default(false)
-  language            String  @default("english")
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName        String?
+  emailNotifications Boolean  @default(true)
+  pushNotifications  Boolean  @default(false)
+  language           String   @default("english")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   @@map("user_settings")
 }
 
 model Session {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token       String   @unique
-  ipAddress   String?
-  userAgent   String?
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   @@map("sessions")
 }
 
 model RefreshToken {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token       String   @unique
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-  revokedAt   DateTime?
-  replacedBy  String?
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String    @unique
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+  replacedBy String?
 
   @@map("refresh_tokens")
 }
@@ -93,10 +94,10 @@ model Role {
 }
 
 model Permission {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  resource    String   // e.g., "user", "payment", "course"
-  action      String   // e.g., "create", "read", "update", "delete"
+  id          String @id @default(uuid())
+  name        String @unique
+  resource    String // e.g., "user", "payment", "course"
+  action      String // e.g., "create", "read", "update", "delete"
   description String?
   createdAt   DateTime @default(now())
 

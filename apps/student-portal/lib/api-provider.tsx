@@ -1,19 +1,25 @@
-'use client';
+"use client";
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext } from 'react';
 import { AzoraApiClient } from '@azora/api-client';
-import { api } from '@/lib/api'; // We will use the existing api instance
 
 const ApiContext = createContext<AzoraApiClient | null>(null);
 
-export const ApiProvider = ({ children }: { children: ReactNode }) => {
-  return <ApiContext.Provider value={api}>{children}</ApiContext.Provider>;
-};
+export function ApiProvider({ children }: { children: React.ReactNode }) {
+  const api = new AzoraApiClient({
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+  });
 
-export const useApi = () => {
-  const context = useContext(ApiContext);
-  if (!context) {
-    throw new Error('useApi must be used within an ApiProvider');
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('auth_token');
+    if (token) api.setAuthToken(token);
   }
-  return context;
-};
+
+  return <ApiContext.Provider value={api}>{children}</ApiContext.Provider>;
+}
+
+export function useApi() {
+  const api = useContext(ApiContext);
+  if (!api) throw new Error('useApi must be used within ApiProvider');
+  return api;
+}

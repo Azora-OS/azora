@@ -8,10 +8,17 @@ mkdir -p "$AZORA_DIR"
 
 echo "🌟 Starting Azora Services as Daemon..."
 
+# Start Auth Service
+echo "🔐 Starting Auth Service..."
+cd services/auth-service
+nohup npm start >> "$LOG_FILE" 2>&1 &
+AUTH_PID=$!
+echo "Auth Service PID: $AUTH_PID"
+
 # Start Knowledge Ocean
 echo "📚 Starting Knowledge Ocean..."
-cd services/knowledge-ocean
-nohup npm start > "$LOG_FILE" 2>&1 &
+cd ../knowledge-ocean
+nohup npm start >> "$LOG_FILE" 2>&1 &
 OCEAN_PID=$!
 echo "Knowledge Ocean PID: $OCEAN_PID"
 
@@ -25,6 +32,7 @@ echo "AI Knowledge Base PID: $KB_PID"
 # Save PIDs
 cat > "$PID_FILE" <<EOF
 {
+  "auth-service": $AUTH_PID,
   "knowledge-ocean": $OCEAN_PID,
   "ai-knowledge-base": $KB_PID
 }

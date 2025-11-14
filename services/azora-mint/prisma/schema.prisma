@@ -11,39 +11,79 @@ model Wallet {
   id          String   @id @default(uuid())
   userId      String   @unique
   address     String   @unique
-  balance     Float    @default(0)
+  balances    Json     @default("{\"AZR\":0,\"BTC\":0,\"ETH\":0,\"USD\":0}")
   staked      Float    @default(0)
   earned      Float    @default(0)
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   
-  transactions Transaction[]
-  miningBlocks MiningBlock[]
+  transactions    Transaction[]
+  miningActivities MiningActivity[]
+  transfers       Transfer[]
+
+  @@index([userId])
+  @@map("wallets")
 }
 
 model Transaction {
   id          String   @id @default(uuid())
+  txHash      String   @unique
   walletId    String
   type        String
+  currency    String
   amount      Float
   from        String?
   to          String?
   reason      String?
+  metadata    Json?
   status      String   @default("completed")
+  blockNumber Int?
   timestamp   DateTime @default(now())
   
   wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([type])
+  @@index([timestamp])
+  @@map("transactions")
 }
 
-model MiningBlock {
-  id          String   @id @default(uuid())
-  walletId    String
-  challengeId String
-  proof       Json
-  reward      Float
-  hash        String
-  timestamp   DateTime @default(now())
+model MiningActivity {
+  id            String   @id @default(uuid())
+  walletId      String
+  userId        String
+  activityType  String
+  proof         Json
+  proofHash     String   @unique
+  reward        Float
+  blockNumber   Int
+  verified      Boolean  @default(true)
+  timestamp     DateTime @default(now())
   
-  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([userId])
+  @@index([activityType])
+  @@index([timestamp])
+  @@map("mining_activities")
+}
+
+model Transfer {
+  id          String   @id @default(uuid())
+  fromWalletId String
+  toUserId    String
+  currency    String
+  amount      Float
+  status      String   @default("completed")
+  metadata    Json?
+  timestamp   DateTime @default(now())
+
+  fromWallet  Wallet   @relation(fields: [fromWalletId], references: [id])
+
+  @@index([fromWalletId])
+  @@index([toUserId])
+  @@map("transfers")
 }
 
 model StakingPool {
@@ -59,9 +99,14 @@ model StakingPool {
 
 model EconomicSnapshot {
   id              String   @id @default(uuid())
-  currentSupply   Float
-  maxSupply       Float    @default(21000000)
+  totalSupply     Float
+  maxSupply       Float    @default(1000000000)
+  circulatingSupply Float
   inflationRate   Float
-  blockReward     Float
+  mintingRate     Float
+  blocksMinted    Int
   timestamp       DateTime @default(now())
+
+  @@index([timestamp])
+  @@map("economic_snapshots")
 }

@@ -493,6 +493,12 @@ azora/
 
 ## 📚 Documentation
 
+### 🚨 Start Here (Reality-Based)
+- **[⚡ Quick Start](./QUICK-START.md)** - Get running in 5 minutes
+- **[🎯 Reality & Roadmap](./REALITY-AND-ROADMAP.md)** - Honest current state & path forward
+- **[✅ Integration Complete](./INTEGRATION-COMPLETE.md)** - What actually works now
+- **[📋 Implementation Priority](./IMPLEMENTATION-PRIORITY.md)** - Detailed action plan
+
 ### Complete Documentation Suite
 - **[🛡️ Constitution](./docs/AZORA-CONSTITUTION.md)** - Complete constitutional framework (v3.0.0)
 - **[✅ Constitutional Compliance](./CONSTITUTIONAL-COMPLIANCE.md)** - Compliance guide and checklist

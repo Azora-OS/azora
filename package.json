@@ -14,7 +14,13 @@
     "services:install": "chmod +x scripts/install-services.sh && ./scripts/install-services.sh",
     "services:start": "chmod +x scripts/start-services-daemon.sh && ./scripts/start-services-daemon.sh",
     "services:stop": "chmod +x scripts/stop-services-daemon.sh && ./scripts/stop-services-daemon.sh",
-    "extension:install": "cd tools/elara-vscode-extension && npm install && npm run compile && npm run install:local"
+    "extension:install": "cd tools/elara-vscode-extension && npm install && npm run compile && npm run install:local",
+    "db:generate": "cd prisma && npx prisma generate",
+    "db:migrate": "cd prisma && npx prisma migrate dev",
+    "db:seed": "node prisma/seed.js",
+    "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
+    "db:reset": "cd prisma && npx prisma migrate reset --force && npm run db:seed",
+    "db:studio": "cd prisma && npx prisma studio"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
