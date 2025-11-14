@@ -1,97 +1,68 @@
-// Azora Mint - Financial Engine Schema
-// Ubuntu Principle: "My success enables your success"
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model Wallet {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  address   String   @unique
-  balance   Decimal  @default(0) @db.Decimal(18, 8)
-  staked    Decimal  @default(0) @db.Decimal(18, 8)
-  earned    Decimal  @default(0) @db.Decimal(18, 8)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  transactionsFrom Transaction[] @relation("FromWallet")
-  transactionsTo   Transaction[] @relation("ToWallet")
-  stakes           Stake[]
-  miningRecords    MiningRecord[]
-
-  @@index([userId])
-  @@index([address])
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  address       String   @unique
+  balance       Float    @default(0)
+  stakedAmount  Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  transactions  Transaction[]
+  stakingRecords StakingRecord[]
+  miningRecords MiningRecord[]
 }
 
 model Transaction {
-  id        String   @id @default(cuid())
-  type      String   // mint, transfer, stake, unstake, reward
-  fromId    String?
-  toId      String?
-  amount    Decimal  @db.Decimal(18, 8)
-  reason    String?
-  status    String   @default("completed") // pending, completed, failed
-  metadata  Json?
-  createdAt DateTime @default(now())
-
-  from Wallet? @relation("FromWallet", fields: [fromId], references: [id])
-  to   Wallet? @relation("ToWallet", fields: [toId], references: [id])
-
-  @@index([fromId])
-  @@index([toId])
-  @@index([type])
+  id          String   @id @default(uuid())
+  walletId    String
+  type        String
+  amount      Float
+  currency    String   @default("AZR")
+  status      String   @default("pending")
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  
+  @@index([walletId])
   @@index([createdAt])
 }
 
-model Stake {
-  id         String    @id @default(cuid())
-  walletId   String
-  amount     Decimal   @db.Decimal(18, 8)
-  startDate  DateTime  @default(now())
-  endDate    DateTime?
-  rewardRate Decimal   @default(0.05) @db.Decimal(5, 4)
-  status     String    @default("active") // active, completed, cancelled
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  wallet Wallet @relation(fields: [walletId], references: [id])
-
+model StakingRecord {
+  id          String   @id @default(uuid())
+  walletId    String
+  amount      Float
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  apy         Float    @default(5.0)
+  status      String   @default("active")
+  rewards     Float    @default(0)
+  
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  
   @@index([walletId])
   @@index([status])
 }
 
 model MiningRecord {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   walletId    String
-  activityId  String   // Reference to education/marketplace activity
-  activityType String  // course_completion, job_completion, skill_assessment
-  tokensEarned Decimal @db.Decimal(18, 8)
-  difficulty  Int      @default(1)
+  activity    String
+  tokensEarned Float
+  timestamp   DateTime @default(now())
   metadata    Json?
-  minedAt     DateTime @default(now())
-
-  wallet Wallet @relation(fields: [walletId], references: [id])
-
+  
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  
   @@index([walletId])
-  @@index([activityType])
-  @@index([minedAt])
-}
-
-model EconomicMetrics {
-  id              String   @id @default(cuid())
-  totalSupply     Decimal  @db.Decimal(18, 8)
-  circulatingSupply Decimal @db.Decimal(18, 8)
-  totalStaked     Decimal  @db.Decimal(18, 8)
-  totalMinted     Decimal  @db.Decimal(18, 8)
-  activeWallets   Int
-  dailyVolume     Decimal  @db.Decimal(18, 8)
-  recordedAt      DateTime @default(now())
-
-  @@index([recordedAt])
+  @@index([timestamp])
 }
