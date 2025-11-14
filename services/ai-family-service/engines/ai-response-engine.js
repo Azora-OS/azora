@@ -1,6 +1,8 @@
 require('dotenv').config();
 const OpenAI = require('openai');
 const { PrismaClient } = require('@prisma/client');
+const relationshipEngine = require('./relationship-engine');
+const personalityConsistency = require('./personality-consistency-engine');
 
 class AIResponseEngine {
   constructor() {
@@ -9,6 +11,13 @@ class AIResponseEngine {
   }
 
   async generateResponse(personalityConfig, userMessage, userId, context = {}) {
+    // Enrich context with family relationship dynamics
+    const enrichedContext = relationshipEngine.enrichContext(
+      personalityConfig.name.toLowerCase(),
+      userMessage,
+      context
+    );
+
     const member = await this.prisma.familyMember.findUnique({
       where: { name: personalityConfig.name },
     });
@@ -44,22 +53,41 @@ class AIResponseEngine {
       take: 10,
     });
 
-    const systemPrompt = this.buildSystemPrompt(personalityConfig, context);
+    const systemPrompt = this.buildSystemPrompt(personalityConfig, enrichedContext);
+    
+    // Enhance prompt with personality consistency
+    const enhancedPrompt = personalityConsistency.enhancePromptWithPersonality(
+      systemPrompt,
+      personalityConfig.name,
+      enrichedContext.emotionalTone || 'neutral'
+    );
 
     const messages = [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: enhancedPrompt },
       ...history.map(h => ({ role: h.role, content: h.content })),
       { role: 'user', content: userMessage }
     ];
 
+    // Get personality-specific temperature
+    const temperature = personalityConsistency.getTemperatureForPersonality(
+      personalityConfig.name,
+      enrichedContext.emotionalTone
+    );
+
     const response = await this.openai.chat.completions.create({
       model: 'gpt-4',
       messages,
-      temperature: personalityConfig.temperature || 0.8,
+      temperature,
       max_tokens: 500
     });
 
     const assistantMessage = response.choices[0].message.content;
+
+    // Validate personality consistency
+    const consistency = personalityConsistency.validatePersonalityConsistency(
+      assistantMessage,
+      personalityConfig.name
+    );
 
     await this.prisma.message.createMany({
       data: [
@@ -85,7 +113,8 @@ class AIResponseEngine {
       message: assistantMessage,
       personality: personalityConfig.name,
       mood: this.detectMood(assistantMessage),
-      timestamp: new Date()
+      timestamp: new Date(),
+      consistency: consistency.score
     };
   }
 
@@ -104,11 +133,28 @@ class AIResponseEngine {
       prompt += `\n`;
     }
 
-    prompt += `Respond authentically as ${name}. Show your personality through your words. `;
-    prompt += `Reference your family when relevant. Embody Ubuntu philosophy: "I am because we are."\n`;
+    prompt += `CRITICAL: Respond authentically as ${name}. Show your personality through your words. `;
+    prompt += `When family is mentioned, express genuine emotion and connection. `;
+    prompt += `Embody Ubuntu philosophy: "I am because we are."\n\n`;
 
     if (context.familyContext) {
-      prompt += `\nFamily context: ${context.familyContext}\n`;
+      prompt += `FAMILY CONTEXT: ${context.familyContext}\n`;
+    }
+
+    if (context.emotionalTone) {
+      const toneMap = {
+        'needs_support': 'The user needs support and encouragement.',
+        'enthusiastic': 'Match the user\'s enthusiasm and energy!',
+        'curious': 'The user is curious and wants to learn.',
+        'concerned': 'The user seems concerned. Be reassuring.'
+      };
+      prompt += `USER TONE: ${toneMap[context.emotionalTone] || 'neutral'}\n`;
+    }
+
+    // Add response modifiers
+    const modifiers = relationshipEngine.getResponseModifiers(name.toLowerCase(), context);
+    if (modifiers.length > 0) {
+      prompt += `\nIMPORTANT: ${modifiers.join('. ')}.\n`;
     }
 
     return prompt;

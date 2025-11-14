@@ -1,3 +1,6 @@
+// Azora Mint - Financial Engine Schema
+// Ubuntu Principle: "My success enables your success"
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,105 +11,87 @@ datasource db {
 }
 
 model Wallet {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  address     String   @unique
-  balances    Json     @default("{\"AZR\":0,\"BTC\":0,\"ETH\":0,\"USD\":0}")
-  staked      Float    @default(0)
-  earned      Float    @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  transactions    Transaction[]
-  miningActivities MiningActivity[]
-  transfers       Transfer[]
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  address   String   @unique
+  balance   Decimal  @default(0) @db.Decimal(18, 8)
+  staked    Decimal  @default(0) @db.Decimal(18, 8)
+  earned    Decimal  @default(0) @db.Decimal(18, 8)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactionsFrom Transaction[] @relation("FromWallet")
+  transactionsTo   Transaction[] @relation("ToWallet")
+  stakes           Stake[]
+  miningRecords    MiningRecord[]
 
   @@index([userId])
-  @@map("wallets")
+  @@index([address])
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  txHash      String   @unique
-  walletId    String
-  type        String
-  currency    String
-  amount      Float
-  from        String?
-  to          String?
-  reason      String?
-  metadata    Json?
-  status      String   @default("completed")
-  blockNumber Int?
-  timestamp   DateTime @default(now())
-  
-  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  type      String   // mint, transfer, stake, unstake, reward
+  fromId    String?
+  toId      String?
+  amount    Decimal  @db.Decimal(18, 8)
+  reason    String?
+  status    String   @default("completed") // pending, completed, failed
+  metadata  Json?
+  createdAt DateTime @default(now())
 
-  @@index([walletId])
+  from Wallet? @relation("FromWallet", fields: [fromId], references: [id])
+  to   Wallet? @relation("ToWallet", fields: [toId], references: [id])
+
+  @@index([fromId])
+  @@index([toId])
   @@index([type])
-  @@index([timestamp])
-  @@map("transactions")
+  @@index([createdAt])
 }
 
-model MiningActivity {
-  id            String   @id @default(uuid())
-  walletId      String
-  userId        String
-  activityType  String
-  proof         Json
-  proofHash     String   @unique
-  reward        Float
-  blockNumber   Int
-  verified      Boolean  @default(true)
-  timestamp     DateTime @default(now())
-  
-  wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+model Stake {
+  id         String    @id @default(cuid())
+  walletId   String
+  amount     Decimal   @db.Decimal(18, 8)
+  startDate  DateTime  @default(now())
+  endDate    DateTime?
+  rewardRate Decimal   @default(0.05) @db.Decimal(5, 4)
+  status     String    @default("active") // active, completed, cancelled
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
 
   @@index([walletId])
-  @@index([userId])
-  @@index([activityType])
-  @@index([timestamp])
-  @@map("mining_activities")
+  @@index([status])
 }
 
-model Transfer {
-  id          String   @id @default(uuid())
-  fromWalletId String
-  toUserId    String
-  currency    String
-  amount      Float
-  status      String   @default("completed")
+model MiningRecord {
+  id          String   @id @default(cuid())
+  walletId    String
+  activityId  String   // Reference to education/marketplace activity
+  activityType String  // course_completion, job_completion, skill_assessment
+  tokensEarned Decimal @db.Decimal(18, 8)
+  difficulty  Int      @default(1)
   metadata    Json?
-  timestamp   DateTime @default(now())
+  minedAt     DateTime @default(now())
 
-  fromWallet  Wallet   @relation(fields: [fromWalletId], references: [id])
+  wallet Wallet @relation(fields: [walletId], references: [id])
 
-  @@index([fromWalletId])
-  @@index([toUserId])
-  @@map("transfers")
+  @@index([walletId])
+  @@index([activityType])
+  @@index([minedAt])
 }
 
-model StakingPool {
-  id          String   @id @default(uuid())
-  userId      String
-  amount      Float
-  startDate   DateTime @default(now())
-  endDate     DateTime?
-  apy         Float    @default(0.08)
-  earned      Float    @default(0)
-  status      String   @default("active")
-}
+model EconomicMetrics {
+  id              String   @id @default(cuid())
+  totalSupply     Decimal  @db.Decimal(18, 8)
+  circulatingSupply Decimal @db.Decimal(18, 8)
+  totalStaked     Decimal  @db.Decimal(18, 8)
+  totalMinted     Decimal  @db.Decimal(18, 8)
+  activeWallets   Int
+  dailyVolume     Decimal  @db.Decimal(18, 8)
+  recordedAt      DateTime @default(now())
 
-model EconomicSnapshot {
-  id              String   @id @default(uuid())
-  totalSupply     Float
-  maxSupply       Float    @default(1000000000)
-  circulatingSupply Float
-  inflationRate   Float
-  mintingRate     Float
-  blocksMinted    Int
-  timestamp       DateTime @default(now())
-
-  @@index([timestamp])
-  @@map("economic_snapshots")
+  @@index([recordedAt])
 }

@@ -2,15 +2,16 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
-const ProofOfKnowledgeEngine = require('./pok-engine');
-const EconomicPolicyEngine = require('./economic-policy');
-const TokenMinter = require('./token-minter');
+const completeRoutes = require('./routes-complete');
 
 const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
+
+// Use comprehensive routes
+app.use(completeRoutes);
 
 const pokEngine = new ProofOfKnowledgeEngine();
 const economicPolicy = new EconomicPolicyEngine();
