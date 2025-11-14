@@ -4,117 +4,98 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: azora
-      POSTGRES_USER: azora
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
 
-  azora-nexus:
-    build: ./services/azora-nexus
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-
   api-gateway:
     build: ./services/api-gateway
     ports:
       - "4000:4000"
     environment:
-      - NEXUS_URL=http://azora-nexus:3000
+      - NODE_ENV=production
     depends_on:
-      - azora-nexus
+      - postgres
+      - redis
+
+  auth-service:
+    build: ./services/auth-service
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - postgres
 
   azora-education:
     build: ./services/azora-education
-    ports:
-      - "3001:3001"
     environment:
-      - DATABASE_URL=postgresql://azora:${DB_PASSWORD}@postgres:5432/azora
-      - NEXUS_URL=http://azora-nexus:3000
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - postgres
-      - azora-nexus
 
   azora-mint:
     build: ./services/azora-mint
-    ports:
-      - "3002:3002"
     environment:
-      - DATABASE_URL=postgresql://azora:${DB_PASSWORD}@postgres:5432/azora
-      - NEXUS_URL=http://azora-nexus:3000
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - postgres
-      - azora-nexus
 
   azora-forge:
     build: ./services/azora-forge
-    ports:
-      - "3003:3003"
     environment:
-      - DATABASE_URL=postgresql://azora:${DB_PASSWORD}@postgres:5432/azora
-      - NEXUS_URL=http://azora-nexus:3000
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - postgres
-      - azora-nexus
 
-  ai-family-service:
-    build: ./services/ai-family-service
-    ports:
-      - "3004:3004"
+  azora-sapiens:
+    build: ./services/azora-sapiens
     environment:
+      - DATABASE_URL=${DATABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - NEXUS_URL=http://azora-nexus:3000
     depends_on:
-      - azora-nexus
+      - postgres
 
-  azora-pay:
-    build: ./services/azora-pay
-    ports:
-      - "3010:3010"
+  payment-service:
+    build: ./services/payment-service
     environment:
+      - DATABASE_URL=${DATABASE_URL}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
     depends_on:
-      - azora-nexus
+      - postgres
 
-  notification-service:
-    build: ./services/notification-service
-    ports:
-      - "3011:3011"
+  azora-aegis:
+    build: ./services/azora-aegis
     environment:
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASS=${SMTP_PASS}
-
-  analytics-service:
-    build: ./services/analytics-service
-    ports:
-      - "3012:3012"
-
-  monitoring-service:
-    build: ./services/monitoring-service
-    ports:
-      - "3013:3013"
+      - NODE_ENV=production
+    depends_on:
+      - redis
 
   prometheus:
     image: prom/prometheus:latest
+    volumes:
+      - ./infrastructure/monitoring/prometheus-config.yaml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
     ports:
       - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
     volumes:
-      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
 
 volumes:
-  postgres_data:
-  prometheus_data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:

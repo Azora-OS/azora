@@ -4,6 +4,7 @@ const cors = require('cors');
 const compression = require('compression');
 const os = require('os');
 const process = require('process');
+const { metricsMiddleware, metricsEndpoint } = require('./prometheus');
 require('dotenv').config();
 
 class HealthMonitor {
@@ -29,6 +30,7 @@ class HealthMonitor {
     this.app.use(cors());
     this.app.use(compression());
     this.app.use(express.json());
+    this.app.use(metricsMiddleware);
   }
 
   setupRoutes() {
@@ -68,6 +70,9 @@ class HealthMonitor {
     this.app.get('/api/dashboard', this.getDashboard.bind(this));
     this.app.get('/api/reports/uptime', this.getUptimeReport.bind(this));
     this.app.get('/api/reports/performance', this.getPerformanceReport.bind(this));
+    
+    // Prometheus metrics
+    this.app.get('/metrics', metricsEndpoint);
   }
 
   registerService(req, res) {

@@ -1,217 +1,95 @@
-/*
-AZORA PROPRIETARY LICENSE
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+import axios, { AxiosInstance } from 'axios';
 
-UNIFIED API CLIENT
-Provides a single, consistent API client for all frontend components
-*/
+class AzoraAPIClient {
+  private client: AxiosInstance;
+  private csrfToken: string | null = null;
 
-import { getServiceRegistry } from '@azora/shared-services/service-registry';
+  constructor(baseURL: string) {
+    this.client = axios.create({
+      baseURL,
+      timeout: 10000,
+      withCredentials: true,
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-export interface APIClientConfig {
-  baseUrl?: string;
-  token?: string;
-  timeout?: number;
-}
+    this.client.interceptors.request.use(
+      (config) => {
+        if (this.csrfToken) config.headers['X-CSRF-Token'] = this.csrfToken;
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
 
-/**
- * Unified API Client
- * Single client for all API calls across the system
- */
-export class UnifiedAPIClient {
-  private baseUrl: string;
-  private token?: string;
-  private timeout: number;
-
-  constructor(config: APIClientConfig = {}) {
-    this.baseUrl = config.baseUrl || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-    this.token = config.token;
-    this.timeout = config.timeout || 30000;
+    this.client.interceptors.response.use(
+      (response) => {
+        const csrf = response.headers['x-csrf-token'];
+        if (csrf) this.csrfToken = csrf;
+        return response;
+      },
+      (error) => {
+        if (error.response?.status === 401) {
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('azora_token');
+            window.location.href = '/login';
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
-  /**
-   * Set authentication token
-   */
-  setToken(token: string): void {
-    this.token = token;
-  }
-
-  /**
-   * Make API request
-   */
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint}`;
-    
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    };
-
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: response.statusText }));
-        throw new APIError(error.error || 'Request failed', response.status, error);
-      }
-
-      return await response.json();
-    } catch (error: any) {
-      clearTimeout(timeoutId);
-      if (error.name === 'AbortError') {
-        throw new APIError('Request timeout', 408);
-      }
-      throw error;
+  setToken(token: string | null) {
+    if (token) {
+      this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete this.client.defaults.headers.common['Authorization'];
     }
   }
 
-  /**
-   * GET request
-   */
-  async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  async getCsrfToken() {
+    const { data } = await this.client.get('/auth/csrf');
+    this.csrfToken = data.token;
+    return data.token;
   }
 
-  /**
-   * POST request
-   */
-  async post<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
-    });
-  }
+  education = {
+    getCourses: () => this.client.get('/education/courses').then(r => r.data),
+    getCourse: (id: string) => this.client.get(`/education/courses/${id}`).then(r => r.data),
+    enroll: (courseId: string, userId: string) => 
+      this.client.post('/education/enrollments', { courseId, studentId: userId }).then(r => r.data),
+    getProgress: (studentId: string) => 
+      this.client.get(`/education/students/${studentId}`).then(r => r.data),
+    updateProgress: (data: any) => this.client.post('/education/progress', data).then(r => r.data)
+  };
 
-  /**
-   * PUT request
-   */
-  async put<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
-    });
-  }
+  mint = {
+    getWallet: (userId: string) => this.client.get(`/mint/wallet/${userId}`).then(r => r.data),
+    getBalance: (userId: string) => this.client.get(`/mint/wallet/${userId}/balance`).then(r => r.data),
+    transfer: (data: any) => this.client.post('/mint/transfer', data).then(r => r.data),
+    stake: (data: any) => this.client.post('/mint/stake', data).then(r => r.data),
+    unstake: (data: any) => this.client.post('/mint/unstake', data).then(r => r.data),
+    startMining: (data: any) => this.client.post('/mint/mining/start', data).then(r => r.data),
+    getMiningHistory: (userId: string) => this.client.get(`/mint/mining/history/${userId}`).then(r => r.data)
+  };
 
-  /**
-   * DELETE request
-   */
-  async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
-  }
+  forge = {
+    getJobs: () => this.client.get('/forge/jobs').then(r => r.data),
+    getJob: (id: string) => this.client.get(`/forge/jobs/${id}`).then(r => r.data),
+    applyToJob: (jobId: string, data: any) => 
+      this.client.post(`/forge/jobs/${jobId}/apply`, data).then(r => r.data),
+    assessSkills: (data: any) => this.client.post('/forge/skills/assess', data).then(r => r.data),
+    findMatches: (userId: string) => this.client.post('/forge/match', { userId }).then(r => r.data)
+  };
 
-  /**
-   * PATCH request
-   */
-  async patch<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: 'PATCH',
-      body: data ? JSON.stringify(data) : undefined,
-    });
-  }
-
-  // Service-specific methods
-  async getWalletBalance(userId: string) {
-    return this.get(`/api/design/wallet-balance`);
-  }
-
-  async getStudentProgress(userId: string) {
-    return this.get(`/api/design/student-progress`);
-  }
-
-  async getHealthCheck() {
-    return this.get(`/api/design/health-check`);
-  }
-
-  async getDashboard(userId: string) {
-    return this.get(`/api/design/dashboard`);
-  }
-
-  // Course methods
-  async getCourses(filters?: any) {
-    return this.get(`/api/lms/courses${filters ? '?' + new URLSearchParams(filters).toString() : ''}`);
-  }
-
-  async enrollInCourse(courseId: string) {
-    return this.post(`/api/lms/enrollments`, { courseId });
-  }
-
-  async updateProgress(enrollmentId: string, progress: number, completed?: boolean) {
-    return this.patch(`/api/lms/enrollments/${enrollmentId}/progress`, { progress, completed });
-  }
-
-  // Retail AI methods
-  async getInventory() {
-    return this.get(`/api/retail-ai/inventory`);
-  }
-
-  async getForecast(itemId: string, days: number = 30) {
-    return this.get(`/api/retail-ai/forecast/${itemId}?days=${days}`);
-  }
-
-  async optimizePricing(itemId: string) {
-    return this.get(`/api/retail-ai/pricing/optimize/${itemId}`);
-  }
-
-  async getCustomerInsights() {
-    return this.get(`/api/retail-ai/insights/customer-behavior`);
-  }
-
-  // Institutional methods
-  async getStudents(filters?: any) {
-    return this.get(`/api/institutional/students${filters ? '?' + new URLSearchParams(filters).toString() : ''}`);
-  }
-
-  async registerStudent(data: any) {
-    return this.post(`/api/institutional/students/register`, data);
-  }
-
-  async getStudentCredentials(studentId: string) {
-    return this.get(`/api/institutional/students/${studentId}/credentials`);
-  }
-
-  async getMonitoringDashboard() {
-    return this.get(`/api/institutional/monitoring/dashboard`);
-  }
+  auth = {
+    login: (email: string, password: string) => 
+      this.client.post('/auth/login', { email, password }).then(r => r.data),
+    register: (data: any) => this.client.post('/auth/register', data).then(r => r.data),
+    logout: () => this.client.post('/auth/logout').then(r => r.data),
+    getProfile: () => this.client.get('/auth/profile').then(r => r.data),
+    setupMfa: () => this.client.post('/auth/mfa/setup').then(r => r.data),
+    verifyMfa: (token: string) => this.client.post('/auth/mfa/verify', { token }).then(r => r.data)
+  };
 }
 
-/**
- * API Error
- */
-export class APIError extends Error {
-  constructor(
-    message: string,
-    public statusCode: number,
-    public details?: any
-  ) {
-    super(message);
-    this.name = 'APIError';
-  }
-}
-
-// Export singleton instance
-let apiClientInstance: UnifiedAPIClient | null = null;
-
-export function getAPIClient(config?: APIClientConfig): UnifiedAPIClient {
-  if (!apiClientInstance) {
-    apiClientInstance = new UnifiedAPIClient(config);
-  }
-  return apiClientInstance;
-}
-
-export default UnifiedAPIClient;
+export default AzoraAPIClient;

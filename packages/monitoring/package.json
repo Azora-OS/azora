@@ -1,0 +1,8 @@
+{
+  "name": "@azora/monitoring",
+  "version": "1.0.0",
+  "main": "metrics.js",
+  "dependencies": {
+    "prom-client": "^15.1.0"
+  }
+}

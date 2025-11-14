@@ -1,8 +1,14 @@
 const express = require('express');
+const http = require('http');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
+const twilio = require('twilio');
+const NotificationWebSocket = require('./websocket');
 
 const app = express();
+const server = http.createServer(app);
+const wsServer = new NotificationWebSocket(server);
+
 app.use(cors());
 app.use(express.json());
 
@@ -17,6 +23,10 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS
   }
 });
+
+const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
+  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  : null;
 
 const notifications = new Map();
 
@@ -52,6 +62,36 @@ app.post('/api/notifications/email', async (req, res) => {
   }
 });
 
+app.post('/api/notifications/sms', async (req, res) => {
+  try {
+    const { to, message } = req.body;
+    
+    if (!twilioClient) {
+      return res.status(503).json({ error: 'SMS service not configured' });
+    }
+
+    const result = await twilioClient.messages.create({
+      body: message,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to
+    });
+
+    const notification = {
+      id: result.sid,
+      type: 'sms',
+      to,
+      message,
+      status: 'sent',
+      sentAt: new Date()
+    };
+
+    notifications.set(notification.id, notification);
+    res.json(notification);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/notifications/push', async (req, res) => {
   const { userId, title, body, data } = req.body;
   
@@ -62,11 +102,16 @@ app.post('/api/notifications/push', async (req, res) => {
     title,
     body,
     data,
-    status: 'queued',
+    status: 'sent',
     createdAt: new Date()
   };
 
   notifications.set(notification.id, notification);
+  
+  // Send via WebSocket if user is connected
+  const sent = wsServer.sendToUser(userId, notification);
+  if (!sent) notification.status = 'queued';
+  
   res.json(notification);
 });
 
@@ -78,6 +123,9 @@ app.get('/api/notifications/:userId', (req, res) => {
   res.json(userNotifications);
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🔔 Notification service running on port ${PORT}`);
+  console.log(`🔌 WebSocket server ready`);
 });
+
+module.exports = { app, server, wsServer };

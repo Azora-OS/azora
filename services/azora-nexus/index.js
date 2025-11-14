@@ -1,7 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
+const { secureCors, errorHandler } = require('../../packages/security-middleware');
 require('dotenv').config();
 
 const app = express();
@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 const SERVICE_NAME = process.env.SERVICE_NAME || 'service';
 
 app.use(helmet());
-app.use(cors());
+app.use(secureCors);
 app.use(compression());
 app.use(express.json());
 
@@ -29,12 +29,9 @@ app.get('/api/status', (req, res) => {
   });
 });
 
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ error: err.message });
-});
-
 app.use(require('./routes'));
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
