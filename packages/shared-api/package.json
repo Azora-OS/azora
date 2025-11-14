@@ -1,34 +1,8 @@
 {
   "name": "@azora/shared-api",
   "version": "1.0.0",
-  "description": "Azora OS Unified API Client - Single client for all API calls",
-  "type": "module",
-  "main": "./index.ts",
-  "exports": {
-    ".": "./index.ts",
-    "./client": "./client.ts",
-    "./hooks": "./hooks.ts"
-  },
-  "scripts": {
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@azora/shared-services": "file:../shared-services"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/node": "^20.0.0",
-    "typescript": "^5.2.2"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0"
-  },
-  "keywords": [
-    "azora",
-    "api",
-    "client",
-    "hooks"
-  ],
-  "author": "Azora ES (Pty) Ltd",
-  "license": "PROPRIETARY"
+  "main": "client.js",
+  "description": "Unified API client for Azora OS",
+  "keywords": ["azora", "api", "client"],
+  "dependencies": {}
 }

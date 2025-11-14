@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "title": "Azora OS Overview",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Service Health",
+        "type": "stat",
+        "targets": [{"expr": "service_health_status", "legendFormat": "{{service}}"}]
+      },
+      {
+        "id": 2,
+        "title": "HTTP Request Duration",
+        "type": "graph",
+        "targets": [{"expr": "rate(http_request_duration_seconds_sum[5m])"}]
+      },
+      {
+        "id": 3,
+        "title": "Active Users",
+        "type": "stat",
+        "targets": [{"expr": "active_users_total"}]
+      }
+    ]
+  }
+}

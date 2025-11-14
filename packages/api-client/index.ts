@@ -2,6 +2,10 @@
  * Azora OS API Client - Unified backend service connections
  */
 
+export * from './client';
+export * from './react-hooks';
+export * from './types';
+
 export interface ApiConfig {
   baseUrl?: string;
   timeout?: number;
@@ -248,6 +252,3 @@ export class AzoraApiClient {
 
 export const createApiClient = (config?: ApiConfig) => new AzoraApiClient(config);
 export default AzoraApiClient;
-
-export * from './hooks';
-export * from './react-query-hooks';

@@ -1,44 +1,78 @@
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
+const promClient = require('prom-client');
+const axios = require('axios');
 
 const app = express();
-const port = process.env.PORT || 3048;
-const alerts = [];
+const PORT = process.env.PORT || 3013;
 
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
+const register = new promClient.Registry();
+promClient.collectDefaultMetrics({ register });
+
+const httpRequestDuration = new promClient.Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'Duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  registers: [register]
+});
+
+const serviceHealth = new promClient.Gauge({
+  name: 'service_health_status',
+  help: 'Health status of services (1 = healthy, 0 = unhealthy)',
+  labelNames: ['service'],
+  registers: [register]
+});
+
+const services = [
+  { name: 'api-gateway', url: 'http://localhost:4000/health' },
+  { name: 'azora-nexus', url: 'http://localhost:3000/health' },
+  { name: 'azora-education', url: 'http://localhost:3001/health' },
+  { name: 'azora-mint', url: 'http://localhost:3002/health' },
+  { name: 'azora-forge', url: 'http://localhost:3003/health' },
+  { name: 'ai-family-service', url: 'http://localhost:3004/health' },
+  { name: 'azora-pay', url: 'http://localhost:3010/health' },
+  { name: 'notification-service', url: 'http://localhost:3011/health' },
+  { name: 'analytics-service', url: 'http://localhost:3012/health' }
+];
+
+async function checkServiceHealth() {
+  for (const service of services) {
+    try {
+      await axios.get(service.url, { timeout: 5000 });
+      serviceHealth.set({ service: service.name }, 1);
+    } catch (error) {
+      serviceHealth.set({ service: service.name }, 0);
+    }
+  }
+}
+
+setInterval(checkServiceHealth, 30000);
+checkServiceHealth();
+
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', service: 'monitoring-service', alerts: alerts.length });
+  res.json({ status: 'healthy', service: 'monitoring-service' });
 });
 
-app.post('/api/alerts', (req, res) => {
-  const { service, severity, message } = req.body;
-  const alert = { id: Date.now().toString(), service, severity, message, resolved: false, createdAt: new Date() };
-  alerts.push(alert);
-  res.json({ success: true, alert });
+app.get('/api/services/status', async (req, res) => {
+  const status = await Promise.all(
+    services.map(async (service) => {
+      try {
+        const response = await axios.get(service.url, { timeout: 5000 });
+        return { name: service.name, status: 'healthy', data: response.data };
+      } catch (error) {
+        return { name: service.name, status: 'unhealthy', error: error.message };
+      }
+    })
+  );
+  
+  res.json(status);
 });
 
-app.get('/api/alerts', (req, res) => {
-  const { service, severity, resolved } = req.query;
-  let filtered = alerts;
-  if (service) filtered = filtered.filter(a => a.service === service);
-  if (severity) filtered = filtered.filter(a => a.severity === severity);
-  if (resolved !== undefined) filtered = filtered.filter(a => a.resolved === (resolved === 'true'));
-  res.json({ success: true, alerts: filtered });
+app.listen(PORT, () => {
+  console.log(`📈 Monitoring service running on port ${PORT}`);
+  console.log(`📊 Metrics available at http://localhost:${PORT}/metrics`);
 });
-
-app.patch('/api/alerts/:id/resolve', (req, res) => {
-  const alert = alerts.find(a => a.id === req.params.id);
-  if (!alert) return res.status(404).json({ error: 'Not found' });
-  alert.resolved = true;
-  alert.resolvedAt = new Date();
-  res.json({ success: true, alert });
-});
-
-app.use(require('./routes'));
-
-app.listen(port, () => console.log(`Monitoring Service on port ${port}`));
-module.exports = app;

@@ -1,26 +1,9 @@
 {
-  "name": "blockchain-service",
+  "name": "@azora/blockchain-service",
   "version": "1.0.0",
-  "description": "Blockchain Service",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push"
-  },
   "dependencies": {
-    "@prisma/client": "^5.7.1",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.21.2",
-    "helmet": "^7.1.0"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "nodemon": "^3.0.2",
-    "prisma": "^5.7.1"
+    "ethers": "^6.9.0",
+    "dotenv": "^16.3.1"
   }
 }

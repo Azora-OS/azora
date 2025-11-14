@@ -1,13 +1,30 @@
 require('dotenv').config();
-const OpenAI = require('openai');
 const { PrismaClient } = require('@prisma/client');
+const gpt4Integration = require('./gpt4-integration');
 const relationshipEngine = require('./relationship-engine');
 const personalityConsistency = require('./personality-consistency-engine');
 
 class AIResponseEngine {
   constructor() {
-    this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    this.gpt4 = gpt4Integration;
     this.prisma = new PrismaClient();
+    this.fallbackResponses = this.loadFallbackResponses();
+  }
+
+  loadFallbackResponses() {
+    return {
+      elara: ["I'm here to help you learn and grow! 💚", "Let's explore this together!"],
+      sankofa: ["*nods wisely* Let me share some wisdom...", "In my experience..."],
+      themba: ["OMG that's so cool! Let me help! 🎉", "I'm SO excited to learn with you!"],
+      naledi: ["Let's think strategically about this... ⭐", "I see great potential here!"],
+      jabari: ["I've assessed the situation... 🛡️", "Your security is my priority."],
+      amara: ["*gentle smile* Let's find peace together... 💫", "I understand how you feel."],
+      kofi: ["Let me analyze the numbers... 💰", "Financially speaking..."],
+      zola: ["The data shows... 📊", "Interesting patterns here..."],
+      abeni: ["Let me tell you a story... 📖", "Once upon a time..."],
+      thembo: ["I'm here to support you.", "Let's work through this together."],
+      nexus: ["*unified voice* We are one... ⚪", "The collective wisdom speaks..."]
+    };
   }
 
   async generateResponse(personalityConfig, userMessage, userId, context = {}) {
@@ -74,14 +91,23 @@ class AIResponseEngine {
       enrichedContext.emotionalTone
     );
 
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4',
-      messages,
-      temperature,
-      max_tokens: 500
-    });
+    let assistantMessage;
+    let usingGPT4 = false;
 
-    const assistantMessage = response.choices[0].message.content;
+    try {
+      if (this.gpt4.isAvailable()) {
+        const response = await this.gpt4.chat(messages, { temperature, maxTokens: 500 });
+        assistantMessage = response.content;
+        usingGPT4 = true;
+      } else {
+        throw new Error('GPT-4_NOT_CONFIGURED');
+      }
+    } catch (error) {
+      // Fallback to pattern-based responses
+      console.log(`Using fallback for ${personalityConfig.name}`);
+      const fallbacks = this.fallbackResponses[personalityConfig.name.toLowerCase()] || ['I\'m here to help!'];
+      assistantMessage = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    }
 
     // Validate personality consistency
     const consistency = personalityConsistency.validatePersonalityConsistency(
@@ -114,7 +140,8 @@ class AIResponseEngine {
       personality: personalityConfig.name,
       mood: this.detectMood(assistantMessage),
       timestamp: new Date(),
-      consistency: consistency.score
+      consistency: consistency.score,
+      usingGPT4
     };
   }
 

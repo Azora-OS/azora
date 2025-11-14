@@ -2,50 +2,20 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
-rule_files:
-  - "alert_rules.yml"
-
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          - alertmanager:9093
-
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: 'azora-monitoring'
     static_configs:
-      - targets: ['localhost:9090']
-
-  - job_name: 'api-gateway'
+      - targets: ['monitoring-service:3013']
+    
+  - job_name: 'azora-services'
     static_configs:
-      - targets: ['api-gateway:4000']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-
-  - job_name: 'auth-service'
-    static_configs:
-      - targets: ['auth-service:3001']
-    metrics_path: '/metrics'
-
-  - job_name: 'mint-service'
-    static_configs:
-      - targets: ['mint-service:3002']
-    metrics_path: '/metrics'
-
-  - job_name: 'education-service'
-    static_configs:
-      - targets: ['education-service:3007']
-    metrics_path: '/metrics'
-
-  - job_name: 'payments-service'
-    static_configs:
-      - targets: ['payments-service:3008']
-    metrics_path: '/metrics'
-
-  - job_name: 'database'
-    static_configs:
-      - targets: ['database:5432']
-
-  - job_name: 'redis'
-    static_configs:
-      - targets: ['redis:6379']
+      - targets:
+        - 'api-gateway:4000'
+        - 'azora-nexus:3000'
+        - 'azora-education:3001'
+        - 'azora-mint:3002'
+        - 'azora-forge:3003'
+        - 'ai-family-service:3004'
+        - 'azora-pay:3010'
+        - 'notification-service:3011'
+        - 'analytics-service:3012'

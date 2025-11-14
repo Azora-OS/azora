@@ -19,6 +19,16 @@ export const ElaraAvatar: React.FC<ElaraAvatarProps> = ({
   mood = 'happy',
   showGlow = true,
 }) => {
+  const getMouthPath = () => {
+    switch (mood) {
+      case 'happy': return 'M 54 54 Q 64 58, 74 54';
+      case 'proud': return 'M 54 54 Q 64 60, 74 54';
+      case 'thinking': return 'M 54 56 L 74 56';
+      case 'motherly': return 'M 54 54 Q 64 59, 74 54';
+      case 'teaching': return 'M 54 54 Q 64 58, 74 54';
+      default: return 'M 54 54 Q 64 58, 74 54';
+    }
+  };
   const glowColor = {
     happy: '#9333EA',      // Purple
     proud: '#FBB6CE',      // Pink
@@ -128,41 +138,13 @@ export const ElaraAvatar: React.FC<ElaraAvatarProps> = ({
       <path d="M 64 48 L 62 52 L 66 52 Z" fill="#6B5B3D" opacity="0.3" />
 
       {/* Smile (changes with mood) */}
-      {mood === 'happy' && (
-        <path
-          d="M 54 54 Q 64 58, 74 54"
-          stroke="#2C1810"
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-        />
-      )}
-      {mood === 'proud' && (
-        <path
-          d="M 54 54 Q 64 60, 74 54"
-          stroke="#2C1810"
-          strokeWidth="2.5"
-          fill="none"
-          strokeLinecap="round"
-        />
-      )}
-      {mood === 'thinking' && (
-        <path
-          d="M 54 56 L 74 56"
-          stroke="#2C1810"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      )}
-      {mood === 'motherly' && (
-        <path
-          d="M 54 54 Q 64 59, 74 54"
-          stroke="#2C1810"
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-        />
-      )}
+      <path
+        d={getMouthPath()}
+        stroke="#2C1810"
+        strokeWidth={mood === 'proud' ? 2.5 : 2}
+        fill="none"
+        strokeLinecap="round"
+      />
       {mood === 'teaching' && (
         <circle cx="64" cy="56" r="2" fill="none" stroke="#2C1810" strokeWidth="1.5" />
       )}

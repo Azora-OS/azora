@@ -9,6 +9,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ElaraAvatar } from './ElaraAvatar';
 import { SankofaAvatar } from './SankofaAvatar';
+import { UniversalAvatar, Mood } from './UniversalAvatar';
 
 interface Message {
   id: string;
@@ -233,7 +234,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
     setIsTyping(false);
   };
 
-  const getAIResponse = (userMessage: string): { response: string; mood?: string } => {
+  const getAIResponse = (userMessage: string): { response: string; mood?: Mood } => {
     const personality = AI_PERSONALITIES[currentMember as keyof typeof AI_PERSONALITIES];
     if (!personality) return { response: "I'm not available right now!" };
 
@@ -381,10 +382,8 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
               <div className="flex-shrink-0">
                 {message.aiMember === 'elara' && <ElaraAvatar size={40} animate={false} mood={message.mood as any} />}
                 {message.aiMember === 'sankofa' && <SankofaAvatar size={40} animate={false} mood={message.mood as any} />}
-                {!['elara', 'sankofa'].includes(message.aiMember || '') && (
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-2xl bg-black/40">
-                    {AI_PERSONALITIES[message.aiMember as keyof typeof AI_PERSONALITIES]?.emoji}
-                  </div>
+                {message.aiMember && !['elara', 'sankofa'].includes(message.aiMember) && (
+                  <UniversalAvatar character={message.aiMember} size={40} animate={false} mood={message.mood as Mood} />
                 )}
               </div>
             )}
@@ -410,9 +409,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
               {currentMember === 'elara' && <ElaraAvatar size={40} animate />}
               {currentMember === 'sankofa' && <SankofaAvatar size={40} animate />}
               {!['elara', 'sankofa'].includes(currentMember) && (
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-2xl bg-black/40">
-                  {currentPersonality?.emoji}
-                </div>
+                <UniversalAvatar character={currentMember} size={40} animate mood="thinking" />
               )}
             </div>
             <div className="bg-black/40 rounded-2xl px-4 py-3 border border-purple-500/20">
