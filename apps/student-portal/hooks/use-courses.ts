@@ -9,8 +9,8 @@ export function useCourses() {
   return useQuery({
     queryKey: ["courses"],
     queryFn: async () => {
-      const response = await api.lms.getCourses();
-      return response.success ? response.courses : [];
+      const response: any = await api.lms.getCourses();
+      return response?.data || [];
     },
   });
 }
@@ -20,7 +20,10 @@ export function useCourse(id: string) {
   
   return useQuery({
     queryKey: ["course", id],
-    queryFn: () => api.lms.getCourse(id),
+    queryFn: async () => {
+      const response: any = await api.lms.getCourse(id);
+      return response?.data;
+    },
     enabled: !!id,
   });
 }

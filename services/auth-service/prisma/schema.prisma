@@ -11,22 +11,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String
-  firstName     String
-  lastName      String
-  role          String    @default("student") // student, educator, employer, admin
-  isVerified    Boolean   @default(false)
-  isActive      Boolean   @default(true)
-  lastLoginAt   DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  email            String    @unique
+  password         String
+  name             String
+  role             String    @default("student") // student, educator, employer, admin
+  isEmailVerified  Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  lastLoginAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  sessions      Session[]
-  tokens        RefreshToken[]
-  mfaSettings   MFASettings?
-  profile       UserProfile?
+  sessions         Session[]
+  tokens           Token[]
+  mfaSettings      MFASettings?
+  profile          UserProfile?
 
   @@index([email])
   @@index([role])
@@ -47,9 +46,10 @@ model Session {
   @@index([token])
 }
 
-model RefreshToken {
+model Token {
   id        String   @id @default(cuid())
   userId    String
+  type      String   // REFRESH, EMAIL_VERIFICATION, RESET_PASSWORD
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -58,17 +58,18 @@ model RefreshToken {
 
   @@index([userId])
   @@index([token])
+  @@index([type])
 }
 
 model MFASettings {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  enabled   Boolean  @default(false)
-  method    String   // totp, sms, email
-  secret    String?
-  backupCodes String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  enabled     Boolean  @default(false)
+  method      String   @default("totp") // totp, sms, email
+  secret      String?
+  backupCodes String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

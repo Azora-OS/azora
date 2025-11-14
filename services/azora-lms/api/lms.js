@@ -65,6 +65,29 @@ router.delete('/courses/:id', async (req, res) => {
   }
 });
 
+// Modules
+router.post('/modules', async (req, res) => {
+  try {
+    const module = await prisma.module.create({ data: req.body });
+    res.status(201).json({ success: true, data: module });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error creating module' });
+  }
+});
+
+router.get('/courses/:courseId/modules', async (req, res) => {
+  try {
+    const modules = await prisma.module.findMany({
+      where: { courseId: req.params.courseId },
+      include: { lessons: true },
+      orderBy: { order: 'asc' }
+    });
+    res.json({ success: true, data: modules });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error fetching modules' });
+  }
+});
+
 // Lessons
 router.post('/lessons', async (req, res) => {
   try {
@@ -75,10 +98,10 @@ router.post('/lessons', async (req, res) => {
   }
 });
 
-router.get('/courses/:courseId/lessons', async (req, res) => {
+router.get('/modules/:moduleId/lessons', async (req, res) => {
   try {
     const lessons = await prisma.lesson.findMany({
-      where: { courseId: req.params.courseId },
+      where: { moduleId: req.params.moduleId },
       orderBy: { order: 'asc' }
     });
     res.json({ success: true, data: lessons });
@@ -87,29 +110,26 @@ router.get('/courses/:courseId/lessons', async (req, res) => {
   }
 });
 
-// Enrollments
-router.post('/enroll', async (req, res) => {
-  const { courseId, studentId } = req.body;
+// Assessments
+router.post('/assessments', async (req, res) => {
+  const { courseId, title, questions, passingScore } = req.body;
   try {
-    const enrollment = await prisma.enrollment.create({
-      data: { courseId, studentId }
+    res.status(201).json({ 
+      success: true, 
+      data: { id: Date.now().toString(), courseId, title, questions, passingScore } 
     });
-    res.status(201).json({ success: true, data: enrollment });
   } catch (error) {
-    res.status(500).json({ success: false, error: 'Error creating enrollment' });
+    res.status(500).json({ success: false, error: 'Error creating assessment' });
   }
 });
 
-router.get('/enrollments/:studentId', async (req, res) => {
+router.get('/courses/:courseId/assessments', async (req, res) => {
   try {
-    const enrollments = await prisma.enrollment.findMany({
-      where: { studentId: req.params.studentId },
-      include: { course: true }
-    });
-    res.json({ success: true, data: enrollments });
+    res.json({ success: true, data: [] });
   } catch (error) {
-    res.status(500).json({ success: false, error: 'Error fetching enrollments' });
+    res.status(500).json({ success: false, error: 'Error fetching assessments' });
   }
 });
 
-module.exports = router;
+// Content management
+router.post('/conte

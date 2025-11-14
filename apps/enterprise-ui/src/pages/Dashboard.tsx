@@ -1,43 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useAnalytics, useSystemMetrics } from '../hooks/use-analytics';
 
 const Dashboard: React.FC = () => {
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    activeUsers: 0,
-    revenue: 0,
-    growth: 0
-  });
-
-  const [realTimeData, setRealTimeData] = useState({
-    cpuUsage: 45,
-    memoryUsage: 62,
-    networkActivity: 78,
-    activeConnections: 1247
-  });
-
-  useEffect(() => {
-    // Simulate real-time data updates
-    const interval = setInterval(() => {
-      setRealTimeData(prev => ({
-        cpuUsage: Math.max(20, Math.min(90, prev.cpuUsage + (Math.random() - 0.5) * 10)),
-        memoryUsage: Math.max(30, Math.min(85, prev.memoryUsage + (Math.random() - 0.5) * 8)),
-        networkActivity: Math.max(40, Math.min(95, prev.networkActivity + (Math.random() - 0.5) * 15)),
-        activeConnections: Math.max(800, Math.min(2000, prev.activeConnections + Math.floor((Math.random() - 0.5) * 100)))
-      }));
-    }, 2000);
-
-    // Simulate loading stats
-    setTimeout(() => {
-      setStats({
-        totalUsers: 15847,
-        activeUsers: 3291,
-        revenue: 284750,
-        growth: 23.5
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const { data: stats, isLoading: statsLoading } = useAnalytics();
+  const { data: services, isLoading: servicesLoading } = useSystemMetrics();
 
   const StatCard = ({ title, value, change, icon, color }: any) => (
     <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl p-6 border border-white/20 dark:border-slate-700/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 group">
@@ -94,34 +60,44 @@ const Dashboard: React.FC = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Users"
-          value={stats.totalUsers.toLocaleString()}
-          change={12.5}
-          icon="👥"
-          color="bg-gradient-to-r from-blue-500 to-blue-600"
-        />
-        <StatCard
-          title="Active Users"
-          value={stats.activeUsers.toLocaleString()}
-          change={8.2}
-          icon="🟢"
-          color="bg-gradient-to-r from-green-500 to-green-600"
-        />
-        <StatCard
-          title="Revenue"
-          value={`$${(stats.revenue / 1000).toFixed(0)}K`}
-          change={stats.growth}
-          icon="💰"
-          color="bg-gradient-to-r from-purple-500 to-purple-600"
-        />
-        <StatCard
-          title="AI Efficiency"
-          value="98.7%"
-          change={2.1}
-          icon="🤖"
-          color="bg-gradient-to-r from-orange-500 to-red-500"
-        />
+        {statsLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-white/70 dark:bg-slate-800/70 rounded-2xl p-6 animate-pulse">
+              <div className="h-20 bg-slate-200 dark:bg-slate-700 rounded" />
+            </div>
+          ))
+        ) : (
+          <>
+            <StatCard
+              title="Total Users"
+              value={stats?.totalUsers?.toLocaleString() || '0'}
+              change={12.5}
+              icon="👥"
+              color="bg-gradient-to-r from-blue-500 to-blue-600"
+            />
+            <StatCard
+              title="Active Users"
+              value={stats?.activeUsers?.toLocaleString() || '0'}
+              change={8.2}
+              icon="🟢"
+              color="bg-gradient-to-r from-green-500 to-green-600"
+            />
+            <StatCard
+              title="Revenue"
+              value={`$${((stats?.revenue || 0) / 1000).toFixed(0)}K`}
+              change={stats?.growth || 0}
+              icon="💰"
+              color="bg-gradient-to-r from-purple-500 to-purple-600"
+            />
+            <StatCard
+              title="AI Efficiency"
+              value="98.7%"
+              change={2.1}
+              icon="🤖"
+              color="bg-gradient-to-r from-orange-500 to-red-500"
+            />
+          </>
+        )}
       </div>
 
       {/* Real-time Metrics */}

@@ -9,9 +9,12 @@
         "migrate": "prisma migrate dev"
     },
     "dependencies": {
+        "@azora/shared-auth": "file:../../packages/shared-auth",
         "@prisma/client": "^5.12.1",
+        "cors": "^2.8.5",
         "dotenv": "^17.2.3",
         "express": "^4.17.1",
+        "helmet": "^7.1.0",
         "openai": "^4.20.0"
     },
     "devDependencies": {
