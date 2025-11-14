@@ -1,9 +1,9 @@
-const ProofOfKnowledgeEngine = require('../pok-engine');
-const EconomicPolicyEngine = require('../economic-policy');
-const TokenMinter = require('../token-minter');
+import { ProofOfKnowledgeEngine } from '../src/pok-engine';
+import { EconomicPolicyEngine } from '../src/economic-policy';
+import { TokenMinter } from '../src/token-minter';
 
 describe('Proof-of-Knowledge Engine', () => {
-  let pokEngine;
+  let pokEngine: ProofOfKnowledgeEngine;
 
   beforeEach(() => {
     pokEngine = new ProofOfKnowledgeEngine();
@@ -32,7 +32,7 @@ describe('Proof-of-Knowledge Engine', () => {
 });
 
 describe('Economic Policy Engine', () => {
-  let policy;
+  let policy: EconomicPolicyEngine;
 
   beforeEach(() => {
     policy = new EconomicPolicyEngine();
@@ -57,7 +57,8 @@ describe('Economic Policy Engine', () => {
 });
 
 describe('Token Minter', () => {
-  let minter, policy;
+  let minter: TokenMinter;
+  let policy: EconomicPolicyEngine;
 
   beforeEach(() => {
     policy = new EconomicPolicyEngine();

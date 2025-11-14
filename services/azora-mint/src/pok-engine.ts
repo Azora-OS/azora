@@ -1,12 +1,36 @@
-const crypto = require('crypto');
+import * as crypto from 'crypto';
 
-class ProofOfKnowledgeEngine {
+interface Question {
+  q: string;
+  a: string;
+}
+
+interface Challenge {
+  id: string;
+  studentId: string;
+  subject: string;
+  questions: Question[];
+  timestamp: number;
+  difficulty: number;
+}
+
+interface Proof {
+  valid: boolean;
+  score: number;
+  correct: number;
+  total: number;
+}
+
+export class ProofOfKnowledgeEngine {
+  difficulty: number;
+  baseReward: number;
+
   constructor() {
     this.difficulty = 4;
     this.baseReward = 10;
   }
 
-  generateChallenge(studentId, subject) {
+  generateChallenge(studentId: string, subject: string): Challenge {
     return {
       id: crypto.randomBytes(16).toString('hex'),
       studentId,
@@ -17,8 +41,8 @@ class ProofOfKnowledgeEngine {
     };
   }
 
-  getQuestions(subject) {
-    const questions = {
+  getQuestions(subject: string): Question[] {
+    const questions: { [key: string]: Question[] } = {
       javascript: [
         { q: 'What is a closure?', a: 'function that accesses outer scope' },
         { q: 'Explain async/await', a: 'promise handling syntax' }
@@ -31,23 +55,23 @@ class ProofOfKnowledgeEngine {
     return questions[subject] || questions.javascript;
   }
 
-  verifyProof(challenge, answers) {
+  verifyProof(challenge: Challenge, answers: string[]): Proof {
     let correct = 0;
-    challenge.questions.forEach((q, i) => {
+    challenge.questions.forEach((q: Question, i: number) => {
       if (answers[i]?.toLowerCase().includes(q.a.toLowerCase())) correct++;
     });
     const score = correct / challenge.questions.length;
     return { valid: score >= 0.7, score, correct, total: challenge.questions.length };
   }
 
-  calculateReward(proof, studentLevel = 1) {
+  calculateReward(proof: Proof, studentLevel = 1): number {
     const baseReward = this.baseReward;
     const scoreMultiplier = proof.score;
     const levelBonus = studentLevel * 0.1;
     return Math.floor(baseReward * scoreMultiplier * (1 + levelBonus));
   }
 
-  mine(challenge, answers, studentLevel) {
+  mine(challenge: Challenge, answers: string[], studentLevel: number): { success: boolean; block?: any; reward?: number; message?: string } {
     const proof = this.verifyProof(challenge, answers);
     if (!proof.valid) return { success: false, message: 'Insufficient knowledge proof' };
 
@@ -65,10 +89,8 @@ class ProofOfKnowledgeEngine {
     return { success: true, block, reward };
   }
 
-  hashBlock(challenge, proof) {
+  hashBlock(challenge: Challenge, proof: Proof): string {
     const data = JSON.stringify({ challenge, proof, timestamp: Date.now() });
     return crypto.createHash('sha256').update(data).digest('hex');
   }
 }
-
-module.exports = ProofOfKnowledgeEngine;
