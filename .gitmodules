@@ -1,0 +1,6 @@
+[submodule "tools/launchers/external/llama.cpp"]
+	path = tools/launchers/external/llama.cpp
+	url = https://github.com/ggerganov/llama.cpp.git
+[submodule "tools/launchers/external/openai-node"]
+	path = tools/launchers/external/openai-node
+	url = https://github.com/openai/openai-node.git
