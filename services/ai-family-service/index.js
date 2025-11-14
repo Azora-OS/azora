@@ -1,11 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const { authenticateToken, rateLimiter } = require('@azora/shared-auth');
 const chatEngine = require('./chat-engine');
 
 const app = express();
 const PORT = process.env.PORT || 3100;
 
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
+app.use(rateLimiter({ windowMs: 60000, max: 20 }));
 
 app.get('/health', (req, res) => {
   res.json({ 
@@ -15,9 +21,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', authenticateToken, async (req, res) => {
   try {
-    const { personality, message, userId, context } = req.body;
+    const { personality, message, context } = req.body;
+    const userId = req.user.userId;
     const response = await chatEngine.chat(personality, message, userId, context);
     res.json({ success: true, data: response });
   } catch (error) {
@@ -25,9 +32,10 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-app.post('/api/chat/multi', async (req, res) => {
+app.post('/api/chat/multi', authenticateToken, async (req, res) => {
   try {
-    const { personalities, message, userId } = req.body;
+    const { personalities, message } = req.body;
+    const userId = req.user.userId;
     const responses = await chatEngine.multiPersonalityChat(personalities, message, userId);
     res.json({ success: true, data: responses });
   } catch (error) {
@@ -35,9 +43,10 @@ app.post('/api/chat/multi', async (req, res) => {
   }
 });
 
-app.delete('/api/chat/history/:userId', (req, res) => {
+app.delete('/api/chat/history', authenticateToken, (req, res) => {
   const { personality } = req.query;
-  chatEngine.clearHistory(req.params.userId, personality);
+  const userId = req.user.userId;
+  chatEngine.clearHistory(userId, personality);
   res.json({ success: true, message: 'History cleared' });
 });
 

@@ -1,30 +1,48 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApi } from '@/lib/api-provider';
 
 export function useAuth() {
   const api = useApi();
   const queryClient = useQueryClient();
 
-  const loginMutation = useMutation({
-    mutationFn: (credentials: any) => api.auth.login(credentials.email, credentials.password),
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      try {
+        const response: any = await api.auth.profile();
+        return response?.data;
+      } catch {
+        return null;
+      }
+    },
+    retry: false
+  });
+
+  const login = useMutation({
+    mutationFn: async ({ email, password }: { email: string; password: string }) => {
+      const response: any = await api.auth.login(email, password);
+      if (response?.data?.token) {
+        api.setAuthToken(response.data.token);
+      }
+      return response;
+    },
     onSuccess: () => {
-      window.location.href = '/courses';
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     }
   });
 
-  const logoutMutation = useMutation({
-    mutationFn: () => api.auth.logout(),
-    onSuccess: () => {
-      queryClient.clear();
-      window.location.href = '/auth/login';
-    },
-  });
+  const logout = () => {
+    api.clearAuthToken();
+    queryClient.clear();
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+  };
 
   return {
-    login: loginMutation.mutate,
-    isLoggingIn: loginMutation.isPending,
-    loginError: loginMutation.error,
-    logout: logoutMutation.mutate,
-    isLoggingOut: logoutMutation.isPending,
+    user,
+    isLoading,
+    login,
+    logout,
   };
 }

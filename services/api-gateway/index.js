@@ -3,6 +3,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const { authenticateToken, requireRole, rateLimiter } = require('@azora/shared-auth');
 require('dotenv').config();
 
 const app = express();
@@ -12,9 +13,11 @@ app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
+app.use(rateLimiter());
 
 // Service registry
 const services = {
+  auth: process.env.AUTH_URL || 'http://localhost:3001',
   education: process.env.EDUCATION_URL || 'http://localhost:3074',
   mint: process.env.MINT_URL || 'http://localhost:3080',
   forge: process.env.FORGE_URL || 'http://localhost:3200',
@@ -22,7 +25,14 @@ const services = {
   aiFamily: process.env.AI_FAMILY_URL || 'http://localhost:4010'
 };
 
-// Health check
+// Auth routes (public)
+app.use('/api/auth', createProxyMiddleware({ 
+  target: services.auth, 
+  changeOrigin: true,
+  pathRewrite: { '^/api/auth': '' }
+}));
+
+// Health check (public)
 app.get('/api/health', async (req, res) => {
   const axios = require('axios');
   const health = { status: 'healthy', gateway: 'operational', services: {} };
@@ -39,32 +49,32 @@ app.get('/api/health', async (req, res) => {
   res.json(health);
 });
 
-// Route to services
-app.use('/api/education', createProxyMiddleware({ 
+// Protected routes - require authentication
+app.use('/api/education', authenticateToken, createProxyMiddleware({ 
   target: services.education, 
   changeOrigin: true,
   pathRewrite: { '^/api/education': '/api' }
 }));
 
-app.use('/api/mint', createProxyMiddleware({ 
+app.use('/api/mint', authenticateToken, createProxyMiddleware({ 
   target: services.mint, 
   changeOrigin: true,
   pathRewrite: { '^/api/mint': '/api' }
 }));
 
-app.use('/api/forge', createProxyMiddleware({ 
+app.use('/api/forge', authenticateToken, createProxyMiddleware({ 
   target: services.forge, 
   changeOrigin: true,
   pathRewrite: { '^/api/forge': '/api' }
 }));
 
-app.use('/api/nexus', createProxyMiddleware({ 
+app.use('/api/nexus', authenticateToken, createProxyMiddleware({ 
   target: services.nexus, 
   changeOrigin: true,
   pathRewrite: { '^/api/nexus': '/api' }
 }));
 
-app.use('/api/ai-family', createProxyMiddleware({ 
+app.use('/api/ai-family', authenticateToken, createProxyMiddleware({ 
   target: services.aiFamily, 
   changeOrigin: true,
   pathRewrite: { '^/api/ai-family': '/api' }

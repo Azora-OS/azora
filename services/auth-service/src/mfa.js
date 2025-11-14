@@ -40,11 +40,17 @@ const setupMfa = async (req, res) => {
     const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
     const backupCodes = generateMFABackupCodes();
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        mfaSecret: secret.base32,
-        mfaBackupCodes: JSON.stringify(backupCodes)
+    await prisma.mFASettings.upsert({
+      where: { userId: user.id },
+      create: {
+        userId: user.id,
+        secret: secret.base32,
+        backupCodes: JSON.stringify(backupCodes),
+        enabled: false
+      },
+      update: {
+        secret: secret.base32,
+        backupCodes: JSON.stringify(backupCodes)
       }
     });
 
@@ -72,15 +78,16 @@ const verifyMfa = async (req, res) => {
 
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }
+      where: { id: decoded.userId },
+      include: { mfaSettings: true }
     });
 
-    if (!user || !user.mfaSecret) {
+    if (!user || !user.mfaSettings || !user.mfaSettings.secret) {
       return res.status(400).json({ error: 'MFA setup not initiated' });
     }
 
     const verified = speakeasy.totp.verify({
-      secret: user.mfaSecret,
+      secret: user.mfaSettings.secret,
       encoding: 'base32',
       token: mfaToken,
       window: 2
@@ -90,15 +97,15 @@ const verifyMfa = async (req, res) => {
       return res.status(400).json({ error: 'Invalid MFA token' });
     }
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { mfaEnabled: true }
+    await prisma.mFASettings.update({
+      where: { userId: user.id },
+      data: { enabled: true }
     });
 
     res.json({
       success: true,
       message: 'MFA enabled successfully',
-      backupCodes: JSON.parse(user.mfaBackupCodes || '[]')
+      backupCodes: JSON.parse(user.mfaSettings.backupCodes || '[]')
     });
   } catch (error) {
     console.error('MFA verify error:', error);
@@ -116,6 +123,7 @@ const disableMfa = async (req, res) => {
       return res.status(400).json({ error: 'Access token and password required' });
     }
 
+    const bcrypt = require('bcryptjs');
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
@@ -130,12 +138,12 @@ const disableMfa = async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    await prisma.user.update({
-      where: { id: user.id },
+    await prisma.mFASettings.update({
+      where: { userId: user.id },
       data: {
-        mfaEnabled: false,
-        mfaSecret: null,
-        mfaBackupCodes: JSON.stringify([])
+        enabled: false,
+        secret: null,
+        backupCodes: '[]'
       }
     });
 

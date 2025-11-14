@@ -1,72 +1,98 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { mintApi } from '../../../packages/lib/api-client';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Header } from '@/components/header';
+import { useWallet } from '@/hooks/use-wallet';
+import { useTransactions } from '@/hooks/use-transactions';
+import { ArrowUpRight, ArrowDownLeft, Award, TrendingUp } from 'lucide-react';
 
 export default function WalletPage() {
-  const [wallet, setWallet] = useState({ balance: 100, transactions: [] });
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    setUser(userData);
-
-    // Create wallet if doesn't exist
-    mintApi.createWallet(userData.id).then(res => {
-      if (res.success) setWallet(res.data);
-    });
-  }, []);
+  const { wallet, isLoading: walletLoading, startMining } = useWallet();
+  const { data: transactions, isLoading: txLoading } = useTransactions();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <a href="/dashboard" className="text-blue-600 hover:underline">← Back to Dashboard</a>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950">
+      <Header />
 
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">My Wallet</h1>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold text-white mb-8">My Wallet</h1>
 
-        {/* Balance Card */}
-        <div className="bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg p-8 mb-8">
-          <div className="text-lg mb-2">Total Balance</div>
-          <div className="text-5xl font-bold mb-4">{wallet.balance} AZR</div>
-          <div className="text-blue-100">≈ ${(wallet.balance * 0.5).toFixed(2)} USD</div>
-        </div>
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <Card className="bg-gradient-to-br from-teal-600 to-emerald-600 border-0">
+            <CardHeader>
+              <CardTitle className="text-white">Total Balance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {walletLoading ? (
+                <Skeleton className="h-16 w-48" />
+              ) : (
+                <>
+                  <div className="text-5xl font-bold text-white mb-2">
+                    {wallet?.balance || 0} AZR
+                  </div>
+                  <div className="text-teal-100">≈ ${((wallet?.balance || 0) * 0.5).toFixed(2)} USD</div>
+                </>
+              )}
+            </CardContent>
+          </Card>
 
-        {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <button className="bg-white p-6 rounded-lg shadow text-center hover:shadow-lg">
-            <div className="text-3xl mb-2">📤</div>
-            <div className="font-bold">Send</div>
-          </button>
-          <button className="bg-white p-6 rounded-lg shadow text-center hover:shadow-lg">
-            <div className="text-3xl mb-2">📥</div>
-            <div className="font-bold">Receive</div>
-          </button>
-          <button className="bg-white p-6 rounded-lg shadow text-center hover:shadow-lg">
-            <div className="text-3xl mb-2">💎</div>
-            <div className="font-bold">Stake (15% APY)</div>
-          </button>
-        </div>
-
-        {/* Transactions */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">Recent Transactions</h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center border-b pb-4">
-              <div>
-                <div className="font-bold">Welcome Bonus</div>
-                <div className="text-sm text-gray-600">Just now</div>
+          <Card className="bg-slate-900/50 border-slate-800">
+            <CardHeader>
+              <CardTitle className="text-white">Mining Rewards</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-3xl font-bold text-white">{wallet?.miningRewards || 0} AZR</div>
+                  <div className="text-slate-400">Earned from learning</div>
+                </div>
+                <Button onClick={() => startMining.mutate()} disabled={startMining.isPending}>
+                  {startMining.isPending ? 'Starting...' : 'Start Mining'}
+                </Button>
               </div>
-              <div className="text-green-600 font-bold">+100 AZR</div>
-            </div>
-            <div className="text-gray-600 text-center py-4">
-              Start learning to earn more tokens!
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+
+        <Card className="bg-slate-900/50 border-slate-800">
+          <CardHeader>
+            <CardTitle className="text-white">Recent Transactions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {txLoading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)}
+              </div>
+            ) : transactions?.length > 0 ? (
+              <div className="space-y-3">
+                {transactions.map((tx: any) => (
+                  <div key={tx.id} className="flex items-center justify-between p-4 border border-slate-800 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-full ${tx.type === 'credit' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                        {tx.type === 'credit' ? <ArrowDownLeft className="h-5 w-5 text-green-400" /> : <ArrowUpRight className="h-5 w-5 text-red-400" />}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-white">{tx.description}</div>
+                        <div className="text-sm text-slate-400">{new Date(tx.createdAt).toLocaleDateString()}</div>
+                      </div>
+                    </div>
+                    <div className={`font-bold ${tx.type === 'credit' ? 'text-green-400' : 'text-red-400'}`}>
+                      {tx.type === 'credit' ? '+' : '-'}{tx.amount} AZR
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-400">
+                <Award className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>No transactions yet. Start learning to earn AZR!</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ApiProvider } from './lib/api-provider';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
-import Analytics from './pages/Analytics';
 import Users from './pages/Users';
+import Courses from './pages/Courses';
 import Finance from './pages/Finance';
 import Settings from './pages/Settings';
 import './App.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -21,8 +32,10 @@ const App: React.FC = () => {
   }, [darkMode]);
 
   return (
-    <Router>
-      <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 transition-all duration-300`}>
+    <QueryClientProvider client={queryClient}>
+      <ApiProvider>
+        <Router>
+          <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 transition-all duration-300`}>
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         
         <div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
@@ -58,8 +71,8 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/analytics" element={<Analytics />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/courses" element={<Courses />} />
               <Route path="/finance" element={<Finance />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
@@ -67,6 +80,8 @@ const App: React.FC = () => {
         </div>
       </div>
     </Router>
+      </ApiProvider>
+    </QueryClientProvider>
   );
 };
 

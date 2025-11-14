@@ -6,21 +6,56 @@ export interface ApiConfig {
   baseUrl?: string;
   timeout?: number;
   headers?: Record<string, string>;
+  onAuthError?: () => void;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+export class ApiError extends Error {
+  constructor(public status: number, message: string, public data?: any) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
 export class AzoraApiClient {
   private baseUrl: string;
   private timeout: number;
   private headers: Record<string, string>;
+  private onAuthError?: () => void;
+  private token: string | null = null;
 
   constructor(config: ApiConfig = {}) {
     this.baseUrl = config.baseUrl || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     this.timeout = config.timeout || 30000;
     this.headers = { 'Content-Type': 'application/json', ...config.headers };
+    this.onAuthError = config.onAuthError;
+    
+    if (typeof window !== 'undefined') {
+      this.token = localStorage.getItem('azora_token');
+      if (this.token) this.headers['Authorization'] = `Bearer ${this.token}`;
+    }
   }
 
   setAuthToken(token: string) {
+    this.token = token;
     this.headers['Authorization'] = `Bearer ${token}`;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('azora_token', token);
+    }
+  }
+
+  clearAuthToken() {
+    this.token = null;
+    delete this.headers['Authorization'];
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('azora_token');
+    }
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -36,11 +71,26 @@ export class AzoraApiClient {
       });
 
       clearTimeout(timeoutId);
-      if (!response.ok) throw new Error(`API Error: ${response.status}`);
+      
+      if (response.status === 401) {
+        this.clearAuthToken();
+        if (this.onAuthError) this.onAuthError();
+        throw new ApiError(401, 'Unauthorized');
+      }
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new ApiError(response.status, errorData.error || `API Error: ${response.status}`, errorData);
+      }
+      
       return await response.json();
     } catch (error) {
       clearTimeout(timeoutId);
-      throw error;
+      if (error instanceof ApiError) throw error;
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new ApiError(408, 'Request timeout');
+      }
+      throw new ApiError(500, error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -93,8 +143,11 @@ export class AzoraApiClient {
 
   mint = {
     getWallet: (userId: string) => this.request(`/api/wallet/${userId}`),
+    getTransactions: (userId: string) => this.request(`/api/wallet/${userId}/transactions`),
     startMining: (userId: string) =>
-      this.request('/api/mining/start', { method: 'POST', body: JSON.stringify({ userId }) })
+      this.request('/api/mining/start', { method: 'POST', body: JSON.stringify({ userId }) }),
+    transfer: (from: string, to: string, amount: number) =>
+      this.request('/api/wallet/transfer', { method: 'POST', body: JSON.stringify({ from, to, amount }) })
   };
 
   marketplace = {
@@ -195,3 +248,6 @@ export class AzoraApiClient {
 
 export const createApiClient = (config?: ApiConfig) => new AzoraApiClient(config);
 export default AzoraApiClient;
+
+export * from './hooks';
+export * from './react-query-hooks';
