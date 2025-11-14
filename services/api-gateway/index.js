@@ -347,7 +347,7 @@ const unifiedRoutes = require('./routes/unified-routes');
 app.use('/api', unifiedRoutes);
 
 // Service proxy with enhanced error handling and retries
-app.all('/api/:service/:path(*)', async (req, res) => {
+app.all('/api/:service/*', async (req, res) => {
   const { service } = req.params;
   const serviceUrl = serviceRegistry.getServiceUrl(service);
 

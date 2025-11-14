@@ -82,7 +82,9 @@ class CacheService {
   }
 
   start() {
-    this.app.listen(this.port, () => console.log(`Cache Service running on port ${this.port}`));
+    this.app.use(require('./routes'));
+
+app.listen(this.port, () => console.log(`Cache Service running on port ${this.port}`));
   }
 }
 

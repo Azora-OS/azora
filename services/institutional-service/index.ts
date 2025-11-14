@@ -164,7 +164,7 @@ app.post('/api/students/register', authenticateSession, requireRole('ADMIN'), as
 
     // Hash password (in production, use bcrypt)
     // For now, we'll store it directly (should be hashed)
-    const passwordHash = password; // TODO: Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
 
     // Create user
     const user = await prisma.user.create({

@@ -36,5 +36,8 @@ app.get('/health', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3051;
+const routes = require('./routes');
+app.use(routes);
+
 app.listen(PORT, () => console.log(`Search Service on ${PORT}`));
 module.exports = app;

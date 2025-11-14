@@ -509,7 +509,8 @@ class PersonalizationEngine {
     const similarUsers = await this.findSimilarUsers(profile);
 
     if (similarUsers.length === 0) {
-      return [];
+      const recommendations = await generateRecommendations(userId);
+      return recommendations;
     }
 
     // Get content that similar users engaged with but current user hasn't

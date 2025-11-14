@@ -66,7 +66,9 @@ class AITutorService {
   }
 
   start() {
-    this.app.listen(this.port, () => console.log(`AI Tutor Service running on port ${this.port}`));
+    this.app.use(require('./routes'));
+
+app.listen(this.port, () => console.log(`AI Tutor Service running on port ${this.port}`));
   }
 }
 

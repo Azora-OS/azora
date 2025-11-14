@@ -1450,6 +1450,10 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
+// Load additional routes
+const additionalRoutes = require('./routes');
+app.use(additionalRoutes);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, async () => {
   console.log(`🚀 Azora Auth Service running on port ${PORT}`);

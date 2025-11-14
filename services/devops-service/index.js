@@ -39,5 +39,7 @@ app.get('/api/health-checks/:service', (req, res) => {
   res.json({ checks });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`DevOps Service on port ${port}`));
 module.exports = app;

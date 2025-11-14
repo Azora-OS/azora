@@ -34,6 +34,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message });
 });
 
+app.use(require('./routes'));
+
 app.listen(PORT, () => {
   console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
 });

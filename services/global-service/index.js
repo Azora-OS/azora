@@ -39,5 +39,7 @@ app.get('/api/features/:name', (req, res) => {
   res.json({ feature });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`Global Service on port ${port}`));
 module.exports = app;

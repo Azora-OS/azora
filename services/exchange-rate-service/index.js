@@ -156,7 +156,9 @@ class ExchangeRateService {
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    this.app.use(require('./routes'));
+
+app.listen(this.port, () => {
       console.log(`💱 Exchange Rate Service running on port ${this.port}`);
     });
   }

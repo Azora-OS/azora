@@ -25,4 +25,6 @@ app.get('/api/twin', (req, res) => {
   res.json({ twins });
 });
 
+app.use(require('./routes'));
+
 app.listen(5800, () => console.log("[digital-twin] running on 5800"));

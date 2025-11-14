@@ -15,6 +15,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy', service: 'email-service', timestamp: new Date().toISOString() });
 });
 
+app.use(require('./routes'));
+
 app.listen(PORT, () => console.log(`email-service running on port ${PORT}`));
 
 module.exports = app;

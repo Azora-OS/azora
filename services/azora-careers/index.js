@@ -34,6 +34,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message });
 });
 
+const routes = require('./routes');
+app.use(routes);
+
 app.listen(PORT, () => {
   console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
 });

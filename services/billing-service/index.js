@@ -227,7 +227,9 @@ class BillingService {
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    this.app.use(require('./routes'));
+
+app.listen(this.port, () => {
       console.log(`📊 Billing Service running on port ${this.port}`);
     });
   }

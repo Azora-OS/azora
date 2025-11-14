@@ -85,7 +85,9 @@ class WebhookService {
   }
 
   start() {
-    this.app.listen(this.port, () => console.log(`Webhook Service running on port ${this.port}`));
+    this.app.use(require('./routes'));
+
+app.listen(this.port, () => console.log(`Webhook Service running on port ${this.port}`));
   }
 }
 

@@ -106,6 +106,8 @@ app.get('/api/wallet/:userId/balance', (req, res) => {
   res.json({ wallet });
 });
 
+app.use(require('./routes'));
+
 app.listen(PORT, () => console.log(`💳 payment-service running on port ${PORT}`));
 
 module.exports = app;

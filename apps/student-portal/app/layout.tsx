@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import '../../azora-ui/globals-premium.css'
+import { Providers } from '@/components/providers';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,12 +23,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body className={`${inter.className} font-sans antialiased`}>
-        {children}
+        <Providers>{children}</Providers>
         <Analytics />
       </body>
     </html>

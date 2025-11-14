@@ -256,7 +256,9 @@ class LendingService {
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    this.app.use(require('./routes'));
+
+app.listen(this.port, () => {
       console.log(`🏦 Lending Service running on port ${this.port}`);
     });
   }

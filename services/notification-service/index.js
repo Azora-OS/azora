@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
+const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3037;
@@ -14,6 +15,8 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', service: 'notification-service', timestamp: new Date().toISOString() });
 });
+
+app.use(routes);
 
 app.listen(PORT, () => console.log(`notification-service running on port ${PORT}`));
 
