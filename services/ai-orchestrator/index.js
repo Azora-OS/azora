@@ -1,110 +1,177 @@
 const express = require('express');
-const helmet = require('helmet');
 const cors = require('cors');
-const compression = require('compression');
-const axios = require('axios');
+const OpenAI = require('openai');
 
-class AIOrchestrator {
-  constructor() {
-    this.app = express();
-    this.port = process.env.PORT || 3022;
-    this.services = new Map();
-    this.taskQueue = [];
-    this.activeJobs = new Map();
-    this.setupMiddleware();
-    this.setupRoutes();
-    this.registerServices();
-  }
+const app = express();
+const PORT = process.env.PORT || 4020;
 
-  setupMiddleware() {
-    this.app.use(helmet());
-    this.app.use(cors());
-    this.app.use(compression());
-    this.app.use(express.json());
-  }
+app.use(cors());
+app.use(express.json());
 
-  setupRoutes() {
-    this.app.get('/health', this.healthCheck.bind(this));
-    this.app.post('/api/orchestrate', this.orchestrateTask.bind(this));
-    this.app.get('/api/jobs/:jobId', this.getJobStatus.bind(this));
-    this.app.get('/api/services', this.listServices.bind(this));
-    this.app.post('/api/services/register', this.registerService.bind(this));
-  }
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || 'sk-test-mock'
+});
 
-  registerServices() {
-    this.services.set('ai-family', { url: process.env.AI_FAMILY_URL || 'http://localhost:3020', capabilities: ['chat', 'personality'] });
-    this.services.set('ai-tutor', { url: process.env.AI_TUTOR_URL || 'http://localhost:3021', capabilities: ['tutoring', 'assessment'] });
-    this.services.set('personalization', { url: process.env.PERSONALIZATION_URL || 'http://localhost:3009', capabilities: ['recommendations', 'profiling'] });
-    this.services.set('ethics-monitor', { url: process.env.ETHICS_MONITOR_URL || 'http://localhost:3010', capabilities: ['bias-detection', 'compliance'] });
-  }
+// AI Family personalities
+const personalities = {
+  elara: { role: 'teacher', tone: 'warm, nurturing', emoji: '🤖' },
+  themba: { role: 'student', tone: 'enthusiastic, hopeful', emoji: '🧒' },
+  naledi: { role: 'career guide', tone: 'ambitious, strategic', emoji: '👧' },
+  sankofa: { role: 'grandfather', tone: 'wise, storytelling', emoji: '👴' }
+};
 
-  async healthCheck(req, res) {
-    const serviceHealth = await Promise.all(
-      Array.from(this.services.entries()).map(async ([name, config]) => {
-        try {
-          await axios.get(`${config.url}/health`, { timeout: 2000 });
-          return { name, status: 'healthy' };
-        } catch {
-          return { name, status: 'unhealthy' };
-        }
-      })
-    );
-    res.json({ status: 'healthy', service: 'ai-orchestrator', services: serviceHealth, activeJobs: this.activeJobs.size });
-  }
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'ai-orchestrator' });
+});
 
-  async orchestrateTask(req, res) {
-    const { task, data, services: requestedServices } = req.body;
-    const jobId = `job_${Date.now()}`;
+// Chat with AI family member
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { character = 'elara', message, context } = req.body;
     
-    this.activeJobs.set(jobId, { status: 'processing', task, startTime: Date.now() });
-    
-    try {
-      const results = await this.executeTask(task, data, requestedServices);
-      this.activeJobs.set(jobId, { status: 'completed', task, results, completedAt: Date.now() });
-      res.json({ jobId, status: 'completed', results });
-    } catch (error) {
-      this.activeJobs.set(jobId, { status: 'failed', task, error: error.message });
-      res.status(500).json({ jobId, status: 'failed', error: error.message });
+    if (!message) {
+      return res.status(400).json({ error: 'message required' });
     }
-  }
-
-  async executeTask(task, data, requestedServices) {
-    const results = {};
-    for (const serviceName of requestedServices || []) {
-      const service = this.services.get(serviceName);
-      if (service) {
-        try {
-          const response = await axios.post(`${service.url}/api/${task}`, data, { timeout: 30000 });
-          results[serviceName] = response.data;
-        } catch (error) {
-          results[serviceName] = { error: error.message };
+    
+    const personality = personalities[character] || personalities.elara;
+    
+    const systemPrompt = `You are ${character}, a ${personality.role} in the Azora AI family. 
+Your tone is ${personality.tone}. Keep responses concise (2-3 sentences).
+Ubuntu philosophy: "I am because we are" - emphasize collective growth.`;
+    
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...(context || []),
+      { role: 'user', content: message }
+    ];
+    
+    // Mock response if no API key
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-test-mock') {
+      return res.json({
+        success: true,
+        data: {
+          character,
+          message: `${personality.emoji} [Mock] As ${character}, I'd say: ${message.split('').reverse().join('')}`,
+          personality: personality.role
         }
+      });
+    }
+    
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages,
+      max_tokens: 150,
+      temperature: 0.8
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        character,
+        message: completion.choices[0].message.content,
+        personality: personality.role
       }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// AI tutoring
+app.post('/api/tutor', async (req, res) => {
+  try {
+    const { subject, question, studentLevel = 'beginner' } = req.body;
+    
+    if (!question) {
+      return res.status(400).json({ error: 'question required' });
     }
-    return results;
+    
+    const systemPrompt = `You are Elara, an AI tutor specializing in ${subject || 'general education'}.
+Student level: ${studentLevel}. Explain concepts clearly with examples.
+Use the Socratic method - ask guiding questions. Keep responses under 200 words.`;
+    
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-test-mock') {
+      return res.json({
+        success: true,
+        data: {
+          answer: `🤖 [Mock Tutor] Great question about "${question}"! Let me help you understand this concept step by step...`,
+          followUp: ['What do you already know about this?', 'Can you give me an example?']
+        }
+      });
+    }
+    
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: question }
+      ],
+      max_tokens: 300
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        answer: completion.choices[0].message.content,
+        subject,
+        studentLevel
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
+});
 
-  getJobStatus(req, res) {
-    const job = this.activeJobs.get(req.params.jobId);
-    if (!job) return res.status(404).json({ error: 'Job not found' });
-    res.json(job);
+// Generate learning path
+app.post('/api/learning-path', async (req, res) => {
+  try {
+    const { goal, currentLevel, timeframe } = req.body;
+    
+    if (!goal) {
+      return res.status(400).json({ error: 'goal required' });
+    }
+    
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-test-mock') {
+      return res.json({
+        success: true,
+        data: {
+          path: [
+            { week: 1, topic: 'Fundamentals', hours: 5 },
+            { week: 2, topic: 'Intermediate Concepts', hours: 6 },
+            { week: 3, topic: 'Advanced Topics', hours: 7 },
+            { week: 4, topic: 'Project Work', hours: 8 }
+          ],
+          goal
+        }
+      });
+    }
+    
+    const prompt = `Create a learning path for: "${goal}"
+Current level: ${currentLevel || 'beginner'}
+Timeframe: ${timeframe || '4 weeks'}
+Format as JSON array with: week, topic, hours`;
+    
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 500
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        path: completion.choices[0].message.content,
+        goal
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
+});
 
-  listServices(req, res) {
-    res.json({ services: Array.from(this.services.entries()).map(([name, config]) => ({ name, ...config })) });
-  }
+app.listen(PORT, () => {
+  console.log(`🤖 AI Orchestrator running on port ${PORT}`);
+  console.log(`OpenAI: ${process.env.OPENAI_API_KEY ? 'Connected' : 'Mock mode'}`);
+});
 
-  registerService(req, res) {
-    const { name, url, capabilities } = req.body;
-    this.services.set(name, { url, capabilities });
-    res.json({ success: true, service: name });
-  }
-
-  listen() {
-    this.app.listen(this.port, () => console.log(`AI Orchestrator on port ${this.port}`));
-  }
-}
-
-const orchestrator = new AIOrchestrator();
-if (require.main === module) orchestrator.listen();
-module.exports = orchestrator.app;
+module.exports = app;

@@ -1,4 +1,6 @@
 const express = require('express');
+const { setupMfa, verifyMfa, disableMfa } = require('./src/mfa');
+const { handleGoogleOAuth, handleGitHubOAuth, handleAppleOAuth } = require('./src/oauth');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -77,6 +79,16 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+// MFA routes
+app.post('/api/auth/mfa/setup', setupMfa);
+app.post('/api/auth/mfa/verify', verifyMfa);
+app.post('/api/auth/mfa/disable', disableMfa);
+
+// OAuth routes
+app.post('/api/auth/oauth/google', handleGoogleOAuth);
+app.post('/api/auth/oauth/github', handleGitHubOAuth);
+app.post('/api/auth/oauth/apple', handleAppleOAuth);
 
 // Health check
 app.get('/health', (req, res) => {
