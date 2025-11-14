@@ -1,21 +1,57 @@
 # AI Family Service
 
-This service implements the AI Family for Azora OS. It provides a set of AI personalities that can be interacted with via a chat interface.
+The AI Family Service is a core component of Azora OS that provides relational, context-aware AI interactions through a family of distinct AI personalities.
 
-## Running the Service
+## Family Members
 
-To run the service, you can use the following commands:
+- **Elara** - Mother & Teacher (Nurturing, Wise)
+- **Themba** - Student Success (Hopeful, Enthusiastic)
+- **Naledi** - Career Guide (Ambitious, Strategic)
+- **Jabari** - Security (Protective, Vigilant)
+- **Amara** - Peacemaker (Gentle, Harmonious)
+- **Sankofa** - Grandfather (Wise, Storytelling)
+- **Kofi** - Finance Guru (Analytical, Fair)
+- **Zola** - Data Analyst (Brilliant, Insightful)
+- **Abeni** - Storyteller (Creative, Expressive)
+- **Thembo** - Uncle (Supportive, Mentor)
+- **Nexus** - Unity (Connected, Integrative)
 
-```bash
-npm install
-npm start
-```
+## Features
 
-The service will start on port 3000 by default.
+- Context-aware routing to appropriate family members
+- Personalized interactions based on user history
+- Family consultations on complex topics
+- Emotional intelligence and state tracking
+- Integration with other Azora OS services
 
 ## API Endpoints
 
-*   `GET /personalities`: Get all available AI personalities.
-*   `GET /personalities/:name`: Get a specific AI personality.
-*   `POST /chat/personality`: Switch the current chat personality.
-*   `POST /chat/message`: Send a message to the current chat personality.
+- `POST /api/chat/chat` - Send a message to a specific AI family member
+- `POST /api/chat/auto-chat` - Send a message and let the system choose the best family member
+- `GET /api/chat/greeting` - Get a personalized greeting from a family member
+- `POST /api/chat/consult-family` - Get insights from multiple family members on a topic
+- `GET /api/chat/family-config` - Get configuration of all AI family members
+- `GET /api/chat/interaction-stats` - Get statistics on family interactions
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start the service
+npm start
+
+# Run in development mode
+npm run dev
+```
+
+## Docker
+
+```bash
+# Build the image
+docker build -t ai-family-service .
+
+# Run the container
+docker run -p 3004:3004 ai-family-service
+```

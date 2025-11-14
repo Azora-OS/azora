@@ -4,7 +4,8 @@
     "description": "AI Family Service for Azora OS",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
+        "start": "node server.js",
+        "dev": "node server.js",
         "seed": "node prisma/seed.js",
         "migrate": "prisma migrate dev"
     },
