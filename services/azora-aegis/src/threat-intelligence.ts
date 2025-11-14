@@ -11,6 +11,14 @@ interface ThreatSignature {
   mitigation: string;
 }
 
+interface DetectedThreat {
+  id: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  description: string;
+  mitigation: string;
+  matched?: string;
+}
+
 export class ThreatIntelligence {
   private signatures: ThreatSignature[] = [
     {
@@ -43,7 +51,7 @@ export class ThreatIntelligence {
     },
     {
       id: 'CREDENTIAL_LEAK',
-      pattern: /(password|token|api[_-]?key|secret)[\s:=]["']?[\w\-]{8,}/i,
+      pattern: /(password|token|api[_-]?key|secret)[\s:=]["'']?[\w\-]{8,}/i,
       severity: 'CRITICAL',
       description: 'Potential credential exposure',
       mitigation: 'Use environment variables and secrets management'
@@ -58,7 +66,7 @@ export class ThreatIntelligence {
   ];
 
   detectThreats(input: string) {
-    const detected = this.signatures
+    const detected: DetectedThreat[] = this.signatures
       .filter(sig => sig.pattern.test(input))
       .map(sig => ({
         id: sig.id,
@@ -75,7 +83,7 @@ export class ThreatIntelligence {
     };
   }
 
-  private calculateRiskScore(threats: any[]) {
+  private calculateRiskScore(threats: DetectedThreat[]) {
     const weights = { CRITICAL: 40, HIGH: 25, MEDIUM: 15, LOW: 5 };
     return threats.reduce((score, t) => score + weights[t.severity], 0);
   }
@@ -96,7 +104,7 @@ export class ThreatIntelligence {
       .sort((a, b) => b.occurrences - a.occurrences);
   }
 
-  getRecommendations(threats: any[]) {
+  getRecommendations(threats: DetectedThreat[]) {
     const recs = new Set<string>();
     
     threats.forEach(t => {

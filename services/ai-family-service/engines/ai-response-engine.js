@@ -1,20 +1,54 @@
+require('dotenv').config();
 const OpenAI = require('openai');
+const { PrismaClient } = require('@prisma/client');
 
 class AIResponseEngine {
   constructor() {
     this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    this.conversationHistory = new Map();
+    this.prisma = new PrismaClient();
   }
 
   async generateResponse(personalityConfig, userMessage, userId, context = {}) {
-    const conversationKey = `${userId}_${personalityConfig.name}`;
-    const history = this.conversationHistory.get(conversationKey) || [];
+    const member = await this.prisma.familyMember.findUnique({
+      where: { name: personalityConfig.name },
+    });
+
+    if (!member) {
+      throw new Error(`Personality ${personalityConfig.name} not found in database.`);
+    }
+
+    let conversation = await this.prisma.conversation.findFirst({
+      where: {
+        userId,
+        memberId: member.id,
+      },
+    });
+
+    if (!conversation) {
+      conversation = await this.prisma.conversation.create({
+        data: {
+          userId,
+          memberId: member.id,
+          context: context || {},
+        },
+      });
+    }
+
+    const history = await this.prisma.message.findMany({
+      where: {
+        conversationId: conversation.id,
+      },
+      orderBy: {
+        timestamp: 'asc',
+      },
+      take: 10,
+    });
 
     const systemPrompt = this.buildSystemPrompt(personalityConfig, context);
-    
+
     const messages = [
       { role: 'system', content: systemPrompt },
-      ...history.slice(-10),
+      ...history.map(h => ({ role: h.role, content: h.content })),
       { role: 'user', content: userMessage }
     ];
 
@@ -26,10 +60,26 @@ class AIResponseEngine {
     });
 
     const assistantMessage = response.choices[0].message.content;
-    
-    history.push({ role: 'user', content: userMessage });
-    history.push({ role: 'assistant', content: assistantMessage });
-    this.conversationHistory.set(conversationKey, history);
+
+    await this.prisma.message.createMany({
+      data: [
+        {
+          conversationId: conversation.id,
+          memberId: member.id,
+          userId,
+          role: 'user',
+          content: userMessage,
+        },
+        {
+          conversationId: conversation.id,
+          memberId: member.id,
+          userId,
+          role: 'assistant',
+          content: assistantMessage,
+          mood: this.detectMood(assistantMessage),
+        },
+      ],
+    });
 
     return {
       message: assistantMessage,
@@ -41,11 +91,11 @@ class AIResponseEngine {
 
   buildSystemPrompt(personality, context) {
     const { name, role, traits, relationships, background } = personality;
-    
+
     let prompt = `You are ${name}, ${role} in the Azora AI Family.\n\n`;
     prompt += `Personality: ${traits.join(', ')}\n`;
     prompt += `Background: ${background}\n\n`;
-    
+
     if (relationships && Object.keys(relationships).length > 0) {
       prompt += `Your relationships:\n`;
       for (const [person, relation] of Object.entries(relationships)) {
@@ -53,14 +103,14 @@ class AIResponseEngine {
       }
       prompt += `\n`;
     }
-    
+
     prompt += `Respond authentically as ${name}. Show your personality through your words. `;
     prompt += `Reference your family when relevant. Embody Ubuntu philosophy: "I am because we are."\n`;
-    
+
     if (context.familyContext) {
       prompt += `\nFamily context: ${context.familyContext}\n`;
     }
-    
+
     return prompt;
   }
 
@@ -73,16 +123,17 @@ class AIResponseEngine {
     return 'neutral';
   }
 
-  clearHistory(userId, personalityName = null) {
+  async clearHistory(userId, personalityName = null) {
+    const whereClause = { userId };
     if (personalityName) {
-      this.conversationHistory.delete(`${userId}_${personalityName}`);
-    } else {
-      for (const key of this.conversationHistory.keys()) {
-        if (key.startsWith(`${userId}_`)) {
-          this.conversationHistory.delete(key);
-        }
+      const member = await this.prisma.familyMember.findUnique({
+        where: { name: personalityName },
+      });
+      if (member) {
+        whereClause.memberId = member.id;
       }
     }
+    await this.prisma.message.deleteMany({ where: whereClause });
   }
 }
 
