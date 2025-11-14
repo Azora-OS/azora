@@ -1,11 +1,12 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+const { schemas, validate } = require('../../packages/input-validation');
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // ============ WALLET ENDPOINTS ============
 
-router.post('/api/wallet/create', async (req, res) => {
+router.post('/api/wallet/create', validate(schemas.wallet.create), async (req, res) => {
   const { userId } = req.body;
   const wallet = await prisma.wallet.create({
     data: { userId, address: `azr_${userId}_${Date.now()}` }
@@ -41,7 +42,7 @@ router.get('/api/wallet/:userId/history', async (req, res) => {
 
 // ============ TRANSACTION ENDPOINTS ============
 
-router.post('/api/transfer', async (req, res) => {
+router.post('/api/transfer', validate(schemas.wallet.transfer), async (req, res) => {
   const { fromUserId, toUserId, amount, reason } = req.body;
   
   const fromWallet = await prisma.wallet.findUnique({ where: { userId: fromUserId } });
@@ -89,7 +90,7 @@ router.get('/api/transaction/:id', async (req, res) => {
 
 // ============ MINING ENDPOINTS ============
 
-router.post('/api/mining/start', async (req, res) => {
+router.post('/api/mining/start', validate(schemas.mining.start), async (req, res) => {
   const { userId, activityId, activityType, performance = 0.8 } = req.body;
   
   const baseReward = { course_completion: 10, job_completion: 50, skill_assessment: 5 }[activityType] || 1;
@@ -136,7 +137,7 @@ router.get('/api/mining/stats/:userId', async (req, res) => {
 
 // ============ STAKING ENDPOINTS ============
 
-router.post('/api/stake', async (req, res) => {
+router.post('/api/stake', validate(schemas.stake.create), async (req, res) => {
   const { userId, amount, duration = 30 } = req.body;
   
   const wallet = await prisma.wallet.findUnique({ where: { userId } });
@@ -160,7 +161,7 @@ router.post('/api/stake', async (req, res) => {
   res.json({ success: true, stake, expectedReward: amount * rewardRate });
 });
 
-router.post('/api/unstake', async (req, res) => {
+router.post('/api/unstake', validate(schemas.stake.unstake), async (req, res) => {
   const { userId, stakeId } = req.body;
   
   const stake = await prisma.stake.findUnique({ where: { id: stakeId }, include: { wallet: true } });

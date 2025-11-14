@@ -1,19 +1,20 @@
 const express = require('express');
 const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { authenticateToken, requireRole, rateLimiter } = require('@azora/shared-auth');
+const { csrfProtection, secureCors, errorHandler } = require('../../packages/security-middleware');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(helmet());
-app.use(cors());
+app.use(secureCors);
 app.use(compression());
 app.use(express.json());
 app.use(rateLimiter());
+app.use(csrfProtection);
 
 // Service registry
 const services = {
@@ -81,7 +82,7 @@ app.use('/api/ai-family', authenticateToken, createProxyMiddleware({
 }));
 
 // Unified endpoints
-app.post('/api/students/enroll', async (req, res) => {
+app.post('/api/students/enroll', authenticateToken, async (req, res) => {
   const axios = require('axios');
   const { studentId, courseId, userId } = req.body;
   
@@ -104,7 +105,7 @@ app.post('/api/students/enroll', async (req, res) => {
   }
 });
 
-app.post('/api/courses/complete', async (req, res) => {
+app.post('/api/courses/complete', authenticateToken, async (req, res) => {
   const axios = require('axios');
   const { studentId, courseId, score } = req.body;
   
@@ -137,10 +138,7 @@ app.post('/api/courses/complete', async (req, res) => {
   }
 });
 
-app.use((err, req, res, next) => {
-  console.error('Gateway error:', err);
-  res.status(500).json({ error: 'Gateway error', message: err.message });
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚪 API Gateway running on port ${PORT}`);

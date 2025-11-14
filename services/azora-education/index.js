@@ -1,17 +1,19 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
+const { csrfProtection, authenticate, secureCors, errorHandler } = require('../../packages/security-middleware');
+const { schemas, validate } = require('../../packages/input-validation');
 
 const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3074;
 
 app.use(helmet());
-app.use(cors());
+app.use(secureCors);
 app.use(compression());
 app.use(express.json());
+app.use(csrfProtection);
 
 app.get('/health', async (req, res) => {
   try {
@@ -23,7 +25,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Student Registration
-app.post('/api/students', async (req, res) => {
+app.post('/api/students', authenticate, validate(schemas.student.register), async (req, res) => {
   try {
     const { userId, firstName, lastName, email, dateOfBirth, grade, country } = req.body;
     
@@ -41,7 +43,7 @@ app.post('/api/students', async (req, res) => {
 });
 
 // Get Student Profile
-app.get('/api/students/:id', async (req, res) => {
+app.get('/api/students/:id', authenticate, async (req, res) => {
   try {
     const student = await prisma.student.findUnique({
       where: { id: req.params.id },
@@ -56,7 +58,7 @@ app.get('/api/students/:id', async (req, res) => {
 });
 
 // Course Enrollment
-app.post('/api/enrollments', async (req, res) => {
+app.post('/api/enrollments', authenticate, async (req, res) => {
   try {
     const { studentId, courseId } = req.body;
 
@@ -114,7 +116,7 @@ app.get('/api/courses', async (req, res) => {
 });
 
 // Update Progress
-app.post('/api/progress', async (req, res) => {
+app.post('/api/progress', authenticate, async (req, res) => {
   try {
     const { studentId, moduleId, completed, timeSpent, score } = req.body;
 
@@ -129,6 +131,8 @@ app.post('/api/progress', async (req, res) => {
     res.status(400).json({ success: false, error: error.message });
   }
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Azora Education running on port ${port}`);

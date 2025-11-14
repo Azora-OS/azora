@@ -1,17 +1,19 @@
 const express = require('express');
 const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
 const crypto = require('crypto');
+const { csrfProtection, authenticate, secureCors, errorHandler } = require('../../packages/security-middleware');
+const { schemas, validate } = require('../../packages/input-validation');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3200;
 
 app.use(helmet());
-app.use(cors());
+app.use(secureCors);
 app.use(compression());
 app.use(express.json());
+app.use(csrfProtection);
 
 // In-memory storage
 const jobs = new Map();
@@ -89,7 +91,7 @@ app.get('/health', (req, res) => {
 });
 
 // Jobs
-app.post('/api/jobs', (req, res) => {
+app.post('/api/jobs', authenticate, validate(schemas.job.create), (req, res) => {
   const { title, company, requirements, salary, location } = req.body;
   const jobId = crypto.randomUUID();
   
@@ -116,7 +118,7 @@ app.get('/api/jobs/:jobId', (req, res) => {
 });
 
 // Applications
-app.post('/api/jobs/:jobId/apply', (req, res) => {
+app.post('/api/jobs/:jobId/apply', authenticate, validate(schemas.job.apply), (req, res) => {
   const { userId, coverLetter } = req.body;
   const job = jobs.get(req.params.jobId);
   
@@ -135,14 +137,14 @@ app.post('/api/jobs/:jobId/apply', (req, res) => {
   res.json({ applicationId, application: applications.get(applicationId) });
 });
 
-app.get('/api/applications/:userId', (req, res) => {
+app.get('/api/applications/:userId', authenticate, (req, res) => {
   const userApps = Array.from(applications.values())
     .filter(a => a.userId === req.params.userId);
   res.json({ applications: userApps, total: userApps.length });
 });
 
 // Skills Assessment
-app.post('/api/skills/assess', (req, res) => {
+app.post('/api/skills/assess', authenticate, (req, res) => {
   const { userId, skills } = req.body;
   const assessment = assessor.assessProfile(skills);
   
@@ -153,29 +155,26 @@ app.post('/api/skills/assess', (req, res) => {
   res.json({ assessment });
 });
 
-app.get('/api/skills/profile/:userId', (req, res) => {
+app.get('/api/skills/profile/:userId', authenticate, (req, res) => {
   const user = users.get(req.params.userId);
   if (!user) return res.status(404).json({ error: 'User not found' });
   res.json({ profile: user });
 });
 
 // Job Matching
-app.post('/api/match', (req, res) => {
+app.post('/api/match', authenticate, (req, res) => {
   const { userId, maxResults = 10 } = req.body;
   const matches = matcher.findMatches(userId, maxResults);
   res.json({ matches, total: matches.length });
 });
 
-app.post('/api/match/calculate', (req, res) => {
+app.post('/api/match/calculate', authenticate, (req, res) => {
   const { userSkills, jobRequirements } = req.body;
   const score = matcher.calculateMatch(userSkills, jobRequirements);
   res.json({ score, match: score > 50 ? 'good' : score > 30 ? 'fair' : 'poor' });
 });
 
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ error: err.message });
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🔨 Azora Forge running on port ${PORT}`);

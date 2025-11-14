@@ -1,14 +1,16 @@
 const express = require('express');
 const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
 const completeRoutes = require('./routes-complete');
+const { csrfProtection, authenticate, secureCors, errorHandler } = require('../../packages/security-middleware');
+const { limiters } = require('../../packages/rate-limiting');
 
 const app = express();
 app.use(helmet());
-app.use(cors());
+app.use(secureCors);
 app.use(compression());
 app.use(express.json());
+app.use(csrfProtection);
 
 // Use comprehensive routes
 app.use(completeRoutes);
@@ -18,32 +20,32 @@ const economicPolicy = new EconomicPolicyEngine();
 const tokenMinter = new TokenMinter(economicPolicy);
 
 // Wallet Management
-app.post('/api/wallet/create', (req, res) => {
+app.post('/api/wallet/create', authenticate, (req, res) => {
   const { userId } = req.body;
   const wallet = tokenMinter.createWallet(userId);
   res.json({ success: true, wallet });
 });
 
-app.get('/api/wallet/:address', (req, res) => {
+app.get('/api/wallet/:address', authenticate, (req, res) => {
   const wallet = tokenMinter.getWallet(req.params.address);
   if (!wallet) return res.status(404).json({ error: 'Wallet not found' });
   res.json({ wallet });
 });
 
-app.get('/api/wallet/:address/balance', (req, res) => {
+app.get('/api/wallet/:address/balance', authenticate, (req, res) => {
   const balance = tokenMinter.getBalance(req.params.address);
   if (!balance) return res.status(404).json({ error: 'Wallet not found' });
   res.json(balance);
 });
 
 // Proof-of-Knowledge Mining
-app.post('/api/mining/challenge', (req, res) => {
+app.post('/api/mining/challenge', authenticate, (req, res) => {
   const { studentId, subject } = req.body;
   const challenge = pokEngine.generateChallenge(studentId, subject);
   res.json({ challenge });
 });
 
-app.post('/api/mining/submit', (req, res) => {
+app.post('/api/mining/submit', authenticate, (req, res) => {
   const { challenge, answers, address, studentLevel = 1 } = req.body;
   const result = pokEngine.mine(challenge, answers, studentLevel);
   
@@ -54,25 +56,25 @@ app.post('/api/mining/submit', (req, res) => {
 });
 
 // Token Operations
-app.post('/api/transfer', (req, res) => {
+app.post('/api/transfer', limiters.financial, authenticate, (req, res) => {
   const { from, to, amount } = req.body;
   const result = tokenMinter.transfer(from, to, amount);
   res.json(result);
 });
 
-app.post('/api/stake', (req, res) => {
+app.post('/api/stake', limiters.financial, authenticate, (req, res) => {
   const { address, amount } = req.body;
   const result = tokenMinter.stake(address, amount);
   res.json(result);
 });
 
-app.post('/api/unstake', (req, res) => {
+app.post('/api/unstake', limiters.financial, authenticate, (req, res) => {
   const { address, amount } = req.body;
   const result = tokenMinter.unstake(address, amount);
   res.json(result);
 });
 
-app.post('/api/staking/reward', (req, res) => {
+app.post('/api/staking/reward', authenticate, (req, res) => {
   const { address, days } = req.body;
   const wallet = tokenMinter.getWallet(address);
   if (!wallet) return res.status(404).json({ error: 'Wallet not found' });
@@ -93,7 +95,7 @@ app.get('/api/economics/ubi', (req, res) => {
   res.json(ubi);
 });
 
-app.post('/api/economics/adjust', (req, res) => {
+app.post('/api/economics/adjust', authenticate, (req, res) => {
   const { demand, supply } = req.body;
   const newRate = economicPolicy.adjustInflation({ demand, supply });
   res.json({ inflationRate: newRate });
@@ -200,6 +202,8 @@ app.get('/api/full-valuation-report', async (req, res) => {
     res.status(500).json({ error: 'Failed to generate full valuation report' });
   }
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3080;
 app.listen(PORT, () => console.log(`Azora Mint on ${PORT}`));

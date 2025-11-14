@@ -1,0 +1,10 @@
+{
+  "name": "@azora/rate-limiting",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "express-rate-limit": "^7.1.5",
+    "rate-limit-redis": "^4.2.0",
+    "ioredis": "^5.3.2"
+  }
+}

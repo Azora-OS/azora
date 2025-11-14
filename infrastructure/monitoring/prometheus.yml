@@ -3,19 +3,22 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'azora-monitoring'
-    static_configs:
-      - targets: ['monitoring-service:3013']
-    
   - job_name: 'azora-services'
     static_configs:
       - targets:
-        - 'api-gateway:4000'
-        - 'azora-nexus:3000'
-        - 'azora-education:3001'
-        - 'azora-mint:3002'
-        - 'azora-forge:3003'
-        - 'ai-family-service:3004'
-        - 'azora-pay:3010'
-        - 'notification-service:3011'
-        - 'analytics-service:3012'
+          - 'api-gateway:4000'
+          - 'azora-education:3010'
+          - 'azora-mint:3020'
+          - 'azora-forge:3030'
+          - 'azora-nexus:3040'
+          - 'auth-service:3050'
+          - 'payment-service:3039'
+    metrics_path: '/metrics'
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

@@ -1,11 +1,11 @@
 const express = require('express');
 const { setupMfa, verifyMfa, disableMfa } = require('./src/mfa');
 const { handleGoogleOAuth, handleGitHubOAuth, handleAppleOAuth } = require('./src/oauth');
-const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const promClient = require('prom-client');
 const { PrismaClient } = require('@prisma/client');
+const { csrfProtection, secureCors, errorHandler } = require('../../packages/security-middleware');
 const api = require('./src/api');
 
 const prisma = new PrismaClient();
@@ -54,16 +54,12 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(secureCors);
 
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(csrfProtection);
 
 // Metrics middleware
 app.use((req, res, next) => {
@@ -103,6 +99,8 @@ app.get('/metrics', async (req, res) => {
 
 // API routes
 app.use('/', api);
+
+app.use(errorHandler);
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {

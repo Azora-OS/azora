@@ -2,73 +2,15 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
-rule_files:
-  - "alert_rules.yml"
-
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          - alertmanager:9093
-
 scrape_configs:
-  - job_name: 'azora-gateway'
+  - job_name: 'azora-services'
     static_configs:
-      - targets: ['api-gateway:4000']
-    metrics_path: '/metrics'
-    scrape_interval: 5s
-
-  - job_name: 'azora-auth'
-    static_configs:
-      - targets: ['auth-service:3001']
-    metrics_path: '/metrics'
-    scrape_interval: 10s
-
-  - job_name: 'azora-mint'
-    static_configs:
-      - targets: ['mint-service:3002']
-    metrics_path: '/metrics'
-
-  - job_name: 'azora-lms'
-    static_configs:
-      - targets: ['lms-service:3003']
-    metrics_path: '/metrics'
-
-  - job_name: 'azora-forge'
-    static_configs:
-      - targets: ['forge-service:3004']
-    metrics_path: '/metrics'
-
-  - job_name: 'azora-nexus'
-    static_configs:
-      - targets: ['nexus-service:3005']
-    metrics_path: '/metrics'
-
-  - job_name: 'azora-education'
-    static_configs:
-      - targets: ['education-service:3007']
-    metrics_path: '/metrics'
-
-  - job_name: 'azora-payments'
-    static_configs:
-      - targets: ['payments-service:3008']
-    metrics_path: '/metrics'
-
-  - job_name: 'node-exporter'
-    static_configs:
-      - targets: ['node-exporter:9100']
-
-  - job_name: 'cadvisor'
-    static_configs:
-      - targets: ['cadvisor:8080']
-    scrape_interval: 30s
-
-  - job_name: 'postgres'
-    static_configs:
-      - targets: ['database:5432']
-    scrape_interval: 30s
-
-  - job_name: 'redis'
-    static_configs:
-      - targets: ['redis:6379']
-    scrape_interval: 30s
+      - targets:
+          - 'host.docker.internal:3059'  # health-monitor
+          - 'host.docker.internal:4000'  # api-gateway
+          - 'host.docker.internal:3001'  # auth-service
+          - 'host.docker.internal:3002'  # azora-education
+          - 'host.docker.internal:3003'  # azora-mint
+          - 'host.docker.internal:3004'  # azora-forge
+          - 'host.docker.internal:3005'  # azora-nexus
+          - 'host.docker.internal:3006'  # azora-aegis

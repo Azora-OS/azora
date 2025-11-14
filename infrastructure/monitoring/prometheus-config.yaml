@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'azora-services'
+    static_configs:
+      - targets:
+        - 'auth-service:3001'
+        - 'azora-education:3002'
+        - 'azora-mint:3003'
+        - 'azora-forge:3004'
+        - 'azora-nexus:3005'
+        - 'api-gateway:4000'
+        - 'azora-aegis:3007'
+    metrics_path: '/metrics'
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
