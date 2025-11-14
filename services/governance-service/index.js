@@ -46,5 +46,7 @@ app.get('/api/proposals/:id', (req, res) => {
   res.json({ proposal });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`Governance Service on port ${port}`));
 module.exports = app;

@@ -43,5 +43,7 @@ app.get('/api/blockchain/transactions', (req, res) => {
   res.json({ transactions });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`Blockchain Service on port ${port}`));
 module.exports = app;

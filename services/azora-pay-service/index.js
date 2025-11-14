@@ -325,7 +325,8 @@ class AzoraPayService {
           result = await this.processMobileMoney(transaction);
           break;
         default:
-          return res.status(400).json({ error: 'Payment method not implemented' });
+          const payment = await processPayment(req.body);
+      return res.json({ success: true, data: payment });
       }
 
       // Update transaction
@@ -697,7 +698,8 @@ class AzoraPayService {
 
   async getAzoraCoinBalance(address) {
     // Implement AZR balance check
-    return '1000.00'; // Mock balance
+    const wallet = await getWalletBalance(userId);
+      return wallet.balance.toString();
   }
 
   // Transaction management
@@ -879,7 +881,10 @@ class AzoraPayService {
 
   // Start the service
   start() {
-    this.app.listen(this.port, () => {
+    this.const routes = require('./routes');
+app.use(routes);
+
+app.listen(this.port, () => {
       console.log(`🚀 Azora Pay Service running on port ${this.port}`);
       console.log(`💳 Supported payment methods: ${Array.from(this.paymentMethods.keys()).join(', ')}`);
       console.log(`🏛️ Constitutional compliance: Active`);

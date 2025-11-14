@@ -1,104 +1,115 @@
+
 const express = require('express');
 const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+const progressRouter = require('./progress');
 
-// In-memory storage (replace with Prisma in production)
-const courses = new Map();
-const enrollments = new Map();
-const lessons = new Map();
+// Mount the progress router
+router.use('/progress', progressRouter);
 
 // Courses
-router.get('/courses', (req, res) => {
+router.get('/courses', async (req, res) => {
   const { level, search } = req.query;
-  let list = Array.from(courses.values());
-  if (level) list = list.filter(c => c.level === level);
-  if (search) list = list.filter(c => c.title.toLowerCase().includes(search.toLowerCase()));
-  res.json({ success: true, data: list, count: list.length });
+  const where = {};
+  if (level) where.level = level;
+  if (search) where.title = { contains: search, mode: 'insensitive' };
+  try {
+    const courses = await prisma.course.findMany({ where });
+    res.json({ success: true, data: courses, count: courses.length });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error fetching courses' });
+  }
 });
 
-router.post('/courses', (req, res) => {
-  const course = { id: `course_${Date.now()}`, ...req.body, createdAt: new Date(), enrolled: 0 };
-  courses.set(course.id, course);
-  res.status(201).json({ success: true, data: course });
+router.post('/courses', async (req, res) => {
+  try {
+    const course = await prisma.course.create({ data: req.body });
+    res.status(201).json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error creating course' });
+  }
 });
 
-router.get('/courses/:id', (req, res) => {
-  const course = courses.get(req.params.id);
-  if (!course) return res.status(404).json({ success: false, error: 'Course not found' });
-  const courseLessons = Array.from(lessons.values()).filter(l => l.courseId === req.params.id);
-  res.json({ success: true, data: { ...course, lessons: courseLessons } });
+router.get('/courses/:id', async (req, res) => {
+  try {
+    const course = await prisma.course.findUnique({ 
+      where: { id: req.params.id },
+      include: { lessons: true }
+    });
+    if (!course) return res.status(404).json({ success: false, error: 'Course not found' });
+    res.json({ success: true, data: course });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error fetching course' });
+  }
 });
 
-router.put('/courses/:id', (req, res) => {
-  const course = courses.get(req.params.id);
-  if (!course) return res.status(404).json({ success: false, error: 'Course not found' });
-  Object.assign(course, req.body, { updatedAt: new Date() });
-  res.json({ success: true, data: course });
+router.put('/courses/:id', async (req, res) => {
+  try {
+    const course = await prisma.course.update({
+      where: { id: req.params.id },
+      data: req.body
+    });
+    res.json({ success: true, data: course });
+  } catch (error) {
+    res.status(404).json({ success: false, error: 'Course not found' });
+  }
 });
 
-router.delete('/courses/:id', (req, res) => {
-  const deleted = courses.delete(req.params.id);
-  res.json({ success: deleted, message: deleted ? 'Course deleted' : 'Course not found' });
+router.delete('/courses/:id', async (req, res) => {
+  try {
+    await prisma.course.delete({ where: { id: req.params.id } });
+    res.json({ success: true, message: 'Course deleted' });
+  } catch (error) {
+    res.status(404).json({ success: false, error: 'Course not found' });
+  }
 });
 
 // Lessons
-router.post('/lessons', (req, res) => {
-  const lesson = { id: `lesson_${Date.now()}`, ...req.body, createdAt: new Date() };
-  lessons.set(lesson.id, lesson);
-  res.status(201).json({ success: true, data: lesson });
+router.post('/lessons', async (req, res) => {
+  try {
+    const lesson = await prisma.lesson.create({ data: req.body });
+    res.status(201).json({ success: true, data: lesson });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error creating lesson' });
+  }
 });
 
-router.get('/courses/:courseId/lessons', (req, res) => {
-  const courseLessons = Array.from(lessons.values())
-    .filter(l => l.courseId === req.params.courseId)
-    .sort((a, b) => a.order - b.order);
-  res.json({ success: true, data: courseLessons });
+router.get('/courses/:courseId/lessons', async (req, res) => {
+  try {
+    const lessons = await prisma.lesson.findMany({
+      where: { courseId: req.params.courseId },
+      orderBy: { order: 'asc' }
+    });
+    res.json({ success: true, data: lessons });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error fetching lessons' });
+  }
 });
 
 // Enrollments
-router.post('/enroll', (req, res) => {
+router.post('/enroll', async (req, res) => {
   const { courseId, studentId } = req.body;
-  const course = courses.get(courseId);
-  if (!course) return res.status(404).json({ success: false, error: 'Course not found' });
-  
-  const enrollment = {
-    id: `enroll_${Date.now()}`,
-    courseId,
-    studentId,
-    progress: 0,
-    status: 'active',
-    enrolledAt: new Date()
-  };
-  enrollments.set(enrollment.id, enrollment);
-  course.enrolled++;
-  res.status(201).json({ success: true, data: enrollment });
+  try {
+    const enrollment = await prisma.enrollment.create({
+      data: { courseId, studentId }
+    });
+    res.status(201).json({ success: true, data: enrollment });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error creating enrollment' });
+  }
 });
 
-router.get('/enrollments/:studentId', (req, res) => {
-  const studentEnrollments = Array.from(enrollments.values())
-    .filter(e => e.studentId === req.params.studentId)
-    .map(e => ({ ...e, course: courses.get(e.courseId) }));
-  res.json({ success: true, data: studentEnrollments });
-});
-
-router.post('/enrollments/:id/progress', (req, res) => {
-  const enrollment = enrollments.get(req.params.id);
-  if (!enrollment) return res.status(404).json({ success: false, error: 'Enrollment not found' });
-  
-  const { lessonId } = req.body;
-  enrollment.completedLessons = enrollment.completedLessons || [];
-  if (!enrollment.completedLessons.includes(lessonId)) {
-    enrollment.completedLessons.push(lessonId);
+router.get('/enrollments/:studentId', async (req, res) => {
+  try {
+    const enrollments = await prisma.enrollment.findMany({
+      where: { studentId: req.params.studentId },
+      include: { course: true }
+    });
+    res.json({ success: true, data: enrollments });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error fetching enrollments' });
   }
-  
-  const totalLessons = Array.from(lessons.values()).filter(l => l.courseId === enrollment.courseId).length;
-  enrollment.progress = totalLessons > 0 ? Math.round((enrollment.completedLessons.length / totalLessons) * 100) : 0;
-  
-  if (enrollment.progress === 100) {
-    enrollment.status = 'completed';
-    enrollment.completedAt = new Date();
-  }
-  
-  res.json({ success: true, data: enrollment });
 });
 
 module.exports = router;

@@ -38,5 +38,7 @@ app.patch('/api/alerts/:id/resolve', (req, res) => {
   res.json({ success: true, alert });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`Monitoring Service on port ${port}`));
 module.exports = app;

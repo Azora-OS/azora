@@ -21,6 +21,7 @@
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
     "http-proxy-middleware": "^2.0.6",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "node-fetch": "^3.3.2",
     "opossum": "^8.0.0",

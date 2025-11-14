@@ -39,5 +39,7 @@ app.delete('/api/records/:id', (req, res) => {
   res.json({ success: true });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`database-service on port ${port}`));
 module.exports = app;

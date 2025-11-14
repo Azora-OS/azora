@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useJobs, useJobApplication } from '../hooks/use-jobs';
+import { useAuth } from '../hooks/use-auth';
 
 interface Job {
   id: string;
@@ -14,59 +16,22 @@ interface Job {
 }
 
 const JobBoard: React.FC = () => {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const { user } = useAuth();
+  const { data: jobsData, isLoading: loading, error } = useJobs();
+  const { mutate: applyToJob, isPending: isApplying } = useJobApplication();
   const [filters, setFilters] = useState({
     search: '',
     type: '',
     location: '',
     skills: ''
   });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate loading jobs
-    setTimeout(() => {
-      setJobs([
-        {
-          id: '1',
-          title: 'Senior React Developer',
-          company: 'TechCorp',
-          location: 'Remote',
-          type: 'Full-time',
-          salary: '1500-2500 AZR/month',
-          skills: ['React', 'TypeScript', 'Node.js'],
-          description: 'Build amazing user interfaces for our Constitutional AI platform.',
-          postedAt: '2 hours ago',
-          aiMatch: 95
-        },
-        {
-          id: '2',
-          title: 'AI/ML Engineer',
-          company: 'Azora Labs',
-          location: 'Hybrid',
-          type: 'Contract',
-          salary: '3000-5000 AZR/project',
-          skills: ['Python', 'TensorFlow', 'PyTorch'],
-          description: 'Develop cutting-edge AI models for educational applications.',
-          postedAt: '4 hours ago',
-          aiMatch: 88
-        },
-        {
-          id: '3',
-          title: 'Blockchain Developer',
-          company: 'CryptoForge',
-          location: 'Remote',
-          type: 'Freelance',
-          salary: '2000-4000 AZR/month',
-          skills: ['Solidity', 'Web3', 'Smart Contracts'],
-          description: 'Build decentralized applications on the Azora blockchain.',
-          postedAt: '1 day ago',
-          aiMatch: 82
-        }
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const jobs = jobsData?.jobs || [];
+
+  const handleApply = (jobId: string) => {
+    if (!user?.id) return;
+    applyToJob({ jobId, userId: user.id });
+  };
 
   const JobCard = ({ job }: { job: Job }) => (
     <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-6 border border-white/20 dark:border-slate-700/50 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group">
@@ -112,8 +77,12 @@ const JobBoard: React.FC = () => {
       </div>
 
       <div className="flex space-x-3">
-        <button className="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 font-medium">
-          🚀 Apply Now
+        <button 
+          onClick={() => handleApply(job.id)}
+          disabled={isApplying || !user}
+          className="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 font-medium disabled:opacity-50"
+        >
+          {isApplying ? '⏳ Applying...' : '🚀 Apply Now'}
         </button>
         <button className="px-4 py-2 bg-white/70 dark:bg-slate-700/70 backdrop-blur-xl border border-white/20 dark:border-slate-600/50 rounded-xl hover:shadow-lg transition-all duration-300 font-medium text-slate-900 dark:text-white">
           💾 Save
@@ -223,7 +192,7 @@ const JobBoard: React.FC = () => {
         <div className="flex items-center justify-center space-x-8 text-sm text-slate-600 dark:text-slate-400">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span>1,247 Active Jobs</span>
+            <span>{jobs.length} Active Jobs</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>

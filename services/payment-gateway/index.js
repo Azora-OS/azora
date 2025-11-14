@@ -15,6 +15,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy', service: 'payment-gateway', timestamp: new Date().toISOString() });
 });
 
+app.use(require('./routes'));
+
 app.listen(PORT, () => console.log(`payment-gateway running on port ${PORT}`));
 
 module.exports = app;

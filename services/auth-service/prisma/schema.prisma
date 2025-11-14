@@ -10,7 +10,7 @@ datasource db {
 model User {
   id                String            @id @default(uuid())
   email             String            @unique
-  password          String?
+  passwordHash      String?
   name              String
   role              String            @default("user")
   isEmailVerified   Boolean           @default(false)
@@ -36,8 +36,23 @@ model User {
   // Relations
   sessions          Session[]
   refreshTokens     RefreshToken[]
+  settings          UserSettings?
 
   @@map("users")
+}
+
+model UserSettings {
+  id                  String  @id @default(uuid())
+  userId              String  @unique
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName         String?
+  emailNotifications  Boolean @default(true)
+  pushNotifications   Boolean @default(false)
+  language            String  @default("english")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("user_settings")
 }
 
 model Session {

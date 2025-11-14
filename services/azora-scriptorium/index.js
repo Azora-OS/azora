@@ -204,7 +204,9 @@ const startServer = async () => {
             }
         });
 
-        app.listen(PORT, () => {
+        app.use(require('./routes'));
+
+app.listen(PORT, () => {
             logger.info(`Azora Scriptorium Service running on port ${PORT}`);
         });
     } catch (err) {

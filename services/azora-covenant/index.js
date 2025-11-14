@@ -1021,6 +1021,8 @@ app.get('/health', (req, res) => {
 // SERVER START
 // ============================================================================
 
+app.use(require('./routes'));
+
 app.listen(PORT, () => {
   console.log('');
   console.log('🔐 Crypto Ledger Security Service');

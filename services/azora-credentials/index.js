@@ -54,6 +54,9 @@ app.use((req, res) => {
 });
 
 // Start server
+const routes = require('./routes');
+app.use(routes);
+
 app.listen(PORT, () => {
   console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
   console.log(`🌍 Health check: http://localhost:${PORT}/health`);

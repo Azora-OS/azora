@@ -39,5 +39,7 @@ app.delete('/api/records/:id', (req, res) => {
   res.json({ success: true });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`ui-enhancement-service on port ${port}`));
 module.exports = app;

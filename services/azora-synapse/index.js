@@ -158,7 +158,9 @@ app.get('/', (req, res) => {
 // For local development, start the server
 if (require.main === module) {
   const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
+  app.use(require('./routes'));
+
+app.listen(PORT, () => {
     console.log(`Azora Synapse service running on port ${PORT}`);
     console.log(`Health check: http://localhost:${PORT}/health`);
     console.log(`Dashboard: http://localhost:${PORT}/`);

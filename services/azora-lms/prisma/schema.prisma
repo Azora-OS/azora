@@ -1,10 +1,11 @@
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Course {
@@ -20,7 +21,7 @@ model Course {
   modules     Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   lessons     Lesson[]
   enrollments Enrollment[]
   assignments Assignment[]
@@ -35,23 +36,37 @@ model Lesson {
   duration  Int      @default(0)
   order     Int      @default(0)
   createdAt DateTime @default(now())
-  
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonProgress  LessonProgress[]
 }
 
 model Enrollment {
   id              String   @id @default(uuid())
   courseId        String
   studentId       String
-  progress        Int      @default(0)
+  progress        Int      @default(0) // Will be deprecated
   status          String   @default("active")
   enrolledAt      DateTime @default(now())
   completedAt     DateTime?
   lastAccessedAt  DateTime @default(now())
-  
+
   course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  
+  lessonProgress  LessonProgress[]
+
   @@unique([courseId, studentId])
+}
+
+model LessonProgress {
+  enrollmentId String
+  lessonId     String
+  completed    Boolean  @default(false)
+  completedAt  DateTime?
+
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([enrollmentId, lessonId])
 }
 
 model Assignment {
@@ -62,7 +77,7 @@ model Assignment {
   dueDate     DateTime?
   points      Int      @default(100)
   createdAt   DateTime @default(now())
-  
+
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   submissions Submission[]
 }
@@ -77,7 +92,7 @@ model Submission {
   feedback     String?
   submittedAt  DateTime @default(now())
   gradedAt     DateTime?
-  
+
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 }
 
@@ -88,6 +103,6 @@ model Certificate {
   issuedAt    DateTime @default(now())
   blockchainHash String?
   verified    Boolean  @default(true)
-  
+
   @@unique([courseId, studentId])
 }

@@ -51,7 +51,10 @@ class ReportingService {
   }
 
   start() {
-    this.app.listen(this.port, () => console.log(`reporting-service running on port ${this.port}`));
+    this.const routes = require('./routes');
+app.use(routes);
+
+app.listen(this.port, () => console.log(`reporting-service running on port ${this.port}`));
   }
 }
 

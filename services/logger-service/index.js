@@ -30,5 +30,7 @@ app.get('/api/logs', (req, res) => {
   res.json({ logs: filtered.slice(-limit) });
 });
 
+app.use(require('./routes'));
+
 app.listen(port, () => console.log(`Logger Service on port ${port}`));
 module.exports = app;

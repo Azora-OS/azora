@@ -33,5 +33,8 @@ app.patch('/api/messages/:id/read', (req, res) => {
   res.json({ success: true, message });
 });
 
+const routes = require('./routes');
+app.use(routes);
+
 app.listen(port, () => console.log(`Messaging Service on port ${port}`));
 module.exports = app;

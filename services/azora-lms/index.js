@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
+const prisma = require('./lib/prisma');
 require('dotenv').config();
 
 const app = express();
@@ -21,13 +22,24 @@ app.use((req, res, next) => {
 });
 
 // Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    service: SERVICE_NAME,
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
+app.get('/health', async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ 
+      status: 'healthy', 
+      service: SERVICE_NAME,
+      database: 'connected',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      status: 'unhealthy', 
+      service: SERVICE_NAME,
+      database: 'disconnected',
+      error: error.message
+    });
+  }
 });
 
 // API routes
@@ -54,6 +66,9 @@ app.use((req, res) => {
 });
 
 // Start server
+const routes = require('./routes');
+app.use(routes);
+
 app.listen(PORT, () => {
   console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
   console.log(`🌍 Health check: http://localhost:${PORT}/health`);
