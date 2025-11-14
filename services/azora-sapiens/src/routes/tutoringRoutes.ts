@@ -5,10 +5,16 @@ import AssessmentEngine from '../engines/assessment-engine';
 
 const router = Router();
 
+// Auth middleware types
+interface AuthRequest extends Request {
+  user?: { userId: string; email: string; role: string };
+}
+
 // Tutoring Routes
-router.post('/tutor', async (req: Request, res: Response) => {
+router.post('/tutor', async (req: AuthRequest, res: Response) => {
     try {
-        const { studentId, subject, question, context } = req.body;
+        const studentId = req.user?.userId;
+        const { subject, question, context } = req.body;
         const result = await TutorEngine.tutorSession(studentId, subject, question, context);
         res.json({ success: true, data: result });
     } catch (error) {
@@ -30,9 +36,11 @@ router.post('/explain', async (req: Request, res: Response) => {
 
 
 // Learning Path Routes
-router.post('/learning-path', (req: Request, res: Response) => {
+router.post('/learning-path', (req: AuthRequest, res: Response) => {
     try {
-        const { studentProfile, goal } = req.body;
+        const studentId = req.user?.userId;
+        const { goal } = req.body;
+        const studentProfile = { ...req.body.studentProfile, studentId };
         const path = LearningPathEngine.generatePath(studentProfile, goal);
         res.json({ success: true, data: path });
     } catch (error) {
@@ -53,8 +61,9 @@ router.post('/assessment', (req: Request, res: Response) => {
     }
 });
 
-router.post('/grade', (req: Request, res: Response) => {
+router.post('/grade', (req: AuthRequest, res: Response) => {
     try {
+        const studentId = req.user?.userId;
         const { answers, assessment } = req.body;
         const result = AssessmentEngine.gradeAssessment(answers, assessment);
         res.json({ success: true, data: result });

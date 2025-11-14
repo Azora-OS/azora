@@ -1,0 +1,696 @@
+openapi: 3.0.3
+info:
+  title: Azora Marketplace API
+  description: |
+    Ubuntu-powered job marketplace and skills platform API
+    
+    **Ubuntu Philosophy**: "My skills strengthen our foundation"
+    
+    This API enables the connection of talent with opportunities through AI-powered matching and Ubuntu principles.
+  version: 3.0.0
+  contact:
+    name: Azora API Support
+    url: https://azora.world/support
+    email: api-support@azora.world
+  license:
+    name: Azora Proprietary License
+    url: https://azora.world/license
+
+servers:
+  - url: https://api.azora.world
+    description: Production server
+  - url: http://localhost:4000
+    description: Development server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/jobs:
+    get:
+      summary: List all jobs
+      description: Retrieve a list of available job opportunities with AI matching
+      tags:
+        - Jobs
+      parameters:
+        - name: skills
+          in: query
+          description: Filter by required skills (comma-separated)
+          schema:
+            type: string
+            example: "javascript,react,nodejs"
+        - name: location
+          in: query
+          description: Filter by job location
+          schema:
+            type: string
+            example: "remote"
+        - name: type
+          in: query
+          description: Filter by job type
+          schema:
+            type: string
+            enum: [full-time, contract, freelance]
+        - name: salary_min
+          in: query
+          description: Minimum salary filter
+          schema:
+            type: integer
+            example: 50000
+        - name: limit
+          in: query
+          description: Number of jobs to return
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: offset
+          in: query
+          description: Number of jobs to skip
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of jobs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      jobs:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Job'
+                      total:
+                        type: integer
+                        example: 150
+                      hasMore:
+                        type: boolean
+                        example: true
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+    post:
+      summary: Create a new job posting
+      description: Post a new job opportunity with Ubuntu principles
+      tags:
+        - Jobs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobCreate'
+      responses:
+        '201':
+          description: Job created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Job'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/jobs/{jobId}:
+    get:
+      summary: Get job details
+      description: Retrieve detailed information about a specific job
+      tags:
+        - Jobs
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "job_123456"
+      responses:
+        '200':
+          description: Job details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Job'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/jobs/{jobId}/apply:
+    post:
+      summary: Apply for a job
+      description: Submit an application for a specific job with Ubuntu values
+      tags:
+        - Applications
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "job_123456"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobApplication'
+      responses:
+        '201':
+          description: Application submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Application'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/applications/employer/{employerId}:
+    get:
+      summary: Get applications for employer
+      description: Retrieve all applications for jobs posted by an employer
+      tags:
+        - Applications
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "emp_123456"
+        - name: status
+          in: query
+          description: Filter by application status
+          schema:
+            type: string
+            enum: [pending, reviewing, shortlisted, rejected, hired]
+        - name: jobId
+          in: query
+          description: Filter by specific job
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Applications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      applications:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Application'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/applications/{applicationId}/status:
+    put:
+      summary: Update application status
+      description: Update the status of a job application
+      tags:
+        - Applications
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "app_123456"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, reviewing, shortlisted, rejected, hired]
+                  example: "shortlisted"
+                feedback:
+                  type: string
+                  description: Optional feedback for the candidate
+                  example: "Great portfolio! Moving to next round."
+      responses:
+        '200':
+          description: Application status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Application'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/skills/assessment:
+    post:
+      summary: Start skill assessment
+      description: Begin an AI-powered skill assessment
+      tags:
+        - Skills
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skill:
+                  type: string
+                  example: "javascript"
+                level:
+                  type: string
+                  enum: [beginner, intermediate, advanced]
+                  example: "intermediate"
+                userId:
+                  type: string
+                  example: "user_123456"
+      responses:
+        '201':
+          description: Assessment started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/SkillAssessment'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/employer/{employerId}/stats:
+    get:
+      summary: Get employer statistics
+      description: Retrieve hiring statistics and performance metrics
+      tags:
+        - Analytics
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "emp_123456"
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      stats:
+                        $ref: '#/components/schemas/EmployerStats'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Job:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "job_123456"
+        title:
+          type: string
+          example: "Senior React Developer"
+        company:
+          type: string
+          example: "Ubuntu Tech Solutions"
+        location:
+          type: string
+          example: "Remote / Cape Town"
+        type:
+          type: string
+          enum: [full-time, contract, freelance]
+          example: "full-time"
+        salary:
+          type: string
+          example: "R50,000 - R80,000 / month"
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["React", "TypeScript", "Node.js"]
+        description:
+          type: string
+          example: "Join our Ubuntu-aligned team building the future of education technology..."
+        requirements:
+          type: array
+          items:
+            type: string
+          example: ["3+ years React experience", "Strong TypeScript skills"]
+        benefits:
+          type: array
+          items:
+            type: string
+          example: ["Remote work", "Ubuntu profit sharing", "Learning budget"]
+        employerId:
+          type: string
+          example: "emp_123456"
+        status:
+          type: string
+          enum: [active, paused, closed]
+          example: "active"
+        postedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        aiMatch:
+          type: number
+          description: AI matching score for the current user
+          example: 94.5
+        ubuntuScore:
+          type: number
+          description: Ubuntu alignment score
+          example: 87.2
+
+    JobCreate:
+      type: object
+      required:
+        - title
+        - company
+        - location
+        - type
+        - description
+        - skills
+      properties:
+        title:
+          type: string
+          example: "Senior React Developer"
+        company:
+          type: string
+          example: "Ubuntu Tech Solutions"
+        location:
+          type: string
+          example: "Remote / Cape Town"
+        type:
+          type: string
+          enum: [full-time, contract, freelance]
+          example: "full-time"
+        salary:
+          type: string
+          example: "R50,000 - R80,000 / month"
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["React", "TypeScript", "Node.js"]
+        description:
+          type: string
+          example: "Join our Ubuntu-aligned team..."
+        requirements:
+          type: array
+          items:
+            type: string
+          example: ["3+ years React experience"]
+        benefits:
+          type: array
+          items:
+            type: string
+          example: ["Remote work", "Learning budget"]
+        ubuntuPrinciples:
+          type: array
+          items:
+            type: string
+          example: ["collective-growth", "knowledge-sharing"]
+
+    JobApplication:
+      type: object
+      required:
+        - coverLetter
+      properties:
+        coverLetter:
+          type: string
+          example: "I am excited to contribute to your Ubuntu-aligned mission..."
+        portfolioUrl:
+          type: string
+          format: uri
+          example: "https://portfolio.example.com"
+        resumeUrl:
+          type: string
+          format: uri
+          example: "https://resume.example.com/resume.pdf"
+        expectedSalary:
+          type: string
+          example: "R65,000 / month"
+        availableFrom:
+          type: string
+          format: date
+          example: "2024-02-01"
+        ubuntuCommitment:
+          type: string
+          example: "I believe in collective prosperity and knowledge sharing..."
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "app_123456"
+        jobId:
+          type: string
+          example: "job_123456"
+        jobTitle:
+          type: string
+          example: "Senior React Developer"
+        applicantId:
+          type: string
+          example: "user_123456"
+        applicantName:
+          type: string
+          example: "John Ubuntu"
+        applicantEmail:
+          type: string
+          example: "john@example.com"
+        coverLetter:
+          type: string
+          example: "I am excited to contribute..."
+        portfolioUrl:
+          type: string
+          format: uri
+          example: "https://portfolio.example.com"
+        resumeUrl:
+          type: string
+          format: uri
+          example: "https://resume.example.com/resume.pdf"
+        status:
+          type: string
+          enum: [pending, reviewing, shortlisted, rejected, hired]
+          example: "pending"
+        appliedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        aiMatch:
+          type: number
+          example: 94.5
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["React", "TypeScript", "Node.js"]
+        ubuntuScore:
+          type: number
+          example: 89.3
+
+    SkillAssessment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "assess_123456"
+        skill:
+          type: string
+          example: "javascript"
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          example: "intermediate"
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              question:
+                type: string
+              options:
+                type: array
+                items:
+                  type: string
+              type:
+                type: string
+                enum: [multiple-choice, code, practical]
+        timeLimit:
+          type: integer
+          description: Time limit in minutes
+          example: 30
+        startedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    EmployerStats:
+      type: object
+      properties:
+        activeJobs:
+          type: integer
+          example: 5
+        totalApplications:
+          type: integer
+          example: 127
+        shortlistedCandidates:
+          type: integer
+          example: 23
+        hiredCandidates:
+          type: integer
+          example: 8
+        averageMatchScore:
+          type: number
+          example: 87.5
+        responseRate:
+          type: number
+          example: 92.3
+        ubuntuImpactScore:
+          type: number
+          example: 94.7
+
+    UbuntuImpact:
+      type: object
+      properties:
+        individualBenefit:
+          type: string
+          example: "Skill development opportunity identified"
+        collectiveBenefit:
+          type: string
+          example: "Community talent pool strengthened"
+        communityImpact:
+          type: number
+          description: Impact score from 0-1
+          example: 0.85
+        ubuntuPrinciples:
+          type: array
+          items:
+            type: string
+          example: ["collective-growth", "knowledge-sharing"]
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              example: "Ubuntu principles require valid input"
+            details:
+              type: object
+        ubuntu:
+          type: object
+          properties:
+            guidance:
+              type: string
+              example: "How to align with Ubuntu principles"
+            communitySupport:
+              type: string
+              example: "Available help resources"
+
+  responses:
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Jobs
+    description: Job posting and management operations
+  - name: Applications
+    description: Job application management
+  - name: Skills
+    description: Skill assessment and verification
+  - name: Analytics
+    description: Performance metrics and insights

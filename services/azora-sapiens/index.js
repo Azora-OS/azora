@@ -3,6 +3,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
+const { authenticateToken, rateLimiter } = require('@azora/shared-auth');
 
 const app = express();
 const PORT = process.env.PORT || 3075;
@@ -11,6 +12,7 @@ app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
+app.use(rateLimiter({ max: 30 }));
 
 app.get('/health', (req, res) => {
   res.json({ 
@@ -20,9 +22,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.post('/api/tutor', async (req, res) => {
+app.post('/api/tutor', authenticateToken, async (req, res) => {
   try {
-    const { studentId, subject, question } = req.body;
+    const studentId = req.user.userId;
+    const { subject, question } = req.body;
     const TutorEngine = require('./src/engines/tutor-engine').default;
     const result = await TutorEngine.tutorSession(studentId, subject, question);
     res.json({ success: true, data: result });
@@ -31,9 +34,11 @@ app.post('/api/tutor', async (req, res) => {
   }
 });
 
-app.post('/api/learning-path', (req, res) => {
+app.post('/api/learning-path', authenticateToken, (req, res) => {
   try {
-    const { studentProfile, goal } = req.body;
+    const studentId = req.user.userId;
+    const { goal } = req.body;
+    const studentProfile = { ...req.body.studentProfile, studentId };
     const LearningPathEngine = require('./src/engines/learning-paths').default;
     const path = LearningPathEngine.generatePath(studentProfile, goal);
     res.json({ success: true, data: path });
@@ -42,7 +47,7 @@ app.post('/api/learning-path', (req, res) => {
   }
 });
 
-app.post('/api/assessment', (req, res) => {
+app.post('/api/assessment', authenticateToken, (req, res) => {
   try {
     const { subject, level, questionCount } = req.body;
     const AssessmentEngine = require('./src/engines/assessment-engine').default;

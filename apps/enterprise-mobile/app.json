@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Azora Student",
-    "slug": "azora-student",
+    "name": "Azora Enterprise",
+    "slug": "azora-enterprise",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "world.azora.student",
+      "bundleIdentifier": "world.azora.enterprise",
       "buildNumber": "1"
     },
     "android": {
@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#3B4F6F"
       },
-      "package": "world.azora.student",
+      "package": "world.azora.enterprise",
       "versionCode": 1,
       "permissions": [
         "NOTIFICATIONS",
@@ -35,18 +35,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#3B4F6F"
-        }
-      ]
-    ],
     "extra": {
       "eas": {
-        "projectId": "azora-student-mobile"
+        "projectId": "azora-enterprise-mobile"
       }
     }
   }

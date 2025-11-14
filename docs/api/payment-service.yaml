@@ -1,0 +1,957 @@
+openapi: 3.0.3
+info:
+  title: Azora Payment API
+  description: |
+    Ubuntu-powered financial services and payment processing API
+    
+    **Ubuntu Philosophy**: "My prosperity enables our prosperity"
+    
+    This API enables secure, transparent financial transactions with Ubuntu principles of collective benefit and individual sovereignty.
+  version: 3.0.0
+  contact:
+    name: Azora API Support
+    url: https://azora.world/support
+    email: api-support@azora.world
+  license:
+    name: Azora Proprietary License
+    url: https://azora.world/license
+
+servers:
+  - url: https://api.azora.world
+    description: Production server
+  - url: http://localhost:4000
+    description: Development server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/wallet/balance:
+    get:
+      summary: Get wallet balance
+      description: Retrieve current wallet balances for all supported currencies
+      tags:
+        - Wallet
+      responses:
+        '200':
+          description: Wallet balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      balances:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/WalletBalance'
+                      totalUsdValue:
+                        type: number
+                        example: 12847.32
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/wallet/send:
+    post:
+      summary: Send payment
+      description: Send cryptocurrency or tokens to another wallet with Ubuntu impact tracking
+      tags:
+        - Wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendPayment'
+      responses:
+        '201':
+          description: Payment sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InsufficientFunds'
+
+  /api/transactions:
+    get:
+      summary: Get transaction history
+      description: Retrieve paginated transaction history with filtering options
+      tags:
+        - Transactions
+      parameters:
+        - name: type
+          in: query
+          description: Filter by transaction type
+          schema:
+            type: string
+            enum: [all, credit, debit]
+            default: all
+        - name: currency
+          in: query
+          description: Filter by currency
+          schema:
+            type: string
+            enum: [all, AZR, BTC, ETH, USD]
+            default: all
+        - name: status
+          in: query
+          description: Filter by transaction status
+          schema:
+            type: string
+            enum: [all, completed, pending, failed]
+            default: all
+        - name: category
+          in: query
+          description: Filter by transaction category
+          schema:
+            type: string
+            enum: [all, mining, learning, payment, transfer, reward, staking, exchange]
+            default: all
+        - name: limit
+          in: query
+          description: Number of transactions to return
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+        - name: offset
+          in: query
+          description: Number of transactions to skip
+          schema:
+            type: integer
+            default: 0
+        - name: dateFrom
+          in: query
+          description: Start date for filtering (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: dateTo
+          in: query
+          description: End date for filtering (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Transaction history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      transactions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Transaction'
+                      total:
+                        type: integer
+                        example: 247
+                      hasMore:
+                        type: boolean
+                        example: true
+                      summary:
+                        $ref: '#/components/schemas/TransactionSummary'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/transactions/{transactionId}:
+    get:
+      summary: Get transaction details
+      description: Retrieve detailed information about a specific transaction
+      tags:
+        - Transactions
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "tx_123456789"
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/TransactionDetail'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/mining/start:
+    post:
+      summary: Start mining operation
+      description: Begin Proof-of-Knowledge mining with Ubuntu contribution tracking
+      tags:
+        - Mining
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                miningType:
+                  type: string
+                  enum: [knowledge, computation, community]
+                  example: "knowledge"
+                intensity:
+                  type: string
+                  enum: [low, medium, high]
+                  example: "medium"
+                ubuntuContribution:
+                  type: string
+                  description: How this mining benefits the community
+                  example: "Contributing computational power for AI model training"
+      responses:
+        '201':
+          description: Mining started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/MiningSession'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/mining/status:
+    get:
+      summary: Get mining status
+      description: Retrieve current mining operation status and statistics
+      tags:
+        - Mining
+      responses:
+        '200':
+          description: Mining status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/MiningStatus'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/mining/stop:
+    post:
+      summary: Stop mining operation
+      description: Stop current mining operation and finalize rewards
+      tags:
+        - Mining
+      responses:
+        '200':
+          description: Mining stopped successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      sessionSummary:
+                        $ref: '#/components/schemas/MiningSessionSummary'
+                      finalReward:
+                        type: number
+                        example: 25.75
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/payments/create:
+    post:
+      summary: Create payment request
+      description: Create a payment request for goods or services with Ubuntu impact
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '201':
+          description: Payment request created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PaymentRequestResponse'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/payments/{paymentId}/process:
+    post:
+      summary: Process payment
+      description: Process a payment request and execute the transaction
+      tags:
+        - Payments
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "pay_123456789"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentMethod:
+                  type: string
+                  enum: [wallet, card, bank_transfer]
+                  example: "wallet"
+                currency:
+                  type: string
+                  example: "AZR"
+                ubuntuSharing:
+                  type: number
+                  description: Percentage to share with Ubuntu community (0-10)
+                  example: 2.5
+      responses:
+        '200':
+          description: Payment processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PaymentResult'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/exchange/rates:
+    get:
+      summary: Get exchange rates
+      description: Retrieve current exchange rates for all supported currencies
+      tags:
+        - Exchange
+      responses:
+        '200':
+          description: Exchange rates retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      rates:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ExchangeRate'
+                      lastUpdated:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+  /api/exchange/convert:
+    post:
+      summary: Convert currency
+      description: Convert one currency to another with Ubuntu fee sharing
+      tags:
+        - Exchange
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrencyConversion'
+      responses:
+        '201':
+          description: Currency conversion completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ConversionResult'
+                  ubuntu:
+                    $ref: '#/components/schemas/UbuntuImpact'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    WalletBalance:
+      type: object
+      properties:
+        currency:
+          type: string
+          example: "AZR"
+        balance:
+          type: number
+          example: 12547.89
+        usdValue:
+          type: number
+          example: 156.85
+        change24h:
+          type: number
+          description: 24-hour percentage change
+          example: 12.5
+        lockedBalance:
+          type: number
+          description: Balance locked in staking or pending transactions
+          example: 150.0
+        availableBalance:
+          type: number
+          description: Available balance for transactions
+          example: 12397.89
+
+    SendPayment:
+      type: object
+      required:
+        - currency
+        - amount
+        - recipient
+      properties:
+        currency:
+          type: string
+          example: "AZR"
+        amount:
+          type: number
+          example: 100.0
+        recipient:
+          type: string
+          description: Recipient wallet address or username
+          example: "azr1234567890abcdef"
+        message:
+          type: string
+          description: Optional message with Ubuntu spirit
+          example: "Ubuntu sharing for collective prosperity"
+        ubuntuSharing:
+          type: number
+          description: Percentage to share with Ubuntu community (0-10)
+          example: 2.5
+        priority:
+          type: string
+          enum: [low, normal, high]
+          default: normal
+          example: "normal"
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "tx_123456789"
+        type:
+          type: string
+          enum: [credit, debit]
+          example: "credit"
+        amount:
+          type: number
+          example: 25.75
+        currency:
+          type: string
+          example: "AZR"
+        description:
+          type: string
+          example: "Mining reward - Knowledge contribution"
+        category:
+          type: string
+          enum: [mining, learning, payment, transfer, reward, staking, exchange]
+          example: "mining"
+        status:
+          type: string
+          enum: [completed, pending, failed]
+          example: "completed"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        fromAddress:
+          type: string
+          example: "azr1234567890abcdef"
+        toAddress:
+          type: string
+          example: "azr0987654321fedcba"
+        txHash:
+          type: string
+          description: Blockchain transaction hash
+          example: "0x1234567890abcdef..."
+        networkFee:
+          type: number
+          example: 0.1
+        ubuntuImpact:
+          type: number
+          description: Ubuntu community impact points
+          example: 15.5
+        confirmations:
+          type: integer
+          example: 12
+
+    TransactionDetail:
+      allOf:
+        - $ref: '#/components/schemas/Transaction'
+        - type: object
+          properties:
+            blockNumber:
+              type: integer
+              example: 1234567
+            gasUsed:
+              type: integer
+              example: 21000
+            gasPrice:
+              type: number
+              example: 20.0
+            ubuntuBeneficiaries:
+              type: array
+              items:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  amount:
+                    type: number
+                  purpose:
+                    type: string
+            relatedTransactions:
+              type: array
+              items:
+                type: string
+              description: Related transaction IDs
+
+    TransactionSummary:
+      type: object
+      properties:
+        totalEarned:
+          type: number
+          example: 2547.89
+        totalSpent:
+          type: number
+          example: 1234.56
+        netBalance:
+          type: number
+          example: 1313.33
+        transactionCount:
+          type: integer
+          example: 247
+        ubuntuImpactTotal:
+          type: number
+          example: 1847.5
+        topCategories:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              amount:
+                type: number
+              count:
+                type: integer
+
+    MiningSession:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "mining_123456"
+        type:
+          type: string
+          enum: [knowledge, computation, community]
+          example: "knowledge"
+        intensity:
+          type: string
+          enum: [low, medium, high]
+          example: "medium"
+        startedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        estimatedReward:
+          type: number
+          example: 25.0
+        ubuntuContribution:
+          type: string
+          example: "Contributing computational power for AI model training"
+
+    MiningStatus:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          example: true
+        currentSession:
+          $ref: '#/components/schemas/MiningSession'
+        hashrate:
+          type: number
+          description: Current hashrate in MH/s
+          example: 42.5
+        earnings:
+          type: number
+          description: Current session earnings
+          example: 156.78
+        efficiency:
+          type: number
+          description: Mining efficiency percentage
+          example: 98.7
+        uptime:
+          type: integer
+          description: Session uptime in seconds
+          example: 3600
+        ubuntuImpactRate:
+          type: number
+          description: Ubuntu impact points per hour
+          example: 12.5
+
+    MiningSessionSummary:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          example: "mining_123456"
+        duration:
+          type: integer
+          description: Session duration in seconds
+          example: 7200
+        totalReward:
+          type: number
+          example: 25.75
+        averageHashrate:
+          type: number
+          example: 41.2
+        efficiency:
+          type: number
+          example: 97.8
+        ubuntuImpactGenerated:
+          type: number
+          example: 25.0
+        communityBenefit:
+          type: string
+          example: "Contributed to AI model training for education"
+
+    PaymentRequest:
+      type: object
+      required:
+        - amount
+        - currency
+        - description
+      properties:
+        amount:
+          type: number
+          example: 50.0
+        currency:
+          type: string
+          example: "AZR"
+        description:
+          type: string
+          example: "Course enrollment - React Fundamentals"
+        recipientId:
+          type: string
+          example: "user_123456"
+        dueDate:
+          type: string
+          format: date-time
+          example: "2024-01-20T10:30:00Z"
+        ubuntuBenefit:
+          type: string
+          description: How this payment benefits the Ubuntu community
+          example: "Supporting education and knowledge sharing"
+        metadata:
+          type: object
+          description: Additional payment metadata
+          example:
+            courseId: "course_123"
+            studentId: "student_456"
+
+    PaymentRequestResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "pay_123456789"
+        amount:
+          type: number
+          example: 50.0
+        currency:
+          type: string
+          example: "AZR"
+        description:
+          type: string
+          example: "Course enrollment - React Fundamentals"
+        status:
+          type: string
+          enum: [pending, paid, expired, cancelled]
+          example: "pending"
+        paymentUrl:
+          type: string
+          format: uri
+          example: "https://pay.azora.world/pay_123456789"
+        qrCode:
+          type: string
+          description: Base64 encoded QR code for payment
+        expiresAt:
+          type: string
+          format: date-time
+          example: "2024-01-20T10:30:00Z"
+
+    PaymentResult:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          example: "pay_123456789"
+        transactionId:
+          type: string
+          example: "tx_987654321"
+        status:
+          type: string
+          enum: [completed, failed, pending]
+          example: "completed"
+        amount:
+          type: number
+          example: 50.0
+        currency:
+          type: string
+          example: "AZR"
+        networkFee:
+          type: number
+          example: 0.1
+        ubuntuSharing:
+          type: number
+          example: 1.25
+        processedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:35:00Z"
+
+    ExchangeRate:
+      type: object
+      properties:
+        fromCurrency:
+          type: string
+          example: "AZR"
+        toCurrency:
+          type: string
+          example: "USD"
+        rate:
+          type: number
+          example: 0.0125
+        change24h:
+          type: number
+          example: 12.5
+        volume24h:
+          type: number
+          example: 1234567.89
+        lastUpdated:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    CurrencyConversion:
+      type: object
+      required:
+        - fromCurrency
+        - toCurrency
+        - amount
+      properties:
+        fromCurrency:
+          type: string
+          example: "AZR"
+        toCurrency:
+          type: string
+          example: "BTC"
+        amount:
+          type: number
+          example: 1000.0
+        ubuntuSharing:
+          type: number
+          description: Percentage of conversion fee to share with Ubuntu community
+          example: 2.5
+
+    ConversionResult:
+      type: object
+      properties:
+        conversionId:
+          type: string
+          example: "conv_123456"
+        fromCurrency:
+          type: string
+          example: "AZR"
+        toCurrency:
+          type: string
+          example: "BTC"
+        fromAmount:
+          type: number
+          example: 1000.0
+        toAmount:
+          type: number
+          example: 0.00026
+        exchangeRate:
+          type: number
+          example: 0.00000026
+        conversionFee:
+          type: number
+          example: 1.0
+        ubuntuSharing:
+          type: number
+          example: 0.025
+        processedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        transactionId:
+          type: string
+          example: "tx_conversion_123"
+
+    UbuntuImpact:
+      type: object
+      properties:
+        individualBenefit:
+          type: string
+          example: "Financial sovereignty enhanced"
+        collectiveBenefit:
+          type: string
+          example: "Community prosperity increased"
+        communityImpact:
+          type: number
+          description: Impact score from 0-1
+          example: 0.85
+        ubuntuPrinciples:
+          type: array
+          items:
+            type: string
+          example: ["collective-prosperity", "transparent-value"]
+        impactPoints:
+          type: number
+          example: 15.5
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "INSUFFICIENT_FUNDS"
+            message:
+              type: string
+              example: "Insufficient balance for transaction"
+            details:
+              type: object
+        ubuntu:
+          type: object
+          properties:
+            guidance:
+              type: string
+              example: "Consider earning more through Ubuntu contributions"
+            communitySupport:
+              type: string
+              example: "Community lending options available"
+
+  responses:
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    InsufficientFunds:
+      description: Insufficient funds for transaction
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Wallet
+    description: Wallet management and balance operations
+  - name: Transactions
+    description: Transaction history and details
+  - name: Mining
+    description: Proof-of-Knowledge mining operations
+  - name: Payments
+    description: Payment processing and requests
+  - name: Exchange
+    description: Currency exchange and conversion
