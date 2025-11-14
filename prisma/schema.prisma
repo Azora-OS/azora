@@ -502,6 +502,41 @@ model AIPersonality {
 }
 
 // ============================================
+// AI FAMILY INTERACTIONS
+// ============================================
+
+model AIFamilyInteraction {
+  id              String     @id @default(cuid())
+  userId          String
+  familyMember    String
+  message         String
+  response        String
+  emotionalState  String?
+  context         Json?
+  createdAt       DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, familyMember])
+  @@index([createdAt])
+  @@map("ai_family_interactions")
+}
+
+model AIFamilyConsultation {
+  id           String   @id @default(cuid())
+  userId       String
+  topic        String
+  insights     Json
+  response     String
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, topic])
+  @@map("ai_family_consultations")
+}
+
+// ============================================
 // NOTIFICATION & EVENTS
 // ============================================
 
@@ -541,6 +576,7 @@ enum NotificationType {
   JOB_MATCH
   APPLICATION_UPDATE
   SYSTEM_ALERT
+  AI_FAMILY_INTERACTION
 }
 
 enum EventStatus {
