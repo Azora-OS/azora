@@ -1,3 +1,6 @@
+// Azora Forge - Skills Marketplace Schema
+// Ubuntu Principle: "My work strengthens our foundation"
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,71 +11,107 @@ datasource db {
 }
 
 model Job {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   title       String
-  company     String
   description String
-  location    String
-  type        String   @default("full-time")
-  salary      Json
+  employerId  String
+  budget      Decimal  @db.Decimal(18, 8)
+  currency    String   @default("AZR")
+  status      String   @default("open") // open, in_progress, completed, cancelled
   skills      String[]
-  experience  Int      @default(0)
-  remote      Boolean  @default(false)
-  status      String   @default("active")
-  postedAt    DateTime @default(now())
-  expiresAt   DateTime?
-  
+  category    String
+  deadline    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   applications Application[]
+  contracts    Contract[]
+
+  @@index([employerId])
+  @@index([status])
+  @@index([category])
 }
 
 model Application {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   jobId       String
-  userId      String
-  status      String   @default("pending")
-  coverLetter String?
-  resume      String?
-  appliedAt   DateTime @default(now())
-  reviewedAt  DateTime?
-  
-  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  
-  @@unique([jobId, userId])
-}
-
-model Profile {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  title       String?
-  bio         String?
-  skills      String[]
-  experience  Json[]
-  education   Json[]
-  portfolio   String?
-  rating      Float    @default(0)
-  verified    Boolean  @default(false)
+  freelancerId String
+  proposal    String
+  bidAmount   Decimal  @db.Decimal(18, 8)
+  status      String   @default("pending") // pending, accepted, rejected
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  job Job @relation(fields: [jobId], references: [id])
+
+  @@index([jobId])
+  @@index([freelancerId])
+  @@index([status])
 }
 
-model SkillAssessment {
-  id          String   @id @default(uuid())
-  userId      String
-  skill       String
-  score       Float
-  level       String
-  assessedAt  DateTime @default(now())
-  expiresAt   DateTime?
-  
-  @@unique([userId, skill])
+model Contract {
+  id           String    @id @default(cuid())
+  jobId        String
+  freelancerId String
+  employerId   String
+  amount       Decimal   @db.Decimal(18, 8)
+  status       String    @default("active") // active, completed, disputed, cancelled
+  startDate    DateTime  @default(now())
+  endDate      DateTime?
+  escrowId     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  job       Job        @relation(fields: [jobId], references: [id])
+  milestones Milestone[]
+  disputes   Dispute[]
+
+  @@index([jobId])
+  @@index([freelancerId])
+  @@index([employerId])
+  @@index([status])
 }
 
-model Escrow {
-  id          String   @id @default(uuid())
-  jobId       String
-  amount      Float
-  currency    String   @default("AZR")
-  status      String   @default("pending")
+model Milestone {
+  id          String   @id @default(cuid())
+  contractId  String
+  description String
+  amount      Decimal  @db.Decimal(18, 8)
+  status      String   @default("pending") // pending, completed, approved
+  dueDate     DateTime?
+  completedAt DateTime?
   createdAt   DateTime @default(now())
-  releasedAt  DateTime?
+
+  contract Contract @relation(fields: [contractId], references: [id])
+
+  @@index([contractId])
+  @@index([status])
+}
+
+model Dispute {
+  id          String   @id @default(cuid())
+  contractId  String
+  raisedBy    String
+  reason      String
+  status      String   @default("open") // open, resolved, escalated
+  resolution  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  contract Contract @relation(fields: [contractId], references: [id])
+
+  @@index([contractId])
+  @@index([status])
+}
+
+model SkillProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  skills    String[]
+  rating    Decimal  @default(0) @db.Decimal(3, 2)
+  jobsCompleted Int   @default(0)
+  totalEarned Decimal @default(0) @db.Decimal(18, 8)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

@@ -1,105 +1,103 @@
+// Auth Service - Identity & Access Management Schema
+// Ubuntu Principle: "My security ensures our freedom"
+
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id                       String    @id @default(uuid())
-  email                    String    @unique
-  passwordHash             String?
-  name                     String
-  role                     String    @default("user")
-  isEmailVerified          Boolean   @default(false)
-  emailVerificationToken   String?
-  emailVerificationExpires DateTime?
-  passwordResetToken       String?
-  passwordResetExpires     DateTime?
-  mfaEnabled               Boolean   @default(false)
-  mfaSecret                String?
-  mfaBackupCodes           String? // JSON array of backup codes
-  lastLoginAt              DateTime?
-  loginAttempts            Int       @default(0)
-  lockoutUntil             DateTime?
-  createdAt                DateTime  @default(now())
-  updatedAt                DateTime  @updatedAt
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          String    @default("student") // student, educator, employer, admin
+  isVerified    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  // OAuth fields
-  googleId String? @unique
-  githubId String? @unique
-  appleId  String? @unique
-  avatar   String?
-
-  // Relations
   sessions      Session[]
-  refreshTokens RefreshToken[]
-  settings      UserSettings?
+  tokens        RefreshToken[]
+  mfaSettings   MFASettings?
+  profile       UserProfile?
 
-  @@map("users")
-}
-
-model UserSettings {
-  id                 String   @id @default(uuid())
-  userId             String   @unique
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName        String?
-  emailNotifications Boolean  @default(true)
-  pushNotifications  Boolean  @default(false)
-  language           String   @default("english")
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  @@map("user_settings")
+  @@index([email])
+  @@index([role])
 }
 
 model Session {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String   @unique
   ipAddress String?
   userAgent String?
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  @@map("sessions")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
 }
 
 model RefreshToken {
-  id         String    @id @default(uuid())
-  userId     String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token      String    @unique
-  expiresAt  DateTime
-  createdAt  DateTime  @default(now())
-  revokedAt  DateTime?
-  replacedBy String?
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
-  @@map("refresh_tokens")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
 }
 
-model Role {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  permissions String? // JSON array of permission strings
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model MFASettings {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  enabled   Boolean  @default(false)
+  method    String   // totp, sms, email
+  secret    String?
+  backupCodes String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("roles")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Permission {
-  id          String @id @default(uuid())
-  name        String @unique
-  resource    String // e.g., "user", "payment", "course"
-  action      String // e.g., "create", "read", "update", "delete"
-  description String?
-  createdAt   DateTime @default(now())
+model UserProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  avatar    String?
+  bio       String?
+  location  String?
+  timezone  String?
+  language  String   @default("en")
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("permissions")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  resource  String?
+  ipAddress String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }

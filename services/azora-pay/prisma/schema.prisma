@@ -1,0 +1,71 @@
+// Azora Pay - Payment Processing Schema
+// Ubuntu Principle: "My success enables your success"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Decimal  @db.Decimal(18, 8)
+  currency    String
+  type        String   // deposit, withdrawal, payment, refund
+  status      String   @default("pending") // pending, completed, failed, cancelled
+  method      String   // crypto, bank, card
+  reference   String?  @unique
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Escrow {
+  id          String   @id @default(cuid())
+  contractId  String   @unique
+  amount      Decimal  @db.Decimal(18, 8)
+  currency    String   @default("AZR")
+  status      String   @default("locked") // locked, released, refunded
+  releasedTo  String?
+  releasedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([contractId])
+  @@index([status])
+}
+
+model PaymentMethod {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // crypto_wallet, bank_account, card
+  details   Json
+  isDefault Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Decimal  @db.Decimal(18, 8)
+  currency  String
+  status    String   @default("unpaid") // unpaid, paid, cancelled
+  dueDate   DateTime
+  paidAt    DateTime?
+  items     Json
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+}
