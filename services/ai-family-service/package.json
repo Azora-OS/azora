@@ -2,11 +2,19 @@
     "name": "ai-family-service",
     "version": "1.0.0",
     "description": "AI Family Service for Azora OS",
-    "main": "family-tree-api.js",
+    "main": "index.js",
     "scripts": {
-        "start": "node family-tree-api.js"
+        "start": "node index.js",
+        "seed": "node prisma/seed.js",
+        "migrate": "prisma migrate dev"
     },
     "dependencies": {
-        "express": "^4.17.1"
+        "@prisma/client": "^5.12.1",
+        "dotenv": "^17.2.3",
+        "express": "^4.17.1",
+        "openai": "^4.20.0"
+    },
+    "devDependencies": {
+        "prisma": "^5.12.1"
     }
 }
