@@ -62,11 +62,11 @@ export class AzoraApiClient {
 
   lms = {
     getCourses: (params?: any) =>
-      this.request(`/api/courses${params ? '?' + new URLSearchParams(params) : ''}`),
-    getCourse: (id: string) => this.request(`/api/courses/${id}`),
+      this.request(`/api/education/courses${params ? '?' + new URLSearchParams(params) : ''}`),
+    getCourse: (id: string) => this.request(`/api/education/courses/${id}`),
     enroll: (courseId: string, studentId: string) =>
-      this.request('/api/enroll', { method: 'POST', body: JSON.stringify({ courseId, studentId }) }),
-    getEnrollments: (studentId: string) => this.request(`/api/enrollments/${studentId}`)
+      this.request('/api/education/enrollments', { method: 'POST', body: JSON.stringify({ courseId, studentId }) }),
+    getEnrollments: (studentId: string) => this.request(`/api/education/enrollments/${studentId}`)
   };
 
   sapiens = {

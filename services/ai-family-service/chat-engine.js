@@ -1,30 +1,33 @@
-
-// Chat Engine for the AI Family
-
 const personalityManager = require('./personality-manager');
+const aiResponseEngine = require('./engines/ai-response-engine');
 
 class ChatEngine {
-    constructor() {
-        this.currentPersonality = personalityManager.getPersonality('elara');
+    async chat(personalityName, userMessage, userId, context = {}) {
+        const personality = personalityManager.getPersonality(personalityName);
+        if (!personality) {
+            throw new Error(`Personality '${personalityName}' not found`);
+        }
+
+        const config = personality.getConfig();
+        const response = await aiResponseEngine.generateResponse(config, userMessage, userId, context);
+        
+        return {
+            personality: personalityName,
+            message: response.message,
+            mood: response.mood,
+            timestamp: response.timestamp
+        };
     }
 
-    setPersonality(name) {
-        const personality = personalityManager.getPersonality(name);
-        if (personality) {
-            this.currentPersonality = personality;
-            return `Switched to ${this.currentPersonality.name}'s personality.`;
-        } else {
-            return "Invalid personality.";
-        }
+    async multiPersonalityChat(personalityNames, userMessage, userId) {
+        const responses = await Promise.all(
+            personalityNames.map(name => this.chat(name, userMessage, userId))
+        );
+        return responses;
     }
 
-    sendMessage(message) {
-        if (this.currentPersonality) {
-            // In a real implementation, this would involve more sophisticated NLP and response generation
-            return this.currentPersonality.greet();
-        } else {
-            return "No personality selected.";
-        }
+    clearHistory(userId, personalityName = null) {
+        aiResponseEngine.clearHistory(userId, personalityName);
     }
 }
 

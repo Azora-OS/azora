@@ -1,56 +1,85 @@
 class ProofOfKnowledge {
+  constructor() {
+    this.activityTypes = {
+      COURSE_COMPLETION: { weight: 1.0, baseReward: 100 },
+      LESSON_COMPLETION: { weight: 0.3, baseReward: 10 },
+      QUIZ_PASSED: { weight: 0.5, baseReward: 25 },
+      ASSIGNMENT_SUBMITTED: { weight: 0.4, baseReward: 15 },
+      PEER_TEACHING: { weight: 0.8, baseReward: 50 },
+      DISCUSSION_CONTRIBUTION: { weight: 0.2, baseReward: 5 },
+      PROJECT_COMPLETION: { weight: 1.2, baseReward: 150 },
+      CERTIFICATION_EARNED: { weight: 2.0, baseReward: 500 }
+    };
+  }
+
   validateProof(activity) {
-    const validTypes = ['lesson_complete', 'quiz_passed', 'project_submitted', 'peer_help', 'content_created'];
-    
-    if (!validTypes.includes(activity.type)) {
-      return { valid: false, reason: 'Invalid activity type' };
+    if (!activity || !activity.type) {
+      return { valid: false, reason: 'Invalid activity structure' };
+    }
+
+    const activityConfig = this.activityTypes[activity.type];
+    if (!activityConfig) {
+      return { valid: false, reason: 'Unknown activity type' };
+    }
+
+    if (!activity.userId || !activity.timestamp) {
+      return { valid: false, reason: 'Missing required fields' };
+    }
+
+    if (activity.type === 'QUIZ_PASSED' && (!activity.score || activity.score < 70)) {
+      return { valid: false, reason: 'Quiz score below passing threshold' };
     }
 
     const proof = {
-      activityId: activity.id,
-      studentId: activity.studentId,
-      type: activity.type,
-      timestamp: new Date(),
-      hash: this.generateHash(activity),
+      activityType: activity.type,
+      userId: activity.userId,
+      timestamp: activity.timestamp,
+      metadata: activity.metadata || {},
+      weight: activityConfig.weight,
       verified: true
     };
 
     return { valid: true, proof };
   }
 
-  generateHash(activity) {
-    const data = `${activity.id}${activity.studentId}${activity.type}${Date.now()}`;
-    return Buffer.from(data).toString('base64');
-  }
-
   calculateReward(proof) {
-    const baseRewards = {
-      lesson_complete: 10,
-      quiz_passed: 25,
-      project_submitted: 50,
-      peer_help: 15,
-      content_created: 100
-    };
+    const config = this.activityTypes[proof.activityType];
+    if (!config) return 0;
 
-    const multipliers = {
-      streak: 1.0,
-      quality: 1.0,
-      difficulty: 1.0
-    };
+    let reward = config.baseReward * proof.weight;
 
-    const baseReward = baseRewards[proof.type] || 0;
-    const totalMultiplier = Object.values(multipliers).reduce((a, b) => a * b, 1);
-    
-    return Math.floor(baseReward * totalMultiplier);
+    if (proof.metadata.difficulty) {
+      const difficultyMultiplier = {
+        beginner: 1.0,
+        intermediate: 1.5,
+        advanced: 2.0,
+        expert: 3.0
+      }[proof.metadata.difficulty] || 1.0;
+      reward *= difficultyMultiplier;
+    }
+
+    if (proof.metadata.score) {
+      const scoreBonus = (proof.metadata.score - 70) / 30;
+      reward *= (1 + Math.max(0, scoreBonus));
+    }
+
+    if (proof.metadata.timeSpent) {
+      const engagementBonus = Math.min(proof.metadata.timeSpent / 3600, 0.5);
+      reward *= (1 + engagementBonus);
+    }
+
+    return Math.round(reward * 100) / 100;
   }
 
-  verifyChain(proofs) {
-    for (let i = 1; i < proofs.length; i++) {
-      if (proofs[i].timestamp < proofs[i - 1].timestamp) {
-        return false;
-      }
-    }
-    return true;
+  generateProofHash(proof) {
+    const crypto = require('crypto');
+    const data = JSON.stringify({
+      type: proof.activityType,
+      user: proof.userId,
+      time: proof.timestamp,
+      meta: proof.metadata
+    });
+    return crypto.createHash('sha256').update(data).digest('hex');
   }
 }
 
