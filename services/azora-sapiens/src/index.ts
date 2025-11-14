@@ -9,6 +9,9 @@ import tutoringRoutes from './routes/tutoringRoutes';
 
 dotenv.config();
 
+// Import auth middleware
+const { authenticateToken, rateLimiter } = require('@azora/shared-auth');
+
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 const SERVICE_NAME: string = process.env.SERVICE_NAME || 'service';
@@ -18,6 +21,7 @@ app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
+app.use(rateLimiter({ max: 30 }));
 
 // Request logging
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -37,7 +41,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 // API routes
 app.use('/api/qualifications', qualificationRoutes);
-app.use('/api/tutoring', tutoringRoutes);
+app.use('/api/tutoring', authenticateToken, tutoringRoutes);
 
 // Error handling
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

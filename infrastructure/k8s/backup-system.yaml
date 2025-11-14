@@ -1,0 +1,350 @@
+# Azora OS Backup & Disaster Recovery System
+# Agent 1: DevOps & Production Specialist
+# Sprint 2: Data Protection & Recovery
+
+---
+# Backup Storage Class
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: backup-storage
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp3
+  encrypted: "true"
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+
+---
+# PostgreSQL Backup CronJob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: azora-production
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:15-alpine
+            command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              BACKUP_FILE="azora_backup_$(date +%Y%m%d_%H%M%S).sql"
+              echo "Starting backup: $BACKUP_FILE"
+              
+              # Create backup
+              pg_dump -h postgres -U azora_user -d azora_production > /backup/$BACKUP_FILE
+              
+              # Compress backup
+              gzip /backup/$BACKUP_FILE
+              
+              # Upload to S3 (if configured)
+              if [ ! -z "$AWS_ACCESS_KEY_ID" ]; then
+                aws s3 cp /backup/$BACKUP_FILE.gz s3://azora-backups/database/
+              fi
+              
+              # Keep only last 7 days of local backups
+              find /backup -name "*.gz" -mtime +7 -delete
+              
+              echo "Backup completed: $BACKUP_FILE.gz"
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: postgres-password
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: aws-access-key-id
+                  optional: true
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: aws-secret-access-key
+                  optional: true
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc
+          restartPolicy: OnFailure
+
+---
+# Backup PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-pvc
+  namespace: azora-production
+spec:
+  storageClassName: backup-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+
+---
+# Redis Backup CronJob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-backup
+  namespace: azora-production
+spec:
+  schedule: "0 3 * * *"  # Daily at 3 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: redis-backup
+            image: redis:7-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              BACKUP_FILE="redis_backup_$(date +%Y%m%d_%H%M%S).rdb"
+              echo "Starting Redis backup: $BACKUP_FILE"
+              
+              # Create backup
+              redis-cli -h redis -a $REDIS_PASSWORD --rdb /backup/$BACKUP_FILE
+              
+              # Compress backup
+              gzip /backup/$BACKUP_FILE
+              
+              # Upload to S3 (if configured)
+              if [ ! -z "$AWS_ACCESS_KEY_ID" ]; then
+                aws s3 cp /backup/$BACKUP_FILE.gz s3://azora-backups/redis/
+              fi
+              
+              # Keep only last 7 days of local backups
+              find /backup -name "*.gz" -mtime +7 -delete
+              
+              echo "Redis backup completed: $BACKUP_FILE.gz"
+            env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: redis-password
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: aws-access-key-id
+                  optional: true
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: aws-secret-access-key
+                  optional: true
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc
+          restartPolicy: OnFailure
+
+---
+# Disaster Recovery Job Template
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: disaster-recovery-template
+  namespace: azora-production
+spec:
+  template:
+    spec:
+      containers:
+      - name: disaster-recovery
+        image: postgres:15-alpine
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Starting disaster recovery process..."
+          
+          # List available backups
+          echo "Available backups:"
+          ls -la /backup/
+          
+          # Restore from latest backup (manual selection required)
+          LATEST_BACKUP=$(ls -t /backup/azora_backup_*.sql.gz | head -1)
+          
+          if [ -z "$LATEST_BACKUP" ]; then
+            echo "No backup files found!"
+            exit 1
+          fi
+          
+          echo "Restoring from: $LATEST_BACKUP"
+          
+          # Decompress and restore
+          gunzip -c $LATEST_BACKUP | psql -h postgres -U azora_user -d azora_production
+          
+          echo "Disaster recovery completed successfully!"
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: azora-secrets
+              key: postgres-password
+        volumeMounts:
+        - name: backup-storage
+          mountPath: /backup
+      volumes:
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: backup-pvc
+      restartPolicy: Never
+
+---
+# Monitoring Backup Health
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-monitoring
+  namespace: azora-production
+data:
+  check-backups.sh: |
+    #!/bin/bash
+    # Check if backups are running successfully
+    
+    BACKUP_DIR="/backup"
+    ALERT_WEBHOOK="${SLACK_WEBHOOK_URL}"
+    
+    # Check PostgreSQL backups
+    LATEST_PG_BACKUP=$(find $BACKUP_DIR -name "azora_backup_*.sql.gz" -mtime -1 | wc -l)
+    if [ $LATEST_PG_BACKUP -eq 0 ]; then
+      echo "ALERT: No PostgreSQL backup found in last 24 hours"
+      if [ ! -z "$ALERT_WEBHOOK" ]; then
+        curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🚨 Azora OS: PostgreSQL backup failed!"}' \
+          $ALERT_WEBHOOK
+      fi
+    else
+      echo "✅ PostgreSQL backup is healthy"
+    fi
+    
+    # Check Redis backups
+    LATEST_REDIS_BACKUP=$(find $BACKUP_DIR -name "redis_backup_*.rdb.gz" -mtime -1 | wc -l)
+    if [ $LATEST_REDIS_BACKUP -eq 0 ]; then
+      echo "ALERT: No Redis backup found in last 24 hours"
+      if [ ! -z "$ALERT_WEBHOOK" ]; then
+        curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🚨 Azora OS: Redis backup failed!"}' \
+          $ALERT_WEBHOOK
+      fi
+    else
+      echo "✅ Redis backup is healthy"
+    fi
+    
+    # Check disk space
+    DISK_USAGE=$(df $BACKUP_DIR | tail -1 | awk '{print $5}' | sed 's/%//')
+    if [ $DISK_USAGE -gt 80 ]; then
+      echo "ALERT: Backup disk usage is ${DISK_USAGE}%"
+      if [ ! -z "$ALERT_WEBHOOK" ]; then
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"⚠️ Azora OS: Backup disk usage is ${DISK_USAGE}%\"}" \
+          $ALERT_WEBHOOK
+      fi
+    else
+      echo "✅ Backup disk usage is healthy: ${DISK_USAGE}%"
+    fi
+
+---
+# Backup Health Check CronJob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-health-check
+  namespace: azora-production
+spec:
+  schedule: "0 8 * * *"  # Daily at 8 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-health-check
+            image: curlimages/curl:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              /scripts/check-backups.sh
+            env:
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: azora-secrets
+                  key: slack-webhook-url
+                  optional: true
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+            - name: backup-scripts
+              mountPath: /scripts
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc
+          - name: backup-scripts
+            configMap:
+              name: backup-monitoring
+              defaultMode: 0755
+          restartPolicy: OnFailure
+
+---
+# Backup Restore Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backup-restore
+  namespace: azora-production
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: azora-production
+  name: backup-restore
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "create", "delete"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["get", "list", "create", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backup-restore
+  namespace: azora-production
+subjects:
+- kind: ServiceAccount
+  name: backup-restore
+  namespace: azora-production
+roleRef:
+  kind: Role
+  name: backup-restore
+  apiGroup: rbac.authorization.k8s.io

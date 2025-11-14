@@ -3,19 +3,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './src/contexts/AuthContext';
-import { useNotifications } from './src/hooks/useNotifications';
 import LoginScreen from './src/screens/LoginScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
-import CoursesScreen from './src/screens/CoursesScreen';
-import WalletScreen from './src/screens/WalletScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
+import AnalyticsScreen from './src/screens/AnalyticsScreen';
+import UsersScreen from './src/screens/UsersScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function MainTabs() {
-  useNotifications(); // Initialize notifications
-  
   return (
     <Tab.Navigator screenOptions={{
       tabBarActiveTintColor: '#3B4F6F',
@@ -25,22 +22,22 @@ function MainTabs() {
       <Tab.Screen 
         name="Dashboard" 
         component={DashboardScreen} 
-        options={{ tabBarIcon: () => '🏠' }}
+        options={{ tabBarIcon: () => '📊' }}
       />
       <Tab.Screen 
-        name="Courses" 
-        component={CoursesScreen} 
-        options={{ tabBarIcon: () => '📚' }}
+        name="Analytics" 
+        component={AnalyticsScreen} 
+        options={{ tabBarIcon: () => '📈' }}
       />
       <Tab.Screen 
-        name="Wallet" 
-        component={WalletScreen} 
-        options={{ tabBarIcon: () => '💰' }}
+        name="Users" 
+        component={UsersScreen} 
+        options={{ tabBarIcon: () => '👥' }}
       />
       <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
-        options={{ tabBarIcon: () => '👤' }}
+        name="Settings" 
+        component={SettingsScreen} 
+        options={{ tabBarIcon: () => '⚙️' }}
       />
     </Tab.Navigator>
   );
