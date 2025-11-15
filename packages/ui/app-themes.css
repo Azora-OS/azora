@@ -13,60 +13,67 @@ APP-SPECIFIC THEMES WITH PREMIUM TRIMMING
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
-/* Education Apps - Blue Theme */
+/* Education Apps - Emerald Gem Theme */
 .theme-education {
-  --app-primary: #0066FF;
-  --app-secondary: #4A90E2;
-  --app-accent: #1E88E5;
-  --app-bg: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(74, 144, 226, 0.1));
+  --app-primary: #10b981;
+  --app-secondary: #059669;
+  --app-accent: #047857;
+  --app-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+  --app-glow: rgba(16, 185, 129, 0.3);
 }
 
-/* Finance Apps - Green Theme */
+/* Finance Apps - Ruby Gem Theme */
 .theme-finance {
-  --app-primary: #00D4AA;
-  --app-secondary: #10B981;
-  --app-accent: #059669;
-  --app-bg: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(16, 185, 129, 0.1));
-}
-
-/* Marketplace Apps - Purple Theme */
-.theme-marketplace {
-  --app-primary: #8B5CF6;
-  --app-secondary: #A855F7;
-  --app-accent: #7C3AED;
-  --app-bg: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
-}
-
-/* Enterprise Apps - Orange Theme */
-.theme-enterprise {
-  --app-primary: #FF6B35;
-  --app-secondary: #F97316;
-  --app-accent: #EA580C;
-  --app-bg: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(249, 115, 22, 0.1));
-}
-
-/* Cloud Apps - Cyan Theme */
-.theme-cloud {
-  --app-primary: #06B6D4;
-  --app-secondary: #0891B2;
-  --app-accent: #0E7490;
-  --app-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1));
-}
-
-/* Compliance Apps - Red Theme */
-.theme-compliance {
-  --app-primary: #EF4444;
-  --app-secondary: #DC2626;
-  --app-accent: #B91C1C;
+  --app-primary: #ef4444;
+  --app-secondary: #dc2626;
+  --app-accent: #b91c1c;
   --app-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+  --app-glow: rgba(239, 68, 68, 0.3);
 }
 
-/* Dev Apps - Indigo Theme */
+/* Marketplace Apps - Sapphire Gem Theme */
+.theme-marketplace {
+  --app-primary: #667eea;
+  --app-secondary: #764ba2;
+  --app-accent: #5a67d8;
+  --app-bg: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  --app-glow: rgba(102, 126, 234, 0.3);
+}
+
+/* Enterprise Apps - Orange Theme (Enhanced) */
+.theme-enterprise {
+  --app-primary: #f97316;
+  --app-secondary: #ea580c;
+  --app-accent: #c2410c;
+  --app-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(234, 88, 12, 0.1));
+  --app-glow: rgba(249, 115, 22, 0.3);
+}
+
+/* Cloud Apps - Cyan Theme (Enhanced) */
+.theme-cloud {
+  --app-primary: #06b6d4;
+  --app-secondary: #0891b2;
+  --app-accent: #0e7490;
+  --app-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.1));
+  --app-glow: rgba(6, 182, 212, 0.3);
+}
+
+/* Compliance Apps - Ruby Theme (Enhanced) */
+.theme-compliance {
+  --app-primary: #ef4444;
+  --app-secondary: #dc2626;
+  --app-accent: #b91c1c;
+  --app-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+  --app-glow: rgba(239, 68, 68, 0.3);
+}
+
+/* Dev Apps - Sapphire Theme (Enhanced) */
 .theme-dev {
-  --app-primary: #6366F1;
-  --app-secondary: #4F46E5;
-  --app-accent: #4338CA;
-  --app-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1));
+  --app-primary: #667eea;
+  --app-secondary: #764ba2;
+  --app-accent: #5a67d8;
+  --app-bg: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  --app-glow: rgba(102, 126, 234, 0.3);
 }
 
 /* Apply theme colors */
@@ -81,7 +88,13 @@ APP-SPECIFIC THEMES WITH PREMIUM TRIMMING
 
 .app-themed .glass-card {
   border-color: var(--app-primary);
-  box-shadow: 0 8px 32px var(--app-primary)20;
+  box-shadow: 0 8px 32px var(--app-glow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.app-themed .card-glow {
+  box-shadow: 0 0 20px var(--app-glow);
 }
 
 .app-themed .holo-text {
