@@ -1,88 +1,40 @@
-# Azora Mint - Proof-of-Knowledge Token System
+# Azora Mint
 
-Complete implementation of AZR token with Proof-of-Knowledge mining and economic policy.
+Financial engine with multi-currency wallet, mining, and Proof-of-Knowledge rewards.
 
-## Features
+## Purpose
+- Multi-currency wallet management (AZR, BTC, ETH, USD)
+- Proof-of-Knowledge mining engine
+- Token minting and burning
+- Transaction processing
+- Economic policy enforcement
 
-### Proof-of-Knowledge Mining
-- Challenge generation based on subject
-- Answer verification
-- Score-based rewards
-- Student level bonuses
-
-### Economic Policy
-- Max supply: 21M AZR
-- Block rewards with halving
-- Inflation rate adjustment
-- UBI calculation
-- Staking rewards (8% APY)
-
-### Token Operations
-- Wallet creation
-- Token minting
-- Transfers
-- Staking/unstaking
-- Balance tracking
-
-## API Endpoints
-
-### Wallet
-- `POST /api/wallet/create` - Create wallet
-- `GET /api/wallet/:address` - Get wallet
-- `GET /api/wallet/:address/balance` - Get balance
-
-### Mining
-- `POST /api/mining/challenge` - Generate challenge
-- `POST /api/mining/submit` - Submit proof and mine
-
-### Tokens
-- `POST /api/transfer` - Transfer tokens
-- `POST /api/stake` - Stake tokens
-- `POST /api/unstake` - Unstake tokens
-- `POST /api/staking/reward` - Claim staking reward
-
-### Economics
-- `GET /api/economics/stats` - Economic statistics
-- `GET /api/economics/ubi` - UBI calculation
-- `POST /api/economics/adjust` - Adjust inflation
-
-## Usage
-
+## Setup
 ```bash
 npm install
-npm start
+npm run prisma:generate
 ```
 
-## Example
+## Environment Variables
+See `.env.example` for required configuration.
 
-```javascript
-// Create wallet
-POST /api/wallet/create
-{ "userId": "student-123" }
+## Scripts
+- `npm run dev` - Development server with hot reload
+- `npm run build` - Build TypeScript to dist/
+- `npm run start` - Production server
+- `npm run test` - Run Jest tests
+- `npm run test:watch` - Watch mode testing
+- `npm run typecheck` - TypeScript validation
 
-// Get mining challenge
-POST /api/mining/challenge
-{ "studentId": "student-123", "subject": "javascript" }
+## API Endpoints
+- `POST /api/wallet/create` - Create new wallet
+- `GET /api/wallet/:userId` - Get wallet balance
+- `POST /api/mining/start` - Start mining session
+- `GET /api/transactions` - Transaction history
+- `POST /api/tokens/mint` - Mint tokens (admin)
 
-// Submit proof and mine
-POST /api/mining/submit
-{
-  "challenge": {...},
-  "answers": ["function that accesses outer scope", "promise handling syntax"],
-  "address": "wallet-address",
-  "studentLevel": 2
-}
-
-// Check balance
-GET /api/wallet/wallet-address/balance
+## Database
+Uses PostgreSQL with Prisma ORM. Run migrations:
+```bash
+npm run prisma:migrate
 ```
-
-## Economic Model
-
-- **Max Supply**: 21,000,000 AZR
-- **Block Reward**: 50 AZR (halves every 210k blocks)
-- **Inflation**: 2% (adjustable)
-- **UBI**: 1% of supply distributed
-- **Staking APY**: 8%
-
-**"Ngiyakwazi ngoba sikwazi"** - Learn to earn! 🚀

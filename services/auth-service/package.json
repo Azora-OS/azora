@@ -4,14 +4,16 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
+    "build": "echo 'No build needed for JS'",
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "db:seed": "node prisma/seed.js"
   },
   "dependencies": {
     "speakeasy": "^2.0.0",

@@ -1,36 +1,20 @@
 const rateLimit = require('express-rate-limit');
-const RedisStore = require('rate-limit-redis');
-const Redis = require('ioredis');
 
-const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
-
-const createLimiter = (options = {}) => {
-  const config = {
-    windowMs: options.windowMs || 15 * 60 * 1000,
-    max: options.max || 100,
-    message: options.message || 'Too many requests, please try again later',
-    standardHeaders: true,
-    legacyHeaders: false,
-    ...options
-  };
-
-  if (redis) {
-    config.store = new RedisStore({
-      client: redis,
-      prefix: 'rl:',
-      sendCommand: (...args) => redis.call(...args)
-    });
-  }
-
-  return rateLimit(config);
-};
+const createLimiter = (windowMs, max, message) => rateLimit({
+  windowMs,
+  max,
+  message: { error: message || 'Too many requests' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false
+});
 
 const limiters = {
-  strict: createLimiter({ windowMs: 15 * 60 * 1000, max: 10 }),
-  auth: createLimiter({ windowMs: 15 * 60 * 1000, max: 5, message: 'Too many login attempts' }),
-  api: createLimiter({ windowMs: 15 * 60 * 1000, max: 100 }),
-  financial: createLimiter({ windowMs: 60 * 1000, max: 10, message: 'Too many financial transactions' }),
-  public: createLimiter({ windowMs: 15 * 60 * 1000, max: 300 })
+  standard: createLimiter(15 * 60 * 1000, 100, 'Too many requests'),
+  strict: createLimiter(15 * 60 * 1000, 50, 'Rate limit exceeded'),
+  auth: createLimiter(15 * 60 * 1000, 5, 'Too many login attempts'),
+  financial: createLimiter(15 * 60 * 1000, 20, 'Too many financial transactions'),
+  api: createLimiter(60 * 1000, 30, 'API rate limit exceeded')
 };
 
-module.exports = { createLimiter, limiters };
+module.exports = { limiters, createLimiter };

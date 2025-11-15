@@ -4,8 +4,13 @@
   "description": "Azora OS API Gateway - Routes requests to microservices",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
+    "build": "echo 'No build needed for JS'",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "test": "echo 'No tests yet'",
+    "test:watch": "echo 'No tests yet'",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@azora/shared-auth": "file:../../packages/shared-auth",

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "schedule": ["before 3am on Monday"],
+  "timezone": "Africa/Johannesburg",
+  "labels": ["dependencies", "renovate"],
+  "assignees": ["Sizwe780"],
+  "reviewers": ["Sizwe780"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["major-update"]
+    },
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["eslint", "prettier"],
+      "groupName": "linting"
+    },
+    {
+      "matchPackagePatterns": ["jest", "playwright", "@testing-library"],
+      "groupName": "testing"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["Sizwe780"]
+  },
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2
+}

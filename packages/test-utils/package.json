@@ -1,0 +1,20 @@
+{
+  "name": "@azora/test-utils",
+  "version": "1.0.0",
+  "description": "Testing utilities for Azora OS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.0",
+    "@prisma/client": "^5.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}
