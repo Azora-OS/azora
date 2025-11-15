@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+.next/
+coverage/
+playwright-report/
+*.log
+**/*.generated.*
+**/*.gen.*
+**/*.d.ts

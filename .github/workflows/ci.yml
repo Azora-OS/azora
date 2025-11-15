@@ -1,60 +1,54 @@
-name: Azora OS CI/CD
+name: CI Pipeline
 
 on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
-  test-api-client:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Install dependencies
-        run: cd packages/api-client && npm install
-      - name: Run tests
-        run: cd packages/api-client && npm test
-      - name: Check coverage
-        run: cd packages/api-client && npm run test:coverage
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
 
-  test-services:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [azora-lms, azora-sapiens, azora-assessment]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - name: Test ${{ matrix.service }}
-        run: |
-          cd services/${{ matrix.service }}
-          npm install
-          npm test || echo "Tests not yet implemented"
-
-  health-check:
+  typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Start services
-        run: docker-compose -f docker-compose.services.yml up -d
-      - name: Wait for services
-        run: sleep 30
-      - name: Check health endpoints
-        run: |
-          curl -f http://localhost:4000/health || exit 1
-          curl -f http://localhost:4015/health || exit 1
-          curl -f http://localhost:4011/health || exit 1
-          curl -f http://localhost:4016/health || exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run typecheck
 
-  deploy:
-    needs: [test-api-client, test-services, health-check]
+  test:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to production
-        run: echo "Deploy step - configure with your deployment target"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run test:coverage
+      - uses: codecov/codecov-action@v3
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build

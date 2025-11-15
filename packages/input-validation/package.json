@@ -1,8 +1,9 @@
 {
   "name": "@azora/input-validation",
   "version": "1.0.0",
+  "description": "Input validation schemas for Azora OS",
   "main": "index.js",
   "dependencies": {
-    "joi": "^17.11.0"
+    "zod": "^3.23.8"
   }
 }

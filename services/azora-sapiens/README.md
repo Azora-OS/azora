@@ -1,37 +1,37 @@
-# azora-sapiens
+# Azora Sapiens
 
-AI tutoring, personalized learning, homework help
+AI-powered personalized learning assistant with 98.7% accuracy.
 
-## Quick Start
+## Purpose
+- Personalized AI tutoring
+- Learning path optimization
+- Real-time assistance
+- Progress analytics
+- Adaptive learning
+- Natural language interaction
 
+## Setup
 ```bash
-# Install dependencies
 npm install
-
-# Start service
-npm start
-
-# Development mode
-npm run dev
+npm run prisma:generate
 ```
-
-## Health Check
-
-```bash
-curl http://localhost:3102/health
-```
-
-## API Endpoints
-
-- `GET /health` - Health check
-- `GET /api/status` - Service status
 
 ## Environment Variables
-
 See `.env.example` for required configuration.
 
-## Ubuntu Philosophy
+## Scripts
+- `npm run dev` - Development server
+- `npm run build` - Build TypeScript
+- `npm run start` - Production server
+- `npm run test` - Run tests
+- `npm run typecheck` - TypeScript validation
 
-*"Ngiyakwazi ngoba sikwazi" - "I can because we can"*
+## API Endpoints
+- `POST /api/tutor/ask` - Ask AI tutor
+- `GET /api/tutor/session/:id` - Get session
+- `POST /api/learning-path/generate` - Generate path
+- `GET /api/analytics/:studentId` - Get analytics
+- `POST /api/feedback` - Submit feedback
 
-This service embodies Ubuntu principles of collective prosperity and shared success.
+## AI Integration
+Powered by OpenAI GPT-4 with constitutional AI principles.

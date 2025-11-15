@@ -1,21 +1,24 @@
 module.exports = {
+  preset: 'ts-jest',
   testEnvironment: 'node',
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
-    'services/**/*.js',
-    '!services/**/node_modules/**',
-    '!services/**/__tests__/**'
+    'services/**/*.{js,ts}',
+    'packages/**/*.{js,ts}',
+    '!**/*.test.{js,ts}',
+    '!**/node_modules/**'
   ],
   testMatch: [
-    '**/services/**/__tests__/**/*.test.js'
+    '**/services/**/__tests__/**/*.test.{js,ts}',
+    '**/tests/**/*.test.{js,ts}'
   ],
   coverageThreshold: {
     global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
     }
   },
-  testTimeout: 10000
+  testTimeout: 15000
 };

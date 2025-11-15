@@ -1,14 +1,36 @@
-# health-monitor
+# Health Monitor
 
-Service health checks, performance monitoring
+System monitoring with Prometheus metrics and health checks.
 
-## Quick Start
+## Purpose
+- Service health monitoring
+- Prometheus metrics collection
+- Uptime tracking
+- Performance monitoring
+- Alert management
+- System diagnostics
+
+## Setup
 ```bash
 npm install
-npm start
 ```
 
-## Health Check
-```bash
-curl http://localhost:3302/health
-```
+## Environment Variables
+See `.env.example` for required configuration.
+
+## Scripts
+- `npm run dev` - Development server
+- `npm run start` - Production server
+
+## API Endpoints
+- `GET /health` - Overall system health
+- `GET /health/:service` - Service-specific health
+- `GET /metrics` - Prometheus metrics
+- `GET /status` - System status
+
+## Metrics
+- API response times
+- Database query performance
+- Error rates
+- Request throughput
+- System uptime

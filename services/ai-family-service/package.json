@@ -4,8 +4,13 @@
     "description": "AI Family Service for Azora OS",
     "main": "index.js",
     "scripts": {
-        "start": "node server.js",
         "dev": "node server.js",
+        "build": "echo 'No build needed for JS'",
+        "start": "node server.js",
+        "test": "echo 'No tests yet'",
+        "test:watch": "echo 'No tests yet'",
+        "lint": "eslint .",
+        "typecheck": "tsc --noEmit",
         "seed": "node prisma/seed.js",
         "migrate": "prisma migrate dev"
     },

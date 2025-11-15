@@ -7,3 +7,4 @@ SHARED AI EXPORTS
 
 export * from './data-access';
 export * from './claude-service';
+export * from './openai-client';
