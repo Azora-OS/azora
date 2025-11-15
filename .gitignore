@@ -3,20 +3,30 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+.pnp.*
 
 # Environment files
 .env
 .env.local
+.env.*.local
 .env.production
 .env.staging
+.env.development
 
 # Database
 *.db
 *.sqlite
+*.sqlite3
+data/
 
 # Logs
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Runtime data
 pids/
@@ -24,19 +34,38 @@ pids/
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# Testing
 coverage/
+.nyc_output/
+*.lcov
+.cache/
+test-results/
+playwright-report/
 
 # Build outputs
 dist/
 build/
 .next/
+out/
+.nuxt/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
 
 # IDE files
 .vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
 
 # OS generated files
 .DS_Store
@@ -46,7 +75,27 @@ build/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Temporary files
 tmp/
 temp/
+*.tmp
+*.temp
+
+# Production
+.vercel
+.netlify
+
+# Misc
+.turbo
+.cache
+.parcel-cache
+.eslintcache
+.stylelintcache
+
+# Archive (keep in repo but ignore changes)
+.archive/
+
+# Cleanup reports
+CLEANUP-REPORT.json
