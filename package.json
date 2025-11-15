@@ -29,7 +29,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "docker:prod": "docker-compose -f docker-compose.prod.yml up -d"
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "cleanup:production": "node scripts/cleanup-production.js",
+    "cleanup:dry-run": "node scripts/cleanup-production.js --dry-run",
+    "verify:structure": "node scripts/verify-structure.js"
   },
   "keywords": [
     "constitutional-ai",
@@ -45,7 +48,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.6",
+    "@types/node": "20.19.25",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "concurrently": "^8.2.2",

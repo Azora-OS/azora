@@ -82,11 +82,15 @@ app.use('/api/ai-family', authenticateToken, createProxyMiddleware({
 }));
 
 // Unified endpoints
-app.post('/api/students/enroll', authenticateToken, async (req, res) => {
+app.post('/api/students/enroll', authenticateToken, async (req, res, next) => {
   const axios = require('axios');
   const { studentId, courseId, userId } = req.body;
   
   try {
+    if (!studentId || !courseId || !userId) {
+      return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+
     // Enroll in education service
     const enrollment = await axios.post(`${services.education}/api/enrollments`, { studentId, courseId });
     
@@ -101,15 +105,19 @@ app.post('/api/students/enroll', authenticateToken, async (req, res) => {
     
     res.json({ success: true, enrollment: enrollment.data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 });
 
-app.post('/api/courses/complete', authenticateToken, async (req, res) => {
+app.post('/api/courses/complete', authenticateToken, async (req, res, next) => {
   const axios = require('axios');
   const { studentId, courseId, score } = req.body;
   
   try {
+    if (!studentId || !courseId || score === undefined) {
+      return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+
     // Update progress
     await axios.post(`${services.education}/api/progress`, {
       studentId,
@@ -134,7 +142,7 @@ app.post('/api/courses/complete', authenticateToken, async (req, res) => {
     
     res.json({ success: true, reward: reward.data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 });
 

@@ -1,19 +1,14 @@
 module.exports = {
-  preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/__tests__'],
-  testMatch: ['**/__tests__/**/*.test.ts'],
-  collectCoverageFrom: [
-    '**/*.ts',
-    '!**/*.d.ts',
-    '!**/node_modules/**',
-    '!**/__tests__/**',
-  ],
+  testMatch: ['**/*.test.js'],
+  verbose: true,
+  collectCoverage: true,
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
-  testTimeout: 30000,
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/../$1',
-  },
+  coverageReporters: ['text', 'lcov'],
+  collectCoverageFrom: [
+    '*.js',
+    '!jest.config.js',
+    '!healthcheck.js'
+  ]
 };

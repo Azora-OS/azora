@@ -109,12 +109,19 @@ process.on('SIGTERM', async () => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, async () => {
-  console.log(`🚀 Azora Auth Service running on port ${PORT}`);
+
+const startServer = async () => {
   try {
     await prisma.$connect();
     console.log('🗄️  Database connected');
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Azora Auth Service running on port ${PORT}`);
+    });
   } catch (error) {
-    console.error('❌ Database connection failed:', error);
+    console.error('❌ Failed to start auth service:', error);
+    process.exit(1);
   }
-});
+};
+
+startServer();
