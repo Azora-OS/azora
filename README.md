@@ -8,6 +8,8 @@
 *Ubuntu Philosophy Meets Quantum Technology*
 
 [![Version](https://img.shields.io/badge/Version-3.0.0%20MVP-blue.svg)](https://azora.world)
+[![Coverage](https://img.shields.io/badge/Coverage-80%25-green.svg)](./TESTING-REPORT.md)
+[![Security](https://img.shields.io/badge/Security-Hardened-green.svg)](./SECURITY.md)
 [![Website](https://img.shields.io/badge/Website-azora.world-blue?style=flat-square&logo=google-chrome)](https://azora.world)
 [![Services](https://img.shields.io/badge/Services-7%20Working%20%7C%2010%20In%20Dev-green.svg)](./HONEST-STATUS.md)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)

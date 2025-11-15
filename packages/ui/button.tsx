@@ -19,6 +19,10 @@ const buttonVariants = cva(
         ghost:
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
+        sapphire: 'bg-sapphire text-sapphire-foreground hover:bg-sapphire-dark shadow-glow-sapphire hover:shadow-glow-sapphire',
+        emerald: 'bg-emerald text-emerald-foreground hover:bg-emerald-dark shadow-glow-emerald hover:shadow-glow-emerald',
+        ruby: 'bg-ruby text-ruby-foreground hover:bg-ruby-dark shadow-glow-ruby hover:shadow-glow-ruby',
+        ubuntu: 'bg-ubuntu text-foreground hover:bg-ubuntu-dark shadow-glow-ubuntu hover:shadow-glow-ubuntu',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

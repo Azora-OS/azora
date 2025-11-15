@@ -3,34 +3,76 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+AZORA PROPRIETARY LICENSE
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+AZORA OS UNIFIED THEME SYSTEM
+Merges Master UI Template with Azora Gem Tri-Unity Crystal Design
+*/
+
 :root {
-  --background: oklch(0.12 0.03 240);
-  --foreground: oklch(0.98 0.01 240);
-  --card: oklch(0.16 0.03 240);
-  --card-foreground: oklch(0.98 0.01 240);
-  --popover: oklch(0.16 0.03 240);
-  --popover-foreground: oklch(0.98 0.01 240);
-  --primary: oklch(0.65 0.15 195);
-  --primary-foreground: oklch(0.98 0.01 240);
-  --secondary: oklch(0.2 0.03 240);
-  --secondary-foreground: oklch(0.98 0.01 240);
-  --muted: oklch(0.22 0.03 240);
-  --muted-foreground: oklch(0.6 0.03 240);
-  --accent: oklch(0.6 0.15 180);
-  --accent-foreground: oklch(0.98 0.01 240);
+  /* Light Mode - Clean, Professional */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  
+  /* Azora Gem Primary Colors */
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  
+  /* Azora Gem Tri-Unity Colors */
+  --sapphire: oklch(0.65 0.15 240);
+  --sapphire-dark: oklch(0.55 0.18 245);
+  --sapphire-foreground: oklch(0.98 0.01 240);
+  
+  --emerald: oklch(0.65 0.15 140);
+  --emerald-dark: oklch(0.55 0.18 135);
+  --emerald-foreground: oklch(0.98 0.01 240);
+  
+  --ruby: oklch(0.60 0.20 25);
+  --ruby-dark: oklch(0.50 0.22 20);
+  --ruby-foreground: oklch(0.98 0.01 240);
+  
+  /* Ubuntu Colors */
+  --ubuntu: oklch(0.985 0 0);
+  --ubuntu-dark: oklch(0.708 0 0);
+  
+  /* Supporting Colors */
   --success: oklch(0.65 0.15 140);
   --success-foreground: oklch(0.98 0.01 240);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0.01 240);
-  --border: oklch(0.25 0.03 240);
-  --input: oklch(0.25 0.03 240);
-  --ring: oklch(0.65 0.15 195);
-  --chart-1: oklch(0.65 0.15 195);
-  --chart-2: oklch(0.6 0.15 180);
-  --chart-3: oklch(0.65 0.15 140);
-  --chart-4: oklch(0.7 0.15 280);
-  --chart-5: oklch(0.6 0.2 310);
-  --radius: 0.75rem;
+  --warning: oklch(0.75 0.12 85);
+  --warning-foreground: oklch(0.145 0 0);
+  --info: oklch(0.65 0.15 195);
+  --info-foreground: oklch(0.98 0.01 240);
+  
+  /* UI Elements */
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  
+  /* Chart Colors */
+  --chart-1: oklch(0.65 0.15 240);
+  --chart-2: oklch(0.65 0.15 140);
+  --chart-3: oklch(0.60 0.20 25);
+  --chart-4: oklch(0.65 0.15 195);
+  --chart-5: oklch(0.75 0.12 85);
+  
+  /* Border Radius */
+  --radius: 0.625rem;
+  
+  /* Sidebar */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -42,43 +84,80 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+  /* Dark Mode - Deep Sapphire Tint */
+  --background: oklch(0.12 0.03 240);
+  --foreground: oklch(0.98 0.01 240);
+  --card: oklch(0.16 0.03 240);
+  --card-foreground: oklch(0.98 0.01 240);
+  --popover: oklch(0.16 0.03 240);
+  --popover-foreground: oklch(0.98 0.01 240);
+  
+  /* Azora Gem Primary Colors - Dark */
+  --primary: oklch(0.65 0.15 240);
+  --primary-foreground: oklch(0.98 0.01 240);
+  --secondary: oklch(0.2 0.03 240);
+  --secondary-foreground: oklch(0.98 0.01 240);
+  --muted: oklch(0.22 0.03 240);
+  --muted-foreground: oklch(0.6 0.03 240);
+  --accent: oklch(0.6 0.15 180);
+  --accent-foreground: oklch(0.98 0.01 240);
+  
+  /* Azora Gem Tri-Unity Colors - Dark (Enhanced) */
+  --sapphire: oklch(0.70 0.18 240);
+  --sapphire-dark: oklch(0.60 0.20 245);
+  --sapphire-foreground: oklch(0.98 0.01 240);
+  
+  --emerald: oklch(0.70 0.18 140);
+  --emerald-dark: oklch(0.60 0.20 135);
+  --emerald-foreground: oklch(0.98 0.01 240);
+  
+  --ruby: oklch(0.65 0.22 25);
+  --ruby-dark: oklch(0.55 0.24 20);
+  --ruby-foreground: oklch(0.98 0.01 240);
+  
+  /* Ubuntu Colors - Dark */
+  --ubuntu: oklch(0.98 0.01 240);
+  --ubuntu-dark: oklch(0.708 0 0);
+  
+  /* Supporting Colors - Dark */
+  --success: oklch(0.65 0.15 140);
+  --success-foreground: oklch(0.98 0.01 240);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0.01 240);
+  --warning: oklch(0.75 0.12 85);
+  --warning-foreground: oklch(0.145 0 0);
+  --info: oklch(0.65 0.15 195);
+  --info-foreground: oklch(0.98 0.01 240);
+  
+  /* UI Elements - Dark */
+  --border: oklch(0.25 0.03 240);
+  --input: oklch(0.25 0.03 240);
+  --ring: oklch(0.65 0.15 195);
+  
+  /* Chart Colors - Dark */
+  --chart-1: oklch(0.70 0.18 240);
+  --chart-2: oklch(0.70 0.18 140);
+  --chart-3: oklch(0.65 0.22 25);
+  --chart-4: oklch(0.65 0.15 195);
+  --chart-5: oklch(0.75 0.12 85);
+  
+  /* Sidebar - Dark */
+  --sidebar: oklch(0.145 0.03 240);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: oklch(0.65 0.15 240);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(0.2 0.03 240);
   --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar-border: oklch(0.25 0.03 240);
+  --sidebar-ring: oklch(0.65 0.15 195);
 }
 
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  /* Fonts */
+  --font-sans: "Geist", "Geist Fallback", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", "Courier New", monospace;
+  
+  /* Base Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -93,20 +172,50 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  
+  /* Azora Gem Colors */
+  --color-sapphire: var(--sapphire);
+  --color-sapphire-dark: var(--sapphire-dark);
+  --color-sapphire-foreground: var(--sapphire-foreground);
+  --color-emerald: var(--emerald);
+  --color-emerald-dark: var(--emerald-dark);
+  --color-emerald-foreground: var(--emerald-foreground);
+  --color-ruby: var(--ruby);
+  --color-ruby-dark: var(--ruby-dark);
+  --color-ruby-foreground: var(--ruby-foreground);
+  --color-ubuntu: var(--ubuntu);
+  --color-ubuntu-dark: var(--ubuntu-dark);
+  
+  /* Supporting Colors */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  
+  /* UI Elements */
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  
+  /* Border Radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  
+  /* Sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -115,27 +224,64 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+  
+  /* Smooth transitions for theme switching */
+  * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
   }
 }
 
 @layer utilities {
+  /* Azora Gem Glow Effects */
+  .glow-sapphire {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+  }
+  
+  .glow-emerald {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+  
+  .glow-ruby {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+  
+  .glow-ubuntu {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Text Glow Effects */
+  .text-glow-sapphire {
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  }
+  
+  .text-glow-emerald {
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
+  
+  .text-glow-ruby {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  }
+  
+  /* Legacy support - map old cyan/green to new gem colors */
   .glow-cyan {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    @apply glow-sapphire;
   }
+  
   .glow-green {
-    box-shadow: 0 0 15px rgba(0, 255, 150, 0.4);
+    @apply glow-emerald;
   }
+  
   .text-glow-cyan {
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    @apply text-glow-sapphire;
   }
 }
