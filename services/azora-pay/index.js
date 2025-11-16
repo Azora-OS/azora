@@ -1,10 +1,16 @@
 const express = require('express');
-const cors = require('cors');
+const compression = require('compression');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { helmetConfig, corsConfig, rateLimiters, errorHandler } = require('../shared/middleware');
 
 const app = express();
-app.use(cors());
+
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
+app.use(compression());
 app.use(express.json());
+app.use(rateLimiters.financial); // Payment service - strict rate limiting
 
 const PORT = process.env.PORT || 3010;
 
@@ -63,6 +69,11 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), asy
   }
 });
 
+// Error handling middleware (must be last)
+app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`💰 Azora Pay running on port ${PORT}`);
 });
+
+module.exports = app;

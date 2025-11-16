@@ -9,6 +9,6 @@
     "moduleResolution": "node",
     "noEmit": false
   },
-  "include": ["src/**/*", "*.js"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "*.js"]
 }

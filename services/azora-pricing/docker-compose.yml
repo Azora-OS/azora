@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  pricing-db:
+    image: postgres:15
+    container_name: azora-pricing-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_pricing
+    ports:
+      - "5441:5432"
+    volumes:
+      - pricing_db_data:/var/lib/postgresql/data
+    networks:
+      - pricing-network
+
+  pricing-service:
+    build: .
+    container_name: azora-pricing-service
+    ports:
+      - "3013:3013"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@pricing-db:5432/azora_pricing
+      - PORT=3013
+      - NODE_ENV=development
+    depends_on:
+      - pricing-db
+    networks:
+      - pricing-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  pricing_db_data:
+
+networks:
+  pricing-network:
+    driver: bridge

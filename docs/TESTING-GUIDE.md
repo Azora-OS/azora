@@ -1,40 +1,56 @@
 # 🧪 Testing Guide - Azora OS
-
-**Quality • Functionality • Speed**
-
----
-
-## 📋 Table of Contents
-
-- [Quick Start](#quick-start)
-- [Test Types](#test-types)
-- [Writing Tests](#writing-tests)
-- [Running Tests](#running-tests)
-- [Best Practices](#best-practices)
-- [CI/CD Integration](#cicd-integration)
-- [Troubleshooting](#troubleshooting)
+## Quality • Functionality • Speed
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Install dependencies
-npm ci
-
 # Run all tests
-npm test
-
-# Run with coverage
-npm run test:coverage
+npm run test
 
 # Run specific test types
-npm run test:unit
-npm run test:integration
-npm run test:e2e
+npm run test:unit              # Unit tests only
+npm run test:integration       # Integration tests
+npm run test:e2e              # End-to-end tests
+npm run test:coverage         # With coverage report
 
-# Run tests in watch mode
+# Watch mode (development)
 npm run test:watch
+
+# Run tests for specific service
+npm run test -- services/auth-service
+```
+
+---
+
+## 📁 Test Structure
+
+```
+azora/
+├── tests/
+│   ├── setup.ts                    # Global test setup
+│   ├── e2e/                        # End-to-end tests
+│   │   ├── complete-user-journey.spec.ts
+│   │   ├── marketplace.spec.ts
+│   │   └── payment.spec.ts
+│   ├── integration/                # Integration tests
+│   │   ├── auth-flow.test.ts
+│   │   ├── course-enrollment.test.ts
+│   │   └── payment-flow.test.ts
+│   └── performance/                # Performance tests
+│       ├── comprehensive-load-test.js
+│       └── stress-test.js
+├── services/
+│   └── [service-name]/
+│       └── tests/                  # Service-specific tests
+│           ├── unit/
+│           └── integration/
+└── packages/
+    └── test-utils/                 # Shared test utilities
+        ├── factories/
+        ├── mocks/
+        └── helpers/
 ```
 
 ---
@@ -49,476 +65,432 @@ npm run test:watch
 - Fast execution (<100ms per test)
 - No external dependencies
 - Mock all external services
-- High coverage (80%+ target)
+- High coverage (80%+)
 
 **Example:**
 ```typescript
-import { calculateMiningReward } from './mining';
+import { hashPassword, comparePassword } from './auth.utils';
 
-describe('calculateMiningReward', () => {
-  it('should calculate correct reward for lesson completion', () => {
-    const reward = calculateMiningReward('LESSON_COMPLETE', 1);
-    expect(reward).toBe(10);
+describe('Auth Utils', () => {
+  describe('hashPassword', () => {
+    it('should hash password with bcrypt', async () => {
+      const password = 'Test123!';
+      const hashed = await hashPassword(password);
+      
+      expect(hashed).toBeTruthy();
+      expect(hashed).not.toBe(password);
+      expect(hashed.length).toBeGreaterThan(50);
+    });
   });
-  
-  it('should apply difficulty multiplier', () => {
-    const reward = calculateMiningReward('LESSON_COMPLETE', 3);
-    expect(reward).toBe(30);
+
+  describe('comparePassword', () => {
+    it('should return true for matching password', async () => {
+      const password = 'Test123!';
+      const hashed = await hashPassword(password);
+      
+      const result = await comparePassword(password, hashed);
+      expect(result).toBe(true);
+    });
+
+    it('should return false for non-matching password', async () => {
+      const password = 'Test123!';
+      const hashed = await hashPassword(password);
+      
+      const result = await comparePassword('WrongPassword', hashed);
+      expect(result).toBe(false);
+    });
   });
 });
 ```
 
 ### 2. Integration Tests (20% of tests)
 
-**Purpose:** Test service interactions and database operations
+**Purpose:** Test interactions between services/components
 
 **Characteristics:**
 - Use real database (test environment)
-- Test API endpoints
-- Verify data persistence
+- Test service-to-service communication
+- Verify data flow
 - Clean up after each test
 
 **Example:**
 ```typescript
-import { authService } from './auth.service';
-import { prisma } from '@azora/test-utils';
+import { authService } from '../services/auth';
+import { educationService } from '../services/education';
+import { mintService } from '../services/mint';
 
-describe('Auth Service Integration', () => {
-  afterEach(async () => {
-    await prisma.user.deleteMany({
-      where: { email: { contains: '@test.azora' } }
-    });
-  });
-
-  it('should register user and create wallet', async () => {
+describe('User Enrollment Flow', () => {
+  it('should enroll user and award AZR tokens', async () => {
+    // 1. Create user
     const user = await authService.register({
-      email: 'test@test.azora',
+      email: 'test@azora.world',
       password: 'Test123!',
+      firstName: 'Test',
+      lastName: 'User',
     });
-    
-    expect(user.id).toBeDefined();
-    
-    // Verify wallet was created
-    const wallet = await prisma.wallet.findUnique({
-      where: { userId: user.id }
+
+    // 2. Enroll in course
+    const enrollment = await educationService.enroll({
+      userId: user.id,
+      courseId: 'test-course-id',
     });
-    
-    expect(wallet).toBeDefined();
-    expect(wallet.balance).toBe(0);
+
+    expect(enrollment.status).toBe('active');
+
+    // 3. Verify AZR tokens awarded
+    const wallet = await mintService.getWallet(user.id);
+    expect(wallet.balance).toBeGreaterThan(0);
   });
 });
 ```
 
-### 3. E2E Tests (10% of tests)
+### 3. End-to-End Tests (10% of tests)
 
 **Purpose:** Test complete user journeys through the UI
 
 **Characteristics:**
 - Use Playwright for browser automation
 - Test critical user paths
+- Verify UI interactions
 - Slower execution (seconds per test)
-- Focus on happy paths and critical flows
 
 **Example:**
 ```typescript
 import { test, expect } from '@playwright/test';
 
-test('complete learning journey', async ({ page }) => {
+test('student completes first lesson', async ({ page }) => {
   // Login
   await page.goto('/login');
   await page.fill('[name="email"]', 'student@test.azora');
   await page.fill('[name="password"]', 'Test123!');
   await page.click('button[type="submit"]');
-  
-  // Enroll in course
-  await page.click('text=Browse Courses');
-  await page.click('text=Python Basics');
-  await page.click('button:has-text("Enroll Now")');
-  
-  // Verify success
-  await expect(page.locator('.success-message')).toBeVisible();
+
+  // Navigate to course
+  await page.click('text=My Courses');
+  await page.click('.course-card:first-child');
+
+  // Start lesson
+  await page.click('button:has-text("Start Learning")');
+  await expect(page.locator('.lesson-content')).toBeVisible();
+
+  // Complete lesson
+  await page.click('button:has-text("Mark Complete")');
+  await expect(page.locator('text=Lesson completed')).toBeVisible();
+
+  // Verify AZR earned
+  const balance = await page.locator('.azr-balance').textContent();
+  expect(parseFloat(balance!)).toBeGreaterThan(0);
 });
 ```
 
----
+### 4. Performance Tests
 
-## ✍️ Writing Tests
+**Purpose:** Verify system performance under load
 
-### AAA Pattern (Arrange, Act, Assert)
+**Characteristics:**
+- Use K6 for load testing
+- Test API endpoints
+- Measure response times
+- Identify bottlenecks
 
-```typescript
-test('should enroll student in course', async () => {
-  // Arrange - Set up test data
-  const student = userFactory.buildStudent();
-  const course = courseFactory.build();
+**Example:**
+```javascript
+import http from 'k6/http';
+import { check } from 'k6';
+
+export const options = {
+  stages: [
+    { duration: '2m', target: 100 },
+    { duration: '5m', target: 100 },
+    { duration: '2m', target: 0 },
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<500'],
+  },
+};
+
+export default function () {
+  const res = http.get('http://localhost:4000/api/courses');
   
-  // Act - Perform the action
-  const enrollment = await enrollStudent(student.id, course.id);
-  
-  // Assert - Verify the result
-  expect(enrollment.status).toBe('active');
-  expect(enrollment.studentId).toBe(student.id);
-  expect(enrollment.courseId).toBe(course.id);
-});
-```
-
-### Using Test Utilities
-
-```typescript
-import { userFactory, courseFactory, authHelper } from '@azora/test-utils';
-
-test('should access protected endpoint', async () => {
-  // Create test user
-  const user = userFactory.build();
-  
-  // Generate auth token
-  const token = authHelper.generateToken(user.id);
-  const headers = authHelper.createAuthHeader(token);
-  
-  // Make authenticated request
-  const response = await request(app)
-    .get('/api/profile')
-    .set(headers);
-  
-  expect(response.status).toBe(200);
-});
-```
-
-### Mocking External Services
-
-```typescript
-import { prismaMock, createStripeMock } from '@azora/test-utils';
-
-test('should process payment', async () => {
-  // Mock Stripe
-  const stripeMock = createStripeMock();
-  stripeMock.paymentIntents.create.mockResolvedValue({
-    id: 'pi_test123',
-    status: 'succeeded',
+  check(res, {
+    'status is 200': (r) => r.status === 200,
+    'response time < 500ms': (r) => r.timings.duration < 500,
   });
-  
-  // Mock database
-  prismaMock.transaction.create.mockResolvedValue({
-    id: '123',
-    status: 'COMPLETED',
-  });
-  
-  // Test payment processing
-  const result = await processPayment(100, 'usd');
-  
-  expect(result.success).toBe(true);
-  expect(stripeMock.paymentIntents.create).toHaveBeenCalled();
+}
+```
+
+---
+
+## 🛠️ Test Utilities
+
+### Factories
+
+Generate test data easily:
+
+```typescript
+import { userFactory, courseFactory } from '@azora/test-utils';
+
+// Create single user
+const user = userFactory.build({ email: 'custom@test.azora' });
+
+// Create multiple users
+const users = userFactory.buildMany(10);
+
+// Create specific role
+const admin = userFactory.buildAdmin();
+const educator = userFactory.buildEducator();
+```
+
+### Mocks
+
+Mock external services:
+
+```typescript
+import { prismaMock } from '@azora/test-utils';
+
+// Mock Prisma query
+prismaMock.user.findUnique.mockResolvedValue({
+  id: '123',
+  email: 'test@azora.world',
+  // ...
 });
 ```
 
----
+### Helpers
 
-## 🏃 Running Tests
-
-### Local Development
-
-```bash
-# Run all tests
-npm test
-
-# Run specific test file
-npm test -- auth.test.ts
-
-# Run tests matching pattern
-npm test -- --testNamePattern="should login"
-
-# Run with coverage
-npm run test:coverage
-
-# Watch mode (re-run on file changes)
-npm run test:watch
-
-# Debug mode
-node --inspect-brk node_modules/.bin/jest --runInBand
-```
-
-### Service-Specific Tests
-
-```bash
-# Test specific service
-npm test -- services/auth-service
-npm test -- services/azora-education
-npm test -- services/azora-mint
-
-# Test all services
-npm run test:services
-```
-
-### E2E Tests
-
-```bash
-# Run all E2E tests
-npm run test:e2e
-
-# Run specific browser
-npx playwright test --project=chromium
-
-# Run in headed mode (see browser)
-npx playwright test --headed
-
-# Debug mode
-npx playwright test --debug
-
-# Generate test report
-npx playwright show-report
-```
-
-### Performance Tests
-
-```bash
-# Run load test
-k6 run tests/performance/load-test-optimized.js
-
-# Run with custom parameters
-k6 run --vus 100 --duration 5m tests/performance/load-test-optimized.js
-
-# Run with environment variables
-BASE_URL=https://staging.azora.world k6 run tests/performance/load-test-optimized.js
-```
-
----
-
-## 🎓 Best Practices
-
-### 1. Test Naming
+Common test operations:
 
 ```typescript
-// ❌ Bad - Vague and unclear
+import { authHelper } from '@azora/test-utils';
+
+// Generate JWT token
+const token = authHelper.generateToken({
+  userId: '123',
+  email: 'test@azora.world',
+  role: 'student',
+});
+
+// Generate auth header
+const headers = authHelper.generateAuthHeader({ userId: '123' });
+```
+
+---
+
+## ✅ Best Practices
+
+### 1. AAA Pattern (Arrange, Act, Assert)
+
+```typescript
+test('should create user', async () => {
+  // Arrange
+  const userData = { email: 'test@azora.world', password: 'Test123!' };
+  
+  // Act
+  const user = await createUser(userData);
+  
+  // Assert
+  expect(user.email).toBe(userData.email);
+});
+```
+
+### 2. Descriptive Test Names
+
+```typescript
+// ❌ Bad
 test('test1', () => {});
-test('it works', () => {});
 
-// ✅ Good - Descriptive and specific
-test('should create user with hashed password', () => {});
-test('should reject login with invalid credentials', () => {});
-test('should award AZR tokens on lesson completion', () => {});
+// ✅ Good
+test('should return 401 when user is not authenticated', () => {});
 ```
 
-### 2. One Assertion Per Test
+### 3. One Assertion Per Test (when possible)
 
 ```typescript
-// ❌ Bad - Multiple unrelated assertions
-test('user operations', () => {
-  expect(user.email).toBe('test@azora.world');
-  expect(wallet.balance).toBe(100);
-  expect(course.title).toBe('Python');
+// ❌ Bad
+test('user creation', async () => {
+  const user = await createUser(data);
+  expect(user.email).toBe(data.email);
+  expect(user.role).toBe('student');
+  expect(user.verified).toBe(false);
 });
 
-// ✅ Good - Single focused assertion
-test('should set user email correctly', () => {
-  expect(user.email).toBe('test@azora.world');
+// ✅ Good
+test('should set email correctly', async () => {
+  const user = await createUser(data);
+  expect(user.email).toBe(data.email);
 });
 
-test('should initialize wallet with zero balance', () => {
-  expect(wallet.balance).toBe(0);
+test('should default role to student', async () => {
+  const user = await createUser(data);
+  expect(user.role).toBe('student');
 });
 ```
 
-### 3. Use Factories for Test Data
+### 4. Use Factories for Test Data
 
 ```typescript
-// ❌ Bad - Hardcoded test data
+// ❌ Bad
 const user = {
   id: '123',
   email: 'test@test.com',
-  password: 'password',
   firstName: 'Test',
   lastName: 'User',
+  // ... 20 more fields
 };
 
-// ✅ Good - Use factories
-const user = userFactory.build();
-const student = userFactory.buildStudent();
-const users = userFactory.buildMany(5);
+// ✅ Good
+const user = userFactory.build({ email: 'test@test.com' });
 ```
 
-### 4. Clean Up After Tests
+### 5. Clean Up After Tests
 
 ```typescript
-// ✅ Always clean up test data
 afterEach(async () => {
   await prisma.user.deleteMany({
-    where: { email: { contains: '@test.azora' } }
-  });
-  
-  await redis.flushall();
-  
-  jest.clearAllMocks();
-});
-```
-
-### 5. Test Edge Cases
-
-```typescript
-describe('calculateMiningReward', () => {
-  it('should handle normal case', () => {
-    expect(calculateMiningReward('LESSON', 1)).toBe(10);
-  });
-  
-  it('should handle zero difficulty', () => {
-    expect(calculateMiningReward('LESSON', 0)).toBe(0);
-  });
-  
-  it('should handle negative difficulty', () => {
-    expect(() => calculateMiningReward('LESSON', -1)).toThrow();
-  });
-  
-  it('should handle invalid activity type', () => {
-    expect(() => calculateMiningReward('INVALID', 1)).toThrow();
+    where: { email: { contains: '@test.azora' } },
   });
 });
 ```
 
-### 6. Avoid Test Interdependence
+### 6. Mock External Services
 
 ```typescript
-// ❌ Bad - Tests depend on each other
-let userId;
+// ❌ Bad - calls real Stripe API
+await stripe.charges.create({ amount: 1000 });
 
-test('should create user', () => {
-  userId = createUser();
-});
-
-test('should update user', () => {
-  updateUser(userId); // Depends on previous test
-});
-
-// ✅ Good - Independent tests
-test('should create user', () => {
-  const userId = createUser();
-  expect(userId).toBeDefined();
-});
-
-test('should update user', () => {
-  const userId = createUser(); // Create own data
-  const updated = updateUser(userId);
-  expect(updated).toBe(true);
-});
+// ✅ Good - mocks Stripe
+jest.mock('stripe');
+stripeMock.charges.create.mockResolvedValue({ id: 'ch_123' });
 ```
 
 ---
 
-## 🔄 CI/CD Integration
+## 📊 Coverage Requirements
 
-### GitHub Actions
+| Service | Target | Priority |
+|---------|--------|----------|
+| Auth | 95% | Critical |
+| Education | 90% | High |
+| Mint | 95% | Critical |
+| Forge | 85% | Medium |
+| Sapiens | 85% | Medium |
+| Family | 80% | Low |
+
+**Overall Target:** 80%+ coverage
+
+---
+
+## 🚀 Running Tests in CI
 
 Tests run automatically on:
 - Push to `main` or `develop`
 - Pull requests
 - Manual workflow dispatch
 
-**Workflow stages:**
-1. Lint & TypeCheck (fast feedback)
-2. Unit Tests (parallel by service)
-3. Integration Tests (with DB & Redis)
-4. E2E Tests (critical paths)
+**CI Pipeline:**
+1. Lint & Typecheck (2 min)
+2. Unit Tests - Parallel (3 min)
+3. Integration Tests (5 min)
+4. E2E Tests (10 min)
+5. Performance Tests (main only, 5 min)
 
-**View results:**
-- Check Actions tab in GitHub
-- Coverage reports in PR comments
-- Playwright reports in artifacts
-
-### Coverage Requirements
-
-| Service | Target | Current |
-|---------|--------|---------|
-| Auth | 95% | TBD |
-| Education | 90% | TBD |
-| Mint | 95% | TBD |
-| Forge | 85% | TBD |
-| Sapiens | 85% | TBD |
-| Family | 80% | TBD |
+**Total CI Time:** ~15 minutes
 
 ---
 
-## 🐛 Troubleshooting
+## 🐛 Debugging Tests
 
-### Common Issues
+### Run Single Test
 
-#### Tests Timeout
 ```bash
-# Increase timeout in jest.config.js
-testTimeout: 15000
-
-# Or per test
-test('slow test', async () => {
-  // ...
-}, 30000);
+npm run test -- path/to/test.ts
 ```
 
-#### Database Connection Errors
+### Run with Debugger
+
 ```bash
-# Check DATABASE_URL is set
-echo $DATABASE_URL
-
-# Run migrations
-npm run db:migrate
-
-# Reset database
-npm run db:reset
+node --inspect-brk node_modules/.bin/jest --runInBand
 ```
 
-#### Flaky E2E Tests
-```typescript
-// Use proper waits
-await expect(page.locator('.element')).toBeVisible({ timeout: 10000 });
+### View Coverage Report
 
-// Avoid hard waits
-// await page.waitForTimeout(1000); // ❌ Bad
-
-// Use network idle
-await page.waitForLoadState('networkidle');
-```
-
-#### Mock Not Working
-```typescript
-// Reset mocks between tests
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
-// Or use mockReset
-beforeEach(() => {
-  mockReset(prismaMock);
-});
-```
-
----
-
-## 📊 Test Metrics
-
-View test metrics:
 ```bash
-# Generate metrics report
-npm run test:metrics
-
-# View coverage report
 npm run test:coverage
 open coverage/lcov-report/index.html
 ```
 
-**Key metrics:**
-- Total tests: 263+
-- Coverage: 89%+
-- Execution time: <5 minutes
-- Success rate: 100%
+### Playwright Debug Mode
+
+```bash
+PWDEBUG=1 npm run test:e2e
+```
 
 ---
 
-## 🎯 Next Steps
+## 📈 Test Metrics
 
-1. **Write tests for new features** - Always include tests with new code
-2. **Improve coverage** - Target 90%+ across all services
-3. **Add visual regression** - Screenshot comparison for UI
-4. **Performance benchmarks** - Track API response times
-5. **Accessibility testing** - Ensure WCAG compliance
+Track these metrics:
+- **Coverage:** Lines, branches, functions
+- **Execution Time:** Per test, per suite
+- **Flaky Tests:** Tests that fail intermittently
+- **Failure Rate:** % of failing tests
+
+**View Metrics:**
+```bash
+npm run test:metrics
+```
 
 ---
 
-**Happy Testing! 🚀**
+## 🎯 Writing Your First Test
 
-*Quality is not an act, it is a habit. - Aristotle*
+1. **Create test file:**
+```bash
+touch services/my-service/tests/my-feature.test.ts
+```
+
+2. **Write test:**
+```typescript
+import { myFunction } from '../src/my-feature';
+
+describe('My Feature', () => {
+  it('should do something', () => {
+    const result = myFunction('input');
+    expect(result).toBe('expected');
+  });
+});
+```
+
+3. **Run test:**
+```bash
+npm run test -- services/my-service
+```
+
+4. **Check coverage:**
+```bash
+npm run test:coverage -- services/my-service
+```
+
+---
+
+## 🤝 Contributing Tests
+
+1. Write tests for all new features
+2. Maintain 80%+ coverage
+3. Follow AAA pattern
+4. Use descriptive names
+5. Clean up after tests
+6. Update documentation
+
+---
+
+## 📚 Resources
+
+- [Jest Documentation](https://jestjs.io/)
+- [Playwright Documentation](https://playwright.dev/)
+- [K6 Documentation](https://k6.io/docs/)
+- [Testing Best Practices](https://testingjavascript.com/)
+
+---
+
+**Happy Testing! 🧪✨**

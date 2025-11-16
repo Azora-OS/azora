@@ -1,0 +1,129 @@
+{
+  "name": "kiro-ide",
+  "displayName": "Kiro IDE - Spec-Driven Development",
+  "description": "VS Code extension for Kiro spec-driven development workflow",
+  "version": "1.0.0",
+  "publisher": "azora",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Productivity"
+  ],
+  "keywords": [
+    "spec",
+    "tasks",
+    "development",
+    "workflow",
+    "productivity"
+  ],
+  "activationEvents": [
+    "workspaceContains:.kiro/specs/**/tasks.md",
+    "onCommand:kiro.openTasksFile",
+    "onView:kiroTasksView"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kiro.openTasksFile",
+        "title": "Kiro: Open Tasks File"
+      },
+      {
+        "command": "kiro.refreshTasks",
+        "title": "Kiro: Refresh Tasks",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "kiro.toggleTask",
+        "title": "Kiro: Toggle Task Status"
+      },
+      {
+        "command": "kiro.startTask",
+        "title": "Kiro: Start Task"
+      },
+      {
+        "command": "kiro.completeTask",
+        "title": "Kiro: Complete Task"
+      },
+      {
+        "command": "kiro.showDashboard",
+        "title": "Kiro: Show Progress Dashboard"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "kiroTasksView",
+          "name": "Kiro Tasks",
+          "when": "workspaceContains:.kiro/specs/**/tasks.md"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kiro",
+          "title": "Kiro",
+          "icon": "resources/kiro-icon.svg"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Kiro IDE",
+      "properties": {
+        "kiro.autoRefresh": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically refresh tasks when files change"
+        },
+        "kiro.showProgressBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show progress bar in status bar"
+        },
+        "kiro.notifyOnCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notification when task is completed"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "format": "prettier --write src",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.19.0",
+    "eslint": "^8.40.0",
+    "jest": "^29.5.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "@types/vscode": "^1.80.0",
+    "marked": "^9.0.0",
+    "yaml": "^2.3.0"
+  }
+}

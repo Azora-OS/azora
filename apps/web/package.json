@@ -28,6 +28,9 @@
         "@azora/branding": "file:../../packages/branding",
         "@azora/design-system": "file:../../packages/@azora/design-system",
         "@azora/telemetry": "file:../../packages/@azora/telemetry",
+        "csurf": "1.2.2",
+        "lerna": "6.6.2",
+        "nodemailer": "7.0.10",
         "serve": "^14.2.1"
     },
     "devDependencies": {
@@ -36,7 +39,7 @@
         "postcss": "^8.4.32",
         "tailwindcss": "^3.3.6",
         "terser": "^5.44.0",
-        "vite": "^5.0.0"
+        "vite": "7.2.2"
     },
     "repository": {
         "type": "git",

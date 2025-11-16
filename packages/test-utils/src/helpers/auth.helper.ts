@@ -1,28 +1,31 @@
 import jwt from 'jsonwebtoken';
 
+export interface AuthTokenPayload {
+  userId: string;
+  email: string;
+  role: string;
+}
+
 export const authHelper = {
-  generateToken: (userId: string, role: string = 'STUDENT'): string => {
-    return jwt.sign(
-      { userId, role },
-      process.env.JWT_SECRET || 'test-secret',
-      { expiresIn: '1h' }
-    );
+  generateToken: (payload: AuthTokenPayload, expiresIn = '1h'): string => {
+    return jwt.sign(payload, process.env.JWT_SECRET || 'test-secret', { expiresIn });
   },
 
-  generateExpiredToken: (userId: string): string => {
-    return jwt.sign(
-      { userId },
-      process.env.JWT_SECRET || 'test-secret',
-      { expiresIn: '-1h' }
-    );
-  },
-
-  createAuthHeader: (token: string): { Authorization: string } => {
+  generateAuthHeader: (payload: AuthTokenPayload): { Authorization: string } => {
+    const token = authHelper.generateToken(payload);
     return { Authorization: `Bearer ${token}` };
   },
 
-  createAuthHeaderForUser: (userId: string, role?: string): { Authorization: string } => {
-    const token = authHelper.generateToken(userId, role);
-    return authHelper.createAuthHeader(token);
+  decodeToken: (token: string): AuthTokenPayload => {
+    return jwt.verify(token, process.env.JWT_SECRET || 'test-secret') as AuthTokenPayload;
+  },
+
+  createTestUser: (overrides: Partial<AuthTokenPayload> = {}): AuthTokenPayload => {
+    return {
+      userId: 'test-user-id',
+      email: 'test@azora.world',
+      role: 'student',
+      ...overrides,
+    };
   },
 };

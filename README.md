@@ -8,7 +8,8 @@
 *Ubuntu Philosophy Meets Quantum Technology*
 
 [![Version](https://img.shields.io/badge/Version-3.0.0%20MVP-blue.svg)](https://azora.world)
-[![Coverage](https://img.shields.io/badge/Coverage-80%25-green.svg)](./TESTING-REPORT.md)
+[![Coverage](https://img.shields.io/badge/Coverage-80%25%2B-brightgreen.svg)](https://codecov.io/gh/Sizwe780/azora-os)
+[![Coverage Dashboard](https://img.shields.io/badge/Dashboard-Codecov-blue.svg)](https://codecov.io/gh/Sizwe780/azora-os)
 [![Security](https://img.shields.io/badge/Security-Hardened-green.svg)](./SECURITY.md)
 [![Website](https://img.shields.io/badge/Website-azora.world-blue?style=flat-square&logo=google-chrome)](https://azora.world)
 [![Services](https://img.shields.io/badge/Services-7%20Working%20%7C%2010%20In%20Dev-green.svg)](./HONEST-STATUS.md)
@@ -17,6 +18,21 @@
 [![Ubuntu](https://img.shields.io/badge/Philosophy-Ubuntu-orange.svg)](#philosophy)
 
 **📊 [Honest Status Report](./HONEST-STATUS.md)** | **🎯 [Strategic Plan](./STRATEGIC-ACTION-PLAN.md)** | **🔍 [Reality Audit](./REALITY-COMPLETE-AUDIT.md)**
+
+---
+
+## 🚀 DECEMBER LAUNCH - NEW!
+
+**Can we be worth something by December? YES!** 💯
+
+- **[🎯 Launch Ready Summary](./LAUNCH-READY-SUMMARY.md)** - Complete overview & valuation scenarios
+- **[📅 December Launch Plan](./DECEMBER-LAUNCH-PLAN.md)** - 8-week roadmap to $5K-$15K MRR
+- **[🧹 Pre-Launch Cleanup](./PRE-LAUNCH-CLEANUP.md)** - Complete production checklist
+- **[⚡ Start Cleanup NOW](./START-CLEANUP.md)** - Quick start guide (do this first!)
+
+**Next Action:** Run `node scripts/pre-launch-audit.js` to see what needs fixing!
+
+---
 
 [🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🏗️ Architecture](#-architecture) • [💎 Identity](#-azora-identity)
 
@@ -571,6 +587,16 @@ GET  /api/skills/assessment
 
 ## 📊 Test Coverage & Quality
 
+### Coverage Enforcement
+
+Azora OS enforces **80%+ test coverage** across all code:
+
+- ✅ **Automated Coverage Checks**: Every PR is checked for coverage compliance
+- ✅ **Coverage Reports**: HTML, JSON, and text-summary reports generated
+- ✅ **Codecov Integration**: Coverage tracked and trended over time
+- ✅ **CI/CD Enforcement**: Build fails if coverage drops below 80%
+- 📊 **[View Coverage Dashboard](https://codecov.io/gh/Sizwe780/azora-os)** - Real-time coverage metrics
+
 ### Current Test Results
 
 ```mermaid
@@ -592,6 +618,19 @@ pie title Test Coverage by Component
 | **TOTAL** | **263** | **✅ 263** | **89%** | **🟢 Production Ready** |
 
 **Last Run:** 2025-11-10 | **Duration:** 48.2s | **Status:** ✅ All Passing
+
+### Running Coverage Locally
+
+```bash
+# Run tests with coverage report
+npm run test:coverage
+
+# Check coverage meets threshold
+npm run coverage:check
+
+# View HTML coverage report
+open coverage/index.html
+```
 
 ---
 

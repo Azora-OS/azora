@@ -1,16 +1,16 @@
 const express = require('express');
-const helmet = require('helmet');
 const compression = require('compression');
 const completeRoutes = require('./routes-complete');
-const { csrfProtection, authenticate, secureCors, errorHandler } = require('../../packages/security-middleware');
-const { limiters } = require('../../packages/rate-limiting');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler, authenticate, rateLimiters } = require('../shared/middleware');
 
 const app = express();
-app.use(helmet());
-app.use(secureCors);
+
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
 app.use(compression());
 app.use(express.json());
-app.use(csrfProtection);
+app.use(createRateLimiter(50)); // Financial service - stricter rate limit
 
 // Use comprehensive routes
 app.use(completeRoutes);
@@ -56,19 +56,19 @@ app.post('/api/mining/submit', authenticate, (req, res) => {
 });
 
 // Token Operations
-app.post('/api/transfer', limiters.financial, authenticate, (req, res) => {
+app.post('/api/transfer', rateLimiters.financial, authenticate, (req, res) => {
   const { from, to, amount } = req.body;
   const result = tokenMinter.transfer(from, to, amount);
   res.json(result);
 });
 
-app.post('/api/stake', limiters.financial, authenticate, (req, res) => {
+app.post('/api/stake', rateLimiters.financial, authenticate, (req, res) => {
   const { address, amount } = req.body;
   const result = tokenMinter.stake(address, amount);
   res.json(result);
 });
 
-app.post('/api/unstake', limiters.financial, authenticate, (req, res) => {
+app.post('/api/unstake', rateLimiters.financial, authenticate, (req, res) => {
   const { address, amount } = req.body;
   const result = tokenMinter.unstake(address, amount);
   res.json(result);

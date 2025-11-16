@@ -1,11 +1,9 @@
 const express = require('express');
 const { setupMfa, verifyMfa, disableMfa } = require('./src/mfa');
 const { handleGoogleOAuth, handleGitHubOAuth, handleAppleOAuth } = require('./src/oauth');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
 const promClient = require('prom-client');
 const { PrismaClient } = require('@prisma/client');
-const { csrfProtection, secureCors, errorHandler } = require('../../packages/security-middleware');
+const { helmetConfig, corsConfig, rateLimiters, errorHandler } = require('../shared/middleware');
 const api = require('./src/api');
 
 const prisma = new PrismaClient();
@@ -32,34 +30,14 @@ const httpRequestsTotal = new promClient.Counter({
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestsTotal);
 
-
-// Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
-}));
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-});
-app.use(limiter);
-
-app.use(secureCors);
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
+app.use(rateLimiters.auth); // Auth service - strict rate limiting
 
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(csrfProtection);
 
 // Metrics middleware
 app.use((req, res, next) => {

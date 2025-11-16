@@ -18,6 +18,8 @@ model User {
 
   enrollments      Enrollment[]
   payments         Payment[]
+  receipts         Receipt[]
+  idempotencyKeys  IdempotencyKey[]
   profile          UserProfile?
   tokens           Token[]
   incidents        SafetyIncident[]
@@ -28,6 +30,21 @@ model User {
   assessments      Assessment[]
   chatSessions     ChatSession[]
   notifications    Notification[]
+  consentRecords   ConsentRecord[]
+  aiFamilyInteractions AIFamilyInteraction[]
+  aiFamilyConsultations AIFamilyConsultation[]
+  subscription     Subscription?
+  coursesInstructed Course[] @relation("CourseInstructor")
+  courseReviews    CourseReview[] @relation("CourseReviews")
+  coursePurchases  CoursePurchase[] @relation("CoursePurchases")
+  instructorEarnings InstructorEarnings[] @relation("InstructorEarnings")
+  tokenBalance     TokenBalance?
+  tokenTransactions TokenTransaction[]
+  leaderboardEntries LeaderboardEntry[]
+  tokenRedemptions TokenRedemption[]
+  burnTransactions BurnTransaction[] @relation("BurnTransactions")
+  proofOfKnowledge ProofOfKnowledge[] @relation("ProofOfKnowledge")
+  queryClassifications QueryClassification[] @relation("QueryClassifications")
 
   @@map("users")
 }
@@ -49,21 +66,90 @@ model UserProfile {
 }
 
 model Course {
-  id          String       @id @default(cuid())
-  title       String
-  description String
-  instructor  String
-  duration    Int
-  price       Float
-  currency    String       @default("ZAR")
-  status      CourseStatus @default(DRAFT)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id              String         @id @default(cuid())
+  instructorId    String
+  title           String
+  description     String
+  category        String
+  level           CourseLevel    @default(BEGINNER)
+  duration        Int            // in minutes
+  price           Float          @default(0)
+  currency        String         @default("ZAR")
+  status          CourseStatus   @default(DRAFT)
+  thumbnail       String?
+  rating          Float          @default(0)
+  enrollmentCount Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
-  enrollments Enrollment[]
-  modules     CourseModule[]
+  instructor      User           @relation("CourseInstructor", fields: [instructorId], references: [id], onDelete: Cascade)
+  enrollments     Enrollment[]
+  modules         CourseModule[]
+  reviews         CourseReview[]
+  purchases       CoursePurchase[]
+  earnings        InstructorEarnings[]
 
+  @@index([instructorId])
+  @@index([status])
+  @@index([category])
+  @@index([level])
   @@map("courses")
+}
+
+model CourseReview {
+  id        String   @id @default(cuid())
+  courseId  String
+  userId    String
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation("CourseReviews", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+  @@map("course_reviews")
+}
+
+model CoursePurchase {
+  id        String   @id @default(cuid())
+  courseId  String
+  userId    String
+  paymentId String?
+  price     Float
+  currency  String   @default("ZAR")
+  purchasedAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation("CoursePurchases", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+  @@index([purchasedAt])
+  @@map("course_purchases")
+}
+
+model InstructorEarnings {
+  id              String   @id @default(cuid())
+  courseId        String
+  instructorId    String
+  totalEarnings   Float    @default(0)
+  paidEarnings    Float    @default(0)
+  pendingEarnings Float    @default(0)
+  lastPaidAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor User   @relation("InstructorEarnings", fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, instructorId])
+  @@index([instructorId])
+  @@map("instructor_earnings")
 }
 
 model CourseModule {
@@ -96,20 +182,67 @@ model Enrollment {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
-  userId        String
-  amount        Float
-  currency      String        @default("ZAR")
-  type          PaymentType
-  status        PaymentStatus @default(PENDING)
-  transactionId String?       @unique
-  description   String?
-  createdAt     DateTime      @default(now())
-  processedAt   DateTime?
+  id                    String          @id @default(cuid())
+  userId                String
+  stripePaymentIntentId String          @unique
+  amount                Int             // in cents
+  currency              String          @default("usd")
+  status                PaymentStatus   @default(PENDING)
+  paymentMethodId       String?
+  courseId              String?
+  course                Course?         @relation(fields: [courseId], references: [id])
+  subscriptionTierId    String?
+  metadata              Json            @default("{}")
+  idempotencyKey        String          @unique
+  receiptId             String?
+  receipt               Receipt?        @relation(fields: [receiptId], references: [id])
+  refundedAmount        Int?
+  refundReason          String?
+  errorCode             String?
+  errorMessage          String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
   @@map("payments")
+}
+
+model Receipt {
+  id              String          @id @default(cuid())
+  paymentId       String          @unique
+  payment         Payment         @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoiceNumber   String          @unique
+  amount          Int             // in cents
+  currency        String          @default("usd")
+  items           Json            // Array of receipt items
+  pdfUrl          String
+  emailSentAt     DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("receipts")
+}
+
+model IdempotencyKey {
+  id              String          @id @default(cuid())
+  key             String          @unique
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentResult   Json
+  expiresAt       DateTime
+  createdAt       DateTime        @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
 }
 
 model Token {
@@ -154,6 +287,12 @@ enum CourseStatus {
   ARCHIVED
 }
 
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 enum EnrollmentStatus {
   ACTIVE
   COMPLETED
@@ -172,6 +311,94 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  EXPIRED
+  PAST_DUE
+}
+
+enum BillingStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum TokenTransactionType {
+  EARN
+  REDEEM
+  TRANSFER
+  BONUS
+  PENALTY
+}
+
+enum LeaderboardType {
+  GLOBAL
+  FRIENDS
+  CLASS
+}
+
+enum TokenRedemptionType {
+  FEATURE_UNLOCK
+  PREMIUM_CONTENT
+  MERCHANDISE
+  DONATION
+}
+
+enum TokenRedemptionStatus {
+  PENDING
+  APPROVED
+  COMPLETED
+  REJECTED
+}
+
+enum EnterpriseTier {
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+  CUSTOM
+}
+
+enum EnterpriseStatus {
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+  CANCELLED
+}
+
+enum SupportPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum CustomizationType {
+  BRANDING
+  DOMAIN
+  SSO
+  API
+  FEATURE
+  INTEGRATION
 }
 
 enum TokenType {
@@ -584,4 +811,483 @@ enum EventStatus {
   PROCESSING
   COMPLETED
   FAILED
+}
+
+// ============================================
+// SUBSCRIPTIONS & MONETIZATION
+// ============================================
+
+model Subscription {
+  id            String              @id @default(cuid())
+  userId        String              @unique
+  tier          SubscriptionTier    @default(FREE)
+  status        SubscriptionStatus  @default(ACTIVE)
+  stripeCustomerId String?
+  stripeSubscriptionId String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd DateTime?
+  renewalDate   DateTime?
+  cancelledAt   DateTime?
+  cancelReason  String?
+  metadata      Json                @default("{}")
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingHistory BillingHistory[]
+
+  @@index([tier])
+  @@index([status])
+  @@index([renewalDate])
+  @@map("subscriptions")
+}
+
+model BillingHistory {
+  id              String              @id @default(cuid())
+  subscriptionId  String
+  amount          Int                 // in cents
+  currency        String              @default("usd")
+  status          BillingStatus       @default(PENDING)
+  invoiceNumber   String              @unique
+  stripeInvoiceId String?
+  billedAt        DateTime
+  dueAt           DateTime
+  paidAt          DateTime?
+  failedAt        DateTime?
+  failureReason   String?
+  metadata        Json                @default("{}")
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@index([status])
+  @@index([billedAt])
+  @@map("billing_history")
+}
+
+model SubscriptionTierConfig {
+  id              String              @id @default(cuid())
+  tier            SubscriptionTier    @unique
+  name            String
+  monthlyPrice    Int                 // in cents
+  annualPrice     Int                 // in cents
+  features        Json                // Array of feature strings
+  courseLimit     Int?                // null = unlimited
+  uploadLimit     Int?                // null = unlimited
+  tokenMonthly    Int
+  revenueShare    Float               // 0.70 for 70%
+  supportLevel    String              // community, priority, dedicated
+  description     String?
+  isActive        Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@map("subscription_tier_config")
+}
+
+// ============================================
+// TOKEN REWARDS SYSTEM
+// ============================================
+
+model TokenBalance {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Decimal  @default(0) @db.Decimal(20, 8)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions TokenTransaction[]
+
+  @@map("token_balances")
+}
+
+model TokenTransaction {
+  id        String            @id @default(cuid())
+  userId    String
+  balanceId String
+  amount    Decimal           @db.Decimal(20, 8)
+  type      TokenTransactionType
+  reason    String
+  balance   Decimal           @db.Decimal(20, 8) // Balance after transaction
+  metadata  Json?
+  createdAt DateTime          @default(now())
+
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance TokenBalance  @relation(fields: [balanceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("token_transactions")
+}
+
+model LeaderboardEntry {
+  id              String   @id @default(cuid())
+  userId          String
+  rank            Int
+  score           Decimal  @db.Decimal(20, 8)
+  leaderboardType LeaderboardType
+  period          String   // 'global', 'weekly', 'monthly'
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, leaderboardType, period])
+  @@index([leaderboardType])
+  @@index([period])
+  @@index([rank])
+  @@map("leaderboard_entries")
+}
+
+model TokenRedemption {
+  id        String                @id @default(cuid())
+  userId    String
+  amount    Decimal               @db.Decimal(20, 8)
+  type      TokenRedemptionType
+  status    TokenRedemptionStatus @default(PENDING)
+  metadata  Json?
+  createdAt DateTime              @default(now())
+  completedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("token_redemptions")
+}
+
+// ============================================
+// ENTERPRISE LICENSING
+// ============================================
+
+model EnterpriseLicense {
+  id                String              @id @default(cuid())
+  organizationId    String              @unique
+  organizationName  String
+  tier              EnterpriseTier
+  status            EnterpriseStatus    @default(ACTIVE)
+  licenseKey        String              @unique
+  maxUsers          Int
+  maxCourses        Int?                // null = unlimited
+  maxApiCalls       Int?                // null = unlimited
+  startDate         DateTime
+  expiryDate        DateTime
+  autoRenew         Boolean             @default(true)
+  customDomain      String?
+  whiteLabel        Boolean             @default(false)
+  ssoEnabled        Boolean             @default(false)
+  apiAccessEnabled  Boolean             @default(false)
+  metadata          Json                @default("{}")
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  organization      EnterpriseOrganization?
+  usageTracking     EnterpriseUsageTracking[]
+  supportTickets    EnterpriseSupportTicket[]
+  customizations    EnterpriseCustomization[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([expiryDate])
+  @@map("enterprise_licenses")
+}
+
+model EnterpriseOrganization {
+  id              String              @id @default(cuid())
+  licenseId       String              @unique
+  name            String
+  email           String
+  phone           String?
+  website         String?
+  industry        String?
+  country         String?
+  city            String?
+  address         String?
+  adminUserId     String?
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+  metadata        Json                @default("{}")
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  license         EnterpriseLicense   @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+
+  @@map("enterprise_organizations")
+}
+
+model EnterpriseUsageTracking {
+  id              String              @id @default(cuid())
+  licenseId       String
+  date            DateTime            @default(now())
+  activeUsers     Int                 @default(0)
+  coursesCreated  Int                 @default(0)
+  apiCallsUsed    Int                 @default(0)
+  storageUsed     Float               @default(0) // in GB
+  metadata        Json                @default("{}")
+
+  license         EnterpriseLicense   @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+
+  @@index([licenseId])
+  @@index([date])
+  @@map("enterprise_usage_tracking")
+}
+
+model EnterpriseSupportTicket {
+  id              String              @id @default(cuid())
+  licenseId       String
+  ticketNumber    String              @unique
+  title           String
+  description     String
+  priority        SupportPriority     @default(NORMAL)
+  status          SupportTicketStatus @default(OPEN)
+  assignedTo      String?
+  createdBy       String
+  createdAt       DateTime            @default(now())
+  resolvedAt      DateTime?
+  metadata        Json                @default("{}")
+
+  license         EnterpriseLicense   @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+
+  @@index([licenseId])
+  @@index([status])
+  @@index([priority])
+  @@map("enterprise_support_tickets")
+}
+
+model EnterpriseCustomization {
+  id              String              @id @default(cuid())
+  licenseId       String
+  type            CustomizationType
+  key             String
+  value           String
+  description     String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  license         EnterpriseLicense   @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+
+  @@unique([licenseId, type, key])
+  @@index([licenseId])
+  @@map("enterprise_customizations")
+}
+
+// ============================================
+// PRIVACY & GDPR
+// ============================================
+
+model ConsentRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  consentType String
+  granted   Boolean
+  timestamp DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, consentType])
+  @@index([timestamp])
+  @@map("consent_records")
+}
+
+// ============================================
+// TOKEN BURN SYSTEM (Phase 2)
+// ============================================
+
+model TokenSupply {
+  id                    String   @id @default(cuid())
+  totalSupply           Decimal  @db.Decimal(20, 8)
+  circulatingSupply     Decimal  @db.Decimal(20, 8)
+  burnedSupply          Decimal  @default(0) @db.Decimal(20, 8)
+  lastUpdated           DateTime @default(now())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("token_supply")
+}
+
+model BurnTransaction {
+  id                    String   @id @default(cuid())
+  userId                String
+  amount                Decimal  @db.Decimal(20, 8)
+  burnRate              Float    // 0.05 for 5%, 0.03 for 3%, 0.02 for 2%
+  burnedAmount          Decimal  @db.Decimal(20, 8)
+  transactionType       BurnTransactionType
+  reason                String
+  blockchainTxHash      String?
+  blockchainStatus      BlockchainStatus @default(PENDING)
+  metadata              Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation("BurnTransactions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([transactionType])
+  @@index([blockchainStatus])
+  @@index([createdAt])
+  @@map("burn_transactions")
+}
+
+model ProofOfKnowledge {
+  id                    String   @id @default(cuid())
+  userId                String
+  courseId              String
+  completionDate        DateTime
+  certificateId         String   @unique
+  verificationHash      String   @unique
+  expiryDate            DateTime?
+  metadata              Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation("ProofOfKnowledge", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([completionDate])
+  @@map("proof_of_knowledge")
+}
+
+model SystemBuyOrderRevenue {
+  id                    String   @id @default(cuid())
+  source                RevenueSource
+  amount                Decimal  @db.Decimal(20, 8)
+  currency              String   @default("ZAR")
+  recordedAt            DateTime @default(now())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([source])
+  @@index([recordedAt])
+  @@index([createdAt])
+  @@map("system_buy_order_revenue")
+}
+
+model SystemBuyOrderHistory {
+  id                    String   @id @default(cuid())
+  revenueUsed           Decimal  @db.Decimal(20, 8)
+  tokensAcquired        Decimal  @db.Decimal(20, 8)
+  pricePerToken         Decimal  @db.Decimal(20, 8)
+  executionTime         DateTime
+  blockchainTxHash      String?  @unique
+  status                BuyOrderStatus @default(pending)
+  error                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([status])
+  @@index([executionTime])
+  @@index([createdAt])
+  @@map("system_buy_order_history")
+}
+
+enum BurnTransactionType {
+  COURSE_SALE
+  EARNINGS_WITHDRAWAL
+  TOKEN_REDEMPTION
+}
+
+enum BlockchainStatus {
+  PENDING
+  PROCESSING
+  CONFIRMED
+  FAILED
+}
+
+enum RevenueSource {
+  course_sale
+  subscription
+  other
+}
+
+enum BuyOrderStatus {
+  pending
+  completed
+  failed
+}
+
+// ============================================
+// AI ROUTING SYSTEM (Phase 2)
+// ============================================
+
+model QueryClassification {
+  id                    String   @id @default(cuid())
+  query                 String
+  classifiedAs          QueryComplexity
+  confidence            Float    // 0.0 to 1.0
+  routedTo              RoutingTier
+  responseTime          Int      // milliseconds
+  cost                  Decimal  @db.Decimal(12, 8)
+  userId                String?
+  metadata              Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User? @relation("QueryClassifications", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([classifiedAs])
+  @@index([routedTo])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("query_classifications")
+}
+
+model RoutingMetrics {
+  id                    String   @id @default(cuid())
+  routingTier           RoutingTier
+  totalRequests         Int       @default(0)
+  successfulRequests    Int       @default(0)
+  failedRequests        Int       @default(0)
+  averageResponseTime   Int       // milliseconds
+  averageCost           Decimal   @db.Decimal(12, 8)
+  cacheHits             Int       @default(0)
+  cacheMisses           Int       @default(0)
+  lastUpdated           DateTime  @default(now())
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([routingTier])
+  @@index([routingTier])
+  @@index([lastUpdated])
+  @@map("routing_metrics")
+}
+
+model AIRoutingCache {
+  id                    String   @id @default(cuid())
+  queryHash             String   @unique
+  query                 String
+  response              String
+  routingTier           RoutingTier
+  cost                  Decimal   @db.Decimal(12, 8)
+  ttl                   Int       // seconds
+  expiresAt             DateTime
+  hitCount              Int       @default(0)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([routingTier])
+  @@index([expiresAt])
+  @@index([createdAt])
+  @@map("ai_routing_cache")
+}
+
+enum QueryComplexity {
+  SIMPLE
+  MODERATE
+  COMPLEX
+}
+
+enum RoutingTier {
+  LOCAL_LLM
+  RAP_SYSTEM
+  EXTERNAL_LLM
 }

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  ai-ethics-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=production
+      - PORT=3010
+      - SERVICE_NAME=ai-ethics-monitor
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - azora-network
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped

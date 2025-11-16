@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  enrollment-db:
+    image: postgres:15
+    container_name: azora-enrollment-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_enrollment
+    ports:
+      - "5439:5432"
+    volumes:
+      - enrollment_db_data:/var/lib/postgresql/data
+    networks:
+      - enrollment-network
+
+  enrollment-service:
+    build: .
+    container_name: azora-enrollment-service
+    ports:
+      - "3011:3011"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@enrollment-db:5432/azora_enrollment
+      - PORT=3011
+      - NODE_ENV=development
+    depends_on:
+      - enrollment-db
+    networks:
+      - enrollment-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  enrollment_db_data:
+
+networks:
+  enrollment-network:
+    driver: bridge

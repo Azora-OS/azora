@@ -1,73 +1,79 @@
 import { PrismaClient } from '@prisma/client';
-import { createRedisMock } from '@azora/test-utils';
+import Redis from 'ioredis';
 
-// Global test setup
 let prisma: PrismaClient;
-let redis: ReturnType<typeof createRedisMock>;
+let redis: Redis;
 
+// Global setup
 beforeAll(async () => {
-  // Set test environment
-  process.env.NODE_ENV = 'test';
+  // Database setup
+  prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL || 'postgresql://postgres:test@localhost:5432/azora_test',
+      },
+    },
+  });
   
-  // Initialize Prisma for integration tests
-  if (process.env.DATABASE_URL) {
-    prisma = new PrismaClient();
-    await prisma.$connect();
-  }
+  await prisma.$connect();
   
-  // Initialize Redis mock
-  redis = createRedisMock();
+  // Redis setup
+  redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
   
-  // Set global timeout
+  // Global test timeout
   jest.setTimeout(10000);
-});
-
-afterAll(async () => {
-  // Cleanup connections
-  if (prisma) {
-    await prisma.$disconnect();
-  }
   
-  if (redis) {
-    await redis.flushall();
-  }
+  // Make available globally
+  (global as any).prisma = prisma;
+  (global as any).redis = redis;
 });
 
+// Global teardown
+afterAll(async () => {
+  await prisma.$disconnect();
+  await redis.quit();
+});
+
+// Clean up after each test
 afterEach(async () => {
-  // Clean up test data after each test
-  if (prisma) {
-    const tables = ['User', 'Course', 'Enrollment', 'Transaction', 'Wallet'];
-    
-    for (const table of tables) {
-      const model = (prisma as any)[table.toLowerCase()];
-      if (model && model.deleteMany) {
-        try {
-          await model.deleteMany({
-            where: {
-              OR: [
-                { email: { contains: '@test.azora' } },
-                { email: { contains: '@test.' } },
-              ],
-            },
-          });
-        } catch (error) {
-          // Table might not exist, continue
-        }
+  // Clean up test data (only test users)
+  const testTables = [
+    'User',
+    'Course',
+    'Enrollment',
+    'Transaction',
+    'Wallet',
+    'Job',
+    'Application',
+  ];
+  
+  for (const table of testTables) {
+    const model = (prisma as any)[table.toLowerCase()];
+    if (model) {
+      try {
+        await model.deleteMany({
+          where: {
+            OR: [
+              { email: { contains: '@test.azora' } },
+              { email: { contains: '@test.com' } },
+            ],
+          },
+        });
+      } catch (error) {
+        // Table might not have email field, skip
       }
     }
   }
   
   // Clear Redis test keys
-  if (redis) {
-    const keys = await redis.keys('test:*');
-    if (keys.length > 0) {
-      await redis.del(...keys);
-    }
+  const keys = await redis.keys('test:*');
+  if (keys.length > 0) {
+    await redis.del(...keys);
   }
-  
-  // Clear all mocks
-  jest.clearAllMocks();
 });
 
-// Export for use in tests
-export { prisma, redis };
+// Mock environment variables
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test-jwt-secret';
+process.env.STRIPE_SECRET_KEY = 'sk_test_mock';
+process.env.OPENAI_API_KEY = 'sk-test-mock';

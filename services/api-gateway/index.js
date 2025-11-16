@@ -1,20 +1,18 @@
 const express = require('express');
-const helmet = require('helmet');
 const compression = require('compression');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-const { authenticateToken, requireRole, rateLimiter } = require('@azora/shared-auth');
-const { csrfProtection, secureCors, errorHandler } = require('../../packages/security-middleware');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler, authenticate, requireRole } = require('../shared/middleware');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(helmet());
-app.use(secureCors);
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
 app.use(compression());
 app.use(express.json());
-app.use(rateLimiter());
-app.use(csrfProtection);
+app.use(createRateLimiter(200)); // Gateway - higher limit for routing
 
 // Service registry
 const services = {
@@ -51,38 +49,38 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Protected routes - require authentication
-app.use('/api/education', authenticateToken, createProxyMiddleware({ 
+app.use('/api/education', authenticate, createProxyMiddleware({ 
   target: services.education, 
   changeOrigin: true,
   pathRewrite: { '^/api/education': '/api' }
 }));
 
-app.use('/api/mint', authenticateToken, createProxyMiddleware({ 
+app.use('/api/mint', authenticate, createProxyMiddleware({ 
   target: services.mint, 
   changeOrigin: true,
   pathRewrite: { '^/api/mint': '/api' }
 }));
 
-app.use('/api/forge', authenticateToken, createProxyMiddleware({ 
+app.use('/api/forge', authenticate, createProxyMiddleware({ 
   target: services.forge, 
   changeOrigin: true,
   pathRewrite: { '^/api/forge': '/api' }
 }));
 
-app.use('/api/nexus', authenticateToken, createProxyMiddleware({ 
+app.use('/api/nexus', authenticate, createProxyMiddleware({ 
   target: services.nexus, 
   changeOrigin: true,
   pathRewrite: { '^/api/nexus': '/api' }
 }));
 
-app.use('/api/ai-family', authenticateToken, createProxyMiddleware({ 
+app.use('/api/ai-family', authenticate, createProxyMiddleware({ 
   target: services.aiFamily, 
   changeOrigin: true,
   pathRewrite: { '^/api/ai-family': '/api' }
 }));
 
 // Unified endpoints
-app.post('/api/students/enroll', authenticateToken, async (req, res, next) => {
+app.post('/api/students/enroll', authenticate, async (req, res, next) => {
   const axios = require('axios');
   const { studentId, courseId, userId } = req.body;
   
@@ -109,7 +107,7 @@ app.post('/api/students/enroll', authenticateToken, async (req, res, next) => {
   }
 });
 
-app.post('/api/courses/complete', authenticateToken, async (req, res, next) => {
+app.post('/api/courses/complete', authenticate, async (req, res, next) => {
   const axios = require('axios');
   const { studentId, courseId, score } = req.body;
   

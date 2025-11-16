@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run ESLint
+npm run lint --if-present || exit 1
+
+# Check formatting
+npm run format:check --if-present || exit 1
+
+# Run tests for changed files
+npm run test:changed --if-present || exit 1

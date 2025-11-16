@@ -1,13 +1,17 @@
 const express = require('express');
-const cors = require('cors');
+const compression = require('compression');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler } = require('../shared/middleware');
 const chatRoutes = require('./api/chat');
 
 const app = express();
 const PORT = process.env.PORT || 3004;
 
-// Middleware
-app.use(cors());
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
+app.use(compression());
 app.use(express.json());
+app.use(createRateLimiter(100));
 
 // Routes
 app.use('/api/chat', chatRoutes);
@@ -37,16 +41,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
-
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {

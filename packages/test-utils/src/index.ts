@@ -1,4 +1,9 @@
-export * from './factories';
-export * from './fixtures';
-export * from './helpers';
-export * from './mocks';
+// Factories
+export * from './factories/user.factory';
+export * from './factories/course.factory';
+
+// Mocks
+export * from './mocks/prisma.mock';
+
+// Helpers
+export * from './helpers/auth.helper';

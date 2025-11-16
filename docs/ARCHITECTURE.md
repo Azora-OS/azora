@@ -1,290 +1,565 @@
 # Azora OS Architecture
 
-## System Overview
+## Overview
 
-Azora OS is a microservices-based Constitutional AI Operating System built on Ubuntu philosophy.
+Azora OS is a comprehensive, cloud-native education and financial platform built with microservices architecture. It combines AI-powered learning, blockchain-based credentials, and integrated financial services into a unified ecosystem.
 
-## High-Level Architecture
+**Architecture Pattern**: Event-driven microservices with API Gateway  
+**Deployment**: Containerized (Docker) on Kubernetes  
+**Data Strategy**: Polyglot persistence (PostgreSQL, Redis, MongoDB)  
+**Communication**: REST APIs, WebSockets, Event Bus (RabbitMQ/Kafka)
+
+---
+
+## System Architecture
+
+### High-Level Overview
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Client Layer                          │
-│  Web Apps │ Mobile Apps │ Desktop │ IDE Extensions      │
-└─────────────────────────────────────────────────────────┘
-                           │
-┌─────────────────────────────────────────────────────────┐
-│                   API Gateway (Port 4000)                │
-│  Routing │ Auth │ Rate Limiting │ Load Balancing        │
-└─────────────────────────────────────────────────────────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
-┌───────────────┐  ┌───────────────┐  ┌───────────────┐
-│   Education   │  │    Finance    │  │  Marketplace  │
-│   Services    │  │   Services    │  │   Services    │
-│  (Port 4002)  │  │  (Port 4003)  │  │  (Port 4004)  │
-└───────────────┘  └───────────────┘  └───────────────┘
-        │                  │                  │
-┌─────────────────────────────────────────────────────────┐
-│              Infrastructure Layer                        │
-│  PostgreSQL │ Redis │ Prometheus │ Grafana             │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Client Applications                       │
+│  ┌──────────────┬──────────────┬──────────────┬────────────┐ │
+│  │ Web Portal   │ Mobile Apps  │ Admin Panel  │ Dev Portal │ │
+│  └──────────────┴──────────────┴──────────────┴────────────┘ │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                    ┌────▼─────┐
+                    │ CDN/Cache │
+                    └────┬─────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │      API Gateway (Kong)         │
+        │  ┌─────────────────────────────┐│
+        │  │ Rate Limiting, Auth, Routing││
+        │  └─────────────────────────────┘│
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────┴────────────────┐
+        │    Microservices Cluster        │
+        │  ┌──────────────────────────┐   │
+        │  │ Auth Service             │   │
+        │  │ Education Service        │   │
+        │  │ Assessment Service       │   │
+        │  │ AI/Sapiens Service       │   │
+        │  │ Financial Service (Mint) │   │
+        │  │ Payment Service          │   │
+        │  │ Classroom Service        │   │
+        │  │ Study Spaces Service     │   │
+        │  └──────────────────────────┘   │
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────┴────────────────┐
+        │    Data & Infrastructure Layer   │
+        │  ┌──────────────────────────┐   │
+        │  │ PostgreSQL (Primary DB)  │   │
+        │  │ Redis (Cache/Sessions)   │   │
+        │  │ MongoDB (Documents)      │   │
+        │  │ Event Bus (RabbitMQ)     │   │
+        │  │ Blockchain (Polygon)     │   │
+        │  └──────────────────────────┘   │
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────┴────────────────┐
+        │   Observability & Monitoring    │
+        │  ┌──────────────────────────┐   │
+        │  │ Prometheus (Metrics)     │   │
+        │  │ Loki (Logs)              │   │
+        │  │ Jaeger (Traces)          │   │
+        │  │ Grafana (Dashboards)     │   │
+        │  │ Alertmanager (Alerts)    │   │
+        │  └──────────────────────────┘   │
+        └─────────────────────────────────┘
 ```
 
-## Core Components
+---
+
+## Core Services
 
 ### 1. API Gateway
-**Purpose:** Single entry point for all client requests
+**Purpose**: Single entry point, routing, rate limiting, authentication  
+**Technology**: Kong/Express.js  
+**Responsibilities**:
+- Request routing to appropriate services
+- Rate limiting (4 tiers: free, pro, enterprise, admin)
+- JWT token validation
+- CORS handling
+- Request/response logging
+- API versioning
 
-**Responsibilities:**
-- Request routing
-- Authentication/Authorization
-- Rate limiting
-- Load balancing
-- Request/response transformation
+**Key Endpoints**:
+- `/api/v1/auth/*` → Auth Service
+- `/api/v1/education/*` → Education Service
+- `/api/v1/assessment/*` → Assessment Service
+- `/api/v1/ai/*` → AI/Sapiens Service
+- `/api/v1/financial/*` → Financial Service
+- `/api/v1/payments/*` → Payment Service
 
-**Technology:** Node.js, Express, http-proxy-middleware
+---
 
-### 2. Auth Service (Port 4001)
-**Purpose:** Identity and access management
-
-**Features:**
-- User registration/login
-- JWT token generation
-- OAuth (Google)
-- MFA (TOTP)
+### 2. Authentication Service
+**Purpose**: User identity, JWT tokens, OAuth integration  
+**Technology**: Node.js + Express, Passport.js, JWT  
+**Key Features**:
+- Email/password authentication
+- OAuth (Google, GitHub, Apple)
+- Multi-factor authentication (TOTP)
 - Session management
+- Token refresh mechanism
+- Role-based access control (RBAC)
 
-**Database:** PostgreSQL (azora_auth)
+**Database Schema**:
+```
+Users
+├── id (UUID)
+├── email (unique)
+├── password_hash
+├── mfa_enabled
+├── roles (array)
+├── created_at
+└── updated_at
 
-### 3. Education Service (Port 4002)
-**Purpose:** Learning management system
+Sessions
+├── id (UUID)
+├── user_id (FK)
+├── token
+├── expires_at
+└── created_at
+```
 
-**Features:**
-- Course management
-- Enrollment
+---
+
+### 3. Education Service
+**Purpose**: Course management, content delivery, progress tracking  
+**Technology**: Node.js + Express, PostgreSQL  
+**Key Features**:
+- Course creation and management
+- Lesson organization
+- Content delivery (video, text, interactive)
 - Progress tracking
-- AI tutoring (Elara)
-- Assessments
+- Completion certificates
+- Learning paths
 
-**Database:** PostgreSQL (azora_education)
+**Database Schema**:
+```
+Courses
+├── id (UUID)
+├── title
+├── description
+├── instructor_id (FK)
+├── category
+├── level (beginner/intermediate/advanced)
+├── created_at
+└── updated_at
 
-### 4. Finance Service (Port 4003)
-**Purpose:** Financial operations
+Lessons
+├── id (UUID)
+├── course_id (FK)
+├── title
+├── content
+├── order
+└── duration_minutes
 
-**Features:**
-- Wallet management
-- Transactions
-- Mining (Proof-of-Knowledge)
+Enrollments
+├── id (UUID)
+├── user_id (FK)
+├── course_id (FK)
+├── progress_percent
+├── completed_at
+└── enrolled_at
+```
+
+---
+
+### 4. Assessment Service
+**Purpose**: Quiz creation, auto-grading, performance analytics  
+**Technology**: Node.js + Express, PostgreSQL  
+**Key Features**:
+- Quiz/test creation
+- Multiple question types (MCQ, essay, code)
+- Auto-grading for objective questions
+- Performance analytics
+- Adaptive testing
+- Question bank management
+
+**Database Schema**:
+```
+Quizzes
+├── id (UUID)
+├── course_id (FK)
+├── title
+├── passing_score
+├── time_limit_minutes
+└── created_at
+
+Questions
+├── id (UUID)
+├── quiz_id (FK)
+├── type (mcq/essay/code)
+├── content
+├── options (JSON)
+├── correct_answer
+└── points
+
+Submissions
+├── id (UUID)
+├── quiz_id (FK)
+├── user_id (FK)
+├── answers (JSON)
+├── score
+├── submitted_at
+└── graded_at
+```
+
+---
+
+### 5. AI/Sapiens Service
+**Purpose**: AI-powered learning assistance, personalization  
+**Technology**: Node.js + Express, OpenAI API, LangChain  
+**Key Features**:
+- 11 distinct AI personalities
+- Context-aware responses
+- Learning path generation
+- Adaptive difficulty
+- Real-time assistance
+- Content recommendations
+
+**AI Personalities**:
+1. **Mentor** - Guides learning with questions
+2. **Tutor** - Explains concepts clearly
+3. **Coach** - Motivates and encourages
+4. **Socratic** - Uses questioning method
+5. **Storyteller** - Uses narratives
+6. **Analyst** - Data-driven insights
+7. **Creator** - Encourages creativity
+8. **Challenger** - Pushes boundaries
+9. **Supporter** - Empathetic listener
+10. **Expert** - Deep technical knowledge
+11. **Facilitator** - Connects learners
+
+---
+
+### 6. Financial Service (Azora Mint)
+**Purpose**: Payments, withdrawals, blockchain integration  
+**Technology**: Node.js + Express, Stripe, Web3.js, PostgreSQL  
+**Key Features**:
 - Payment processing (Stripe)
-- Token economics
+- Withdrawal management
+- Bank verification
+- KYC/AML compliance
+- Fraud detection
+- Blockchain integration (Polygon)
+- NFT certificate minting
 
-**Database:** PostgreSQL (azora_mint)
-
-### 5. Marketplace Service (Port 4004)
-**Purpose:** Skills and job marketplace
-
-**Features:**
-- Job postings
-- Skill matching
-- Applications
-- Escrow
-- Ratings/reviews
-
-**Database:** PostgreSQL (azora_forge)
-
-## Data Flow
-
-### Authentication Flow
+**Database Schema**:
 ```
-Client → API Gateway → Auth Service → Database
-                    ← JWT Token ←
+Wallets
+├── id (UUID)
+├── user_id (FK)
+├── balance
+├── currency
+├── blockchain_address
+└── created_at
+
+Transactions
+├── id (UUID)
+├── wallet_id (FK)
+├── type (deposit/withdrawal/transfer)
+├── amount
+├── status (pending/completed/failed)
+├── stripe_id
+├── blockchain_tx_hash
+└── created_at
+
+Withdrawals
+├── id (UUID)
+├── wallet_id (FK)
+├── amount
+├── bank_account_id (FK)
+├── status (pending/approved/rejected)
+├── kyc_verified
+├── created_at
+└── processed_at
 ```
 
-### Course Enrollment Flow
+---
+
+### 7. Payment Service
+**Purpose**: Subscription management, invoicing, billing  
+**Technology**: Node.js + Express, Stripe, PostgreSQL  
+**Key Features**:
+- Subscription plans
+- Invoice generation
+- Payment history
+- Refund processing
+- Multi-currency support
+- Payment analytics
+
+---
+
+### 8. Classroom Service
+**Purpose**: Live virtual classrooms, real-time collaboration  
+**Technology**: Node.js + Express, WebRTC, Socket.io  
+**Key Features**:
+- Video conferencing
+- Screen sharing
+- Interactive whiteboard
+- Breakout rooms
+- Recording
+- Chat system
+- Attendance tracking
+
+---
+
+## Data Layer
+
+### Database Strategy
+
+**PostgreSQL (Primary)**
+- User data, courses, enrollments
+- Transactions, payments
+- Assessments, submissions
+- Audit logs
+
+**Redis (Cache & Sessions)**
+- Session storage
+- Rate limiting counters
+- Cache layer for frequently accessed data
+- Real-time notifications
+
+**MongoDB (Documents)**
+- Course content (rich media)
+- User profiles (flexible schema)
+- Analytics events
+- Logs (structured)
+
+**Blockchain (Polygon)**
+- NFT certificates
+- Credential verification
+- Immutable records
+
+---
+
+### Data Flow
+
 ```
-Client → API Gateway → Education Service → Database
-                                        → Event Bus (Nexus)
-                                        → Finance Service (AZR reward)
+Client Request
+    ↓
+API Gateway (validation, auth)
+    ↓
+Service (business logic)
+    ↓
+Database Layer
+├── PostgreSQL (transactional)
+├── Redis (cache)
+├── MongoDB (documents)
+└── Blockchain (credentials)
+    ↓
+Response to Client
 ```
 
-### Payment Flow
-```
-Client → API Gateway → Finance Service → Stripe API
-                                      → Database
-                                      → Event Bus
-```
+---
+
+## Communication Patterns
+
+### Synchronous (REST/HTTP)
+- Client to API Gateway
+- Service to Service (internal)
+- External API calls (Stripe, OpenAI)
+
+### Asynchronous (Event Bus)
+- Service-to-service events
+- User notifications
+- Analytics events
+- Audit logging
+
+**Event Types**:
+- `user.created`
+- `course.enrolled`
+- `assessment.completed`
+- `payment.processed`
+- `withdrawal.requested`
+- `certificate.minted`
+
+---
 
 ## Security Architecture
 
-### Defense in Depth
-1. **Network Layer:** Firewall, DDoS protection
-2. **Application Layer:** CORS, Helmet, Rate limiting
-3. **Authentication:** JWT, MFA, OAuth
-4. **Authorization:** RBAC, Resource-based
-5. **Data Layer:** Encryption, Access controls
+### Authentication & Authorization
+- **JWT Tokens**: Stateless authentication
+- **RBAC**: Role-based access control
+- **OAuth**: Third-party integrations
+- **MFA**: Multi-factor authentication
 
-### Security Middleware Stack
-```typescript
-app.use(corsMiddleware);        // CORS protection
-app.use(helmetMiddleware);      // Security headers
-app.use(rateLimitMiddleware);   // Rate limiting
-app.use(authMiddleware);        // Authentication
-app.use(rbacMiddleware);        // Authorization
-```
+### Data Protection
+- **Encryption in Transit**: TLS 1.3
+- **Encryption at Rest**: AES-256
+- **Secrets Management**: Environment variables + Vault
+- **PII Masking**: In logs and backups
 
-## Database Architecture
+### API Security
+- **Rate Limiting**: Per-user, per-IP
+- **CORS**: Whitelist origins
+- **CSRF Protection**: Token validation
+- **Input Validation**: Zod schemas
+- **SQL Injection Prevention**: Parameterized queries
 
-### Database per Service Pattern
-Each service has its own database for:
-- Independence
-- Scalability
-- Fault isolation
-
-### Schema Design
-- Normalized for consistency
-- Indexed for performance
-- Partitioned for scale
-
-## Caching Strategy
-
-### Redis Cache
-- Session storage
-- API response caching
-- Rate limit counters
-- Real-time data
-
-### Cache Invalidation
-- Time-based (TTL)
-- Event-based
-- Manual purge
-
-## Event-Driven Architecture
-
-### Event Bus (Nexus)
-**Purpose:** Asynchronous communication between services
-
-**Events:**
-- `user.registered`
-- `course.enrolled`
-- `payment.completed`
-- `job.applied`
-
-**Technology:** Redis Pub/Sub, Bull Queue
-
-## Monitoring & Observability
-
-### Metrics (Prometheus)
-- Request rate
-- Response time
-- Error rate
-- Resource usage
-
-### Logging (Winston)
-- Structured JSON logs
-- Log levels (error, warn, info, debug)
-- Centralized collection
-
-### Tracing
-- Request ID propagation
-- Distributed tracing
-- Performance profiling
-
-## Scalability
-
-### Horizontal Scaling
-- Stateless services
-- Load balancing
-- Auto-scaling (Kubernetes)
-
-### Vertical Scaling
-- Resource optimization
-- Database tuning
-- Caching
-
-### Database Scaling
-- Read replicas
-- Connection pooling
-- Query optimization
+---
 
 ## Deployment Architecture
 
-### Environments
-- **Development:** Local Docker
-- **Staging:** AWS ECS
-- **Production:** AWS EKS (Kubernetes)
+### Containerization
+- **Docker**: All services containerized
+- **Image Registry**: Docker Hub / ECR
+- **Base Images**: Node.js 20 LTS
 
-### CI/CD Pipeline
-```
-GitHub → Actions → Build → Test → Deploy
-                         → Security Scan
-                         → Quality Gates
-```
-
-## Technology Stack
-
-### Backend
-- **Runtime:** Node.js 20
-- **Framework:** Express 5
-- **Language:** TypeScript 5
-- **ORM:** Prisma 5
-- **Database:** PostgreSQL 15
-- **Cache:** Redis 7
-
-### Frontend
-- **Framework:** React 18, Next.js 14
-- **Language:** TypeScript 5
-- **Styling:** Tailwind CSS
-- **State:** Zustand
+### Orchestration
+- **Kubernetes**: Container orchestration
+- **Helm**: Package management
+- **Namespaces**: dev, staging, production
 
 ### Infrastructure
-- **Containers:** Docker
-- **Orchestration:** Kubernetes
-- **CI/CD:** GitHub Actions
-- **Monitoring:** Prometheus, Grafana
-- **Cloud:** AWS
+- **Cloud Provider**: AWS / GCP / Azure
+- **Load Balancing**: Nginx / AWS ALB
+- **Auto-scaling**: Based on CPU/memory
+- **Storage**: Persistent volumes for databases
 
-## Design Patterns
+---
 
-### Microservices Patterns
-- API Gateway
-- Database per Service
-- Event Sourcing
-- CQRS (planned)
+## Observability
 
-### Resilience Patterns
-- Circuit Breaker
-- Retry with Backoff
-- Timeout
-- Bulkhead
+### Metrics (Prometheus)
+- Request latency (p50, p95, p99)
+- Error rates
+- Throughput
+- Resource utilization
+- Business metrics (enrollments, payments)
 
-### Security Patterns
-- Defense in Depth
-- Least Privilege
-- Zero Trust
+### Logging (Loki + Winston)
+- Structured JSON logs
+- Log levels: debug, info, warn, error
+- Correlation IDs for tracing
+- Centralized log aggregation
 
-## Performance Targets
+### Tracing (Jaeger + OpenTelemetry)
+- Distributed tracing
+- Service dependencies
+- Performance bottlenecks
+- Error tracking
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| API Response | <100ms | 85ms |
-| Database Query | <50ms | 42ms |
-| Page Load | <2s | 1.8s |
-| Uptime | 99.9% | 99.9% |
+### Alerting (Alertmanager)
+- High error rates (>5%)
+- High latency (>1s)
+- Service down
+- Database issues
+- Payment failures
 
-## Future Architecture
+---
 
-### Planned Enhancements
-- GraphQL API
-- gRPC for inter-service communication
-- Event Sourcing
-- CQRS
-- Service Mesh (Istio)
-- Multi-region deployment
+## Scalability Considerations
 
-## References
+### Horizontal Scaling
+- Stateless services (scale independently)
+- Load balancing across instances
+- Database read replicas
+- Cache distribution (Redis Cluster)
 
-- [API Documentation](./API-DOCUMENTATION.md)
-- [Database Guide](./DATABASE-GUIDE.md)
-- [Security Policy](./SECURITY-POLICY.md)
-- [Deployment Guide](./deployment/)
+### Vertical Scaling
+- Increase CPU/memory per instance
+- Database optimization (indexing)
+- Query optimization
+
+### Performance Optimization
+- API response caching
+- Database query optimization
+- CDN for static assets
+- Lazy loading for content
+- Compression (gzip)
+
+---
+
+## Disaster Recovery
+
+### Backup Strategy
+- **Database**: Daily snapshots, 30-day retention
+- **Code**: Git repository (GitHub)
+- **Configuration**: Version controlled
+- **Secrets**: Encrypted backup
+
+### Recovery Procedures
+- **RTO** (Recovery Time Objective): 1 hour
+- **RPO** (Recovery Point Objective): 15 minutes
+- **Failover**: Automated to standby region
+- **Testing**: Monthly DR drills
+
+---
+
+## Development Workflow
+
+### Branching Strategy
+- `main`: Production-ready code
+- `develop`: Integration branch
+- `feature/*`: Feature branches
+- `hotfix/*`: Emergency fixes
+
+### CI/CD Pipeline
+1. Code push to feature branch
+2. Automated tests (unit, integration, E2E)
+3. Code quality checks (ESLint, SonarQube)
+4. Security scanning (OWASP, dependency check)
+5. Build Docker image
+6. Push to registry
+7. Deploy to staging
+8. Manual approval
+9. Deploy to production
+
+### Code Review
+- Minimum 2 approvals
+- All tests passing
+- No security issues
+- Documentation updated
+
+---
+
+## Technology Stack Summary
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React, Next.js, Vite |
+| **Backend** | Node.js, Express.js |
+| **Language** | TypeScript |
+| **Database** | PostgreSQL, Redis, MongoDB |
+| **Blockchain** | Polygon, Web3.js |
+| **AI** | OpenAI API, LangChain |
+| **Payments** | Stripe |
+| **Real-time** | WebSocket, Socket.io |
+| **Messaging** | RabbitMQ / Kafka |
+| **Containerization** | Docker, Kubernetes |
+| **Monitoring** | Prometheus, Loki, Jaeger, Grafana |
+| **CI/CD** | GitHub Actions |
+| **IaC** | Terraform |
+
+---
+
+## Key Design Principles
+
+1. **Microservices**: Independent, scalable services
+2. **API-First**: Everything accessible via APIs
+3. **Event-Driven**: Asynchronous communication
+4. **Stateless**: Easy horizontal scaling
+5. **Security-First**: Security at every layer
+6. **Observable**: Comprehensive monitoring
+7. **Resilient**: Graceful degradation
+8. **Automated**: CI/CD, infrastructure as code
+
+---
+
+## Future Enhancements
+
+- **GraphQL**: Alternative to REST
+- **Service Mesh**: Istio for advanced networking
+- **Machine Learning**: Predictive analytics
+- **Multi-region**: Global distribution
+- **Blockchain**: More chains (Ethereum, Solana)
+- **Mobile**: Native iOS/Android apps
+- **AR/VR**: Immersive learning experiences
+

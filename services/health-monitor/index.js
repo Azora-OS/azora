@@ -1,9 +1,8 @@
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
 const os = require('os');
 const process = require('process');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler } = require('../shared/middleware');
 const { metricsMiddleware, metricsEndpoint } = require('./prometheus');
 require('dotenv').config();
 
@@ -26,10 +25,11 @@ class HealthMonitor {
   }
 
   setupMiddleware() {
-    this.app.use(helmet());
-    this.app.use(cors());
+    this.app.use(helmetConfig);
+    this.app.use(corsConfig);
     this.app.use(compression());
     this.app.use(express.json());
+    this.app.use(createRateLimiter(100));
     this.app.use(metricsMiddleware);
   }
 
@@ -538,6 +538,9 @@ class HealthMonitor {
   }
 
   start() {
+    // Error handling middleware (must be last)
+    this.app.use(errorHandler);
+    
     this.app.listen(this.port, () => {
       console.log(`✅ Health Monitor Service running on port ${this.port}`);
     });
