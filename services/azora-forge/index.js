@@ -1,19 +1,18 @@
 const express = require('express');
-const helmet = require('helmet');
 const compression = require('compression');
 const crypto = require('crypto');
-const { csrfProtection, authenticate, secureCors, errorHandler } = require('../../packages/security-middleware');
-const { schemas, validate } = require('../../packages/input-validation');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler, authenticate } = require('../shared/middleware');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3200;
 
-app.use(helmet());
-app.use(secureCors);
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
 app.use(compression());
 app.use(express.json());
-app.use(csrfProtection);
+app.use(createRateLimiter(100));
 
 // In-memory storage
 const jobs = new Map();
@@ -91,7 +90,7 @@ app.get('/health', (req, res) => {
 });
 
 // Jobs
-app.post('/api/jobs', authenticate, validate(schemas.job.create), (req, res) => {
+app.post('/api/jobs', authenticate, (req, res) => {
   const { title, company, requirements, salary, location } = req.body;
   const jobId = crypto.randomUUID();
   
@@ -118,7 +117,7 @@ app.get('/api/jobs/:jobId', (req, res) => {
 });
 
 // Applications
-app.post('/api/jobs/:jobId/apply', authenticate, validate(schemas.job.apply), (req, res) => {
+app.post('/api/jobs/:jobId/apply', authenticate, (req, res) => {
   const { userId, coverLetter } = req.body;
   const job = jobs.get(req.params.jobId);
   

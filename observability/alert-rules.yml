@@ -1,0 +1,161 @@
+groups:
+  - name: azora_alerts
+    interval: 30s
+    rules:
+      # Service Availability
+      - alert: ServiceDown
+        expr: up{job=~".*-service|.*-gateway"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} has been down for more than 1 minute"
+
+      # High Error Rate (>0.1%)
+      - alert: HighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) / 
+           sum(rate(http_requests_total[5m])) by (job)) > 0.001
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on {{ $labels.job }}"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 0.1%) on {{ $labels.job }}"
+
+      # Critical Error Rate (>1%)
+      - alert: CriticalErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) / 
+           sum(rate(http_requests_total[5m])) by (job)) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical error rate on {{ $labels.job }}"
+          description: "Error rate is {{ $value | humanizePercentage }} (critical threshold: 1%) on {{ $labels.job }}"
+
+      # High API Latency (>100ms)
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (job, le)) > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency on {{ $labels.job }}"
+          description: "P95 API latency is {{ $value }}ms (threshold: 100ms) on {{ $labels.job }}"
+
+      # Critical API Latency (>200ms)
+      - alert: CriticalAPILatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (job, le)) > 200
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical API latency on {{ $labels.job }}"
+          description: "P95 API latency is {{ $value }}ms (critical threshold: 200ms) on {{ $labels.job }}"
+
+      # Slow Database Queries (>50ms)
+      - alert: SlowDatabaseQueries
+        expr: |
+          histogram_quantile(0.95, sum(rate(db_query_duration_ms_bucket[5m])) by (le)) > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow database queries detected"
+          description: "P95 database query time is {{ $value }}ms (threshold: 50ms)"
+
+      # Critical Database Queries (>100ms)
+      - alert: CriticalDatabaseQueries
+        expr: |
+          histogram_quantile(0.95, sum(rate(db_query_duration_ms_bucket[5m])) by (le)) > 100
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical database query performance"
+          description: "P95 database query time is {{ $value }}ms (critical threshold: 100ms)"
+
+      # Database Connection Issues
+      - alert: DatabaseConnectionPoolExhausted
+        expr: |
+          (db_connection_pool_used / db_connection_pool_max) > 0.9
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Database connection pool nearly exhausted on {{ $labels.service }}"
+          description: "{{ $value | humanizePercentage }} of connections in use"
+
+      # Memory Usage
+      - alert: HighMemoryUsage
+        expr: |
+          (process_resident_memory_bytes / 1024 / 1024 / 1024) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.job }}"
+          description: "Memory usage is {{ $value }}GB on {{ $labels.job }}"
+
+      # Authentication Failures
+      - alert: HighAuthenticationFailureRate
+        expr: |
+          (sum(rate(auth_failures_total[5m])) by (service) / 
+           sum(rate(auth_attempts_total[5m])) by (service)) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High authentication failure rate on {{ $labels.service }}"
+          description: "{{ $value | humanizePercentage }} of auth attempts failing"
+
+      # Payment Processing Issues
+      - alert: PaymentProcessingFailure
+        expr: |
+          (sum(rate(payment_failures_total[5m])) by (service) / 
+           sum(rate(payment_attempts_total[5m])) by (service)) > 0.02
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Payment processing failures on {{ $labels.service }}"
+          description: "{{ $value | humanizePercentage }} of payments failing"
+
+      # Enrollment Issues
+      - alert: EnrollmentFailureRate
+        expr: |
+          (sum(rate(enrollment_failures_total[5m])) by (service) / 
+           sum(rate(enrollment_attempts_total[5m])) by (service)) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High enrollment failure rate on {{ $labels.service }}"
+          description: "{{ $value | humanizePercentage }} of enrollments failing"
+
+      # Trace Collection Issues
+      - alert: TraceCollectionFailure
+        expr: |
+          rate(trace_collection_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Trace collection errors on {{ $labels.service }}"
+          description: "{{ $value }} trace collection errors per second"
+
+      # Log Ingestion Issues
+      - alert: LogIngestionBacklog
+        expr: |
+          loki_ingester_wal_corruptions_total > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Log ingestion issues detected"
+          description: "Loki has detected {{ $value }} WAL corruptions"

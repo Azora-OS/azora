@@ -1,0 +1,337 @@
+# Deployment Monitoring Configuration
+# 
+# This file defines monitoring rules and alerts specific to deployment operations.
+# Includes error rate monitoring, latency monitoring, and resource monitoring.
+
+groups:
+  - name: deployment_monitoring
+    interval: 30s
+    rules:
+      # ============================================================================
+      # ERROR RATE MONITORING
+      # ============================================================================
+
+      # High Error Rate (>0.1%) - Warning
+      - alert: DeploymentHighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) / 
+           sum(rate(http_requests_total[5m])) by (job)) > 0.001
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "High error rate detected on {{ $labels.job }}"
+          description: |
+            Error rate is {{ $value | humanizePercentage }} (threshold: 0.1%)
+            Service: {{ $labels.job }}
+            Action: Review logs and investigate root cause
+
+      # Critical Error Rate (>5%) - Trigger Rollback
+      - alert: DeploymentCriticalErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) / 
+           sum(rate(http_requests_total[5m])) by (job)) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+          action: rollback
+        annotations:
+          summary: "CRITICAL: Error rate exceeds rollback threshold on {{ $labels.job }}"
+          description: |
+            Error rate is {{ $value | humanizePercentage }} (critical threshold: 5%)
+            Service: {{ $labels.job }}
+            Action: AUTOMATIC ROLLBACK TRIGGERED
+            Next Steps:
+            1. Verify rollback completed
+            2. Investigate root cause
+            3. Fix issue and redeploy
+
+      # ============================================================================
+      # LATENCY MONITORING
+      # ============================================================================
+
+      # High API Latency (>100ms) - Warning
+      - alert: DeploymentHighLatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (job, le)) > 100
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "High API latency detected on {{ $labels.job }}"
+          description: |
+            P95 latency is {{ $value }}ms (threshold: 100ms)
+            Service: {{ $labels.job }}
+            Action: Review performance metrics and identify bottlenecks
+
+      # Critical API Latency (>500ms) - Trigger Rollback
+      - alert: DeploymentCriticalLatency
+        expr: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket[5m])) by (job, le)) > 500
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+          action: rollback
+        annotations:
+          summary: "CRITICAL: API latency exceeds rollback threshold on {{ $labels.job }}"
+          description: |
+            P95 latency is {{ $value }}ms (critical threshold: 500ms)
+            Service: {{ $labels.job }}
+            Action: AUTOMATIC ROLLBACK TRIGGERED
+            Next Steps:
+            1. Verify rollback completed
+            2. Investigate performance regression
+            3. Optimize and redeploy
+
+      # ============================================================================
+      # DATABASE MONITORING
+      # ============================================================================
+
+      # Slow Database Queries (>50ms) - Warning
+      - alert: DeploymentSlowQueries
+        expr: |
+          histogram_quantile(0.95, sum(rate(db_query_duration_ms_bucket[5m])) by (le)) > 50
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "Slow database queries detected"
+          description: |
+            P95 query time is {{ $value }}ms (threshold: 50ms)
+            Action: Review query performance and indexes
+
+      # Critical Database Queries (>200ms) - Trigger Rollback
+      - alert: DeploymentCriticalQueries
+        expr: |
+          histogram_quantile(0.95, sum(rate(db_query_duration_ms_bucket[5m])) by (le)) > 200
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+          action: rollback
+        annotations:
+          summary: "CRITICAL: Database query performance exceeds threshold"
+          description: |
+            P95 query time is {{ $value }}ms (critical threshold: 200ms)
+            Action: AUTOMATIC ROLLBACK TRIGGERED
+            Next Steps:
+            1. Verify rollback completed
+            2. Investigate query performance
+            3. Optimize queries and redeploy
+
+      # Database Connection Pool Exhausted
+      - alert: DeploymentDatabaseConnectionPoolExhausted
+        expr: |
+          (db_connection_pool_used / db_connection_pool_max) > 0.9
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: |
+            {{ $value | humanizePercentage }} of connections in use
+            Action: Increase connection pool size or investigate connection leaks
+
+      # ============================================================================
+      # RESOURCE MONITORING
+      # ============================================================================
+
+      # High Memory Usage (>80%)
+      - alert: DeploymentHighMemoryUsage
+        expr: |
+          (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "High memory usage on {{ $labels.pod }}"
+          description: |
+            Memory usage is {{ $value | humanizePercentage }} (threshold: 80%)
+            Pod: {{ $labels.pod }}
+            Action: Monitor for OOM kills or increase memory limits
+
+      # Critical Memory Usage (>95%)
+      - alert: DeploymentCriticalMemoryUsage
+        expr: |
+          (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "CRITICAL: Memory usage critical on {{ $labels.pod }}"
+          description: |
+            Memory usage is {{ $value | humanizePercentage }} (critical threshold: 95%)
+            Pod: {{ $labels.pod }}
+            Action: Pod may be OOM killed. Increase memory limits immediately.
+
+      # High CPU Usage (>80%)
+      - alert: DeploymentHighCPUUsage
+        expr: |
+          (rate(container_cpu_usage_seconds_total[5m]) / container_spec_cpu_quota) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "High CPU usage on {{ $labels.pod }}"
+          description: |
+            CPU usage is {{ $value | humanizePercentage }} (threshold: 80%)
+            Pod: {{ $labels.pod }}
+            Action: Review CPU limits and optimize code
+
+      # ============================================================================
+      # DEPLOYMENT HEALTH
+      # ============================================================================
+
+      # Pod Restart Rate High
+      - alert: DeploymentHighPodRestartRate
+        expr: |
+          rate(kube_pod_container_status_restarts_total[15m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "High pod restart rate on {{ $labels.pod }}"
+          description: |
+            Pod is restarting {{ $value }} times per minute
+            Pod: {{ $labels.pod }}
+            Action: Check pod logs for crash reasons
+
+      # Pod CrashLoopBackOff
+      - alert: DeploymentPodCrashLoop
+        expr: |
+          kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "Pod in CrashLoopBackOff: {{ $labels.pod }}"
+          description: |
+            Pod: {{ $labels.pod }}
+            Namespace: {{ $labels.namespace }}
+            Action: Check pod logs and fix startup issue
+
+      # Deployment Replicas Mismatch
+      - alert: DeploymentReplicasMismatch
+        expr: |
+          kube_deployment_spec_replicas != kube_deployment_status_replicas_available
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "Deployment replicas mismatch: {{ $labels.deployment }}"
+          description: |
+            Desired: {{ $value }} replicas
+            Available: {{ $value }} replicas
+            Deployment: {{ $labels.deployment }}
+            Action: Check pod events and logs
+
+      # ============================================================================
+      # DEPLOYMENT PROCESS MONITORING
+      # ============================================================================
+
+      # Deployment Rollout Stuck
+      - alert: DeploymentRolloutStuck
+        expr: |
+          kube_deployment_status_condition{condition="Progressing",status="false"} == 1
+        for: 10m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "Deployment rollout stuck: {{ $labels.deployment }}"
+          description: |
+            Deployment: {{ $labels.deployment }}
+            Namespace: {{ $labels.namespace }}
+            Action: Check pod events and logs for errors
+
+      # Deployment Generation Mismatch
+      - alert: DeploymentGenerationMismatch
+        expr: |
+          kube_deployment_status_observed_generation != kube_deployment_metadata_generation
+        for: 5m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "Deployment generation mismatch: {{ $labels.deployment }}"
+          description: |
+            Deployment: {{ $labels.deployment }}
+            Action: Deployment update may be in progress or stuck
+
+      # ============================================================================
+      # TRAFFIC MONITORING
+      # ============================================================================
+
+      # Sudden Traffic Drop (>50% decrease)
+      - alert: DeploymentTrafficDrop
+        expr: |
+          (rate(http_requests_total[5m]) / rate(http_requests_total[5m] offset 10m)) < 0.5
+        for: 2m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "Sudden traffic drop detected"
+          description: |
+            Traffic decreased by {{ $value | humanizePercentage }}
+            Action: Check if traffic is being routed correctly
+
+      # Sudden Traffic Spike (>200% increase)
+      - alert: DeploymentTrafficSpike
+        expr: |
+          (rate(http_requests_total[5m]) / rate(http_requests_total[5m] offset 10m)) > 2
+        for: 2m
+        labels:
+          severity: warning
+          component: deployment
+        annotations:
+          summary: "Sudden traffic spike detected"
+          description: |
+            Traffic increased by {{ $value | humanizePercentage }}
+            Action: Monitor system capacity and performance
+
+      # ============================================================================
+      # DEPLOYMENT VALIDATION
+      # ============================================================================
+
+      # Service Endpoint Unavailable
+      - alert: DeploymentServiceEndpointUnavailable
+        expr: |
+          up{job=~".*-service|.*-gateway"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "Service endpoint unavailable: {{ $labels.job }}"
+          description: |
+            Service: {{ $labels.job }}
+            Action: Check service health and logs
+
+      # Health Check Failing
+      - alert: DeploymentHealthCheckFailing
+        expr: |
+          rate(health_check_failures_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+          component: deployment
+        annotations:
+          summary: "Health check failing on {{ $labels.service }}"
+          description: |
+            Service: {{ $labels.service }}
+            Failure rate: {{ $value }} per second
+            Action: Investigate service health
+

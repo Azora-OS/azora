@@ -9,6 +9,6 @@ beforeEach(() => {
   mockReset(prismaMock);
 });
 
-export const createMockPrisma = (): MockPrismaClient => {
+export const createMockPrismaClient = (): MockPrismaClient => {
   return mockDeep<PrismaClient>() as MockPrismaClient;
 };

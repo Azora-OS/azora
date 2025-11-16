@@ -1,232 +1,231 @@
 # 📚 Azora OS Documentation Index
 
-**Last Updated**: November 12, 2025  
-**Version**: 3.0.0
+Complete guide to all Azora OS documentation.
 
-## 🎯 Quick Start Guides
+---
 
-### For Developers
-- [Developer Guide](./DEVELOPER-GUIDE.md) - Complete development setup
-- [Build Instructions](./BUILD-INSTRUCTIONS.md) - How to build the project
-- [Contributing Guide](../CONTRIBUTING.md) - Contribution guidelines
+## 🚀 Getting Started
 
-### For Deployment
-- [Deployment Guide](../DEPLOY-INSTRUCTIONS.md) - Step-by-step deployment
-- [Vercel Deployment](../VERCEL-DEPLOYMENT.md) - Vercel-specific guide
-- [Production Guide](../production/DEPLOYMENT-GUIDE.md) - Production deployment
+### New to Azora OS?
+1. **[README](../README.md)** - Project overview and quick start
+2. **[Onboarding Guide](./ONBOARDING.md)** - Developer onboarding (30 min)
+3. **[Quick Start](../QUICK-START.md)** - Get running in 5 minutes
 
-### For Users
-- [User Guide](./user-guide.md) - End-user documentation
-- [Community Quick Start](./COMMUNITY_QUICK_START.md) - Community onboarding
-- [Support](../SUPPORT.md) - Getting help
+---
 
-## 🏗️ Architecture Documentation
+## 🏗️ Architecture & Design
 
 ### System Architecture
-- [Architecture Overview](./ARCHITECTURE.md) - System design
-- [Azora Architecture](./AZORA-ARCHITECTURE.md) - Platform architecture
-- [Comprehensive Architecture](./AZORA-COMPREHENSIVE-ARCHITECTURE.md) - Detailed design
-- [AGI Architecture](./AGI_ARCHITECTURE.md) - AI system design
+- **[Architecture Overview](./ARCHITECTURE.md)** - Complete system design
+- **[Database Guide](./DATABASE-GUIDE.md)** - Database architecture
+- **[API Documentation](./API-DOCUMENTATION.md)** - Complete API reference
 
-### Component Architecture
-- [Design System](./DESIGN-SYSTEM-GUIDE.md) - UI/UX architecture
-- [Elara Design](./ELARA-DESIGN-ARCHITECTURE.md) - AI assistant design
-- [Repository Structure](./REPOSITORY-STRUCTURE.md) - Code organization
+### Design System
+- **[Design System](./DESIGN-SYSTEM.md)** - UI/UX guidelines (Coming soon)
+- **[Azora Identity](../AZORA-IDENTITY.md)** - Brand and philosophy
 
-## 📡 API Documentation
+---
 
-### API Guides
-- [API Documentation](./API_DOCUMENTATION.md) - Complete API reference
-- [API Endpoints](./api/) - Detailed endpoint docs
-
-### Integration
-- [Database Setup](./DATABASE_SETUP_GUIDE.md) - Database configuration
-- [Microsoft 365 Setup](./MICROSOFT_365_SETUP_GUIDE.md) - M365 integration
-- [Internationalization](./INTERNATIONALIZATION.md) - i18n support
-
-## 🔒 Security & Compliance
-
-### Security
-- [Security Guide](./SECURITY.md) - Security best practices
-- [Security Audit](../production/SECURITY-AUDIT.md) - Security assessment
-- [TLS/mTLS Configuration](./TLS-MTLS-CONFIGURATION.md) - Encryption setup
-
-### Compliance
-- [Legal Disclaimer](./LEGAL-DISCLAIMER.md) - Legal information
-- [Code of Conduct](./CODE_OF_CONDUCT.md) - Community standards
-- [Compliance Reports](./compliance-reports/) - Regulatory compliance
-
-## 🛡️ Constitutional Framework
-
-### Core Constitution
-- **[Azora Constitution](./AZORA-CONSTITUTION.md)** - Complete constitutional framework
-- [Constitution Restoration Report](./CONSTITUTION-RESTORED.md) - Restoration documentation
-- [Elara Omega Constitution](../core/system-core/ELARA_OMEGA_CONSTITUTION.ts) - AI consciousness principles
-
-### Constitutional Implementation
-- [Constitutional Truth Framework](../Azora Master UI Template/lib/constitutional-truth.ts) - Truth verification
-- [Ubuntu Engine](../Azora Master UI Template/lib/ubuntu-engine.ts) - Ubuntu economics
-- [Constitutional AI Governance](../services/constitutional-ai-governance.ts) - AI governance service
-
-## 💰 Business Documentation
-
-### Strategy
-- [Azora Pricing Strategy](./AZORA-PRICING-STRATEGY.md) - Pricing model
-- [Market Analysis](./market-analysis-2025.md) - Market research
-- [Prospectus](./prospectus.md) - Business prospectus
-
-### Financial
-- [Azora Pay](./AZORA_PAY.md) - Payment system
-- [Treasury Report](./AZORA_TREASURY_REPORT_OCTOBER_2025.md) - Financial status
-- [Genesis Treasury](./GENESIS_TREASURY_REPORT_MONTH_0.md) - Initial funding
-
-### Marketing
-- [Community Engagement](./COMMUNITY_ENGAGEMENT_PLAN.md) - Community strategy
-- [Launch Announcement](./COMMUNITY_LAUNCH_ANNOUNCEMENT.md) - Launch plan
-- [Marketing Materials](./marketing/) - Marketing docs
-
-## 🎓 Education Platform
-
-### Platform Docs
-- [Azora Universal Learning](./AZORA-UNIVERSAL-LEARNING-PLATFORM.md) - Learning platform
-- [Azora Sapiens](./AZORA-SAPIENS-README.md) - AI tutor system
-- [Education System](./AZORA-ES-COMPREHENSIVE-SYSTEM-OVERVIEW.md) - Education overview
-
-### Features
-- [Proof of Knowledge](./PROOF_OF_KNOWLEDGE_MVP.md) - PoK system
-- [Azora Mint & Mine](./AZORA_MINT_MINE_README_v2.md) - Token mining
-- [Mining Setup](./MINING_SETUP_README.md) - Mining configuration
-
-## 🤖 AI & Technology
-
-### AI Systems
-- [AI Executive Leadership](./AI-EXECUTIVE-LEADERSHIP-SYSTEM.md) - AI governance
-- [Elazar AI OS](./ELAZAR_AI_OS_ARCHITECTURE.md) - AI operating system
-- [Elazar OS](./ELAZAR_OS_README.md) - OS documentation
-
-### Advanced Features
-- [Singularity Initiative](./SINGULARITY-INITIATIVE.md) - AGI development
-- [Chronicle Protocol](./CHRONICLE-PROTOCOL.md) - Data protocol
-- [Azora Sovereignty](./AZORA-SOVEREIGNTY-PROTOCOL.md) - Sovereignty system
-
-## 🌍 Global Initiatives
-
-### G20 Engagement
-- [G20 Strategy](./G20_ENGAGEMENT_STRATEGY.md) - G20 engagement
-- [G20 Timeline](./G20_SUMMIT_TIMELINE.md) - Summit timeline
-- [G20 Briefings](./G20_BRIEFING_TEMPLATE.md) - Briefing templates
-
-### Embassy Invitations
-- [Embassy Invitation Template](./EMBASSY_INVITATION_EMAIL.md) - Template
-- Country-specific invitations in `/docs/` (21 countries)
-
-## 📊 Reports & Analysis
-
-### System Reports
-- [System Overview](./SYSTEM_OVERVIEW.md) - Platform overview
-- [Production Readiness](../PRODUCTION-READY-FINAL.md) - Production status
-- [Performance](./PERFORMANCE.md) - Performance metrics
-
-### Progress Reports
-- [Transformation Summary](./TRANSFORMATION_SUMMARY.md) - Platform evolution
-- [Final Summary](./FINAL-SUMMARY.md) - Project summary
-- [Cleanup Summary](./CLEANUP-SUMMARY-20251106.md) - Cleanup report
-
-## 🛠️ Development Guides
+## 💻 Development
 
 ### Setup & Configuration
-- [Infrastructure Setup](./INFRASTRUCTURE-SETUP.md) - Infrastructure guide
-- [Deployment Automation](../deployment/DEPLOYMENT-AUTOMATION-COMPLETE.md) - CI/CD
-- [Operations Guide](./operations-guide.md) - Operations manual
+- **[Onboarding](./ONBOARDING.md)** - New developer guide
+- **[Environments](./ENVIRONMENTS.md)** - Environment variables
+- **[Database Quick Start](../DATABASE-QUICK-START.md)** - Database setup
 
-### Testing & Quality
-- [Testing Guide](../tests/README.md) - Testing documentation
-- [Web Testing](./web-testing/) - Web testing docs
-- [Performance Testing](./PERFORMANCE.md) - Performance guide
-
-## 📖 Reference Documentation
-
-### Platform Features
-- [Azora Codex](./THE_AZORA_CODEX.md) - Platform codex
-- [Azora Library Sources](./AZORA-LIBRARY-SOURCES.md) - Library system
-- [Spark Complete Guide](./SPARK-COMPLETE-GUIDE.md) - Spark feature
-
-### UI/UX
-- [Design System](./design/DESIGN-SYSTEM.md) - Complete design system
-- [Component Library](./design/COMPONENT-LIBRARY.md) - 60+ components
-- [Accessibility Guidelines](./design/ACCESSIBILITY.md) - WCAG 2.1 AA compliance
-- [Mobile-First Strategy](./design/MOBILE-FIRST.md) - 2G optimization
-- [UX Patterns](./design/UX-PATTERNS.md) - User flows and patterns
-- [Brand Guidelines](./design/BRAND-GUIDELINES.md) - Brand identity
-- [Premium UI](./PREMIUM-UI-COMPLETE.md) - Premium features
-
-## 🔄 Migration & Upgrade
-
-### Migration Guides
-- [Migration Guide](./MIGRATION-GUIDE.md) - Migration instructions
-- [Upgrade Guide](./PREMIUM-UI-UPGRADE-GUIDE.md) - Upgrade process
-- [Restructuring Report](./RESTRUCTURING-COMPLETION-REPORT.md) - Restructuring
-
-## 📝 Project Management
-
-### Status & Progress
-- [Current Status](../STATUS.md) - Current state
-- [Roadmap](./ROADMAP.md) - Future plans
-- [Changelog](./CHANGELOG.md) - Version history
-
-### Team & Collaboration
-- [Leadership Structure](../LEADERSHIP-STRUCTURE.md) - Team structure
-- [Agent Work Assignments](../AGENT-WORK-ASSIGNMENTS.md) - Task assignments
-- [AI Collaboration Rules](../AI-COLLABORATION-RULES.md) - Collaboration guidelines
-
-## 🎯 Specialized Documentation
-
-### Observability
-- [LLM Observability](./llm-observability/) - LLM monitoring
-- [Observability](./observability/) - System monitoring
-- [Visualization](./visualization/) - Data visualization
-
-### Research
-- [Research Papers](./research/) - Research documentation
-- [Institutional Comparison](./INSTITUTIONAL-COMPARISON-REAL-INSTITUTIONS.md) - Analysis
-
-## 📄 Legal & Licensing
-
-- [License](./LICENSE) - Software license
-- [Legal Disclaimer](./LEGAL-DISCLAIMER.md) - Legal information
-- [Code of Conduct](./CODE_OF_CONDUCT.md) - Community standards
+### Development Guides
+- **[Developer Guide](./DEVELOPER-GUIDE.md)** - Complete dev guide
+- **[Testing Guide](./TESTING-GUIDE.md)** - Testing best practices
+- **[Contributing](../CONTRIBUTING.md)** - How to contribute
 
 ---
 
-## 🔍 Finding Documentation
+## 🧪 Testing & Quality
 
-### By Topic
-- **Getting Started**: Developer Guide, Build Instructions
-- **Deployment**: Deployment Guide, Vercel Guide, Production Guide
-- **API**: API Documentation, API Endpoints
-- **Security**: Security Guide, Security Audit
-- **Business**: Pricing Strategy, Market Analysis
-- **Education**: Universal Learning, Sapiens, PoK
-- **AI**: AI Executive Leadership, Elazar AI OS
+### Testing Documentation
+- **[Testing Guide](./TESTING-GUIDE.md)** - Comprehensive testing guide
+- **[Testing Quick Reference](../.kiro/TESTING-QUICK-REFERENCE.md)** - Command cheat sheet
+- **[QA Checklist](../.kiro/QA-CHECKLIST.md)** - Pre-deployment validation
+- **[Test Utils README](../packages/test-utils/README.md)** - Test utilities
 
-### By Role
-- **Developers**: Developer Guide, API Docs, Architecture
-- **DevOps**: Deployment Guide, Infrastructure Setup, Operations
-- **Business**: Pricing Strategy, Market Analysis, Prospectus
-- **Users**: User Guide, Community Quick Start, Support
-- **Educators**: Education System, Sapiens, Learning Platform
-
-### By Status
-- **Production Ready**: Production Guide, Security Audit, API Docs
-- **In Development**: Singularity Initiative, Advanced Features
-- **Planning**: Roadmap, G20 Strategy
+### Quality Assurance
+- **[QA Complete](../QA-COMPLETE.md)** - QA implementation summary
+- **[Gap Analysis](../.kiro/QA-GAP-ANALYSIS.md)** - QA gaps identified
 
 ---
 
-**Total Documentation Files**: 874+  
-**Core Guides**: 50+  
-**API Endpoints**: 100+  
-**Architecture Docs**: 20+
+## 🚀 Deployment & Operations
 
-**Built with Ubuntu Philosophy** 💚  
-*"I am because we are"*
+### Deployment
+- **[Deployment Guide](./deployment/)** - Production deployment
+- **[Troubleshooting](./TROUBLESHOOTING.md)** - Common issues
+- **[SLO](./SLO.md)** - Service level objectives
+
+### Monitoring
+- **[Health Monitoring](./MONITORING.md)** - System monitoring (Coming soon)
+- **[Logging](./LOGGING.md)** - Logging best practices (Coming soon)
+
+---
+
+## 🔐 Security
+
+### Security Documentation
+- **[Security Policy](./SECURITY.md)** - Security guidelines
+- **[Security Headers](./SECURITY-HEADERS.md)** - HTTP security (Coming soon)
+- **[Auth Service Security](../services/auth-service/SECURITY.md)** - Auth security
+
+---
+
+## 📊 Status & Progress
+
+### Project Status
+- **[Honest Status](../HONEST-STATUS.md)** - Current project status
+- **[Reality Audit](../REALITY-COMPLETE-AUDIT.md)** - Complete audit
+- **[Strategic Plan](../STRATEGIC-ACTION-PLAN.md)** - Strategic roadmap
+
+### Implementation
+- **[Integration Complete](../INTEGRATION-COMPLETE.md)** - What works now
+- **[Implementation Priority](../IMPLEMENTATION-PRIORITY.md)** - Action plan
+- **[Database Complete](../DATABASE-SCHEMAS-COMPLETE.md)** - Database status
+
+---
+
+## 🎓 Service-Specific Docs
+
+### Auth Service
+- **[Auth Service README](../services/auth-service/README.md)**
+- **[Security Guide](../services/auth-service/SECURITY.md)**
+
+### Education Service
+- **[Education README](../services/azora-education/README.md)**
+
+### Mint Service
+- **[Mint README](../services/azora-mint/README.md)**
+- **[API Documentation](../services/azora-mint/API-DOCUMENTATION.md)**
+- **[Quick Start](../services/azora-mint/QUICK-START.md)**
+
+### Forge Service
+- **[Forge README](../services/azora-forge/README.md)**
+
+### AI Family Service
+- **[AI Family README](../services/ai-family-service/README.md)**
+- **[Personality Engines](../services/ai-family-service/PERSONALITY-ENGINES.md)**
+
+---
+
+## 🤖 Agent Documentation
+
+### Agent Coordination
+- **[Agent Coordination Brief](../.kiro/AGENT-COORDINATION-BRIEF.md)**
+- **[Kiro Directory README](../.kiro/README.md)**
+
+### Q-Testing Agent
+- **[Master Plan](../.kiro/Q-TESTING-MASTER-PLAN.md)**
+- **[Deliverables](../.kiro/Q-TESTING-DELIVERABLES.md)**
+- **[Completion Report](../Q-TESTING-COMPLETE.md)**
+- **[Visual Summary](../.kiro/Q-TESTING-VISUAL-SUMMARY.md)**
+
+---
+
+## 📖 Reference
+
+### API Reference
+- **[API Documentation](./API-DOCUMENTATION.md)** - Complete API docs
+- **[OpenAPI Spec](./api/openapi.yaml)** - OpenAPI 3.0 spec
+- **[Postman Collection](./api/postman-collection.json)** - API tests
+
+### Database Reference
+- **[Database Guide](./DATABASE-GUIDE.md)** - Complete DB docs
+- **[Database Status](./DATABASE-STATUS.md)** - Implementation status
+- **[Migrations Guide](./MIGRATIONS.md)** - Schema migrations
+
+---
+
+## 🎯 By Role
+
+### For Developers
+1. [Onboarding Guide](./ONBOARDING.md)
+2. [Developer Guide](./DEVELOPER-GUIDE.md)
+3. [Testing Guide](./TESTING-GUIDE.md)
+4. [API Documentation](./API-DOCUMENTATION.md)
+5. [Troubleshooting](./TROUBLESHOOTING.md)
+
+### For QA Engineers
+1. [Testing Guide](./TESTING-GUIDE.md)
+2. [QA Checklist](../.kiro/QA-CHECKLIST.md)
+3. [Test Utils](../packages/test-utils/README.md)
+4. [Gap Analysis](../.kiro/QA-GAP-ANALYSIS.md)
+
+### For DevOps
+1. [Deployment Guide](./deployment/)
+2. [Environments](./ENVIRONMENTS.md)
+3. [SLO](./SLO.md)
+4. [Troubleshooting](./TROUBLESHOOTING.md)
+
+### For Product Managers
+1. [README](../README.md)
+2. [Honest Status](../HONEST-STATUS.md)
+3. [Strategic Plan](../STRATEGIC-ACTION-PLAN.md)
+4. [Architecture](./ARCHITECTURE.md)
+
+---
+
+## 🔍 Quick Search
+
+### Common Topics
+- **Setup:** [Onboarding](./ONBOARDING.md), [Quick Start](../QUICK-START.md)
+- **Testing:** [Testing Guide](./TESTING-GUIDE.md), [QA Checklist](../.kiro/QA-CHECKLIST.md)
+- **API:** [API Docs](./API-DOCUMENTATION.md), [OpenAPI](./api/openapi.yaml)
+- **Database:** [DB Guide](./DATABASE-GUIDE.md), [DB Quick Start](../DATABASE-QUICK-START.md)
+- **Deployment:** [Deployment Guide](./deployment/), [Environments](./ENVIRONMENTS.md)
+- **Security:** [Security Policy](./SECURITY.md), [Auth Security](../services/auth-service/SECURITY.md)
+
+---
+
+## 📝 Documentation Status
+
+| Document | Status | Last Updated |
+|----------|--------|--------------|
+| README | ✅ Complete | 2025-01 |
+| Architecture | ✅ Complete | 2025-01 |
+| Onboarding | ✅ Complete | 2025-01 |
+| Environments | ✅ Complete | 2025-01 |
+| SLO | ✅ Complete | 2025-01 |
+| Testing Guide | ✅ Complete | 2025-01 |
+| API Docs | ✅ Complete | 2024-12 |
+| Database Guide | ✅ Complete | 2024-12 |
+| Deployment | ✅ Complete | 2024-12 |
+| Troubleshooting | ✅ Complete | 2024-12 |
+| Design System | 🟡 Pending | - |
+| Monitoring | 🟡 Pending | - |
+| Logging | 🟡 Pending | - |
+
+---
+
+## 🤝 Contributing to Docs
+
+### How to Update Docs
+1. Find the relevant document
+2. Make your changes
+3. Follow markdown style guide
+4. Update this index if needed
+5. Create PR with "docs:" prefix
+
+### Documentation Standards
+- Use clear, concise language
+- Include code examples
+- Add diagrams where helpful
+- Keep formatting consistent
+- Update regularly
+
+---
+
+## 📞 Need Help?
+
+- **Can't find what you need?** Create an issue
+- **Found an error?** Submit a PR
+- **Have a question?** Ask in #docs channel
+
+---
+
+**Documentation is code! Keep it updated! 📚**

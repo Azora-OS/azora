@@ -6,11 +6,21 @@ module.exports = {
     'services/**/*.{js,ts}',
     'packages/**/*.{js,ts}',
     '!**/*.test.{js,ts}',
-    '!**/node_modules/**'
+    '!**/*.spec.{js,ts}',
+    '!**/node_modules/**',
+    '!**/dist/**'
   ],
   testMatch: [
     '**/services/**/__tests__/**/*.test.{js,ts}',
     '**/tests/**/*.test.{js,ts}'
+  ],
+  coverageReporters: [
+    'text',
+    'text-summary',
+    'html',
+    'json',
+    'lcov',
+    'json-summary'
   ],
   coverageThreshold: {
     global: {
@@ -20,5 +30,7 @@ module.exports = {
       statements: 80
     }
   },
-  testTimeout: 15000
+  testTimeout: 15000,
+  verbose: true,
+  bail: false
 };

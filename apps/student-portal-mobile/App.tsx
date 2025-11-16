@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { useNotifications } from './src/hooks/useNotifications';
+import { setupNetworkListener } from './src/services/offlineSync';
 import LoginScreen from './src/screens/LoginScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import CoursesScreen from './src/screens/CoursesScreen';
@@ -15,6 +16,14 @@ const Stack = createNativeStackNavigator();
 
 function MainTabs() {
   useNotifications(); // Initialize notifications
+  
+  useEffect(() => {
+    // Set up network listener for offline sync
+    const unsubscribe = setupNetworkListener();
+    return () => {
+      unsubscribe?.();
+    };
+  }, []);
   
   return (
     <Tab.Navigator screenOptions={{

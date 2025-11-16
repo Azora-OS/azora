@@ -1,8 +1,7 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
-const helmet = require('helmet');
 const compression = require('compression');
-const cors = require('cors');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler } = require('../shared/middleware');
 require('dotenv').config();
 
 const prisma = new PrismaClient();
@@ -10,12 +9,13 @@ const app = express();
 const PORT = process.env.PORT || 3010;
 const SERVICE_NAME = process.env.SERVICE_NAME || 'azora-education';
 
-// Middleware
-app.use(helmet());
-app.use(cors());
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(createRateLimiter(100));
 
 // Request logging
 app.use((req, res, next) => {
@@ -1063,6 +1063,9 @@ app.use((req, res) => {
     error: 'Endpoint not found' 
   });
 });
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {

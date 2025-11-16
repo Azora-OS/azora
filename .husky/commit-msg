@@ -1,10 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Basic commit message validation
-commit_msg=$(cat "$1")
-if [ ${#commit_msg} -lt 10 ]; then
-  echo "❌ Commit message must be at least 10 characters"
-  exit 1
-fi
-
+npx --no -- commitlint --edit ${1}

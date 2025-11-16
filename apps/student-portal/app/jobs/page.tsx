@@ -190,20 +190,4 @@ export default function JobsPage() {
       </div>
     </div>
   );
-}und</h3>
-              <p className="text-slate-400">Try adjusting your search criteria or check back later for new opportunities.</p>
-            </Card>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}und</h3>
-              <p className="text-slate-400">Try adjusting your search criteria</p>
-            </Card>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 }

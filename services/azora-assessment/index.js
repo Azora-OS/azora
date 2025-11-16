@@ -1,8 +1,7 @@
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
 const { PrismaClient } = require('@prisma/client');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler } = require('../shared/middleware');
 require('dotenv').config();
 
 const app = express();
@@ -12,11 +11,12 @@ const SERVICE_NAME = process.env.SERVICE_NAME || 'azora-assessment';
 // Initialize Prisma Client
 const prisma = new PrismaClient();
 
-// Middleware
-app.use(helmet());
-app.use(cors());
+// Security middleware stack
+app.use(helmetConfig);
+app.use(corsConfig);
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
+app.use(createRateLimiter(100));
 
 // Request logging
 app.use((req, res, next) => {
@@ -442,6 +442,16 @@ function autoGradeAssessment(questions, answers) {
   });
   
   return { score, maxScore };
+}
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
+
+// Start server
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ ${SERVICE_NAME} running on port ${PORT}`);
+  });
 }
 
 // Export the autoGradeAssessment function for testing

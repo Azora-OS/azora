@@ -96,18 +96,68 @@ git push origin feature/your-feature-name
 - Keep functions small
 
 ### Commit Messages
-Format: `type: description`
+
+We follow **Conventional Commits** format for clear, searchable git history.
+
+**Format**: `type(scope): subject`
 
 **Types**:
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation
-- `style`: Formatting
+- `style`: Formatting (no code change)
 - `refactor`: Code restructuring
+- `perf`: Performance improvement
 - `test`: Tests
+- `build`: Build system changes
+- `ci`: CI/CD changes
 - `chore`: Maintenance
+- `revert`: Revert previous commit
+- `ubuntu`: Ubuntu philosophy integration
 
-**Example**: `feat: add AI tutor personality system`
+**Scopes**:
+- `education`: Education services
+- `finance`: Finance/payment services
+- `marketplace`: Marketplace features
+- `security`: Security features
+- `infrastructure`: Infrastructure changes
+- `ai-family`: AI family services
+- `governance`: Governance features
+- `docs`: Documentation
+- `deps`: Dependency updates
+
+**Examples**:
+
+```bash
+# New feature
+git commit -m "feat(education): add AI tutor personality system"
+
+# Bug fix
+git commit -m "fix(finance): resolve payment processing timeout"
+
+# Documentation
+git commit -m "docs: update API authentication guide"
+
+# Performance improvement
+git commit -m "perf(infrastructure): optimize database query caching"
+
+# With body (for complex changes)
+git commit -m "feat(education): add AI tutor personality system
+
+- Implement personality engine with 5 core traits
+- Add trait persistence to database
+- Create personality configuration UI
+- Fixes #123"
+```
+
+**Rules**:
+- Capitalize subject line
+- Use imperative mood ("add" not "added")
+- Don't end subject with period
+- Limit subject to 100 characters
+- Separate subject from body with blank line
+- Use body to explain what and why, not how
+- Reference issues: "Fixes #123" or "Closes #456"
 
 ### Pull Requests
 - Clear title and description

@@ -1,0 +1,31 @@
+{
+  "name": "@azora/ai-ethics-monitor",
+  "version": "1.0.0",
+  "description": "AI Ethics Monitor - Constitutional AI compliance monitoring service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
+  },
+  "keywords": [
+    "azora",
+    "ai",
+    "ethics",
+    "constitutional-ai",
+    "monitoring"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

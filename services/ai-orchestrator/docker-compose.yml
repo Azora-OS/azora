@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  orchestrator-db:
+    image: postgres:15
+    container_name: azora-orchestrator-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_orchestrator
+    ports:
+      - "5442:5432"
+    volumes:
+      - orchestrator_db_data:/var/lib/postgresql/data
+    networks:
+      - orchestrator-network
+
+  orchestrator-service:
+    build: .
+    container_name: azora-orchestrator-service
+    ports:
+      - "3014:3014"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@orchestrator-db:5432/azora_orchestrator
+      - PORT=3014
+      - NODE_ENV=development
+    depends_on:
+      - orchestrator-db
+    networks:
+      - orchestrator-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  orchestrator_db_data:
+
+networks:
+  orchestrator-network:
+    driver: bridge
