@@ -1,0 +1,7 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'azora-pricing', ubuntu: 'I serve because we prosper together' });
+});
+module.exports = app;

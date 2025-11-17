@@ -9,6 +9,11 @@ import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
+import { 
+  integrateConstitutionalAI, 
+  ConstitutionalIntegration,
+  ConstitutionalIntegrationConfig 
+} from './api-gateway-constitutional-integration';
 
 interface ServiceRoute {
   path: string;
@@ -26,10 +31,21 @@ const AZORA_SERVICES: ServiceRoute[] = [
   { path: '/api/arbiter', target: 'http://localhost:3025', port: 3025 },
 ];
 
+export interface AzoraAPIGatewayConfig {
+  enableConstitutionalAI?: boolean;
+  constitutionalConfig?: Partial<ConstitutionalIntegrationConfig>;
+}
+
 export class AzoraAPIGateway {
   private app: express.Application;
+  private constitutionalIntegration?: ConstitutionalIntegration;
+  private config: AzoraAPIGatewayConfig;
 
-  constructor() {
+  constructor(config: AzoraAPIGatewayConfig = {}) {
+    this.config = {
+      enableConstitutionalAI: config.enableConstitutionalAI ?? true,
+      constitutionalConfig: config.constitutionalConfig
+    };
     this.app = express();
     this.setupMiddleware();
     this.setupRoutes();
@@ -49,9 +65,33 @@ export class AzoraAPIGateway {
       message: 'Too many requests from this IP'
     }));
 
+    // Constitutional AI Integration
+    if (this.config.enableConstitutionalAI) {
+      try {
+        this.constitutionalIntegration = integrateConstitutionalAI(
+          this.app,
+          this.config.constitutionalConfig
+        );
+        console.log('✅ Constitutional AI validation enabled');
+      } catch (error) {
+        console.error('❌ Failed to integrate Constitutional AI:', error);
+        console.warn('⚠️  Continuing without Constitutional AI validation');
+      }
+    } else {
+      console.log('ℹ️  Constitutional AI validation disabled');
+    }
+
     // Health check
     this.app.get('/health', (req, res) => {
-      res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+      const constitutionalStatus = this.constitutionalIntegration?.isReady() 
+        ? 'enabled' 
+        : 'disabled';
+      
+      res.json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        constitutional: constitutionalStatus
+      });
     });
   }
 
@@ -73,7 +113,34 @@ export class AzoraAPIGateway {
     this.app.listen(port, () => {
       console.log(`🚀 Azora API Gateway running on port ${port}`);
       console.log(`📡 Proxying ${AZORA_SERVICES.length} services`);
+      
+      if (this.constitutionalIntegration?.isReady()) {
+        console.log('🛡️  Constitutional AI protection active');
+      }
     });
+  }
+
+  /**
+   * Get Constitutional AI integration instance
+   */
+  getConstitutionalIntegration(): ConstitutionalIntegration | undefined {
+    return this.constitutionalIntegration;
+  }
+
+  /**
+   * Get Express app instance
+   */
+  getApp(): express.Application {
+    return this.app;
+  }
+
+  /**
+   * Shutdown gateway gracefully
+   */
+  async shutdown(): Promise<void> {
+    if (this.constitutionalIntegration) {
+      await this.constitutionalIntegration.shutdown();
+    }
   }
 }
 

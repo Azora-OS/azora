@@ -345,295 +345,348 @@
    - Test helpers
    - Fixture generators
 
-4. **Test Scripts**
-   - Add test scripts to root package.json
-   - Configure parallel test execution
-   - Setup coverage reporting
-   - Add pre-commit test hooks
-
-5. **CI Test Integration**
-   - Ensure tests run in GitHub Actions
-   - Configure test artifacts
-   - Setup coverage reporting
-   - Add test status badges
+4. **Test Structure**
+   - Organize tests: `tests/unit|integration|e2e`
+   - Create test templates
+   - Setup test data
 
 **Success Criteria:**
-- ✅ Jest configured with 80% threshold
-- ✅ Playwright setup complete
+- ✅ Jest coverage threshold enforced
+- ✅ Playwright configured
 - ✅ Test utilities package created
-- ✅ Test scripts standardized
-- ✅ CI integration working
+- ✅ Test structure organized
+- ✅ Example tests pass
 
 ---
 
-## 📋 Phase 3: NICE-TO-HAVE (3 Days) - Polish & Optimization
+## 📋 Phase 3: ENHANCEMENT (3 Days) - Optimizes Operations
 
-### Day 1: Observability (Q-Infrastructure)
+### Day 1-2: Observability (Q-Infrastructure)
 
 **Agent:** Q-Infrastructure  
-**Task:** Implement monitoring and logging
+**Task:** Implement observability
 
 **Deliverables:**
 
-1. **Prometheus Metrics**
-   - Install prom-client in all services
-   - Add custom metrics
-   - Configure metric endpoints
-   - Create metrics documentation
+1. **Structured Logging**
+   - Winston logger configuration
+   - Log levels
+   - Log formatting
+   - Log rotation
 
-2. **Structured Logging**
-   - Install winston in all services
-   - Standardize log format
-   - Add correlation IDs
-   - Configure log levels
+2. **Distributed Tracing**
+   - OpenTelemetry setup
+   - Trace context propagation
+   - Jaeger integration
 
-3. **Health Checks**
-   - Add /health endpoint to all services
-   - Add /ready endpoint to all services
-   - Include dependency checks
-   - Add metrics to health checks
+3. **Prometheus Metrics**
+   - Metric definitions
+   - Prometheus exporter
+   - Grafana dashboards
 
-4. **Grafana Dashboards**
-   - Create docker-compose.monitoring.yml
-   - Setup Prometheus + Grafana
-   - Create service dashboards
-   - Create alert rules
+4. **Health Checks**
+   - Standardized health endpoints
+   - Dependency checks
+   - Database connectivity
 
 **Success Criteria:**
-- ✅ Metrics exposed on all services
-- ✅ Structured logging implemented
-- ✅ Health checks on all services
+- ✅ Structured logging in all services
+- ✅ Distributed tracing configured
+- ✅ Prometheus metrics exported
+- ✅ Health checks implemented
 - ✅ Grafana dashboards created
 
 ---
 
-### Day 2: Frontend Polish (Kombai-Frontend)
+### Day 3: Dependency Management (Q-Infrastructure)
+
+**Agent:** Q-Infrastructure  
+**Task:** Set up dependency management
+
+**Deliverables:**
+
+1. **Renovate Configuration**
+   - Create renovate.json
+   - Configure update schedules
+   - Set up auto-merge rules
+
+2. **Security Scanning**
+   - npm audit configuration
+   - Snyk integration
+   - OWASP dependency check
+
+3. **License Compliance**
+   - License checker configuration
+   - Approved licenses list
+   - License documentation
+
+**Success Criteria:**
+- ✅ Renovate configured
+- ✅ Security scanning active
+- ✅ License compliance checked
+- ✅ Automated updates working
+
+---
+
+## 🎨 Frontend Tasks (Kombai-Frontend)
 
 **Agent:** Kombai-Frontend  
-**Task:** Polish UI components and design system
+**Task:** Frontend infrastructure and components
+
+**Timeline:** Parallel with backend (Days 1-5)
 
 **Deliverables:**
 
-1. **Design System Audit**
-   - Review all components
-   - Ensure consistency
-   - Fix accessibility issues
-   - Update documentation
+1. **Design System Components**
+   - Button, Input, Modal, Card, etc.
+   - Storybook stories
+   - Accessibility compliance
+   - Responsive design
 
-2. **Component Library**
-   - Create Storybook setup
-   - Document all components
-   - Add usage examples
-   - Create component tests
+2. **Frontend Testing**
+   - Component tests
+   - Integration tests
+   - Visual regression tests
+   - Accessibility tests
 
-3. **Responsive Design**
-   - Audit mobile responsiveness
-   - Fix layout issues
-   - Test on multiple devices
-   - Add responsive utilities
+3. **Frontend Documentation**
+   - Component library docs
+   - Design tokens
+   - Usage examples
+   - Accessibility guidelines
 
-4. **Performance Optimization**
-   - Lazy load components
-   - Optimize images
-   - Reduce bundle size
-   - Add loading states
-
-5. **Accessibility**
-   - ARIA labels
-   - Keyboard navigation
-   - Screen reader support
-   - Color contrast fixes
+4. **Frontend Build Optimization**
+   - Code splitting
+   - Bundle analysis
+   - Performance optimization
+   - SEO optimization
 
 **Success Criteria:**
-- ✅ Design system consistent
-- ✅ Storybook setup complete
-- ✅ Mobile responsive
+- ✅ All components created
+- ✅ Storybook updated
+- ✅ Tests passing
+- ✅ Documentation complete
 - ✅ Performance optimized
-- ✅ WCAG 2.1 AA compliant
 
 ---
 
-### Day 3: Performance & Optimization (Q-Backend)
+## 🎯 Agent Task Distribution
 
-**Agent:** Q-Backend  
-**Task:** Optimize backend performance
+### Q-Infrastructure
+**Days 1-2:** GitHub Workflows (9 files)  
+**Day 4:** Security Hardening (CORS, rate limiting, helmet.js)  
+**Day 5:** Kiro Specs initialization  
+**Phase 2, Day 4:** Testing Infrastructure  
+**Phase 3, Days 1-3:** Observability & Dependency Management
 
-**Deliverables:**
+**Total Effort:** ~40 hours
 
-1. **Database Optimization**
-   - Add missing indexes
-   - Optimize slow queries
-   - Add query caching
-   - Connection pooling
+### Q-Backend
+**Day 3:** TypeScript Fixes  
+**Phase 2, Day 3:** Package Standardization  
+**Phase 3, Day 1:** Observability (backend integration)
 
-2. **API Optimization**
-   - Add response caching
-   - Implement pagination
-   - Add field filtering
-   - Optimize serialization
+**Total Effort:** ~20 hours
 
-3. **Load Testing**
-   - Create k6 test scripts
-   - Run load tests
-   - Identify bottlenecks
-   - Document results
+### Q-Security
+**Day 4:** Security Hardening (CORS, CSRF, rate limiting, helmet.js, input validation, error handling)
 
-4. **Caching Strategy**
-   - Implement Redis caching
-   - Add cache invalidation
-   - Configure TTLs
-   - Document caching strategy
+**Total Effort:** ~16 hours
 
-**Success Criteria:**
-- ✅ Database queries optimized
-- ✅ API response times < 100ms
-- ✅ Load tests passing
-- ✅ Caching implemented
+### Q-Documentation
+**Day 5:** Kiro Specs initialization  
+**Phase 2, Days 1-2:** Documentation (8 files)
+
+**Total Effort:** ~24 hours
+
+### Q-Testing
+**Phase 2, Day 4:** Testing Infrastructure (Jest, Playwright, test utils)
+
+**Total Effort:** ~12 hours
+
+### Kombai-Frontend
+**Days 1-5 (Parallel):** Design system, components, testing, documentation
+
+**Total Effort:** ~30 hours
 
 ---
 
-## 📊 Coordination Protocol
+## 📊 Parallel Execution Timeline
 
-### Daily Standup (Async)
-Each agent posts daily update:
-- ✅ Completed yesterday
-- 🎯 Working on today
-- 🚧 Blockers/dependencies
+```
+Week 1 (Phase 1 - Critical):
+├─ Day 1-2: Q-Infrastructure (Workflows) + Kombai (Components)
+├─ Day 3: Q-Backend (TypeScript) + Kombai (Testing)
+├─ Day 4: Q-Security (Hardening) + Kombai (Documentation)
+└─ Day 5: Q-Documentation (Kiro Specs) + Kombai (Optimization)
 
-### Handoff Protocol
-When work depends on another agent:
-1. Create handoff ticket
-2. Tag dependent agent
-3. Provide context & requirements
-4. Set expected completion time
+Week 2 (Phase 2 - Important):
+├─ Day 1-2: Q-Documentation (Docs) + Kombai (Storybook)
+├─ Day 3: Q-Backend (Packages) + Kombai (Components)
+└─ Day 4: Q-Testing (Infrastructure) + Kombai (Tests)
+
+Week 2-3 (Phase 3 - Enhancement):
+├─ Day 1-2: Q-Infrastructure (Observability) + Kombai (Performance)
+└─ Day 3: Q-Infrastructure (Dependencies) + Kombai (Optimization)
+
+Result: Production-Ready ✅
+```
+
+---
+
+## 🔄 Coordination Protocol
+
+### Daily Standup (9 AM)
+- Each agent reports progress
+- Identify blockers
+- Adjust priorities
+- Share learnings
+
+### Integration Points
+- **Day 2 End:** Workflows ready for testing
+- **Day 3 End:** TypeScript passes, security ready
+- **Day 4 End:** Security hardening complete
+- **Day 5 End:** Kiro specs ready for Phase 2
+- **Phase 2, Day 2 End:** Documentation complete
+- **Phase 2, Day 4 End:** Testing infrastructure ready
+- **Phase 3, Day 3 End:** Full observability active
 
 ### Quality Gates
-Before marking task complete:
-- ✅ All acceptance criteria met
-- ✅ Tests passing
-- ✅ Documentation updated
-- ✅ Code reviewed (if applicable)
-- ✅ Deployed to staging (if applicable)
-
-### Communication Channels
-- **GitHub Issues** - Task tracking
-- **GitHub Discussions** - Technical discussions
-- **Pull Requests** - Code reviews
-- **.kiro/specs/** - Detailed specifications
+- All code must pass linting
+- All code must pass type checking
+- All code must pass tests
+- All documentation must be reviewed
+- All security measures must be validated
 
 ---
 
-## 🎯 Success Metrics
+## 📋 Success Metrics
 
-### Phase 1 (Critical)
-- ✅ All GitHub workflows passing
-- ✅ TypeScript compiling with 0 errors
-- ✅ Security measures implemented
+### Phase 1 (Day 5)
+- ✅ 9 GitHub workflows operational
+- ✅ All TypeScript errors resolved
+- ✅ Security hardening complete
 - ✅ Kiro specs initialized
+- ✅ All tests passing
 
-### Phase 2 (Important)
+### Phase 2 (Day 9)
 - ✅ 8 documentation files complete
 - ✅ All packages standardized
 - ✅ Testing infrastructure ready
-- ✅ 80% test coverage
+- ✅ Frontend components complete
+- ✅ All tests passing
 
-### Phase 3 (Nice-to-Have)
-- ✅ Monitoring dashboards live
-- ✅ Frontend polished & accessible
-- ✅ Performance optimized
-- ✅ Load tests passing
+### Phase 3 (Day 12)
+- ✅ Full observability active
+- ✅ Dependency management configured
+- ✅ Frontend optimized
+- ✅ All tests passing
+- ✅ Production-ready (100%)
 
 ---
 
-## 🚀 Deployment Readiness Checklist
+## 🚀 Deployment Checklist
 
-### Infrastructure
+Before production deployment:
+
 - [ ] All GitHub workflows passing
-- [ ] Docker images building
-- [ ] Environment variables documented
-- [ ] Secrets management configured
-
-### Security
-- [ ] CORS configured
-- [ ] Rate limiting active
-- [ ] CSRF protection enabled
-- [ ] Input validation implemented
-- [ ] Security headers configured
-
-### Quality
-- [ ] 80%+ test coverage
-- [ ] All TypeScript errors resolved
-- [ ] Linting passing
-- [ ] E2E tests passing
-
-### Documentation
-- [ ] Architecture documented
-- [ ] Deployment guide complete
-- [ ] API documentation complete
-- [ ] Troubleshooting guide ready
-
-### Monitoring
-- [ ] Health checks implemented
-- [ ] Metrics exposed
-- [ ] Logging configured
-- [ ] Dashboards created
+- [ ] All tests passing (87%+ coverage)
+- [ ] Security scanning clean
+- [ ] Documentation complete
+- [ ] Performance benchmarks met
+- [ ] Load testing passed
+- [ ] Disaster recovery tested
+- [ ] Monitoring active
+- [ ] Alerting configured
+- [ ] Runbooks created
 
 ---
 
-## 📝 Notes for Agents
+## 📞 Communication
 
-### Q-Infrastructure
-- Focus on automation and reliability
-- Ensure workflows are maintainable
-- Document all infrastructure decisions
-- Consider scalability from day 1
+### Slack Channels
+- `#azora-remediation` - Main coordination
+- `#azora-infrastructure` - Q-Infrastructure updates
+- `#azora-backend` - Q-Backend updates
+- `#azora-security` - Q-Security updates
+- `#azora-docs` - Q-Documentation updates
+- `#azora-testing` - Q-Testing updates
+- `#azora-frontend` - Kombai-Frontend updates
 
-### Q-Backend
-- Prioritize type safety
-- Write clean, maintainable code
-- Follow existing patterns
-- Document complex logic
-
-### Q-Security
-- Security first, always
-- Follow OWASP guidelines
-- Document security decisions
-- Test security measures
-
-### Q-Documentation
-- Write for developers
-- Include code examples
-- Keep docs up to date
-- Use clear language
-
-### Q-Testing
-- Aim for meaningful coverage
-- Write maintainable tests
-- Document testing strategy
-- Automate everything
-
-### Kombai-Frontend
-- Follow design system
-- Prioritize accessibility
-- Optimize performance
-- Mobile-first approach
+### Status Reports
+- Daily: 5 PM standup summary
+- Weekly: Friday comprehensive report
+- Phase completion: Detailed handoff document
 
 ---
 
-## 🎉 Mission Success
+## 🎯 Agent Priorities
 
-When all phases complete:
-1. Run full test suite
-2. Deploy to staging
-3. Run smoke tests
-4. Deploy to production
-5. Monitor for 24 hours
-6. Celebrate! 🎊
+### Critical Path (Must Complete On Time)
+1. GitHub Workflows (Day 1-2)
+2. TypeScript Fixes (Day 3)
+3. Security Hardening (Day 4)
+4. Kiro Specs (Day 5)
 
-**Ubuntu Philosophy:** "I am because we are" - Every agent's work strengthens the whole system.
+### High Priority (Important for Phase 2)
+1. Documentation (Phase 2, Days 1-2)
+2. Testing Infrastructure (Phase 2, Day 4)
+
+### Medium Priority (Optimization)
+1. Observability (Phase 3, Days 1-2)
+2. Dependency Management (Phase 3, Day 3)
 
 ---
 
-**Last Updated:** 2025-01-10  
-**Status:** Ready for execution  
-**Next Action:** Assign agents to Phase 1 tasks
+## 💡 Key Principles
+
+1. **Parallel Execution** - Agents work simultaneously where possible
+2. **Quality First** - All code must pass quality gates
+3. **Documentation** - Every feature must be documented
+4. **Testing** - Every feature must be tested
+5. **Security** - Security is non-negotiable
+6. **Communication** - Daily coordination and updates
+
+---
+
+## 📈 Expected Outcomes
+
+**After 12 Days:**
+- ✅ 100% CI/CD automation
+- ✅ 100% GitHub workflows
+- ✅ 100% Kiro specs
+- ✅ 100% documentation
+- ✅ 100% security hardening
+- ✅ 100% testing infrastructure
+- ✅ 100% observability
+- ✅ 100% dependency management
+- ✅ Production-ready (100%)
+
+**Team Utilization:**
+- Q-Infrastructure: 40 hours
+- Q-Backend: 20 hours
+- Q-Security: 16 hours
+- Q-Documentation: 24 hours
+- Q-Testing: 12 hours
+- Kombai-Frontend: 30 hours
+- **Total: 142 hours (~18 person-days)**
+
+---
+
+## 🎯 Next Steps
+
+1. **Distribute this brief** to all agents
+2. **Confirm agent assignments** with each team member
+3. **Set up communication channels** (Slack, etc.)
+4. **Schedule daily standups** (9 AM)
+5. **Create tracking board** (Jira, GitHub Projects, etc.)
+6. **Begin Phase 1, Day 1** - GitHub Workflows
+
+---
+
+**Mission Brief Complete** ✅  
+**Status:** Ready for Agent Deployment  
+**Confidence:** 95%
+
+*Agents, the mission is clear. Execute with precision. Good luck.* 🤖
+

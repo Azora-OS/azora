@@ -6,6 +6,8 @@
   "main": "./index.ts",
   "exports": {
     ".": "./index.ts",
+    "./components": "./azora-master-components.tsx",
+    "./utils": "./utils.ts",
     "./data": "./data-service.ts",
     "./hooks": "./hooks.ts",
     "./api": "./api-routes.ts"
@@ -16,7 +18,9 @@
   "dependencies": {
     "@azora/shared-database": "file:../shared-database",
     "@azora/shared-auth": "file:../shared-auth",
-    "react": "^18.2.0"
+    "clsx": "^2.1.1",
+    "react": "^18.2.0",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

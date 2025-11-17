@@ -1,0 +1,39 @@
+{
+  "name": "@azora/marketplace",
+  "version": "1.0.0",
+  "description": "Azora Marketplace Service - Course listing, purchase, and review platform",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon index.ts",
+    "build": "tsc",
+    "test": "jest",
+    "health": "node healthcheck.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0",
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.2",
+    "supertest": "^6.3.3",
+    "@types/node": "^20.5.7",
+    "@types/express": "^4.17.17"
+  },
+  "keywords": [
+    "azora",
+    "marketplace",
+    "courses",
+    "education"
+  ],
+  "author": "Azora Sapiens",
+  "license": "MIT"
+}

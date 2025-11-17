@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # Audit Logging Service
+  audit-logging-service:
+    build: ./services/audit-logging-service
+    ports:
+      - "3005:3005"
+    environment:
+      - PORT=3005
+    networks:
+      - azora-network
+
+  # Tamper-Proof Data Service
+  tamper-proof-data-service:
+    build: ./services/tamper-proof-data-service
+    ports:
+      - "3006:3006"
+    environment:
+      - PORT=3006
+      - SIGNATURE_SECRET=azora-tamper-proof-secret
+    networks:
+      - azora-network
+
+  # Shield Service
+  shield-service:
+    build: ./services/shield_service
+    ports:
+      - "3007:3007"
+    environment:
+      - PORT=3007
+    networks:
+      - azora-network
+
+  # AI Family Service
+  ai-family-service:
+    build: ./services/ai-family-service
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+      - DATABASE_URL=postgresql://user:password@postgres:5432/ai_family_db
+    depends_on:
+      - postgres
+    networks:
+      - azora-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ai_family_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - azora-network
+
+networks:
+  azora-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

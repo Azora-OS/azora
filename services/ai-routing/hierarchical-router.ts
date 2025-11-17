@@ -25,6 +25,8 @@ import { RAPSystem } from './rap-system';
 import { ExternalLLMService } from './external-llm-service';
 import { RedisCacheManager } from './redis-cache-manager';
 import { RoutingMetricsTracker } from './routing-metrics-tracker';
+import { CostOptimizer } from './cost-optimizer';
+import { ResponseCache } from './response-cache';
 
 /**
  * Hierarchical AI Router
@@ -37,6 +39,8 @@ export class HierarchicalRouter implements IHierarchicalRouter {
   private externalLLMService: ExternalLLMService;
   private cacheManager: RedisCacheManager;
   private metricsTracker: RoutingMetricsTracker;
+  private costOptimizer: CostOptimizer;
+  private responseCache: ResponseCache;
   private config: AIRoutingConfig;
   private fallbackStrategies: Map<RoutingTier, FallbackStrategy> = new Map();
   private latencyThresholds: Map<RoutingTier, number> = new Map();
@@ -50,7 +54,9 @@ export class HierarchicalRouter implements IHierarchicalRouter {
     rapSystem?: RAPSystem,
     externalLLMService?: ExternalLLMService,
     cacheManager?: RedisCacheManager,
-    metricsTracker?: RoutingMetricsTracker
+    metricsTracker?: RoutingMetricsTracker,
+    costOptimizer?: CostOptimizer,
+    responseCache?: ResponseCache
   ) {
     this.config = config;
     this.queryClassifier = queryClassifier || new QueryClassifier();
@@ -77,6 +83,12 @@ export class HierarchicalRouter implements IHierarchicalRouter {
     });
     this.cacheManager = cacheManager || new RedisCacheManager(config.redisUrl, config.redisKeyPrefix);
     this.metricsTracker = metricsTracker || new RoutingMetricsTracker(prisma);
+    this.costOptimizer = costOptimizer || new CostOptimizer(prisma);
+    this.responseCache = responseCache || new ResponseCache({
+      keyPrefix: 'ai-routing:response:',
+      defaultTTL: config.cacheTTL || 3600,
+      maxCacheSize: 100000
+    });
 
     this.initializeFallbackStrategies();
     this.initializeLatencyThresholds();
@@ -138,17 +150,37 @@ export class HierarchicalRouter implements IHierarchicalRouter {
 
   /**
    * Route a query through the hierarchical system
-   * Implements intelligent routing with fallback logic
+   * Implements intelligent routing with fallback logic, cost optimization, and response caching
    */
   async route(query: AIQuery): Promise<AIResponse> {
     const startTime = Date.now();
 
     try {
+      // Step 0: Check response cache first
+      const queryHash = this.hashQuery(query.query);
+      const cachedResponse = await this.responseCache.get(queryHash);
+      if (cachedResponse) {
+        console.log(`Cache hit for query: ${query.query.substring(0, 50)}...`);
+        return {
+          id: `response-${Date.now()}`,
+          content: cachedResponse.response,
+          routingTier: cachedResponse.routingTier,
+          responseTime: Date.now() - startTime,
+          cost: 0,
+          cached: true,
+          metadata: {
+            cacheHit: true,
+            cachedAt: cachedResponse.expiresAt
+          }
+        };
+      }
+
       // Step 1: Classify the query
       const classification = await this.classify(query);
 
-      // Step 2: Make routing decision
-      const routingDecision = await this.makeRoutingDecision(classification);
+      // Step 2: Make routing decision with cost optimization
+      const userBudget = query.context?.budget as number | undefined;
+      const routingDecision = await this.makeRoutingDecision(classification, userBudget);
 
       // Step 3: Try primary routing tier with fallback logic
       let response: AIResponse | null = null;
@@ -167,12 +199,34 @@ export class HierarchicalRouter implements IHierarchicalRouter {
               console.warn(
                 `Latency threshold exceeded for ${currentTier} (${response.responseTime}ms). Falling back to ${nextTier}`
               );
+              
+              // Record fallback event
+              this.metricsTracker.recordFallback(currentTier, nextTier);
+              
               response = null;
               currentTier = nextTier;
               attemptCount++;
               continue;
             }
           }
+
+          // Track spending with cost optimizer
+          if (query.userId) {
+            await this.costOptimizer.trackSpending(query.userId, currentTier, response.cost);
+          }
+
+          // Cache the response
+          await this.responseCache.set({
+            id: response.id,
+            queryHash,
+            query: query.query,
+            response: response.content,
+            routingTier: currentTier,
+            cost: response.cost,
+            ttl: this.config.cacheTTL || 3600,
+            expiresAt: new Date(Date.now() + (this.config.cacheTTL || 3600) * 1000),
+            hitCount: 0
+          });
 
           // Record successful routing
           await this.metricsTracker.recordRouting(
@@ -195,6 +249,10 @@ export class HierarchicalRouter implements IHierarchicalRouter {
           }
 
           console.warn(`Tier ${currentTier} failed. Falling back to ${nextTier}`);
+          
+          // Record fallback event
+          this.metricsTracker.recordFallback(currentTier, nextTier);
+          
           currentTier = nextTier;
           attemptCount++;
 
@@ -223,20 +281,54 @@ export class HierarchicalRouter implements IHierarchicalRouter {
 
   /**
    * Make routing decision based on query classification
+   * Integrates cost optimization to select optimal tier
    */
   private async makeRoutingDecision(
-    classification: QueryClassificationResult
+    classification: QueryClassificationResult,
+    userBudget?: number
   ): Promise<RoutingDecision> {
-    const tier = classification.routedTo;
+    let tier = classification.routedTo;
     const metrics = await this.metricsTracker.getMetrics(tier);
+
+    // Estimate tokens for cost calculation
+    const estimatedInputTokens = Math.ceil(classification.query.length / 4);
+    const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 1.5);
+
+    // Calculate cost for primary tier
+    let estimatedCost = await this.costOptimizer.calculateCost(
+      tier,
+      estimatedInputTokens,
+      estimatedOutputTokens
+    );
+
+    // Check if cost exceeds budget or tier max cost
+    if (await this.costOptimizer.shouldRejectQuery(tier, estimatedCost, userBudget)) {
+      // Try to find a cheaper tier
+      const cheapestTier = await this.costOptimizer.getCheapestTier(
+        estimatedInputTokens,
+        estimatedOutputTokens
+      );
+
+      if (cheapestTier !== tier) {
+        console.warn(
+          `Cost ${estimatedCost} exceeds budget/threshold for ${tier}. Downgrading to ${cheapestTier}`
+        );
+        tier = cheapestTier;
+        estimatedCost = await this.costOptimizer.calculateCost(
+          tier,
+          estimatedInputTokens,
+          estimatedOutputTokens
+        );
+      }
+    }
 
     return {
       tier,
       confidence: classification.confidence,
-      estimatedCost: this.estimateCost(tier),
+      estimatedCost,
       estimatedLatency: metrics?.averageResponseTime || 0,
       fallbackTier: this.getNextFallbackTier(tier),
-      reason: `Query classified as ${classification.classifiedAs}, routing to ${tier}`
+      reason: `Query classified as ${classification.classifiedAs}, routing to ${tier} (cost: $${estimatedCost.toFixed(4)})`
     };
   }
 
@@ -309,6 +401,26 @@ export class HierarchicalRouter implements IHierarchicalRouter {
   private getNextFallbackTier(currentTier: RoutingTier): RoutingTier {
     const strategy = this.fallbackStrategies.get(currentTier);
     return strategy?.nextTier || currentTier;
+  }
+
+  /**
+   * Get fallback chain for a tier
+   * Returns the complete chain of tiers to try in order
+   */
+  private getFallbackChain(startTier: RoutingTier): RoutingTier[] {
+    const chain: RoutingTier[] = [startTier];
+    let currentTier = startTier;
+
+    while (true) {
+      const nextTier = this.getNextFallbackTier(currentTier);
+      if (nextTier === currentTier || chain.includes(nextTier)) {
+        break;
+      }
+      chain.push(nextTier);
+      currentTier = nextTier;
+    }
+
+    return chain;
   }
 
   /**
@@ -406,5 +518,104 @@ export class HierarchicalRouter implements IHierarchicalRouter {
    */
   async resetMetrics(): Promise<void> {
     await this.metricsTracker.resetMetrics();
+  }
+
+  /**
+   * Get cost metrics for all tiers
+   */
+  async getCostMetrics(): Promise<Record<RoutingTier, number>> {
+    return this.costOptimizer.getSpendingMetrics();
+  }
+
+  /**
+   * Get user spending metrics
+   */
+  async getUserSpending(userId: string) {
+    return this.costOptimizer.getUserSpending(userId);
+  }
+
+  /**
+   * Get response cache statistics
+   */
+  async getResponseCacheStats() {
+    return this.responseCache.getStats();
+  }
+
+  /**
+   * Get response cache hit rate
+   */
+  async getResponseCacheHitRate(): Promise<number> {
+    return this.responseCache.getCacheHitRate();
+  }
+
+  /**
+   * Clear response cache
+   */
+  async clearResponseCache(): Promise<number> {
+    return this.responseCache.clear();
+  }
+
+  /**
+   * Get cost comparison across tiers
+   */
+  async compareCosts(inputTokens: number = 100, outputTokens: number = 200) {
+    return this.costOptimizer.compareCosts(inputTokens, outputTokens);
+  }
+
+  /**
+   * Get cheapest tier for a query
+   */
+  async getCheapestTier(inputTokens: number = 100, outputTokens: number = 200): Promise<RoutingTier> {
+    return this.costOptimizer.getCheapestTier(inputTokens, outputTokens);
+  }
+
+  /**
+   * Get fallback chain for a tier
+   * Returns the complete chain of tiers to try in order
+   */
+  getFallbackChainForTier(tier: RoutingTier): RoutingTier[] {
+    return this.getFallbackChain(tier);
+  }
+
+  /**
+   * Get all fallback strategies
+   */
+  getFallbackStrategies(): Map<RoutingTier, FallbackStrategy> {
+    return this.fallbackStrategies;
+  }
+
+  /**
+   * Get tier usage metrics
+   */
+  getTierUsageMetrics() {
+    return this.metricsTracker.getTierUsageMetrics();
+  }
+
+  /**
+   * Get fallback rate for a tier
+   */
+  getFallbackRate(tier: RoutingTier): number {
+    return this.metricsTracker.getFallbackRate(tier);
+  }
+
+  /**
+   * Get overall fallback rate
+   */
+  getOverallFallbackRate(): number {
+    return this.metricsTracker.getOverallFallbackRate();
+  }
+
+  /**
+   * Get fallback events
+   */
+  getFallbackEvents(limit?: number) {
+    return this.metricsTracker.getFallbackEvents(limit);
+  }
+
+  /**
+   * Get tier usage distribution
+   */
+  getTierUsageDistribution(): Record<RoutingTier, number> {
+    return this.metricsTracker.getTierUsageDistribution();
   }
 }

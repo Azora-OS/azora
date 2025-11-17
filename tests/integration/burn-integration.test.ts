@@ -4,7 +4,6 @@
  */
 
 import { Decimal } from '@prisma/client/runtime/library';
-import { BurnIntegrationService, createBurnIntegrationService } from '../../services/tokens/burn-integration';
 import { TokenBurnCalculator } from '../../services/tokens/token-burn-calculator';
 import { BurnTransactionType } from '../../services/tokens/token-burn.types';
 

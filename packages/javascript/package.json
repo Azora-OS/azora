@@ -1,0 +1,14 @@
+{
+  "name": "@azora/javascript",
+  "version": "1.0.0",
+  "description": "Ubuntu-powered javascript package",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "jest": "^29.5.0"
+  }
+}

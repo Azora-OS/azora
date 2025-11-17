@@ -11,6 +11,8 @@ The Azora Classroom Service enables live virtual classrooms with video lectures,
 - **Real-time Messaging**: Chat functionality during classes
 - **Socket.IO Integration**: Real-time communication between participants
 - **RESTful API**: Well-documented API endpoints for integration
+- **Comprehensive Testing**: Full test coverage with Jest
+- **Docker Support**: Containerized deployment ready
 
 ## API Endpoints
 
@@ -43,6 +45,12 @@ The Azora Classroom Service enables live virtual classrooms with video lectures,
 ## Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+
+# Navigate to the service directory
+cd services/azora-classroom
+
 # Install dependencies
 npm install
 
@@ -68,10 +76,25 @@ npm run dev
 Create a `.env` file with the following variables:
 
 ```env
+# Server Configuration
 PORT=3006
-SERVICE_NAME=azora-classroom
-DATABASE_URL=postgresql://user:password@localhost:5432/azora
+HOST=localhost
 NODE_ENV=development
+
+# Service Configuration
+SERVICE_NAME=azora-classroom
+
+# Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5432/azora
+
+# Logging
+LOG_LEVEL=info
+
+# Security
+JWT_SECRET=your-super-secret-jwt-key
+
+# Socket.IO
+SOCKET_PORT=3006
 ```
 
 ## Database Schema
@@ -150,6 +173,33 @@ The service supports real-time communication through Socket.IO:
 - `classroomStarted` - Classroom session started
 - `classroomEnded` - Classroom session ended
 - `newMessage` - New message in classroom
+
+## Testing
+
+The service includes comprehensive tests using Jest:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+## Docker Deployment
+
+The service includes a Dockerfile for containerized deployment:
+
+```bash
+# Build the Docker image
+docker build -t azora-classroom .
+
+# Run the container
+docker run -p 3006:3006 azora-classroom
+```
 
 ## Example Usage
 

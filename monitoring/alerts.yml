@@ -1,0 +1,39 @@
+groups:
+- name: azora-alerts
+  rules:
+  - alert: ServiceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+      ubuntu: "We alert because we care together"
+    annotations:
+      summary: "Service {{ $labels.instance }} is down"
+      description: "{{ $labels.instance }} has been down for more than 1 minute"
+
+  - alert: HighResponseTime
+    expr: http_request_duration_seconds{quantile="0.95"} > 0.5
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High response time on {{ $labels.instance }}"
+      description: "95th percentile response time is {{ $value }}s"
+
+  - alert: HighErrorRate
+    expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate on {{ $labels.instance }}"
+      description: "Error rate is {{ $value }} errors per second"
+
+  - alert: DatabaseConnectionsHigh
+    expr: pg_stat_database_numbackends > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High database connections"
+      description: "Database has {{ $value }} active connections"
