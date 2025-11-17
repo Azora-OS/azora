@@ -7,7 +7,7 @@
  * Apply across all Azora apps for consistent, premium experience
  */
 
-import React from 'react'
+import type React from 'react'
 import { cn } from './utils'
 
 // ============================================================================
@@ -24,8 +24,10 @@ export const AzoraLogo: React.FC<AzoraLogoProps> = ({ className, ...props }) => 
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn("h-10 w-10", className)}
+      className={cn("h-10 w-10 transition-transform duration-300 hover:scale-110", className)}
       {...props}
+      aria-label="Azora Constitutional AI Logo"
+      role="img"
     >
       {/* Azora Gem - Tri-Unity Crystal */}
       <defs>
@@ -88,8 +90,12 @@ interface MobileNavProps {
 
 export const MobileNav: React.FC<MobileNavProps> = ({ children }) => {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-sm">
-      <div className="flex items-center justify-around p-4">
+    <nav 
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur-sm shadow-lg"
+      role="navigation"
+      aria-label="Mobile navigation"
+    >
+      <div className="flex items-center justify-around p-4 safe-area-inset-bottom">
         {children}
       </div>
     </nav>
@@ -119,14 +125,27 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
   gap = 4,
   className
 }) => {
+  // Use Tailwind classes directly instead of template literals for better tree-shaking
+  const gapClass = `gap-${gap}`
   const gridClasses = cn(
     'grid',
-    `gap-${gap}`,
-    cols.default && `grid-cols-${cols.default}`,
-    cols.sm && `sm:grid-cols-${cols.sm}`,
-    cols.md && `md:grid-cols-${cols.md}`,
-    cols.lg && `lg:grid-cols-${cols.lg}`,
-    cols.xl && `xl:grid-cols-${cols.xl}`,
+    gapClass,
+    cols.default === 1 && 'grid-cols-1',
+    cols.default === 2 && 'grid-cols-2',
+    cols.default === 3 && 'grid-cols-3',
+    cols.default === 4 && 'grid-cols-4',
+    cols.sm === 2 && 'sm:grid-cols-2',
+    cols.sm === 3 && 'sm:grid-cols-3',
+    cols.sm === 4 && 'sm:grid-cols-4',
+    cols.md === 2 && 'md:grid-cols-2',
+    cols.md === 3 && 'md:grid-cols-3',
+    cols.md === 4 && 'md:grid-cols-4',
+    cols.lg === 3 && 'lg:grid-cols-3',
+    cols.lg === 4 && 'lg:grid-cols-4',
+    cols.lg === 5 && 'lg:grid-cols-5',
+    cols.xl === 4 && 'xl:grid-cols-4',
+    cols.xl === 5 && 'xl:grid-cols-5',
+    cols.xl === 6 && 'xl:grid-cols-6',
     className
   )
 

@@ -10,7 +10,8 @@
     "build": "tsc",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "health": "node healthcheck.js"
   },
   "keywords": [
     "azora",

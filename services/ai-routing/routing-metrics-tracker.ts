@@ -6,13 +6,24 @@
 import { PrismaClient } from '@prisma/client';
 import { RoutingTier, RoutingMetricsData } from './types';
 
+export interface TierUsageMetrics {
+  tier: RoutingTier;
+  usageCount: number;
+  usagePercentage: number;
+  fallbackCount: number;
+  fallbackRate: number;
+}
+
 export class RoutingMetricsTracker {
   private prisma: PrismaClient;
   private inMemoryMetrics: Map<RoutingTier, RoutingMetricsData> = new Map();
+  private tierUsage: Map<RoutingTier, TierUsageMetrics> = new Map();
+  private fallbackEvents: Array<{ from: RoutingTier; to: RoutingTier; timestamp: Date }> = [];
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
     this.initializeMetrics();
+    this.initializeTierUsage();
   }
 
   /**
@@ -38,6 +49,27 @@ export class RoutingMetricsTracker {
         cacheHitRate: 0,
         successRate: 0,
         lastUpdated: new Date()
+      });
+    }
+  }
+
+  /**
+   * Initialize tier usage metrics
+   */
+  private initializeTierUsage(): void {
+    const tiers: RoutingTier[] = [
+      RoutingTier.LOCAL_LLM,
+      RoutingTier.RAP_SYSTEM,
+      RoutingTier.EXTERNAL_LLM
+    ];
+
+    for (const tier of tiers) {
+      this.tierUsage.set(tier, {
+        tier,
+        usageCount: 0,
+        usagePercentage: 0,
+        fallbackCount: 0,
+        fallbackRate: 0
       });
     }
   }
@@ -253,5 +285,99 @@ export class RoutingMetricsTracker {
     for (const [tier, metrics] of this.inMemoryMetrics.entries()) {
       await this.persistMetrics(tier, metrics);
     }
+  }
+
+  /**
+   * Record a fallback event
+   */
+  recordFallback(fromTier: RoutingTier, toTier: RoutingTier): void {
+    this.fallbackEvents.push({
+      from: fromTier,
+      to: toTier,
+      timestamp: new Date()
+    });
+
+    // Update tier usage
+    const usage = this.tierUsage.get(fromTier);
+    if (usage) {
+      usage.fallbackCount += 1;
+    }
+  }
+
+  /**
+   * Get tier usage metrics
+   */
+  getTierUsageMetrics(): Record<RoutingTier, TierUsageMetrics> {
+    const result: Record<RoutingTier, TierUsageMetrics> = {} as any;
+    let totalUsage = 0;
+
+    // Calculate total usage
+    for (const metrics of this.inMemoryMetrics.values()) {
+      totalUsage += metrics.totalRequests;
+    }
+
+    // Calculate usage percentages
+    for (const [tier, usage] of this.tierUsage.entries()) {
+      const metrics = this.inMemoryMetrics.get(tier);
+      if (metrics) {
+        usage.usageCount = metrics.totalRequests;
+        usage.usagePercentage = totalUsage > 0 ? (metrics.totalRequests / totalUsage) * 100 : 0;
+        usage.fallbackRate = metrics.totalRequests > 0 ? (usage.fallbackCount / metrics.totalRequests) * 100 : 0;
+      }
+      result[tier] = usage;
+    }
+
+    return result;
+  }
+
+  /**
+   * Get fallback rate for a tier
+   */
+  getFallbackRate(tier: RoutingTier): number {
+    const usage = this.tierUsage.get(tier);
+    return usage?.fallbackRate || 0;
+  }
+
+  /**
+   * Get overall fallback rate
+   */
+  getOverallFallbackRate(): number {
+    let totalFallbacks = 0;
+    let totalRequests = 0;
+
+    for (const metrics of this.inMemoryMetrics.values()) {
+      totalRequests += metrics.totalRequests;
+    }
+
+    for (const usage of this.tierUsage.values()) {
+      totalFallbacks += usage.fallbackCount;
+    }
+
+    return totalRequests > 0 ? (totalFallbacks / totalRequests) * 100 : 0;
+  }
+
+  /**
+   * Get fallback events
+   */
+  getFallbackEvents(limit: number = 100): Array<{ from: RoutingTier; to: RoutingTier; timestamp: Date }> {
+    return this.fallbackEvents.slice(-limit);
+  }
+
+  /**
+   * Get tier usage distribution
+   */
+  getTierUsageDistribution(): Record<RoutingTier, number> {
+    const result: Record<RoutingTier, number> = {} as any;
+    let totalUsage = 0;
+
+    for (const metrics of this.inMemoryMetrics.values()) {
+      totalUsage += metrics.totalRequests;
+    }
+
+    for (const [tier, metrics] of this.inMemoryMetrics.entries()) {
+      result[tier] = totalUsage > 0 ? (metrics.totalRequests / totalUsage) * 100 : 0;
+    }
+
+    return result;
   }
 }

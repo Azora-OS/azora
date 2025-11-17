@@ -1,0 +1,66 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    ubuntu_philosophy: "I monitor because we optimize together"
+
+rule_files:
+  - "ubuntu_rules.yml"
+  - "alerts.yml"
+
+scrape_configs:
+  # Azora Services Ubuntu Monitoring
+  - job_name: 'azora-api-gateway'
+    static_configs:
+      - targets: ['localhost:4000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    
+  - job_name: 'azora-education'
+    static_configs:
+      - targets: ['localhost:4001']
+    metrics_path: '/metrics'
+    
+  - job_name: 'azora-finance'
+    static_configs:
+      - targets: ['localhost:4002']
+    metrics_path: '/metrics'
+    
+  - job_name: 'azora-marketplace'
+    static_configs:
+      - targets: ['localhost:4003']
+    metrics_path: '/metrics'
+    
+  - job_name: 'azora-auth'
+    static_configs:
+      - targets: ['localhost:4004']
+    metrics_path: '/metrics'
+    
+  - job_name: 'azora-ai'
+    static_configs:
+      - targets: ['localhost:4005']
+    metrics_path: '/metrics'
+    
+  - job_name: 'azora-blockchain'
+    static_configs:
+      - targets: ['localhost:4009']
+    metrics_path: '/metrics'
+
+  # Ubuntu Infrastructure Monitoring
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+      
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['localhost:9187']
+      
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['localhost:9121']
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093

@@ -1,9 +1,13 @@
 {
   "name": "@azora/api-client",
   "version": "1.0.0",
-  "description": "Azora OS unified API client",
+  "description": "Azora API Client - Comprehensive backend integration for all frontend apps",
   "main": "index.ts",
   "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./hooks": "./hooks.ts"
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest",

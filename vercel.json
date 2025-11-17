@@ -1,39 +1,19 @@
 {
   "version": 2,
+  "name": "azora-os",
   "builds": [
     {
-      "src": "apps/web/**",
-      "use": "@vercel/static"
+      "src": "apps/student-portal/package.json",
+      "use": "@vercel/next"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "apps/web/$1"
+      "dest": "apps/student-portal/$1"
     }
   ],
   "env": {
-    "AZORA_VERSION": "3.0.0",
-    "NODE_ENV": "production",
-    "ELARA_FAMILY_API": "https://azora-os-api.vercel.app"
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    }
-  ]
+    "NODE_ENV": "production"
+  }
 }

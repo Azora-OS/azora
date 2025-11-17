@@ -13,9 +13,6 @@ RUN npm ci --only=production
 # Copy application code
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
 # Expose port
 EXPOSE 3007
 
@@ -29,7 +26,7 @@ USER nextjs
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node healthcheck.js
+  CMD node server.js
 
 # Start the application
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
