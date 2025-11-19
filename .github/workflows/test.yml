@@ -16,15 +16,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [18.x, 20.x, 22.x]
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      
+      - name: Restore Jest cache
+        uses: actions/cache@v4
+        with:
+          path: .jest-cache
+          key: jest-unit-${{ runner.os }}-node-${{ matrix.node-version }}-${{ github.sha }}
+          restore-keys: |
+            jest-unit-${{ runner.os }}-node-${{ matrix.node-version }}-
+            jest-unit-${{ runner.os }}-
       
       - name: Install dependencies
         run: npm ci
@@ -47,7 +56,7 @@ jobs:
       - name: Generate coverage report
         if: always()
         run: |
-          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "## Coverage Report (Node ${{ matrix.node-version }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           npm run test:unit -- --coverage --silent 2>/dev/null | tail -10 >> $GITHUB_STEP_SUMMARY || true
       
@@ -55,7 +64,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/coverage-final.json
-          flags: unit
+          flags: unit-node-${{ matrix.node-version }}
           fail_ci_if_error: false
           verbose: true
       
@@ -63,12 +72,15 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-unit
+          name: coverage-report-unit-node-${{ matrix.node-version }}
           path: coverage/
           retention-days: 30
 
   integration-tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
     services:
       postgres:
         image: postgres:15
@@ -96,11 +108,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      
+      - name: Restore Jest cache
+        uses: actions/cache@v4
+        with:
+          path: .jest-cache
+          key: jest-integration-${{ runner.os }}-node-${{ matrix.node-version }}-${{ github.sha }}
+          restore-keys: |
+            jest-integration-${{ runner.os }}-node-${{ matrix.node-version }}-
+            jest-integration-${{ runner.os }}-
       
       - name: Install dependencies
         run: npm ci
@@ -125,7 +146,7 @@ jobs:
       - name: Generate coverage report
         if: always()
         run: |
-          echo "## Integration Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "## Integration Coverage Report (Node ${{ matrix.node-version }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           npm run test:integration -- --coverage --silent 2>/dev/null | tail -10 >> $GITHUB_STEP_SUMMARY || true
       
@@ -133,7 +154,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/coverage-final.json
-          flags: integration
+          flags: integration-node-${{ matrix.node-version }}
           fail_ci_if_error: false
           verbose: true
       
@@ -141,7 +162,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-integration
+          name: coverage-report-integration-node-${{ matrix.node-version }}
           path: coverage/
           retention-days: 30
 
@@ -157,6 +178,14 @@ jobs:
         with:
           node-version: 20.x
           cache: 'npm'
+      
+      - name: Restore Jest cache
+        uses: actions/cache@v4
+        with:
+          path: .jest-cache
+          key: jest-coverage-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            jest-coverage-${{ runner.os }}-
       
       - name: Install dependencies
         run: npm ci

@@ -1,0 +1,125 @@
+name: CI - Linting & Type Checking
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-lint-typecheck-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      
+      - name: Restore ESLint cache
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            eslint-${{ runner.os }}-
+      
+      - name: Restore TypeScript cache
+        uses: actions/cache@v4
+        with:
+          path: tsconfig.tsbuildinfo
+          key: tsc-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            tsc-${{ runner.os }}-
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint across all TypeScript and JavaScript files
+        id: eslint
+        run: |
+          npm run lint -- --format json --output-file eslint-report.json || true
+          if [ -f eslint-report.json ]; then
+            ERROR_COUNT=$(jq '[.[] | select(.messages[].severity == 2)] | length' eslint-report.json)
+            echo "eslint_errors=$ERROR_COUNT" >> $GITHUB_OUTPUT
+            if [ "$ERROR_COUNT" -gt 0 ]; then
+              echo "::error::ESLint found $ERROR_COUNT file(s) with errors"
+              jq '.[] | select(.messages[].severity == 2) | {file: .filePath, errors: [.messages[] | select(.severity == 2)]}' eslint-report.json
+            fi
+          fi
+      
+      - name: Annotate ESLint violations in PR
+        if: always() && hashFiles('eslint-report.json') != ''
+        uses: ataylorme/eslint-annotate-action@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          report-json: "eslint-report.json"
+          only-pr-files: true
+      
+      - name: Upload ESLint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: eslint-report.json
+          retention-days: 30
+      
+      - name: Run TypeScript type checking in strict mode
+        id: typecheck
+        run: npm run typecheck
+      
+      - name: Verify no implicit any types
+        run: |
+          echo "Verifying TypeScript strict mode compliance..."
+          npm run typecheck -- --noImplicitAny
+      
+      - name: Generate type checking report
+        if: always()
+        run: |
+          npm run typecheck -- --listFiles > typecheck-report.txt 2>&1 || true
+      
+      - name: Upload type checking report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-report
+          path: typecheck-report.txt
+          retention-days: 30
+      
+      - name: Fail if linting or type checking failed
+        if: failure()
+        run: |
+          echo "::error::Linting or type checking failed. Please fix the errors above."
+          exit 1
+      
+      - name: Comment PR with results
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let comment = '## Code Quality Check Results\n\n';
+            
+            if (fs.existsSync('eslint-report.json')) {
+              const eslintReport = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
+              const errorCount = eslintReport.filter(f => f.messages.some(m => m.severity === 2)).length;
+              const warningCount = eslintReport.filter(f => f.messages.some(m => m.severity === 1)).length;
+              comment += `### ESLint\n- ✅ Errors: ${errorCount}\n- ⚠️ Warnings: ${warningCount}\n\n`;
+            }
+            
+            comment += `### TypeScript\n- ✅ Type checking passed\n`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

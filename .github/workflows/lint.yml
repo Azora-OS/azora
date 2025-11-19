@@ -1,4 +1,4 @@
-name: Code Quality
+name: Linting & Code Quality
 
 on:
   push:
@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   eslint:
+    name: ESLint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,19 +27,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Run ESLint
-        run: npm run lint
+      - name: Run ESLint across all TypeScript files
+        run: npm run lint -- --format json --output-file eslint-report.json
         continue-on-error: true
       
-      - name: Annotate code
+      - name: Annotate ESLint violations in PR
         uses: ataylorme/eslint-annotate-action@v2
         if: always()
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           report-json: "eslint-report.json"
           only-pr-files: true
+      
+      - name: Fail if ESLint found errors
+        run: |
+          if [ -f eslint-report.json ]; then
+            ERROR_COUNT=$(jq '[.[] | select(.messages[].severity == 2)] | length' eslint-report.json)
+            if [ "$ERROR_COUNT" -gt 0 ]; then
+              echo "ESLint found $ERROR_COUNT file(s) with errors"
+              exit 1
+            fi
+          fi
+      
+      - name: Upload ESLint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: eslint-report.json
+          retention-days: 30
 
   prettier:
+    name: Code Formatting (Prettier)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,15 +72,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Check formatting
-        run: npx prettier --check "**/*.{ts,tsx,json,md}"
+      - name: Check code formatting with Prettier
+        run: npx prettier --check "**/*.{ts,tsx,json,md}" --ignore-path .prettierignore
 
   markdown:
+    name: Markdown Linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Lint markdown
+      - name: Lint markdown files
         uses: DavidAnson/markdownlint-cli2-action@v15
         with:
           globs: '**/*.md'
+          config: '.markdownlint.json'
+          fix: false

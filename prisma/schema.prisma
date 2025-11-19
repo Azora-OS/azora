@@ -88,6 +88,7 @@ model Course {
   reviews         CourseReview[]
   purchases       CoursePurchase[]
   earnings        InstructorEarnings[]
+  payments        Payment[]       @relation("CoursePayments")
 
   @@index([instructorId])
   @@index([status])
@@ -190,12 +191,12 @@ model Payment {
   status                PaymentStatus   @default(PENDING)
   paymentMethodId       String?
   courseId              String?
-  course                Course?         @relation(fields: [courseId], references: [id])
+  course                Course?         @relation("CoursePayments", fields: [courseId], references: [id])
   subscriptionTierId    String?
   metadata              Json            @default("{}")
   idempotencyKey        String          @unique
   receiptId             String?
-  receipt               Receipt?        @relation(fields: [receiptId], references: [id])
+  receipt               Receipt?
   refundedAmount        Int?
   refundReason          String?
   errorCode             String?
@@ -911,12 +912,12 @@ model TokenTransaction {
   amount    Decimal           @db.Decimal(20, 8)
   type      TokenTransactionType
   reason    String
-  balance   Decimal           @db.Decimal(20, 8) // Balance after transaction
+  balanceAfter Decimal        @db.Decimal(20, 8) // Balance after transaction
   metadata  Json?
   createdAt DateTime          @default(now())
 
   user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  balance TokenBalance  @relation(fields: [balanceId], references: [id], onDelete: Cascade)
+  tokenBalance TokenBalance  @relation(fields: [balanceId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([type])

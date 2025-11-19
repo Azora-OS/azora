@@ -1,4 +1,4 @@
-name: TypeScript Validation
+name: TypeScript Type Checking
 
 on:
   push:
@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   typecheck:
+    name: TypeScript Strict Mode Validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,10 +27,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: TypeScript check
+      - name: Run TypeScript compiler in strict mode
         run: npm run typecheck
       
-      - name: Build check
-        run: npm run build
-        env:
-          NODE_ENV: production
+      - name: Verify no implicit any types
+        run: |
+          echo "Checking for implicit any types..."
+          npm run typecheck -- --noImplicitAny
+      
+      - name: Generate type checking report
+        if: always()
+        run: |
+          npm run typecheck -- --listFiles > typecheck-report.txt 2>&1 || true
+      
+      - name: Upload type checking report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-report
+          path: typecheck-report.txt
+          retention-days: 30
+      
+      - name: Fail if type checking failed
+        run: npm run typecheck

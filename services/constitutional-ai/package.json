@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "type-check": "tsc --noEmit",
-    "health": "node healthcheck.js"
+    "health": "node healthcheck.js",
+    "start": "node index.js"
   },
   "keywords": [
     "constitutional-ai",
