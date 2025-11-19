@@ -1,38 +1,7 @@
 {
-  "name": "@azora/ai-routing",
+  "name": "ai-routing",
   "version": "1.0.0",
-  "description": "AI Routing System with Knowledge Ocean integration",
-  "main": "index.ts",
-  "scripts": {
-    "setup:knowledge-ocean": "ts-node knowledge-ocean/cli.ts",
-    "test:connection": "ts-node knowledge-ocean/test-connection.ts",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "health": "node healthcheck.js"
-  },
   "dependencies": {
-    "@pinecone-database/pinecone": "^2.0.0",
-    "openai": "^4.20.0",
-    "dotenv": "^16.3.1",
-    "ioredis": "^5.3.2"
-  },
-  "devDependencies": {
-    "@types/node": "^20.10.0",
-    "typescript": "^5.3.0",
-    "ts-node": "^10.9.2",
-    "jest": "^29.7.0",
-    "@types/jest": "^29.5.0",
-    "ts-jest": "^29.1.0"
-  },
-  "keywords": [
-    "ai",
-    "routing",
-    "vector-database",
-    "pinecone",
-    "knowledge-ocean",
-    "rag"
-  ],
-  "author": "Azora OS",
-  "license": "MIT"
+    "vitest": "^1.0.4"
+  }
 }

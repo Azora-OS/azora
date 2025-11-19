@@ -1,9 +1,0 @@
-{
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "services/*",
-    "shared/*",
-    "ui-overhaul/*"
-  ]
-}

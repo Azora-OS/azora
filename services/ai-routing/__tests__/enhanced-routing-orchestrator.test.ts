@@ -267,7 +267,7 @@ describe('Enhanced Routing Orchestrator', () => {
     it('should get cheapest tier', async () => {
       vi.mocked(mockCostOptimizer.getCheapestTier).mockResolvedValue(RoutingTier.LOCAL_LLM);
 
-      const result = await router.getCheapestTier(100, 200);
+      const result = await router.getCheapestTier();
 
       expect(result).toBe(RoutingTier.LOCAL_LLM);
     });

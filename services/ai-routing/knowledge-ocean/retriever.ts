@@ -32,8 +32,6 @@ export class KnowledgeOceanRetriever {
   private defaultTopK: number;
   private defaultMinScore: number;
   private enforceSeventyThirty: boolean;
-  private diversityWeight: number;
-
   constructor(
     vectorDBClient: VectorDBClient,
     embeddingService: DocumentEmbeddingService,
@@ -44,7 +42,6 @@ export class KnowledgeOceanRetriever {
     this.defaultTopK = options.topK || 10;
     this.defaultMinScore = options.minScore || 0.7;
     this.enforceSeventyThirty = options.enforceSeventyThirty !== false;
-    this.diversityWeight = options.diversityWeight || 0.2;
   }
 
   /**

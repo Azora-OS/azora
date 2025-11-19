@@ -134,10 +134,19 @@ export interface ICacheManager {
  * Cost optimizer interface
  */
 export interface ICostOptimizer {
-  calculateCost(tier: RoutingTier, queryLength: number): Promise<number>;
-  trackSpending(tier: RoutingTier, cost: number): Promise<void>;
+  calculateCost(tier: RoutingTier, inputTokens?: number, outputTokens?: number): Promise<number>;
+  trackSpending(userId: string, tier: RoutingTier, cost: number): Promise<void>;
   getSpendingMetrics(): Promise<Record<RoutingTier, number>>;
-  shouldFallback(tier: RoutingTier, cost: number): Promise<boolean>;
+  shouldRejectQuery(tier: RoutingTier, cost: number, userBudget?: number): Promise<boolean>;
+  getCheapestTier(inputTokens?: number, outputTokens?: number): Promise<RoutingTier>;
+  getUserSpending(userId: string): Promise<any>;
+  compareCosts(inputTokens?: number, outputTokens?: number): Promise<Record<RoutingTier, number>>;
+  getTierSpending(tier: RoutingTier): Promise<any>;
+  getAverageCostPerQuery(tier: RoutingTier): Promise<number>;
+  getTotalCost(tier: RoutingTier): Promise<number>;
+  getTotalQueries(tier: RoutingTier): Promise<number>;
+  getTotalSpending(): Promise<number>;
+  resetTierMetrics(tier: RoutingTier): Promise<void>;
 }
 
 /**

@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'education-revenue-engine'
+
+scrape_configs:
+  # Education Revenue Engine metrics
+  - job_name: 'education-engine'
+    static_configs:
+      - targets: ['localhost:3020']
+    metrics_path: '/monitoring/metrics'
+    scrape_interval: 10s
+
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Elasticsearch metrics
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['localhost:9200']
+    metrics_path: '/_prometheus/metrics'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+rule_files:
+  - 'alert_rules.yml'

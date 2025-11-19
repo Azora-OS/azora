@@ -16,18 +16,19 @@ export const API_CONFIG = {
 
 // Service Endpoints
 export const API_ENDPOINTS = {
-  // Core Services
-  LMS: `${API_CONFIG.BASE_URL}/api/lms`,
-  MINT: `${API_CONFIG.BASE_URL}/api/mint`,
-  NEXUS: `${API_CONFIG.BASE_URL}/api/nexus`,
-  FORGE: `${API_CONFIG.BASE_URL}/api/forge`,
-  AEGIS: `${API_CONFIG.BASE_URL}/api/aegis`,
-
-  // Authentication
-  AUTH: `${API_CONFIG.BASE_URL}/api/auth`,
-
-  // Health Checks
-  HEALTH: `${API_CONFIG.BASE_URL}/api/health`,
+  API_GATEWAY: 'http://localhost:4000',
+  AUTH_SERVICE: 'http://localhost:4001',
+  AZORA_EDUCATION: 'http://localhost:4002',
+  AZORA_FINANCE: 'http://localhost:4003',
+  AZORA_MARKETPLACE: 'http://localhost:4004',
+  HEALTH_MONITOR: 'http://localhost:4005',
+  AZORA_AEGIS: 'http://localhost:4006',
+  AI_FAMILY_SERVICE: 'http://localhost:4010',
+  AZORA_SAPIENS: 'http://localhost:4011',
+  NOTIFICATION_SERVICE: 'http://localhost:4012',
+  PAYMENT: 'http://localhost:4013',
+  ANALYTICS_SERVICE: 'http://localhost:4014',
+  ENTERPRISE: 'http://localhost:4020'
 } as const;
 
 // User-configurable API endpoints (stored in localStorage)

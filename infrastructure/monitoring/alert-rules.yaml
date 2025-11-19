@@ -1,0 +1,294 @@
+# Alert Rules Configuration
+# Prometheus alert rules for Azora OS platform
+
+groups:
+  - name: system_alerts
+    interval: 30s
+    rules:
+      # CPU Alerts
+      - alert: HighCPUUsage
+        expr: node_cpu_seconds_total{mode="user"} > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+          runbook: "https://docs.azora.io/runbooks/high-cpu-usage"
+
+      - alert: CriticalCPUUsage
+        expr: node_cpu_seconds_total{mode="user"} > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Critical CPU usage detected"
+          description: "CPU usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+          runbook: "https://docs.azora.io/runbooks/critical-cpu-usage"
+
+      # Memory Alerts
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+          runbook: "https://docs.azora.io/runbooks/high-memory-usage"
+
+      - alert: CriticalMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Critical memory usage detected"
+          description: "Memory usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+          runbook: "https://docs.azora.io/runbooks/critical-memory-usage"
+
+      # Disk Alerts
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High disk usage detected"
+          description: "Disk usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+          runbook: "https://docs.azora.io/runbooks/high-disk-usage"
+
+      - alert: CriticalDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Critical disk usage detected"
+          description: "Disk usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+          runbook: "https://docs.azora.io/runbooks/critical-disk-usage"
+
+  - name: application_alerts
+    interval: 30s
+    rules:
+      # API Response Time Alerts
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API latency detected"
+          description: "P95 latency is {{ $value }}s for {{ $labels.service }}"
+          runbook: "https://docs.azora.io/runbooks/high-api-latency"
+
+      - alert: CriticalAPILatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1.0
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Critical API latency detected"
+          description: "P95 latency is {{ $value }}s for {{ $labels.service }}"
+          runbook: "https://docs.azora.io/runbooks/critical-api-latency"
+
+      # Error Rate Alerts
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
+          runbook: "https://docs.azora.io/runbooks/high-error-rate"
+
+      - alert: CriticalErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Critical error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.service }}"
+          runbook: "https://docs.azora.io/runbooks/critical-error-rate"
+
+      # Request Rate Alerts
+      - alert: HighRequestRate
+        expr: rate(http_requests_total[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High request rate detected"
+          description: "Request rate is {{ $value }} req/s for {{ $labels.service }}"
+          runbook: "https://docs.azora.io/runbooks/high-request-rate"
+
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # Database Connection Alerts
+      - alert: HighDatabaseConnections
+        expr: mysql_global_status_threads_connected / mysql_global_variables_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "High database connections detected"
+          description: "Database connections are {{ $value | humanizePercentage }} of max"
+          runbook: "https://docs.azora.io/runbooks/high-db-connections"
+
+      - alert: CriticalDatabaseConnections
+        expr: mysql_global_status_threads_connected / mysql_global_variables_max_connections > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Critical database connections detected"
+          description: "Database connections are {{ $value | humanizePercentage }} of max"
+          runbook: "https://docs.azora.io/runbooks/critical-db-connections"
+
+      # Query Performance Alerts
+      - alert: SlowQueries
+        expr: rate(mysql_global_status_slow_queries[5m]) > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Slow queries detected"
+          description: "Slow query rate is {{ $value }} queries/s"
+          runbook: "https://docs.azora.io/runbooks/slow-queries"
+
+      # Replication Lag Alerts
+      - alert: HighReplicationLag
+        expr: mysql_slave_status_seconds_behind_master > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "High replication lag detected"
+          description: "Replication lag is {{ $value }}s"
+          runbook: "https://docs.azora.io/runbooks/high-replication-lag"
+
+  - name: cache_alerts
+    interval: 30s
+    rules:
+      # Redis Memory Alerts
+      - alert: HighRedisMemory
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "High Redis memory usage detected"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
+          runbook: "https://docs.azora.io/runbooks/high-redis-memory"
+
+      # Redis Eviction Alerts
+      - alert: RedisEvictions
+        expr: rate(redis_evicted_keys_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Redis evictions detected"
+          description: "Redis is evicting {{ $value }} keys/s"
+          runbook: "https://docs.azora.io/runbooks/redis-evictions"
+
+  - name: service_alerts
+    interval: 30s
+    rules:
+      # Service Down Alerts
+      - alert: ServiceDown
+        expr: up{job=~"api-gateway|auth-service|azora-education"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: service
+        annotations:
+          summary: "Service is down"
+          description: "{{ $labels.job }} on {{ $labels.instance }} is down"
+          runbook: "https://docs.azora.io/runbooks/service-down"
+
+      # Pod Restart Alerts
+      - alert: PodRestartingTooOften
+        expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: kubernetes
+        annotations:
+          summary: "Pod restarting too often"
+          description: "Pod {{ $labels.pod }} is restarting {{ $value }} times/min"
+          runbook: "https://docs.azora.io/runbooks/pod-restarting"
+
+  - name: security_alerts
+    interval: 30s
+    rules:
+      # Failed Authentication Alerts
+      - alert: HighFailedAuthAttempts
+        expr: rate(auth_failed_attempts_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High failed authentication attempts"
+          description: "Failed auth rate is {{ $value }} attempts/s"
+          runbook: "https://docs.azora.io/runbooks/high-failed-auth"
+
+      # Suspicious Activity Alerts
+      - alert: SuspiciousActivity
+        expr: rate(security_suspicious_events_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: high
+          component: security
+        annotations:
+          summary: "Suspicious activity detected"
+          description: "Suspicious events rate is {{ $value }} events/s"
+          runbook: "https://docs.azora.io/runbooks/suspicious-activity"
+
+  - name: business_alerts
+    interval: 60s
+    rules:
+      # Payment Processing Alerts
+      - alert: HighPaymentFailureRate
+        expr: rate(payment_failures_total[5m]) / rate(payment_attempts_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: high
+          component: payments
+        annotations:
+          summary: "High payment failure rate"
+          description: "Payment failure rate is {{ $value | humanizePercentage }}"
+          runbook: "https://docs.azora.io/runbooks/high-payment-failure"
+
+      # User Signup Alerts
+      - alert: LowSignupRate
+        expr: rate(user_signups_total[1h]) < 1
+        for: 30m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "Low signup rate detected"
+          description: "Signup rate is {{ $value }} signups/hour"
+          runbook: "https://docs.azora.io/runbooks/low-signup-rate"

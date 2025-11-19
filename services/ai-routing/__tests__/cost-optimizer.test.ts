@@ -314,4 +314,7 @@ describe('CostOptimizer', () => {
         0.02,
         undefined
       );
-      expect(shouldReject).toBe(f
+      expect(shouldReject).toBe(false);
+    });
+  });
+});

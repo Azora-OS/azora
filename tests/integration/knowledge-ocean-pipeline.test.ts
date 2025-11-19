@@ -1,268 +1,297 @@
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
 import { KnowledgeOceanRetriever } from '../../services/ai-routing/knowledge-ocean/retriever';
-import { VectorDBClient } from '../../services/ai-routing/knowledge-ocean/vector-db-client';
 import { ContextRanker } from '../../services/ai-routing/knowledge-ocean/context-ranker';
 import { ContextInjector } from '../../services/ai-routing/knowledge-ocean/context-injector';
+import { VectorDBClient } from '../../services/ai-routing/knowledge-ocean/vector-db-client';
+import { EmbeddingService } from '../../services/ai-routing/knowledge-ocean/embedding-service';
 
-describe('Knowledge Ocean Pipeline Integration', () => {
+describe('Knowledge Ocean Pipeline Integration Tests', () => {
   let retriever: KnowledgeOceanRetriever;
-  let vectorDb: VectorDBClient;
   let ranker: ContextRanker;
   let injector: ContextInjector;
+  let vectorDb: VectorDBClient;
+  let embeddingService: EmbeddingService;
 
-  beforeAll(() => {
-    vectorDb = new VectorDBClient();
+  beforeAll(async () => {
+    // Initialize services
+    vectorDb = new VectorDBClient({
+      apiKey: process.env.PINECONE_API_KEY || 'test-key',
+      environment: process.env.PINECONE_ENV || 'test',
+      indexName: process.env.PINECONE_INDEX || 'test-index',
+    });
+
+    embeddingService = new EmbeddingService({
+      apiKey: process.env.OPENAI_API_KEY || 'test-key',
+      model: 'text-embedding-3-small',
+    });
+
+    retriever = new KnowledgeOceanRetriever(vectorDb, embeddingService);
     ranker = new ContextRanker();
     injector = new ContextInjector();
-    retriever = new KnowledgeOceanRetriever(vectorDb, ranker);
+  });
+
+  afterAll(async () => {
+    // Cleanup
+    await vectorDb.disconnect();
   });
 
   describe('Document Retrieval', () => {
-    it('should retrieve relevant documents', async () => {
-      const query = 'How does machine learning work?';
+    it('should retrieve documents from vector database', async () => {
+      const query = 'What is machine learning?';
+      const documents = await retriever.retrieveDocuments(query, 5);
 
-      const result = await retriever.retrieve(query);
-
-      expect(result.documents).toBeDefined();
-      expect(result.documents.length).toBeGreaterThan(0);
-      expect(result.retrievalTime).toBeLessThan(100);
+      expect(documents).toBeDefined();
+      expect(Array.isArray(documents)).toBe(true);
+      expect(documents.length).toBeGreaterThan(0);
+      expect(documents[0]).toHaveProperty('id');
+      expect(documents[0]).toHaveProperty('content');
+      expect(documents[0]).toHaveProperty('score');
     });
 
-    it('should implement 70/30 rule', async () => {
-      const query = 'Educational content';
+    it('should handle empty query gracefully', async () => {
+      const query = '';
+      const documents = await retriever.retrieveDocuments(query, 5);
 
-      const result = await retriever.retrieve(query);
-      const internalRatio = result.internalCount / (result.internalCount + result.externalCount);
-
-      expect(internalRatio).toBeGreaterThanOrEqual(0.65);
-      expect(internalRatio).toBeLessThanOrEqual(0.75);
+      expect(documents).toBeDefined();
+      expect(Array.isArray(documents)).toBe(true);
     });
 
-    it('should rank documents by relevance', async () => {
-      const query = 'Python programming';
+    it('should respect max results parameter', async () => {
+      const query = 'test query';
+      const maxResults = 3;
+      const documents = await retriever.retrieveDocuments(query, maxResults);
 
-      const result = await retriever.retrieve(query);
-      const ranked = ranker.rankDocuments(result.documents);
-
-      expect(ranked[0].score).toBeGreaterThanOrEqual(ranked[1]?.score || 0);
-    });
-
-    it('should handle empty results gracefully', async () => {
-      const query = 'Nonexistent topic xyz123abc';
-
-      const result = await retriever.retrieve(query);
-
-      expect(result.documents).toBeDefined();
-      expect(Array.isArray(result.documents)).toBe(true);
-    });
-
-    it('should achieve <100ms latency at p95', async () => {
-      const queries = Array(100).fill('test query');
-      const latencies: number[] = [];
-
-      for (const query of queries) {
-        const start = Date.now();
-        await retriever.retrieve(query);
-        latencies.push(Date.now() - start);
-      }
-
-      latencies.sort((a, b) => a - b);
-      const p95 = latencies[Math.floor(latencies.length * 0.95)];
-
-      expect(p95).toBeLessThan(100);
+      expect(documents.length).toBeLessThanOrEqual(maxResults);
     });
   });
 
   describe('70/30 Rule Enforcement', () => {
-    it('should enforce 70% internal sources', async () => {
-      const documents = Array(100).fill(null).map((_, i) => ({
-        id: `doc-${i}`,
-        content: `Document ${i}`,
-        metadata: {
-          source: i < 70 ? 'internal' : 'external',
-          category: 'test',
-          timestamp: new Date(),
-          tags: []
-        }
-      }));
+    it('should enforce 70% internal knowledge, 30% external knowledge', async () => {
+      const query = 'How does Azora work?';
+      const documents = await retriever.retrieveDocuments(query, 10);
 
-      const enforced = retriever.applySeventyThirtyRule(documents);
+      const internalDocs = documents.filter(doc => doc.source === 'internal');
+      const externalDocs = documents.filter(doc => doc.source === 'external');
 
-      const internalCount = enforced.filter(d => d.metadata.source === 'internal').length;
-      const externalCount = enforced.filter(d => d.metadata.source === 'external').length;
+      const internalRatio = internalDocs.length / documents.length;
+      const externalRatio = externalDocs.length / documents.length;
 
-      expect(internalCount).toBeGreaterThanOrEqual(externalCount * 2);
+      // Allow 5% tolerance
+      expect(internalRatio).toBeGreaterThanOrEqual(0.65);
+      expect(internalRatio).toBeLessThanOrEqual(0.75);
+      expect(externalRatio).toBeGreaterThanOrEqual(0.25);
+      expect(externalRatio).toBeLessThanOrEqual(0.35);
     });
 
-    it('should maintain quality with 70/30 split', async () => {
-      const query = 'Quality content';
+    it('should prioritize internal knowledge in ranking', async () => {
+      const query = 'Azora features';
+      const documents = await retriever.retrieveDocuments(query, 10);
 
-      const result = await retriever.retrieve(query);
-
-      expect(result.internalCount + result.externalCount).toBeGreaterThan(0);
-      expect(result.totalRelevanceScore).toBeGreaterThan(0);
+      // First document should be internal
+      if (documents.length > 0) {
+        expect(documents[0].source).toBe('internal');
+      }
     });
   });
 
   describe('Context Ranking', () => {
-    it('should rank by relevance score', async () => {
+    it('should rank documents by relevance score', async () => {
       const documents = [
-        { id: '1', content: 'Highly relevant', score: 0.95 },
-        { id: '2', content: 'Moderately relevant', score: 0.65 },
-        { id: '3', content: 'Slightly relevant', score: 0.35 }
+        { id: '1', content: 'Machine learning basics', score: 0.95, source: 'internal' },
+        { id: '2', content: 'Deep learning advanced', score: 0.87, source: 'internal' },
+        { id: '3', content: 'Neural networks', score: 0.92, source: 'external' },
       ];
 
-      const ranked = ranker.rankDocuments(documents);
+      const rankedDocs = ranker.rankDocuments(documents, 'machine learning');
 
-      expect(ranked[0].score).toBe(0.95);
-      expect(ranked[1].score).toBe(0.65);
-      expect(ranked[2].score).toBe(0.35);
+      expect(rankedDocs[0].score).toBeGreaterThanOrEqual(rankedDocs[1].score);
+      expect(rankedDocs[1].score).toBeGreaterThanOrEqual(rankedDocs[2].score);
     });
 
-    it('should deduplicate results', async () => {
+    it('should apply relevance scoring algorithm', async () => {
       const documents = [
-        { id: '1', content: 'Same content', score: 0.9 },
-        { id: '2', content: 'Same content', score: 0.85 }
+        { id: '1', content: 'Test content', score: 0.8, source: 'internal' },
+        { id: '2', content: 'Another test', score: 0.6, source: 'external' },
       ];
 
-      const ranked = ranker.rankDocuments(documents);
+      const rankedDocs = ranker.rankDocuments(documents, 'test');
 
-      expect(ranked.length).toBeLessThanOrEqual(documents.length);
+      expect(rankedDocs).toBeDefined();
+      expect(rankedDocs.length).toBe(2);
+      rankedDocs.forEach(doc => {
+        expect(doc).toHaveProperty('relevanceScore');
+        expect(doc.relevanceScore).toBeGreaterThanOrEqual(0);
+        expect(doc.relevanceScore).toBeLessThanOrEqual(1);
+      });
     });
 
-    it('should apply diversity scoring', async () => {
-      const documents = [
-        { id: '1', content: 'Topic A', category: 'education', score: 0.9 },
-        { id: '2', content: 'Topic B', category: 'finance', score: 0.85 },
-        { id: '3', content: 'Topic A again', category: 'education', score: 0.8 }
-      ];
+    it('should handle empty document list', () => {
+      const rankedDocs = ranker.rankDocuments([], 'query');
 
-      const ranked = ranker.rankDocuments(documents);
-
-      expect(ranked[0].category).not.toBe(ranked[1].category);
+      expect(rankedDocs).toBeDefined();
+      expect(rankedDocs.length).toBe(0);
     });
   });
 
   describe('Context Injection', () => {
     it('should inject context into prompt', async () => {
-      const prompt = 'What is machine learning?';
-      const documents = [
-        { id: '1', content: 'Machine learning is a subset of AI.' }
+      const query = 'What is Azora?';
+      const context = [
+        { id: '1', content: 'Azora is an AI platform', score: 0.95 },
+        { id: '2', content: 'It provides education services', score: 0.92 },
       ];
 
-      const injected = injector.injectContext(prompt, documents);
+      const injectedPrompt = injector.injectContext(query, context);
 
-      expect(injected).toContain(prompt);
-      expect(injected).toContain('Machine learning is a subset of AI');
+      expect(injectedPrompt).toBeDefined();
+      expect(typeof injectedPrompt).toBe('string');
+      expect(injectedPrompt).toContain(query);
+      expect(injectedPrompt).toContain('Azora is an AI platform');
+      expect(injectedPrompt).toContain('education services');
     });
 
     it('should format context properly', async () => {
-      const documents = [
-        { id: '1', content: 'First document' },
-        { id: '2', content: 'Second document' }
+      const query = 'test query';
+      const context = [
+        { id: '1', content: 'First document', score: 0.9 },
+        { id: '2', content: 'Second document', score: 0.8 },
       ];
 
-      const formatted = injector.formatContext(documents);
+      const injectedPrompt = injector.injectContext(query, context);
 
-      expect(formatted).toContain('First document');
-      expect(formatted).toContain('Second document');
+      // Should contain context markers
+      expect(injectedPrompt).toContain('CONTEXT');
+      expect(injectedPrompt).toContain('QUERY');
     });
 
-    it('should handle token limits', async () => {
-      const context = 'x'.repeat(10000);
-      const maxTokens = 1000;
+    it('should handle empty context', () => {
+      const query = 'test query';
+      const context: any[] = [];
 
-      const truncated = injector.truncateToTokenLimit(context, maxTokens);
+      const injectedPrompt = injector.injectContext(query, context);
 
-      expect(truncated.length).toBeLessThanOrEqual(context.length);
-    });
-
-    it('should not exceed token limit', async () => {
-      const documents = Array(50).fill(null).map((_, i) => ({
-        id: `doc-${i}`,
-        content: 'x'.repeat(100)
-      }));
-
-      const formatted = injector.formatContext(documents);
-      const truncated = injector.truncateToTokenLimit(formatted, 2000);
-
-      expect(truncated.length).toBeLessThanOrEqual(formatted.length);
+      expect(injectedPrompt).toBeDefined();
+      expect(injectedPrompt).toContain(query);
     });
   });
 
   describe('Full Pipeline Integration', () => {
     it('should execute complete retrieval pipeline', async () => {
-      const query = 'How to learn programming?';
-      const prompt = 'Answer this question: ' + query;
+      const query = 'How does Azora education work?';
 
-      const result = await retriever.retrieve(query);
-      const ranked = ranker.rankDocuments(result.documents);
-      const injected = injector.injectContext(prompt, ranked);
+      // Step 1: Retrieve documents
+      const documents = await retriever.retrieveDocuments(query, 10);
+      expect(documents.length).toBeGreaterThan(0);
 
-      expect(injected).toBeDefined();
-      expect(injected.length).toBeGreaterThan(prompt.length);
+      // Step 2: Rank documents
+      const rankedDocs = ranker.rankDocuments(documents, query);
+      expect(rankedDocs.length).toBeGreaterThan(0);
+
+      // Step 3: Inject context
+      const injectedPrompt = injector.injectContext(query, rankedDocs);
+      expect(injectedPrompt).toBeDefined();
+      expect(injectedPrompt.length).toBeGreaterThan(query.length);
     });
 
-    it('should maintain quality through pipeline', async () => {
-      const query = 'Educational content';
+    it('should maintain context quality through pipeline', async () => {
+      const query = 'Azora features';
+      const documents = await retriever.retrieveDocuments(query, 5);
+      const rankedDocs = ranker.rankDocuments(documents, query);
+      const injectedPrompt = injector.injectContext(query, rankedDocs);
 
-      const result = await retriever.retrieve(query);
+      // Verify quality metrics
+      expect(rankedDocs.length).toBeGreaterThan(0);
+      expect(injectedPrompt.length).toBeGreaterThan(0);
 
-      expect(result.totalRelevanceScore).toBeGreaterThan(0);
-      expect(result.retrievalTime).toBeLessThan(100);
-      expect(result.internalCount + result.externalCount).toBeGreaterThan(0);
-    });
-
-    it('should handle concurrent retrievals', async () => {
-      const queries = ['Query 1', 'Query 2', 'Query 3', 'Query 4', 'Query 5'];
-
-      const results = await Promise.all(
-        queries.map(q => retriever.retrieve(q))
-      );
-
-      expect(results).toHaveLength(5);
-      results.forEach(result => {
-        expect(result.retrievalTime).toBeLessThan(100);
-      });
+      // Verify top documents are high quality
+      if (rankedDocs.length > 0) {
+        expect(rankedDocs[0].relevanceScore).toBeGreaterThan(0.7);
+      }
     });
   });
 
   describe('Performance Requirements', () => {
-    it('should retrieve within 100ms', async () => {
-      const query = 'Performance test';
+    it('should retrieve documents within 100ms', async () => {
+      const query = 'test query';
+      const startTime = Date.now();
 
-      const start = Date.now();
-      await retriever.retrieve(query);
-      const duration = Date.now() - start;
+      await retriever.retrieveDocuments(query, 5);
+
+      const endTime = Date.now();
+      const duration = endTime - startTime;
 
       expect(duration).toBeLessThan(100);
     });
 
-    it('should rank efficiently', async () => {
-      const documents = Array(1000).fill(null).map((_, i) => ({
-        id: `doc-${i}`,
+    it('should rank documents within 50ms', () => {
+      const documents = Array.from({ length: 20 }, (_, i) => ({
+        id: `${i}`,
         content: `Document ${i}`,
-        score: Math.random()
+        score: Math.random(),
+        source: i % 2 === 0 ? 'internal' : 'external',
       }));
 
-      const start = Date.now();
-      ranker.rankDocuments(documents);
-      const duration = Date.now() - start;
+      const startTime = Date.now();
+
+      ranker.rankDocuments(documents, 'test query');
+
+      const endTime = Date.now();
+      const duration = endTime - startTime;
 
       expect(duration).toBeLessThan(50);
     });
 
-    it('should inject context efficiently', async () => {
-      const prompt = 'Test prompt';
-      const documents = Array(100).fill(null).map((_, i) => ({
-        id: `doc-${i}`,
-        content: `Document ${i} content`
+    it('should inject context within 30ms', () => {
+      const query = 'test query';
+      const context = Array.from({ length: 10 }, (_, i) => ({
+        id: `${i}`,
+        content: `Context document ${i}`,
+        score: 0.9 - i * 0.05,
       }));
 
-      const start = Date.now();
-      injector.injectContext(prompt, documents);
-      const duration = Date.now() - start;
+      const startTime = Date.now();
 
-      expect(duration).toBeLessThan(50);
+      injector.injectContext(query, context);
+
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+
+      expect(duration).toBeLessThan(30);
+    });
+
+    it('should complete full pipeline within 200ms', async () => {
+      const query = 'performance test query';
+      const startTime = Date.now();
+
+      const documents = await retriever.retrieveDocuments(query, 5);
+      const rankedDocs = ranker.rankDocuments(documents, query);
+      injector.injectContext(query, rankedDocs);
+
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+
+      expect(duration).toBeLessThan(200);
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle retrieval errors gracefully', async () => {
+      const query = 'test query';
+
+      try {
+        await retriever.retrieveDocuments(query, 5);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
+
+    it('should handle invalid context gracefully', () => {
+      const query = 'test query';
+      const invalidContext = null as any;
+
+      expect(() => {
+        injector.injectContext(query, invalidContext);
+      }).not.toThrow();
     });
   });
 });

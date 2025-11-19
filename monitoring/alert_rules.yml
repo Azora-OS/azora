@@ -1,92 +1,38 @@
 groups:
-  - name: azora_alerts
+  - name: azora-alerts
     rules:
-      - alert: HighErrorRate
-        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value }}% for {{ $labels.service }}"
-
       - alert: ServiceDown
         expr: up == 0
-        for: 2m
+        for: 1m
         labels:
           severity: critical
         annotations:
-          summary: "Service {{ $labels.job }} is down"
-          description: "Service {{ $labels.job }} has been down for more than 2 minutes"
+          summary: "Service {{ $labels.instance }} is down"
+          description: "{{ $labels.instance }} has been down for more than 1 minute."
 
       - alert: HighCPUUsage
-        expr: rate(cpu_usage_percent[5m]) > 80
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "High CPU usage on {{ $labels.instance }}"
-          description: "CPU usage is {{ $value }}%"
+          description: "CPU usage is above 80% for more than 5 minutes."
 
       - alert: HighMemoryUsage
-        expr: memory_usage_percent > 85
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 90
         for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High memory usage on {{ $labels.instance }}"
-          description: "Memory usage is {{ $value }}%"
-
-      - alert: DatabaseConnectionIssues
-        expr: pg_stat_activity_count{state="active"} < 1
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Database connection issues"
-          description: "Active database connections are low"
-
-      - alert: PaymentFailures
-        expr: rate(payment_failed_total[5m]) > 0.01
-        for: 2m
         labels:
           severity: critical
         annotations:
-          summary: "High payment failure rate"
-          description: "Payment failure rate is {{ $value }}%"
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 90% for more than 5 minutes."
 
-      - alert: AuthFailures
-        expr: rate(auth_failed_total[5m]) > 0.1
-        for: 3m
+      - alert: DatabaseConnectionFailure
+        expr: postgres_up == 0
+        for: 1m
         labels:
-          severity: warning
+          severity: critical
         annotations:
-          summary: "High authentication failure rate"
-          description: "Authentication failure rate is {{ $value }}%"
-
-      - alert: APIGatewayLatency
-        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High API Gateway latency"
-          description: "95th percentile latency is {{ $value }}s"
-
-      - alert: DiskSpaceLow
-        expr: (1 - node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 > 85
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Low disk space on {{ $labels.instance }}"
-          description: "Disk usage is {{ $value }}%"
-
-      - alert: RedisMemoryHigh
-        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 80
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High Redis memory usage"
-          description: "Redis memory usage is {{ $value }}%"
+          summary: "Database connection failure"
+          description: "Cannot connect to PostgreSQL database."

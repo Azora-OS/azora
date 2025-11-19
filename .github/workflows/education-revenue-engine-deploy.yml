@@ -1,0 +1,173 @@
+name: Education Revenue Engine CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'services/education-revenue-engine/**'
+      - '.github/workflows/education-revenue-engine-deploy.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'services/education-revenue-engine/**'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: azora/education-revenue-engine
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'services/education-revenue-engine/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: services/education-revenue-engine
+      run: npm ci
+
+    - name: Run linter
+      working-directory: services/education-revenue-engine
+      run: npm run lint
+
+    - name: Run type check
+      working-directory: services/education-revenue-engine
+      run: npm run type-check
+
+    - name: Run tests
+      working-directory: services/education-revenue-engine
+      env:
+        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+        REDIS_URL: redis://localhost:6379/0
+      run: npm run test:ci
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./services/education-revenue-engine/coverage/lcov.info
+        flags: education-engine
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./services/education-revenue-engine
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Deploy to Kubernetes
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        KUBE_NAMESPACE: default
+      run: |
+        mkdir -p $HOME/.kube
+        echo "$KUBECONFIG" | base64 -d > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+        
+        kubectl set image deployment/education-revenue-engine \
+          education-revenue-engine=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+          -n $KUBE_NAMESPACE
+        
+        kubectl rollout status deployment/education-revenue-engine \
+          -n $KUBE_NAMESPACE \
+          --timeout=5m
+
+    - name: Run smoke tests
+      env:
+        API_URL: https://education.azora.io
+      run: |
+        npm install -g newman
+        newman run ./tests/smoke/education-engine-smoke-tests.postman_collection.json \
+          --environment ./tests/smoke/production.postman_environment.json \
+          --reporters cli,json \
+          --reporter-json-export ./smoke-test-results.json
+
+    - name: Upload smoke test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: smoke-test-results
+        path: smoke-test-results.json
+
+    - name: Notify deployment
+      if: success()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: 'Education Revenue Engine deployed successfully'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
