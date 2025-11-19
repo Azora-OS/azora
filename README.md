@@ -14,6 +14,17 @@
 [![Services](https://img.shields.io/badge/Services-14%20Active-blue.svg)](#services)
 [![Apps](https://img.shields.io/badge/Apps-5%20Ready-blue.svg)](#applications)
 
+### CI/CD Status
+
+[![Tests](https://github.com/Sizwe780/azora-os/workflows/Test%20Suite/badge.svg?branch=main)](https://github.com/Sizwe780/azora-os/actions/workflows/test.yml)
+[![Linting & Type Check](https://github.com/Sizwe780/azora-os/workflows/CI%20-%20Linting%20%26%20Type%20Checking/badge.svg?branch=main)](https://github.com/Sizwe780/azora-os/actions/workflows/ci-lint-and-type-check.yml)
+[![Security Scan](https://github.com/Sizwe780/azora-os/workflows/Security%20Scanning/badge.svg?branch=main)](https://github.com/Sizwe780/azora-os/actions/workflows/security.yml)
+[![E2E Tests](https://github.com/Sizwe780/azora-os/workflows/E2E%20Tests/badge.svg?branch=main)](https://github.com/Sizwe780/azora-os/actions/workflows/e2e-tests.yml)
+[![Staging Deploy](https://github.com/Sizwe780/azora-os/workflows/Deploy%20Staging/badge.svg?branch=main)](https://github.com/Sizwe780/azora-os/actions/workflows/deploy-staging.yml)
+[![Production Deploy](https://github.com/Sizwe780/azora-os/workflows/Deploy%20Production/badge.svg)](https://github.com/Sizwe780/azora-os/actions/workflows/deploy-production.yml)
+
+**📊 [View Workflow Dashboard](.github/dashboard.html)** | **📈 [Metrics Guide](.github/METRICS-INTERPRETATION-GUIDE.md)** | **📋 [Status Dashboard](.github/WORKFLOW-STATUS-DASHBOARD.md)**
+
 **📊 [Current Status](#current-status)** | **🚀 [Quick Start](#quick-start)** | **📖 [Documentation](#documentation)** | **🏗️ [Architecture](#architecture)** | **📈 [System Status](./docs/SYSTEM-STATUS-CHART.md)** | **🚀 [Deployment Status](./DEPLOYMENT-STATUS.md)**
 
 </div>
