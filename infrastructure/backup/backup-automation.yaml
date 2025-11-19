@@ -1,0 +1,274 @@
+# Database Backup Automation
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: azora-system
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgres-backup
+            image: postgres:15
+            command:
+            - /bin/bash
+            - -c
+            - |
+              DATE=$(date +%Y%m%d_%H%M%S)
+              BACKUP_FILE="azora_backup_$DATE.sql"
+              
+              # Create backup
+              pg_dump -h postgres-primary -U $POSTGRES_USER -d azora_prod > /backups/$BACKUP_FILE
+              
+              # Compress backup
+              gzip /backups/$BACKUP_FILE
+              
+              # Upload to S3
+              aws s3 cp /backups/$BACKUP_FILE.gz s3://$BACKUP_BUCKET/database/
+              
+              # Cleanup old local backups
+              find /backups -name "*.sql.gz" -mtime +7 -delete
+              
+              echo "Backup completed: $BACKUP_FILE.gz"
+            env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: BACKUP_BUCKET
+              value: "azora-backups"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secret-access-key
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backups
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc
+          restartPolicy: OnFailure
+
+---
+# Configuration Backup
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: config-backup
+  namespace: azora-system
+spec:
+  schedule: "0 3 * * *"  # Daily at 3 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: config-backup
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              DATE=$(date +%Y%m%d_%H%M%S)
+              BACKUP_DIR="/backups/config_$DATE"
+              mkdir -p $BACKUP_DIR
+              
+              # Backup ConfigMaps
+              kubectl get configmaps -o yaml > $BACKUP_DIR/configmaps.yaml
+              
+              # Backup Secrets (metadata only)
+              kubectl get secrets -o yaml | grep -v "data:" > $BACKUP_DIR/secrets.yaml
+              
+              # Backup Services
+              kubectl get services -o yaml > $BACKUP_DIR/services.yaml
+              
+              # Backup Deployments
+              kubectl get deployments -o yaml > $BACKUP_DIR/deployments.yaml
+              
+              # Create archive
+              tar -czf $BACKUP_DIR.tar.gz -C /backups config_$DATE
+              
+              # Upload to S3
+              aws s3 cp $BACKUP_DIR.tar.gz s3://$BACKUP_BUCKET/config/
+              
+              # Cleanup
+              rm -rf $BACKUP_DIR $BACKUP_DIR.tar.gz
+              
+              echo "Config backup completed: config_$DATE.tar.gz"
+            env:
+            - name: BACKUP_BUCKET
+              value: "azora-backups"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secret-access-key
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backups
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc
+          restartPolicy: OnFailure
+
+---
+# Backup Verification Job
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-verification
+  namespace: azora-system
+spec:
+  schedule: "0 4 * * *"  # Daily at 4 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-verify
+            image: postgres:15
+            command:
+            - /bin/bash
+            - -c
+            - |
+              # Get latest backup
+              LATEST_BACKUP=$(aws s3 ls s3://$BACKUP_BUCKET/database/ | sort | tail -1 | awk '{print $4}')
+              
+              if [ -z "$LATEST_BACKUP" ]; then
+                echo "No backup found!"
+                exit 1
+              fi
+              
+              # Download backup
+              aws s3 cp s3://$BACKUP_BUCKET/database/$LATEST_BACKUP /tmp/
+              
+              # Create test database
+              TEST_DB="backup_test_$(date +%s)"
+              createdb -h postgres-primary -U $POSTGRES_USER $TEST_DB
+              
+              # Restore backup
+              gunzip -c /tmp/$LATEST_BACKUP | psql -h postgres-primary -U $POSTGRES_USER -d $TEST_DB
+              
+              # Verify tables exist
+              TABLE_COUNT=$(psql -h postgres-primary -U $POSTGRES_USER -d $TEST_DB -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';")
+              
+              if [ "$TABLE_COUNT" -gt 0 ]; then
+                echo "Backup verification successful: $TABLE_COUNT tables restored"
+              else
+                echo "Backup verification failed: No tables found"
+                exit 1
+              fi
+              
+              # Cleanup test database
+              dropdb -h postgres-primary -U $POSTGRES_USER $TEST_DB
+              rm /tmp/$LATEST_BACKUP
+            env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: BACKUP_BUCKET
+              value: "azora-backups"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secret-access-key
+          restartPolicy: OnFailure
+
+---
+# Backup Storage PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-pvc
+  namespace: azora-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: fast-ssd
+
+---
+# Backup Monitoring
+apiVersion: v1
+kind: Service
+metadata:
+  name: backup-monitor
+  namespace: azora-system
+spec:
+  selector:
+    app: backup-monitor
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backup-monitor
+  namespace: azora-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backup-monitor
+  template:
+    metadata:
+      labels:
+        app: backup-monitor
+    spec:
+      containers:
+      - name: monitor
+        image: azora/backup-monitor:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BACKUP_BUCKET
+          value: "azora-backups"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: access-key-id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: secret-access-key

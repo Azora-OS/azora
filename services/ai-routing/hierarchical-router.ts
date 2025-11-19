@@ -565,7 +565,7 @@ export class HierarchicalRouter implements IHierarchicalRouter {
   /**
    * Get cheapest tier for a query
    */
-  async getCheapestTier(inputTokens: number = 100, outputTokens: number = 200): Promise<RoutingTier> {
+  async getCheapestTierForQuery(inputTokens: number = 100, outputTokens: number = 200): Promise<RoutingTier> {
     return this.costOptimizer.getCheapestTier(inputTokens, outputTokens);
   }
 

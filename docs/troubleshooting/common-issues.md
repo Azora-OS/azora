@@ -1,393 +1,279 @@
-# 🔧 Common Issues & Solutions
+# Troubleshooting Guide
 
-**Ubuntu Principle:** *"My solution strengthens our foundation"*
+## Common Issues and Solutions
 
----
+### Service Connection Issues
 
-## 🚨 Quick Troubleshooting
-
-### Issue: Services Won't Start
-
+#### Problem: Service Unavailable (503)
 **Symptoms:**
-```
-Error: Cannot find module 'express'
-Error: Port 4000 already in use
+- API returns 503 Service Unavailable
+- Health checks failing
+- Timeouts on requests
+
+**Diagnosis:**
+```bash
+# Check service status
+kubectl get pods -n azora-services
+kubectl describe pod <pod-name>
+kubectl logs <pod-name> --tail=50
 ```
 
 **Solutions:**
+1. **Resource Limits**: Increase CPU/memory limits
+2. **Health Check**: Verify health endpoint responds
+3. **Dependencies**: Check database/Redis connectivity
+4. **Restart**: `kubectl rollout restart deployment/<service>`
 
-1. **Install dependencies:**
-```bash
-npm install
-cd services/api-gateway && npm install
-```
-
-2. **Kill process on port:**
-```bash
-# Windows
-netstat -ano | findstr :4000
-taskkill /PID <PID> /F
-
-# Linux/Mac
-lsof -ti:4000 | xargs kill -9
-```
-
-3. **Use different port:**
-```bash
-PORT=5000 npm start
-```
-
----
-
-### Issue: Database Connection Failed
-
+#### Problem: Database Connection Errors
 **Symptoms:**
-```
-Error: connect ECONNREFUSED 127.0.0.1:5432
-Error: password authentication failed
+- "Connection refused" errors
+- "Too many connections" errors
+- Slow query responses
+
+**Diagnosis:**
+```bash
+# Check database status
+kubectl get pods -n azora-system -l app=postgres
+kubectl logs postgres-primary-0
+
+# Check connections
+kubectl exec -it postgres-primary-0 -- psql -c "SELECT count(*) FROM pg_stat_activity;"
 ```
 
 **Solutions:**
+1. **Connection Pool**: Increase pool size in services
+2. **Database Resources**: Scale database resources
+3. **Query Optimization**: Identify and optimize slow queries
+4. **Failover**: Switch to read replica if primary fails
 
-1. **Check PostgreSQL is running:**
-```bash
-# Windows
-sc query postgresql-x64-15
+### Authentication Issues
 
-# Linux
-sudo systemctl status postgresql
-
-# Mac
-brew services list
-```
-
-2. **Verify connection string:**
-```bash
-# Check .env file
-cat .env | grep DATABASE_URL
-
-# Should be:
-DATABASE_URL="postgresql://user:password@localhost:5432/azora_auth"
-```
-
-3. **Reset database:**
-```bash
-npm run db:setup
-npm run db:seed
-```
-
----
-
-### Issue: Authentication Fails
-
+#### Problem: JWT Token Errors
 **Symptoms:**
-```
-401 Unauthorized
-Error: Invalid token
-Error: Token expired
+- "Invalid token" errors
+- "Token expired" errors
+- Authentication failures
+
+**Diagnosis:**
+```bash
+# Check auth service logs
+kubectl logs -l app=auth-service --tail=100
+
+# Verify token structure
+echo "JWT_TOKEN" | base64 -d
 ```
 
 **Solutions:**
+1. **Token Refresh**: Implement token refresh mechanism
+2. **Clock Sync**: Ensure server time synchronization
+3. **Secret Rotation**: Update JWT secrets if compromised
+4. **Session Cleanup**: Clear expired sessions from Redis
 
-1. **Check token format:**
-```bash
-# Token should be in header:
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-2. **Login again:**
-```bash
-curl -X POST http://localhost:4000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"student@azora.world","password":"Azora2025!"}'
-```
-
-3. **Check JWT_SECRET:**
-```bash
-# Verify .env has JWT_SECRET
-echo $JWT_SECRET
-```
-
----
-
-### Issue: Prisma Client Not Generated
-
+#### Problem: OAuth Integration Failures
 **Symptoms:**
-```
-Error: Cannot find module '@prisma/client'
-Error: PrismaClient is not a constructor
+- OAuth redirect errors
+- "Invalid client" errors
+- Authorization code issues
+
+**Solutions:**
+1. **Callback URLs**: Verify OAuth callback URLs
+2. **Client Credentials**: Check OAuth client ID/secret
+3. **Scope Permissions**: Ensure proper OAuth scopes
+4. **SSL Certificate**: Verify HTTPS configuration
+
+### Performance Issues
+
+#### Problem: High Response Times
+**Symptoms:**
+- API responses > 2 seconds
+- Timeout errors
+- Poor user experience
+
+**Diagnosis:**
+```bash
+# Check service metrics
+kubectl top pods -n azora-services
+curl -s http://prometheus:9090/api/v1/query?query=http_request_duration_seconds
+
+# Check database performance
+kubectl exec -it postgres-primary-0 -- psql -c "SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;"
 ```
 
 **Solutions:**
+1. **Caching**: Implement Redis caching for frequent queries
+2. **Database Indexing**: Add indexes for slow queries
+3. **Connection Pooling**: Optimize database connections
+4. **Load Balancing**: Scale horizontally with more replicas
 
-1. **Generate Prisma Client:**
-```bash
-cd services/azora-education
-npx prisma generate
-```
-
-2. **Regenerate all clients:**
-```bash
-npm run db:generate
-```
-
-3. **Check schema file exists:**
-```bash
-ls services/azora-education/prisma/schema.prisma
-```
-
----
-
-### Issue: API Returns 404
-
+#### Problem: Memory Leaks
 **Symptoms:**
-```
-404 Not Found
-Error: Cannot GET /api/courses
+- Increasing memory usage over time
+- Out of memory errors
+- Pod restarts due to memory limits
+
+**Diagnosis:**
+```bash
+# Monitor memory usage
+kubectl top pods -n azora-services
+kubectl describe pod <pod-name> | grep -A 5 "Limits\|Requests"
+
+# Check for memory leaks in logs
+kubectl logs <pod-name> | grep -i "memory\|heap\|gc"
 ```
 
 **Solutions:**
+1. **Memory Profiling**: Use Node.js memory profiler
+2. **Garbage Collection**: Tune GC settings
+3. **Resource Limits**: Set appropriate memory limits
+4. **Code Review**: Check for memory leaks in code
 
-1. **Check service is running:**
-```bash
-curl http://localhost:4000/api/health
-```
+### Network Issues
 
-2. **Verify route exists:**
-```bash
-# Check service logs
-npm run dev
-```
-
-3. **Check API Gateway routing:**
-```bash
-# Verify gateway config
-cat services/api-gateway/src/routes.ts
-```
-
----
-
-### Issue: CORS Errors
-
+#### Problem: Service Discovery Failures
 **Symptoms:**
-```
-Access to fetch blocked by CORS policy
-No 'Access-Control-Allow-Origin' header
+- "Service not found" errors
+- DNS resolution failures
+- Intermittent connectivity
+
+**Diagnosis:**
+```bash
+# Check service endpoints
+kubectl get endpoints -n azora-services
+kubectl get services -n azora-services
+
+# Test DNS resolution
+kubectl exec -it <pod-name> -- nslookup auth-service.azora-services.svc.cluster.local
 ```
 
 **Solutions:**
+1. **Service Labels**: Verify service selector labels match pods
+2. **DNS Configuration**: Check CoreDNS configuration
+3. **Network Policies**: Review NetworkPolicy rules
+4. **Service Mesh**: Verify Istio sidecar injection
 
-1. **Enable CORS in API Gateway:**
-```typescript
-// services/api-gateway/src/index.ts
-import cors from 'cors';
-app.use(cors());
-```
-
-2. **Configure allowed origins:**
-```typescript
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://azora.world'],
-  credentials: true
-}));
-```
-
----
-
-### Issue: Seed Data Fails
-
+#### Problem: Load Balancer Issues
 **Symptoms:**
-```
-Error: Unique constraint failed
-Error: Foreign key constraint failed
+- Uneven traffic distribution
+- Health check failures
+- SSL certificate errors
+
+**Diagnosis:**
+```bash
+# Check load balancer status
+kubectl get services -o wide
+kubectl describe service nginx-lb-service
+
+# Check SSL certificates
+kubectl get secrets -n azora-system | grep tls
+openssl x509 -in cert.pem -text -noout
 ```
 
 **Solutions:**
+1. **Health Checks**: Fix failing health check endpoints
+2. **SSL Renewal**: Renew expired SSL certificates
+3. **Backend Configuration**: Verify upstream server configuration
+4. **Traffic Routing**: Review NGINX configuration
 
-1. **Reset database:**
-```bash
-cd services/azora-education
-npx prisma migrate reset
-```
+### Data Issues
 
-2. **Run seed again:**
-```bash
-npm run db:seed
-```
-
-3. **Check for existing data:**
-```bash
-npm run db:studio
-# Delete conflicting records
-```
-
----
-
-### Issue: Docker Build Fails
-
+#### Problem: Data Inconsistency
 **Symptoms:**
-```
-Error: Cannot find Dockerfile
-Error: Build context too large
+- Conflicting data between services
+- Missing records
+- Duplicate entries
+
+**Diagnosis:**
+```bash
+# Check database consistency
+kubectl exec -it postgres-primary-0 -- psql -c "SELECT COUNT(*) FROM users;"
+kubectl exec -it postgres-primary-0 -- psql -c "SELECT COUNT(*) FROM transactions WHERE status = 'pending';"
+
+# Check Kafka lag
+kubectl exec -it kafka-0 -- kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group education-service
 ```
 
 **Solutions:**
+1. **Event Replay**: Replay Kafka events to sync data
+2. **Data Migration**: Run data consistency scripts
+3. **Transaction Boundaries**: Implement proper transaction scopes
+4. **Eventual Consistency**: Accept eventual consistency model
 
-1. **Check Dockerfile exists:**
-```bash
-ls Dockerfile
-ls docker-compose.yml
-```
-
-2. **Add .dockerignore:**
-```
-node_modules
-.git
-.env
-*.log
-```
-
-3. **Build with no cache:**
-```bash
-docker-compose build --no-cache
-```
-
----
-
-### Issue: Environment Variables Not Loading
-
+#### Problem: Backup Failures
 **Symptoms:**
-```
-Error: DATABASE_URL is not defined
-Error: JWT_SECRET is required
+- Backup jobs failing
+- Missing backup files
+- Corruption in backups
+
+**Diagnosis:**
+```bash
+# Check backup job status
+kubectl get cronjobs -n azora-system
+kubectl get jobs -n azora-system | grep backup
+
+# Verify backup integrity
+aws s3 ls s3://azora-backups/database/
+kubectl logs -l job-name=postgres-backup
 ```
 
 **Solutions:**
+1. **Storage Space**: Ensure sufficient backup storage
+2. **Permissions**: Verify S3 access permissions
+3. **Backup Testing**: Regularly test backup restoration
+4. **Monitoring**: Set up backup failure alerts
 
-1. **Copy .env.example:**
+## Diagnostic Commands
+
+### Service Health
 ```bash
-cp .env.example .env
+# Check all services
+kubectl get pods -A
+kubectl get services -A
+kubectl top nodes
+
+# Service-specific health
+curl -f http://api-gateway:4000/health
+curl -f http://auth-service:4001/health
 ```
 
-2. **Load environment:**
+### Database Diagnostics
 ```bash
-# Add to package.json
-"dev": "dotenv -e .env node src/index.js"
+# Connection status
+kubectl exec -it postgres-primary-0 -- psql -c "\conninfo"
+kubectl exec -it postgres-primary-0 -- psql -c "SELECT * FROM pg_stat_activity;"
+
+# Performance metrics
+kubectl exec -it postgres-primary-0 -- psql -c "SELECT * FROM pg_stat_database;"
 ```
 
-3. **Check .env file:**
+### Cache Diagnostics
 ```bash
-cat .env
-# Verify all required variables exist
+# Redis cluster status
+kubectl exec -it redis-cluster-0 -- redis-cli cluster nodes
+kubectl exec -it redis-cluster-0 -- redis-cli info memory
+
+# Cache hit rates
+kubectl exec -it redis-cluster-0 -- redis-cli info stats | grep hit
 ```
 
----
+## Emergency Procedures
 
-### Issue: High Memory Usage
+### Service Outage Response
+1. **Assess Impact**: Determine affected services and users
+2. **Immediate Mitigation**: Scale up healthy replicas
+3. **Root Cause Analysis**: Investigate logs and metrics
+4. **Communication**: Update status page and notify users
+5. **Resolution**: Apply fixes and verify recovery
 
-**Symptoms:**
-```
-JavaScript heap out of memory
-Process killed
-```
+### Data Recovery
+1. **Stop Writes**: Prevent further data corruption
+2. **Assess Damage**: Determine scope of data loss
+3. **Restore from Backup**: Use latest clean backup
+4. **Replay Events**: Apply Kafka events since backup
+5. **Verify Integrity**: Validate restored data consistency
 
-**Solutions:**
-
-1. **Increase Node memory:**
-```bash
-export NODE_OPTIONS="--max-old-space-size=4096"
-npm start
-```
-
-2. **Check for memory leaks:**
-```bash
-node --inspect src/index.js
-# Use Chrome DevTools
-```
-
-3. **Optimize queries:**
-```typescript
-// Use select to limit fields
-const users = await prisma.user.findMany({
-  select: { id: true, email: true }
-});
-```
-
----
-
-### Issue: Tests Failing
-
-**Symptoms:**
-```
-Test suite failed to run
-Timeout exceeded
-```
-
-**Solutions:**
-
-1. **Run tests with verbose:**
-```bash
-npm test -- --verbose
-```
-
-2. **Increase timeout:**
-```typescript
-// In test file
-jest.setTimeout(30000);
-```
-
-3. **Check test database:**
-```bash
-export DATABASE_URL="postgresql://localhost:5432/azora_test"
-npm test
-```
-
----
-
-## 🆘 Getting Help
-
-### 1. Check Logs
-
-```bash
-# Service logs
-npm run dev
-
-# Docker logs
-docker-compose logs -f
-
-# System logs
-tail -f /var/log/azora/*.log
-```
-
-### 2. Enable Debug Mode
-
-```bash
-export DEBUG=azora:*
-npm run dev
-```
-
-### 3. Run Health Checks
-
-```bash
-curl http://localhost:4000/api/health
-npm run db:studio
-```
-
-### 4. Community Support
-
-- **Discord:** https://discord.gg/azora
-- **GitHub Issues:** https://github.com/Sizwe780/azora-os/issues
-- **Documentation:** https://azora.world/docs
-
----
-
-## 📚 Additional Resources
-
-- [Database Guide](../DATABASE-GUIDE.md)
-- [API Documentation](../api/openapi.yaml)
-- [Deployment Guide](./deployment-guide.md)
-- [Security Guide](../SECURITY.md)
-
----
-
-**Ubuntu:** *"Ngiyakwazi ngoba sikwazi" - "I can because we can"* 🌍
+### Security Incident Response
+1. **Isolate**: Block suspicious traffic/users
+2. **Investigate**: Analyze logs for attack vectors
+3. **Contain**: Limit blast radius of incident
+4. **Remediate**: Apply security patches/fixes
+5. **Monitor**: Enhanced monitoring post-incident

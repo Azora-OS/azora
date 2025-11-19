@@ -1,0 +1,420 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: logging
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  namespace: logging
+data:
+  elasticsearch.yml: |
+    cluster.name: azora-logging
+    node.name: ${HOSTNAME}
+    discovery.seed_hosts: ["elasticsearch-0.elasticsearch", "elasticsearch-1.elasticsearch", "elasticsearch-2.elasticsearch"]
+    cluster.initial_master_nodes: ["elasticsearch-0", "elasticsearch-1", "elasticsearch-2"]
+    
+    # Performance settings
+    thread_pool.write.queue_size: 1000
+    thread_pool.search.queue_size: 1000
+    
+    # Security
+    xpack.security.enabled: true
+    xpack.security.enrollment.enabled: true
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elasticsearch-credentials
+  namespace: logging
+type: Opaque
+stringData:
+  ELASTIC_PASSWORD: "ChangeMe123!@#"
+  KIBANA_PASSWORD: "ChangeMe123!@#"
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: logging
+  labels:
+    app: elasticsearch
+spec:
+  serviceName: elasticsearch
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - elasticsearch
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9200
+              protocol: TCP
+            - name: transport
+              containerPort: 9300
+              protocol: TCP
+          env:
+            - name: cluster.name
+              value: azora-logging
+            - name: node.name
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: discovery.seed_hosts
+              value: "elasticsearch-0.elasticsearch,elasticsearch-1.elasticsearch,elasticsearch-2.elasticsearch"
+            - name: cluster.initial_master_nodes
+              value: "elasticsearch-0,elasticsearch-1,elasticsearch-2"
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-credentials
+                  key: ELASTIC_PASSWORD
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /usr/share/elasticsearch/data
+            - name: elasticsearch-config
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+          livenessProbe:
+            httpGet:
+              path: /_cluster/health
+              port: http
+              scheme: HTTPS
+              httpHeaders:
+                - name: Authorization
+                  value: "Basic ZWxhc3RpYzpjaGFuZ2VtZQ=="
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /_cluster/health?local=true
+              port: http
+              scheme: HTTPS
+              httpHeaders:
+                - name: Authorization
+                  value: "Basic ZWxhc3RpYzpjaGFuZ2VtZQ=="
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            fsGroup: 1000
+      volumes:
+        - name: elasticsearch-config
+          configMap:
+            name: elasticsearch-config
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: fast-ssd
+        resources:
+          requests:
+            storage: 50Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: logging
+  labels:
+    app: elasticsearch
+spec:
+  clusterIP: None
+  selector:
+    app: elasticsearch
+  ports:
+    - name: http
+      port: 9200
+      targetPort: http
+    - name: transport
+      port: 9300
+      targetPort: transport
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-api
+  namespace: logging
+  labels:
+    app: elasticsearch
+spec:
+  type: ClusterIP
+  selector:
+    app: elasticsearch
+  ports:
+    - name: http
+      port: 9200
+      targetPort: http
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: logging
+  labels:
+    app: kibana
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+        - name: kibana
+          image: docker.elastic.co/kibana/kibana:8.5.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 5601
+              protocol: TCP
+          env:
+            - name: ELASTICSEARCH_HOSTS
+              value: "https://elasticsearch-api:9200"
+            - name: ELASTICSEARCH_USERNAME
+              value: "elastic"
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-credentials
+                  key: ELASTIC_PASSWORD
+            - name: KIBANA_DEFAULTAPPID
+              value: "discover"
+            - name: XPACK_SECURITY_ENABLED
+              value: "true"
+          livenessProbe:
+            httpGet:
+              path: /api/status
+              port: web
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: web
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: logging
+  labels:
+    app: kibana
+spec:
+  type: LoadBalancer
+  selector:
+    app: kibana
+  ports:
+    - name: web
+      port: 5601
+      targetPort: web
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: logging
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+      - type: container
+        enabled: true
+        paths:
+          - '/var/lib/docker/containers/*/*.log'
+        processors:
+          - add_kubernetes_metadata:
+              in_cluster: true
+          - add_docker_metadata: ~
+
+    processors:
+      - add_host_metadata: ~
+      - add_cloud_metadata: ~
+
+    output.elasticsearch:
+      hosts: ["elasticsearch-api:9200"]
+      username: "elastic"
+      password: "${ELASTICSEARCH_PASSWORD}"
+      protocol: "https"
+      ssl.verification_mode: "none"
+      index: "filebeat-%{+yyyy.MM.dd}"
+
+    logging.level: info
+    logging.to_files: true
+    logging.files:
+      path: /var/log/filebeat
+      name: filebeat
+      keepfiles: 7
+      permissions: 0644
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat
+  namespace: logging
+  labels:
+    app: filebeat
+spec:
+  selector:
+    matchLabels:
+      app: filebeat
+  template:
+    metadata:
+      labels:
+        app: filebeat
+    spec:
+      serviceAccountName: filebeat
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: filebeat
+          image: docker.elastic.co/beats/filebeat:8.5.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-credentials
+                  key: ELASTIC_PASSWORD
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: filebeat-config
+              mountPath: /usr/share/filebeat/filebeat.yml
+              subPath: filebeat.yml
+            - name: varlog
+              mountPath: /var/log
+              readOnly: true
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          securityContext:
+            runAsUser: 0
+      volumes:
+        - name: filebeat-config
+          configMap:
+            name: filebeat-config
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: logging
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: filebeat
+rules:
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - pods
+      - nodes
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: filebeat
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: filebeat
+subjects:
+  - kind: ServiceAccount
+    name: filebeat
+    namespace: logging
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: elasticsearch-pdb
+  namespace: logging
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: elasticsearch
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: kibana-pdb
+  namespace: logging
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: kibana

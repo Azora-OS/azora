@@ -1,260 +1,229 @@
+# Azora OS - Production Docker Compose
+# High-availability deployment configuration
+
 version: '3.8'
 
 services:
-  # API Gateway - Ubuntu Entry Point
-  api-gateway:
-    build:
-      context: ./services/api-gateway
-      dockerfile: Dockerfile
-    ports:
-      - "4000:4000"
-    environment:
-      - NODE_ENV=production
-      - UBUNTU_MODE=active
-      - JWT_SECRET=${JWT_SECRET}
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - redis
-      - postgres
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Student Portal - Ubuntu Learning
-  student-portal:
-    build:
-      context: ./apps/student-portal
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
-      - NEXT_PUBLIC_UBUNTU_MODE=active
-    depends_on:
-      - api-gateway
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Enterprise UI - Ubuntu Business
-  enterprise-ui:
-    build:
-      context: ./apps/enterprise-ui
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
-      - NEXT_PUBLIC_UBUNTU_MODE=active
-    depends_on:
-      - api-gateway
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Marketplace UI - Ubuntu Opportunities
-  marketplace-ui:
-    build:
-      context: ./apps/marketplace-ui
-      dockerfile: Dockerfile
-    ports:
-      - "3002:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
-      - NEXT_PUBLIC_UBUNTU_MODE=active
-    depends_on:
-      - api-gateway
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Pay UI - Ubuntu Finance
-  pay-ui:
-    build:
-      context: ./apps/pay-ui
-      dockerfile: Dockerfile
-    ports:
-      - "3003:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://api-gateway:4000
-      - NEXT_PUBLIC_UBUNTU_MODE=active
-    depends_on:
-      - api-gateway
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Auth Service - Ubuntu Identity
-  auth-service:
-    build:
-      context: ./services/auth-service
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Education Service - Ubuntu Learning
-  education-service:
-    build:
-      context: ./services/azora-education
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    depends_on:
-      - postgres
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Payment Service - Ubuntu Finance
-  payment-service:
-    build:
-      context: ./services/azora-mint
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - BLOCKCHAIN_RPC_URL=${BLOCKCHAIN_RPC_URL}
-    depends_on:
-      - postgres
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # Marketplace Service - Ubuntu Opportunities
-  marketplace-service:
-    build:
-      context: ./services/azora-forge
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - AI_MATCHING_API=${AI_MATCHING_API}
-    depends_on:
-      - postgres
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-
-  # PostgreSQL Database - Ubuntu Data
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_DB=azora_production
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./infrastructure/database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d azora_production"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # Redis Cache - Ubuntu Memory
-  redis:
-    image: redis:7-alpine
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
-    networks:
-      - ubuntu-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Nginx Load Balancer - Ubuntu Gateway
+  # Load Balancer
   nginx:
     image: nginx:alpine
+    container_name: azora-nginx-lb
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./ssl:/etc/nginx/ssl
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
-      - api-gateway
-      - student-portal
-      - enterprise-ui
-      - marketplace-ui
-      - pay-ui
+      - api-gateway-1
+      - api-gateway-2
+      - frontend-1
+      - frontend-2
     networks:
-      - ubuntu-network
+      - azora-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  # API Gateway Cluster
+  api-gateway-1:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile.prod
+    container_name: azora-api-gateway-1
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - INSTANCE_ID=1
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api-gateway-2:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile.prod
+    container_name: azora-api-gateway-2
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - INSTANCE_ID=2
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Cluster
+  frontend-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: azora-frontend-1
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.azora.world
+      - INSTANCE_ID=1
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: azora-frontend-2
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.azora.world
+      - INSTANCE_ID=2
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Core Services
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile.prod
+    container_name: azora-auth-service
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - azora-network
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+
+  education-service:
+    build:
+      context: ./services/azora-education
+      dockerfile: Dockerfile.prod
+    container_name: azora-education-service
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - azora-network
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+
+  # Database Cluster
+  database-primary:
+    image: postgres:16-alpine
+    container_name: azora-db-primary
+    environment:
+      - POSTGRES_USER=azora_prod
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=azora_production
+      - POSTGRES_REPLICATION_MODE=master
+      - POSTGRES_REPLICATION_USER=replicator
+      - POSTGRES_REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+    volumes:
+      - postgres-primary-data:/var/lib/postgresql/data
+    networks:
+      - azora-network
     restart: unless-stopped
 
-  # Prometheus Monitoring - Ubuntu Metrics
+  database-replica:
+    image: postgres:16-alpine
+    container_name: azora-db-replica
+    environment:
+      - POSTGRES_MASTER_SERVICE=database-primary
+      - POSTGRES_REPLICATION_MODE=slave
+      - POSTGRES_REPLICATION_USER=replicator
+      - POSTGRES_REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    depends_on:
+      - database-primary
+
+  # Redis Cluster
+  redis-master:
+    image: redis:7-alpine
+    container_name: azora-redis-master
+    command: redis-server --appendonly yes --replica-announce-ip redis-master
+    volumes:
+      - redis-master-data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  redis-replica:
+    image: redis:7-alpine
+    container_name: azora-redis-replica
+    command: redis-server --slaveof redis-master 6379 --replica-announce-ip redis-replica
+    volumes:
+      - redis-replica-data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    depends_on:
+      - redis-master
+
+  # Monitoring
   prometheus:
     image: prom/prometheus:latest
+    container_name: azora-prometheus
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
     networks:
-      - ubuntu-network
+      - azora-network
     restart: unless-stopped
 
-  # Grafana Dashboard - Ubuntu Insights
   grafana:
     image: grafana/grafana:latest
+    container_name: azora-grafana
     ports:
-      - "3004:3000"
+      - "3030:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
     volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
-    depends_on:
-      - prometheus
+      - grafana-data:/var/lib/grafana
     networks:
-      - ubuntu-network
+      - azora-network
     restart: unless-stopped
 
 volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
-  prometheus_data:
-    driver: local
-  grafana_data:
-    driver: local
+  postgres-primary-data:
+  postgres-replica-data:
+  redis-master-data:
+  redis-replica-data:
+  prometheus-data:
+  grafana-data:
 
 networks:
-  ubuntu-network:
+  azora-network:
     driver: bridge
     ipam:
       config:

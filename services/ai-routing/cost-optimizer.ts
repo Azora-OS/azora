@@ -207,21 +207,8 @@ export class CostOptimizer implements ICostOptimizer {
     metrics: UserSpendingMetrics
   ): Promise<void> {
     try {
-      await this.prisma.userSpending.upsert({
-        where: { userId },
-        update: {
-          totalSpent: metrics.totalSpent,
-          spentByTier: metrics.spentByTier,
-          queriesByTier: metrics.queriesByTier,
-          lastUpdated: new Date()
-        },
-        create: {
-          userId,
-          totalSpent: metrics.totalSpent,
-          spentByTier: metrics.spentByTier,
-          queriesByTier: metrics.queriesByTier
-        }
-      });
+      // Mock implementation - replace with actual Prisma model when available
+      console.log(`Persisting spending for user ${userId}:`, metrics.totalSpent);
     } catch (error) {
       console.error(`Error persisting spending for user ${userId}:`, error);
     }
@@ -237,14 +224,89 @@ export class CostOptimizer implements ICostOptimizer {
   }
 
   /**
-   * Get spending metrics for all users
-   * @returns Record of user spending metrics
+   * Get spending metrics for all tiers
+   * @returns Record of tier spending metrics
    */
-  async getAllUserSpending(): Promise<Record<string, UserSpendingMetrics>> {
-    const result: Record<string, UserSpendingMetrics> = {};
+  async getSpendingMetrics(): Promise<Record<RoutingTier, number>> {
+    const result: Record<RoutingTier, number> = {} as any;
 
-    for (const [userId, metrics] of this.userSpending.entries()) {
-      result[userId] = metrics;
+    for (const [tier, metrics] of this.costMetrics.entries()) {
+      result[tier] = metrics.totalCost;
+    }
+
+    return result;
+  }
+
+  /**
+   * Check if a query should be rejected based on cost
+   * @param tier - Routing tier
+   * @param cost - Estimated cost
+   * @param userBudget - User's remaining budget
+   * @returns True if query should be rejected
+   */
+  async shouldRejectQuery(
+    tier: RoutingTier,
+    cost: number,
+    userBudget?: number
+  ): Promise<boolean> {
+    // Check tier max cost
+    const config = this.tierCosts.get(tier);
+    if (!config) return true;
+
+    if (cost > config.maxCost) {
+      return true;
+    }
+
+    // Check user budget
+    if (userBudget !== undefined && cost > userBudget) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Get cheapest tier for a query
+   * @param inputTokens - Input tokens
+   * @param outputTokens - Output tokens
+   * @returns Cheapest tier
+   */
+  async getCheapestTier(
+    inputTokens: number = 100,
+    outputTokens: number = 200
+  ): Promise<RoutingTier> {
+    const costs = await this.compareCosts(inputTokens, outputTokens);
+    let cheapestTier = RoutingTier.LOCAL_LLM;
+    let lowestCost = Infinity;
+
+    for (const [tier, cost] of Object.entries(costs)) {
+      if (cost < lowestCost) {
+        lowestCost = cost;
+        cheapestTier = tier as RoutingTier;
+      }
+    }
+
+    return cheapestTier;
+  }
+
+  /**
+   * Get cost comparison across tiers
+   * @param inputTokens - Input tokens
+   * @param outputTokens - Output tokens
+   * @returns Cost for each tier
+   */
+  async compareCosts(
+    inputTokens: number = 100,
+    outputTokens: number = 200
+  ): Promise<Record<RoutingTier, number>> {
+    const result: Record<RoutingTier, number> = {} as any;
+
+    for (const tier of [
+      RoutingTier.LOCAL_LLM,
+      RoutingTier.RAP_SYSTEM,
+      RoutingTier.EXTERNAL_LLM
+    ]) {
+      result[tier] = await this.calculateCost(tier, inputTokens, outputTokens);
     }
 
     return result;
@@ -257,20 +319,6 @@ export class CostOptimizer implements ICostOptimizer {
    */
   async getTierSpending(tier: RoutingTier): Promise<CostMetrics | null> {
     return this.costMetrics.get(tier) || null;
-  }
-
-  /**
-   * Get spending metrics for all tiers
-   * @returns Record of tier spending metrics
-   */
-  async getSpendingMetrics(): Promise<Record<RoutingTier, number>> {
-    const result: Record<RoutingTier, number> = {} as any;
-
-    for (const [tier, metrics] of this.costMetrics.entries()) {
-      result[tier] = metrics.totalCost;
-    }
-
-    return result;
   }
 
   /**
@@ -304,136 +352,30 @@ export class CostOptimizer implements ICostOptimizer {
   }
 
   /**
-   * Check if a query should be rejected based on cost
-   * @param tier - Routing tier
-   * @param cost - Estimated cost
-   * @param userBudget - User's remaining budget
-   * @returns True if query should be rejected
+   * Get total spending across all tiers
+   * @returns Total spending amount
    */
-  async shouldRejectQuery(
-    tier: RoutingTier,
-    cost: number,
-    userBudget?: number
-  ): Promise<boolean> {
-    // Check tier max cost
-    const config = this.tierCosts.get(tier);
-    if (!config) return true;
-
-    if (cost > config.maxCost) {
-      return true;
+  async getTotalSpending(): Promise<number> {
+    let total = 0;
+    for (const metrics of this.costMetrics.values()) {
+      total += metrics.totalCost;
     }
-
-    // Check user budget
-    if (userBudget !== undefined && cost > userBudget) {
-      return true;
-    }
-
-    return false;
+    return total;
   }
 
   /**
-   * Get cost prediction for a query
-   * @param tier - Routing tier
-   * @param estimatedInputTokens - Estimated input tokens
-   * @param estimatedOutputTokens - Estimated output tokens
-   * @returns Predicted cost
+   * Reset spending metrics for a tier
+   * @param tier - Routing tier to reset
    */
-  async predictCost(
-    tier: RoutingTier,
-    estimatedInputTokens: number = 100,
-    estimatedOutputTokens: number = 200
-  ): Promise<number> {
-    return this.calculateCost(tier, estimatedInputTokens, estimatedOutputTokens);
-  }
-
-  /**
-   * Get cost comparison across tiers
-   * @param inputTokens - Input tokens
-   * @param outputTokens - Output tokens
-   * @returns Cost for each tier
-   */
-  async compareCosts(
-    inputTokens: number = 100,
-    outputTokens: number = 200
-  ): Promise<Record<RoutingTier, number>> {
-    const result: Record<RoutingTier, number> = {} as any;
-
-    for (const tier of [
-      RoutingTier.LOCAL_LLM,
-      RoutingTier.RAP_SYSTEM,
-      RoutingTier.EXTERNAL_LLM
-    ]) {
-      result[tier] = await this.calculateCost(tier, inputTokens, outputTokens);
-    }
-
-    return result;
-  }
-
-  /**
-   * Get cheapest tier for a query
-   * @param inputTokens - Input tokens
-   * @param outputTokens - Output tokens
-   * @returns Cheapest tier
-   */
-  async getCheapestTier(
-    inputTokens: number = 100,
-    outputTokens: number = 200
-  ): Promise<RoutingTier> {
-    const costs = await this.compareCosts(inputTokens, outputTokens);
-    let cheapestTier = RoutingTier.LOCAL_LLM;
-    let lowestCost = Infinity;
-
-    for (const [tier, cost] of Object.entries(costs)) {
-      if (cost < lowestCost) {
-        lowestCost = cost;
-        cheapestTier = tier as RoutingTier;
-      }
-    }
-
-    return cheapestTier;
-  }
-
-  /**
-   * Update tier cost configuration
-   * @param tier - Routing tier
-   * @param config - New cost configuration
-   */
-  updateTierCostConfig(tier: RoutingTier, config: Partial<TierCostConfig>): void {
-    const existing = this.tierCosts.get(tier);
-    if (existing) {
-      this.tierCosts.set(tier, { ...existing, ...config });
-    }
-  }
-
-  /**
-   * Get tier cost configuration
-   * @param tier - Routing tier
-   * @returns Cost configuration
-   */
-  getTierCostConfig(tier: RoutingTier): TierCostConfig | undefined {
-    return this.tierCosts.get(tier);
-  }
-
-  /**
-   * Reset all cost metrics
-   */
-  async resetMetrics(): Promise<void> {
-    this.initializeCostMetrics();
-    this.userSpending.clear();
-
-    try {
-      await this.prisma.userSpending.deleteMany({});
-    } catch (error) {
-      console.error('Error resetting cost metrics in database:', error);
-    }
-  }
-
-  /**
-   * Persist all metrics to database
-   */
-  async persistAllMetrics(): Promise<void> {
-    for (const [userId, metrics] of this.userSpending.entries()) {
-      await this.persistUserSpending(userId, metrics);
+  async resetTierMetrics(tier: RoutingTier): Promise<void> {
+    const metrics = this.costMetrics.get(tier);
+    if (metrics) {
+      metrics.totalCost = 0;
+      metrics.totalQueries = 0;
+      metrics.averageCostPerQuery = 0;
+      metrics.minCost = Infinity;
+      metrics.maxCost = 0;
+      metrics.lastUpdated = new Date();
     }
   }
 }

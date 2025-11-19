@@ -1,9 +1,0 @@
-node_modules
-.next
-out
-dist
-build
-coverage
-*.lock
-package-lock.json
-

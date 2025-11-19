@@ -115,7 +115,7 @@ export class ConstitutionalOrchestrator implements IConstitutionalOrchestrator {
   async validateOutput(
     query: string,
     output: string,
-    context?: Record<string, any>
+    _context?: Record<string, any>
   ): Promise<ConstitutionalResult> {
     const startTime = Date.now();
     
@@ -166,7 +166,7 @@ export class ConstitutionalOrchestrator implements IConstitutionalOrchestrator {
   /**
    * Run all validators in pipeline
    */
-  private async runValidationPipeline(query: string, output: string) {
+  private async runValidationPipeline(_query: string, output: string) {
     if (this.config.parallelValidation) {
       // Run all validators in parallel for better performance
       const [ubuntu, bias, privacy, harm] = await Promise.all([
@@ -180,7 +180,7 @@ export class ConstitutionalOrchestrator implements IConstitutionalOrchestrator {
           ? this.privacyFilter.filterPII(output)
           : this.createSkippedPrivacyResult(),
         this.config.harmPreventionEnabled
-          ? this.harmPrevention.assessHarm(query, output)
+          ? this.harmPrevention.assessHarm(_query, output)
           : this.createSkippedHarmResult()
       ]);
       
@@ -200,7 +200,7 @@ export class ConstitutionalOrchestrator implements IConstitutionalOrchestrator {
         : this.createSkippedPrivacyResult();
       
       const harm = this.config.harmPreventionEnabled
-        ? await this.harmPrevention.assessHarm(query, output)
+        ? await this.harmPrevention.assessHarm(_query, output)
         : this.createSkippedHarmResult();
       
       return { ubuntu, bias, privacy, harm };
@@ -347,7 +347,7 @@ export class ConstitutionalOrchestrator implements IConstitutionalOrchestrator {
   private getValidatedOutput(
     originalOutput: string,
     validationResults: any,
-    isValid: boolean
+    _isValid: boolean
   ): string {
     // If harmful, return safe response
     if (this.config.harmPreventionEnabled && validationResults.harm.isHarmful) {
@@ -473,7 +473,7 @@ export class ConstitutionalOrchestrator implements IConstitutionalOrchestrator {
   /**
    * Create error result for exception cases
    */
-  private createErrorResult(output: string, error: any): ConstitutionalResult {
+  private createErrorResult(_output: string, error: any): ConstitutionalResult {
     return {
       isValid: false,
       validatedOutput: 'An error occurred during validation. Please try again.',

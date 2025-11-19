@@ -3,7 +3,7 @@
  * Implements get/set operations, TTL management, and cache invalidation
  */
 
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { CacheEntry, RoutingTier } from './types';
 import { getRedisConnectionManager } from './redis-connection';
 
@@ -22,7 +22,7 @@ export interface CacheStats {
 }
 
 export class ResponseCache {
-  private redis: Redis | Redis.Cluster;
+  private redis: Redis;
   private config: CacheServiceConfig;
 
   constructor(config: Partial<CacheServiceConfig> = {}) {
