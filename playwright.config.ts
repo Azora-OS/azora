@@ -4,6 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright Configuration for E2E Tests
  * 
+ * Optimized for parallel execution, comprehensive reporting, and failure diagnostics.
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
@@ -23,15 +24,16 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Parallel workers: 4 on CI, unlimited locally */
+  workers: process.env.CI ? 4 : undefined,
   
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
     ['junit', { outputFile: 'test-results/junit.xml' }],
     ['list'],
+    ...(process.env.CI ? [['github']] : []),
   ],
   
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -47,6 +49,9 @@ export default defineConfig({
     
     /* Video on failure */
     video: 'retain-on-failure',
+    
+    /* Action timeout for individual actions */
+    actionTimeout: 10000,
   },
 
   /* Configure projects for major browsers */

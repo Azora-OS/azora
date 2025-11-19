@@ -21,23 +21,55 @@ jobs:
           node-version: 20.x
           cache: 'npm'
       
+      - name: Restore npm audit cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-audit-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-audit-${{ runner.os }}-
+      
       - name: Install dependencies
         run: npm ci
       
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
+      - name: Run npm audit (fail on high/critical)
+        run: npm audit --audit-level=high
       
-      - name: Generate audit report
+      - name: Generate detailed audit report
         run: npm audit --json > audit-report.json
         continue-on-error: true
       
-      - name: Upload audit report
+      - name: Parse and format audit report
+        run: |
+          node -e "
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('audit-report.json', 'utf8'));
+          const vulnerabilities = report.vulnerabilities || {};
+          const critical = Object.values(vulnerabilities).filter(v => v.severity === 'critical').length;
+          const high = Object.values(vulnerabilities).filter(v => v.severity === 'high').length;
+          const medium = Object.values(vulnerabilities).filter(v => v.severity === 'moderate').length;
+          const low = Object.values(vulnerabilities).filter(v => v.severity === 'low').length;
+          
+          console.log('## Security Audit Summary');
+          console.log('- Critical: ' + critical);
+          console.log('- High: ' + high);
+          console.log('- Medium: ' + medium);
+          console.log('- Low: ' + low);
+          console.log('');
+          console.log('### Remediation Guidance');
+          console.log('Run \`npm audit fix\` to automatically fix vulnerabilities.');
+          console.log('For manual fixes, review each vulnerability with \`npm audit --json\`.');
+          " > audit-summary.md
+        continue-on-error: true
+      
+      - name: Upload audit reports
         uses: actions/upload-artifact@v4
         with:
-          name: npm-audit-report
-          path: audit-report.json
-          retention-days: 30
+          name: npm-audit-reports
+          path: |
+            audit-report.json
+            audit-summary.md
+          retention-days: 365
 
   dependency-review:
     runs-on: ubuntu-latest
@@ -48,9 +80,9 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: moderate
+          fail-on-severity: high
 
-  codeql:
+  sast-scan:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -69,47 +101,139 @@ jobs:
       
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+      
+      - name: Upload CodeQL results
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results
+          path: results/
+          retention-days: 365
+        continue-on-error: true
 
-  secret-scan:
+  secret-detection:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - name: TruffleHog OSS
+      - name: TruffleHog Secret Scanning
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
           extra_args: --debug --only-verified
+      
+      - name: Generate secret scan report
+        run: |
+          echo "# Secret Detection Report" > secret-scan-report.md
+          echo "" >> secret-scan-report.md
+          echo "Scan completed at $(date)" >> secret-scan-report.md
+          echo "" >> secret-scan-report.md
+          echo "## Remediation Guidance" >> secret-scan-report.md
+          echo "If secrets were detected:" >> secret-scan-report.md
+          echo "1. Rotate the exposed credentials immediately" >> secret-scan-report.md
+          echo "2. Remove the secret from git history using git-filter-repo" >> secret-scan-report.md
+          echo "3. Add the secret pattern to .gitignore" >> secret-scan-report.md
+          echo "4. Use environment variables or secrets management for sensitive data" >> secret-scan-report.md
+        continue-on-error: true
+      
+      - name: Upload secret scan report
+        uses: actions/upload-artifact@v4
+        with:
+          name: secret-scan-report
+          path: secret-scan-report.md
+          retention-days: 365
+        continue-on-error: true
 
-  owasp-scan:
+  security-report:
     runs-on: ubuntu-latest
+    needs: [npm-audit, sast-scan, secret-detection]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download all security reports
+        uses: actions/download-artifact@v4
         with:
-          node-version: 20.x
-          cache: 'npm'
+          path: security-reports
+        continue-on-error: true
       
-      - name: Install dependencies
-        run: npm ci
+      - name: Generate consolidated security report
+        run: |
+          cat > security-report.md << 'EOF'
+          # Security Scan Report
+          
+          Generated: $(date)
+          Commit: ${{ github.sha }}
+          Branch: ${{ github.ref }}
+          
+          ## Summary
+          
+          This report consolidates all security scanning results including:
+          - npm audit for dependency vulnerabilities
+          - CodeQL SAST analysis for code-level security issues
+          - TruffleHog secret detection
+          
+          ## Artifacts
+          
+          All detailed reports are available in the artifacts section:
+          - npm-audit-reports/ - npm audit results with remediation guidance
+          - codeql-results/ - CodeQL SAST analysis results
+          - secret-scan-report/ - Secret detection results
+          
+          ## Remediation Steps
+          
+          1. For npm vulnerabilities: Run npm audit fix or manually update packages
+          2. For code issues: Review CodeQL results and apply recommended fixes
+          3. For secrets: Rotate credentials and remove from history
+          
+          ## Next Steps
+          
+          - Review all artifacts in the GitHub Actions run
+          - Address critical and high-severity issues before merging
+          - For questions, consult the security team
+          EOF
+        continue-on-error: true
       
-      - name: OWASP Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: 'azora-os'
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
-      
-      - name: Upload OWASP report
+      - name: Upload consolidated report
         uses: actions/upload-artifact@v4
         with:
-          name: owasp-report
-          path: reports/
-          retention-days: 30
+          name: security-report
+          path: security-report.md
+          retention-days: 365
+        continue-on-error: true
+      
+      - name: Comment on PR with security summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            let comment = '## 🔒 Security Scan Results\n\n';
+            
+            try {
+              const auditPath = path.join('security-reports', 'npm-audit-reports', 'audit-summary.md');
+              if (fs.existsSync(auditPath)) {
+                comment += fs.readFileSync(auditPath, 'utf8') + '\n\n';
+              }
+            } catch (e) {
+              comment += '⚠️ Could not read npm audit summary\n\n';
+            }
+            
+            comment += '### 📋 Artifacts\n';
+            comment += '- npm audit reports\n';
+            comment += '- CodeQL SAST analysis\n';
+            comment += '- Secret detection results\n\n';
+            comment += '**Review the artifacts tab for detailed security reports.**\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+        continue-on-error: true

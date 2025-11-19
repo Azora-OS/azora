@@ -1,0 +1,585 @@
+[
+  {
+    "id": "cs101",
+    "title": "Introduction to Computer Science",
+    "description": "Comprehensive introduction to programming, algorithms, and computer science fundamentals",
+    "category": "Computer Science",
+    "level": "Beginner",
+    "duration": "12 weeks",
+    "price": 299,
+    "modules": [
+      {
+        "id": "cs101-m1",
+        "title": "Programming Fundamentals",
+        "lessons": [
+          {
+            "title": "Variables and Data Types",
+            "duration": "45 min",
+            "type": "video"
+          },
+          {
+            "title": "Control Structures",
+            "duration": "60 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Functions and Methods",
+            "duration": "50 min",
+            "type": "video"
+          },
+          {
+            "title": "Practice: Basic Programs",
+            "duration": "90 min",
+            "type": "coding"
+          }
+        ]
+      },
+      {
+        "id": "cs101-m2",
+        "title": "Data Structures",
+        "lessons": [
+          {
+            "title": "Arrays and Lists",
+            "duration": "55 min",
+            "type": "video"
+          },
+          {
+            "title": "Stacks and Queues",
+            "duration": "65 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Trees and Graphs",
+            "duration": "75 min",
+            "type": "video"
+          },
+          {
+            "title": "Practice: Data Structure Implementation",
+            "duration": "120 min",
+            "type": "coding"
+          }
+        ]
+      },
+      {
+        "id": "cs101-m3",
+        "title": "Algorithms",
+        "lessons": [
+          {
+            "title": "Sorting Algorithms",
+            "duration": "70 min",
+            "type": "video"
+          },
+          {
+            "title": "Search Algorithms",
+            "duration": "60 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Algorithm Complexity",
+            "duration": "80 min",
+            "type": "video"
+          },
+          {
+            "title": "Practice: Algorithm Design",
+            "duration": "150 min",
+            "type": "coding"
+          }
+        ]
+      }
+    ],
+    "assignments": [
+      {
+        "title": "Build a Calculator",
+        "type": "project",
+        "points": 100
+      },
+      {
+        "title": "Data Structure Quiz",
+        "type": "quiz",
+        "points": 50
+      },
+      {
+        "title": "Algorithm Implementation",
+        "type": "coding",
+        "points": 150
+      }
+    ],
+    "prerequisites": [],
+    "skills": [
+      "Programming",
+      "Problem Solving",
+      "Logical Thinking",
+      "Algorithm Design"
+    ]
+  },
+  {
+    "id": "web201",
+    "title": "Full-Stack Web Development",
+    "description": "Complete web development course covering frontend, backend, and database technologies",
+    "category": "Web Development",
+    "level": "Intermediate",
+    "duration": "16 weeks",
+    "price": 499,
+    "modules": [
+      {
+        "id": "web201-m1",
+        "title": "Frontend Development",
+        "lessons": [
+          {
+            "title": "HTML5 & Semantic Markup",
+            "duration": "60 min",
+            "type": "video"
+          },
+          {
+            "title": "CSS3 & Responsive Design",
+            "duration": "90 min",
+            "type": "interactive"
+          },
+          {
+            "title": "JavaScript ES6+",
+            "duration": "120 min",
+            "type": "video"
+          },
+          {
+            "title": "React.js Fundamentals",
+            "duration": "150 min",
+            "type": "coding"
+          },
+          {
+            "title": "State Management",
+            "duration": "90 min",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "id": "web201-m2",
+        "title": "Backend Development",
+        "lessons": [
+          {
+            "title": "Node.js & Express",
+            "duration": "100 min",
+            "type": "video"
+          },
+          {
+            "title": "RESTful APIs",
+            "duration": "80 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Authentication & Security",
+            "duration": "90 min",
+            "type": "video"
+          },
+          {
+            "title": "Database Integration",
+            "duration": "110 min",
+            "type": "coding"
+          }
+        ]
+      },
+      {
+        "id": "web201-m3",
+        "title": "Database & Deployment",
+        "lessons": [
+          {
+            "title": "SQL & PostgreSQL",
+            "duration": "85 min",
+            "type": "video"
+          },
+          {
+            "title": "NoSQL & MongoDB",
+            "duration": "75 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Docker & Containerization",
+            "duration": "95 min",
+            "type": "video"
+          },
+          {
+            "title": "Cloud Deployment",
+            "duration": "120 min",
+            "type": "coding"
+          }
+        ]
+      }
+    ],
+    "assignments": [
+      {
+        "title": "Portfolio Website",
+        "type": "project",
+        "points": 200
+      },
+      {
+        "title": "API Development",
+        "type": "project",
+        "points": 150
+      },
+      {
+        "title": "Full-Stack Application",
+        "type": "capstone",
+        "points": 300
+      }
+    ],
+    "prerequisites": [
+      "cs101"
+    ],
+    "skills": [
+      "HTML/CSS",
+      "JavaScript",
+      "React",
+      "Node.js",
+      "Databases",
+      "Deployment"
+    ]
+  },
+  {
+    "id": "ai301",
+    "title": "Artificial Intelligence & Machine Learning",
+    "description": "Advanced course covering AI fundamentals, machine learning algorithms, and practical applications",
+    "category": "Artificial Intelligence",
+    "level": "Advanced",
+    "duration": "20 weeks",
+    "price": 799,
+    "modules": [
+      {
+        "id": "ai301-m1",
+        "title": "AI Fundamentals",
+        "lessons": [
+          {
+            "title": "History and Philosophy of AI",
+            "duration": "75 min",
+            "type": "video"
+          },
+          {
+            "title": "Search Algorithms",
+            "duration": "90 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Knowledge Representation",
+            "duration": "85 min",
+            "type": "video"
+          },
+          {
+            "title": "Expert Systems",
+            "duration": "100 min",
+            "type": "coding"
+          }
+        ]
+      },
+      {
+        "id": "ai301-m2",
+        "title": "Machine Learning",
+        "lessons": [
+          {
+            "title": "Supervised Learning",
+            "duration": "110 min",
+            "type": "video"
+          },
+          {
+            "title": "Unsupervised Learning",
+            "duration": "95 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Neural Networks",
+            "duration": "130 min",
+            "type": "video"
+          },
+          {
+            "title": "Deep Learning",
+            "duration": "150 min",
+            "type": "coding"
+          }
+        ]
+      },
+      {
+        "id": "ai301-m3",
+        "title": "Practical Applications",
+        "lessons": [
+          {
+            "title": "Natural Language Processing",
+            "duration": "120 min",
+            "type": "video"
+          },
+          {
+            "title": "Computer Vision",
+            "duration": "110 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Reinforcement Learning",
+            "duration": "140 min",
+            "type": "video"
+          },
+          {
+            "title": "AI Ethics & Bias",
+            "duration": "90 min",
+            "type": "discussion"
+          }
+        ]
+      }
+    ],
+    "assignments": [
+      {
+        "title": "ML Model Implementation",
+        "type": "project",
+        "points": 250
+      },
+      {
+        "title": "Neural Network Design",
+        "type": "project",
+        "points": 200
+      },
+      {
+        "title": "AI Application Development",
+        "type": "capstone",
+        "points": 400
+      }
+    ],
+    "prerequisites": [
+      "cs101",
+      "math201"
+    ],
+    "skills": [
+      "Machine Learning",
+      "Python",
+      "TensorFlow",
+      "Data Analysis",
+      "AI Ethics"
+    ]
+  },
+  {
+    "id": "bus101",
+    "title": "Business Fundamentals",
+    "description": "Essential business concepts including management, marketing, finance, and entrepreneurship",
+    "category": "Business",
+    "level": "Beginner",
+    "duration": "10 weeks",
+    "price": 249,
+    "modules": [
+      {
+        "id": "bus101-m1",
+        "title": "Business Basics",
+        "lessons": [
+          {
+            "title": "Introduction to Business",
+            "duration": "50 min",
+            "type": "video"
+          },
+          {
+            "title": "Business Models",
+            "duration": "60 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Market Analysis",
+            "duration": "70 min",
+            "type": "video"
+          },
+          {
+            "title": "Case Study Analysis",
+            "duration": "90 min",
+            "type": "discussion"
+          }
+        ]
+      },
+      {
+        "id": "bus101-m2",
+        "title": "Marketing & Sales",
+        "lessons": [
+          {
+            "title": "Marketing Fundamentals",
+            "duration": "65 min",
+            "type": "video"
+          },
+          {
+            "title": "Digital Marketing",
+            "duration": "80 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Sales Strategies",
+            "duration": "75 min",
+            "type": "video"
+          },
+          {
+            "title": "Customer Relations",
+            "duration": "60 min",
+            "type": "role-play"
+          }
+        ]
+      },
+      {
+        "id": "bus101-m3",
+        "title": "Finance & Operations",
+        "lessons": [
+          {
+            "title": "Financial Planning",
+            "duration": "85 min",
+            "type": "video"
+          },
+          {
+            "title": "Operations Management",
+            "duration": "70 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Leadership & Management",
+            "duration": "80 min",
+            "type": "video"
+          },
+          {
+            "title": "Business Plan Development",
+            "duration": "120 min",
+            "type": "project"
+          }
+        ]
+      }
+    ],
+    "assignments": [
+      {
+        "title": "Market Research Project",
+        "type": "project",
+        "points": 100
+      },
+      {
+        "title": "Marketing Campaign Design",
+        "type": "project",
+        "points": 120
+      },
+      {
+        "title": "Business Plan Presentation",
+        "type": "presentation",
+        "points": 180
+      }
+    ],
+    "prerequisites": [],
+    "skills": [
+      "Business Strategy",
+      "Marketing",
+      "Financial Planning",
+      "Leadership",
+      "Communication"
+    ]
+  },
+  {
+    "id": "data201",
+    "title": "Data Science & Analytics",
+    "description": "Comprehensive data science course covering statistics, data analysis, and visualization",
+    "category": "Data Science",
+    "level": "Intermediate",
+    "duration": "14 weeks",
+    "price": 599,
+    "modules": [
+      {
+        "id": "data201-m1",
+        "title": "Statistics & Probability",
+        "lessons": [
+          {
+            "title": "Descriptive Statistics",
+            "duration": "70 min",
+            "type": "video"
+          },
+          {
+            "title": "Probability Theory",
+            "duration": "80 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Hypothesis Testing",
+            "duration": "90 min",
+            "type": "video"
+          },
+          {
+            "title": "Statistical Analysis Practice",
+            "duration": "100 min",
+            "type": "coding"
+          }
+        ]
+      },
+      {
+        "id": "data201-m2",
+        "title": "Data Analysis",
+        "lessons": [
+          {
+            "title": "Python for Data Science",
+            "duration": "110 min",
+            "type": "video"
+          },
+          {
+            "title": "Pandas & NumPy",
+            "duration": "95 min",
+            "type": "coding"
+          },
+          {
+            "title": "Data Cleaning",
+            "duration": "85 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Exploratory Data Analysis",
+            "duration": "120 min",
+            "type": "project"
+          }
+        ]
+      },
+      {
+        "id": "data201-m3",
+        "title": "Visualization & Reporting",
+        "lessons": [
+          {
+            "title": "Data Visualization Principles",
+            "duration": "75 min",
+            "type": "video"
+          },
+          {
+            "title": "Matplotlib & Seaborn",
+            "duration": "90 min",
+            "type": "coding"
+          },
+          {
+            "title": "Interactive Dashboards",
+            "duration": "100 min",
+            "type": "interactive"
+          },
+          {
+            "title": "Business Intelligence",
+            "duration": "85 min",
+            "type": "video"
+          }
+        ]
+      }
+    ],
+    "assignments": [
+      {
+        "title": "Statistical Analysis Report",
+        "type": "project",
+        "points": 150
+      },
+      {
+        "title": "Data Visualization Portfolio",
+        "type": "project",
+        "points": 180
+      },
+      {
+        "title": "Business Analytics Case Study",
+        "type": "capstone",
+        "points": 270
+      }
+    ],
+    "prerequisites": [
+      "cs101"
+    ],
+    "skills": [
+      "Python",
+      "Statistics",
+      "Data Analysis",
+      "Visualization",
+      "SQL",
+      "Business Intelligence"
+    ]
+  }
+]

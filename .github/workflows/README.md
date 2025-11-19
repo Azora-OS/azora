@@ -263,13 +263,24 @@ Configure environment protection rules:
 - Review and update documentation
 - Evaluate new GitHub Actions features
 
+## Documentation
+
+Comprehensive documentation is available for all aspects of the CI/CD system:
+
+- **[Troubleshooting Guide](./../WORKFLOW-TROUBLESHOOTING-GUIDE.md)** - Solutions for common workflow failures
+- **[Deployment Failure Runbook](./../DEPLOYMENT-FAILURE-RUNBOOK.md)** - Step-by-step incident response procedures
+- **[Manual Workflow Execution](./../MANUAL-WORKFLOW-EXECUTION-GUIDE.md)** - How to manually trigger workflows
+- **[Production Rollback Procedures](./../PRODUCTION-ROLLBACK-PROCEDURES.md)** - Rollback procedures and verification steps
+- **[Performance Monitoring](./../WORKFLOW-PERFORMANCE-MONITORING.md)** - Metrics collection and optimization
+
 ## Support
 
 For issues with workflows:
 1. Check workflow logs in Actions tab
-2. Review this documentation
-3. Contact DevOps team
-4. Create issue in repository
+2. Review [Troubleshooting Guide](./../WORKFLOW-TROUBLESHOOTING-GUIDE.md)
+3. Check [Deployment Failure Runbook](./../DEPLOYMENT-FAILURE-RUNBOOK.md) for deployment issues
+4. Contact DevOps team
+5. Create issue in repository
 
 ## Version History
 
@@ -278,3 +289,4 @@ For issues with workflows:
   - Security scanning
   - Automated deployments
   - Dependency management
+  - Complete documentation and runbooks

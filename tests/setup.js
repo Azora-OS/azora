@@ -1,5 +1,5 @@
 // Global test setup for Azora OS
-const TestUtils = require('./utils');
+import TestUtils from './utils.js';
 
 global.testUtils = new TestUtils();
 

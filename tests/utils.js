@@ -1,5 +1,5 @@
 // Test utilities for Azora OS
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 
 class TestUtils {
   constructor() {
@@ -8,7 +8,7 @@ class TestUtils {
 
   async setupTestDb() {
     // Setup test database
-    console.log('🗄️ Setting up test database...');
+    console.log('🗜️ Setting up test database...');
   }
 
   async cleanupTestDb() {
@@ -44,4 +44,4 @@ class TestUtils {
   }
 }
 
-module.exports = TestUtils;
+export default TestUtils;

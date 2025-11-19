@@ -32,7 +32,6 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   compress: true,
   poweredByHeader: false,
   
@@ -47,7 +46,10 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react']
-  }
+  },
+  
+  // Fix Turbopack config
+  turbo: {}
 };
 
 module.exports = withPWA(nextConfig);

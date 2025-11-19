@@ -235,3 +235,183 @@ export async function checkAccessibility(page: Page) {
     }
   }
 }
+
+/**
+ * Wait for network idle
+ */
+export async function waitForNetworkIdle(page: Page, timeout: number = 5000) {
+  await page.waitForLoadState('networkidle', { timeout });
+}
+
+/**
+ * Wait for DOM content loaded
+ */
+export async function waitForDOMContentLoaded(page: Page, timeout: number = 5000) {
+  await page.waitForLoadState('domcontentloaded', { timeout });
+}
+
+/**
+ * Retry action with exponential backoff
+ */
+export async function retryAction<T>(
+  action: () => Promise<T>,
+  maxRetries: number = 3,
+  delayMs: number = 1000
+): Promise<T> {
+  let lastError: Error | null = null;
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await action();
+    } catch (error) {
+      lastError = error as Error;
+      if (i < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, delayMs * Math.pow(2, i)));
+      }
+    }
+  }
+  
+  throw lastError || new Error('Action failed after retries');
+}
+
+/**
+ * Get performance metrics
+ */
+export async function getPerformanceMetrics(page: Page) {
+  return await page.evaluate(() => {
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    return {
+      domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+      loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
+      timeToFirstByte: navigation.responseStart - navigation.requestStart,
+      totalPageLoadTime: navigation.loadEventEnd - navigation.fetchStart,
+    };
+  });
+}
+
+/**
+ * Verify API response
+ */
+export async function verifyAPIResponse(
+  page: Page,
+  urlPattern: string | RegExp,
+  expectedStatus: number = 200
+) {
+  const response = await page.waitForResponse(
+    response => {
+      const url = response.url();
+      if (typeof urlPattern === 'string') {
+        return url.includes(urlPattern);
+      }
+      return urlPattern.test(url);
+    }
+  );
+  
+  expect(response.status()).toBe(expectedStatus);
+  return response;
+}
+
+/**
+ * Mock API response
+ */
+export async function mockAPIResponse(
+  page: Page,
+  urlPattern: string | RegExp,
+  _responseData?: any,
+  _status: number = 200
+) {
+  await page.route(urlPattern, route => {
+    route.abort('blockedbyclient');
+  });
+  
+  await page.route(urlPattern, route => {
+    route.continue();
+  });
+}
+
+/**
+ * Clear browser storage
+ */
+export async function clearBrowserStorage(page: Page) {
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+}
+
+/**
+ * Get all console messages
+ */
+export async function captureConsoleLogs(page: Page): Promise<string[]> {
+  const logs: string[] = [];
+  
+  page.on('console', msg => {
+    logs.push(`[${msg.type()}] ${msg.text()}`);
+  });
+  
+  return logs;
+}
+
+/**
+ * Verify no console errors
+ */
+export async function verifyNoConsoleErrors(page: Page) {
+  const errors: string[] = [];
+  
+  page.on('console', msg => {
+    if (msg.type() === 'error') {
+      errors.push(msg.text());
+    }
+  });
+  
+  return errors;
+}
+
+/**
+ * Wait for specific text with retry
+ */
+export async function waitForTextWithRetry(
+  page: Page,
+  text: string,
+  timeout: number = 5000,
+  maxRetries: number = 3
+) {
+  return retryAction(
+    () => expect(page.locator(`text=${text}`)).toBeVisible({ timeout }),
+    maxRetries,
+    500
+  );
+}
+
+/**
+ * Scroll to element
+ */
+export async function scrollToElement(page: Page, selector: string) {
+  const element = page.locator(selector).first();
+  await element.scrollIntoViewIfNeeded();
+}
+
+/**
+ * Get element bounding box
+ */
+export async function getElementBoundingBox(page: Page, selector: string) {
+  return await page.locator(selector).first().boundingBox();
+}
+
+/**
+ * Verify element is in viewport
+ */
+export async function isElementInViewport(page: Page, selector: string): Promise<boolean> {
+  return await page.evaluate((sel) => {
+    const element = document.querySelector(sel);
+    if (!element) return false;
+    
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= window.innerHeight &&
+      rect.right <= window.innerWidth
+    );
+  }, selector);
+}
