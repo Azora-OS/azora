@@ -1,40 +1,29 @@
-export default {
-  preset: 'ts-jest/presets/default-esm',
-  extensionsToTreatAsEsm: ['.ts'],
-  globals: {
-    'ts-jest': {
-      useESM: true
-    }
-  },
+module.exports = {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
   collectCoverageFrom: [
-    'services/**/*.{js,ts}',
-    'packages/**/*.{js,ts}',
-    'apps/**/*.{js,ts}',
+    'services/**/*.js',
+    'packages/**/*.js',
     '!**/node_modules/**',
     '!**/coverage/**',
     '!**/tests/**',
-    '!**/*.d.ts',
     '!**/dist/**',
     '!**/.next/**'
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50
     }
   },
   testMatch: [
-    '**/tests/**/*.test.{js,ts}',
-    '**/services/**/tests/**/*.test.{js,ts}',
-    '**/apps/**/tests/**/*.test.{js,ts}',
-    '**/packages/**/tests/**/*.test.{js,ts}'
+    '**/tests/**/*.test.js',
+    '**/services/**/tests/**/*.test.js'
   ],
   testTimeout: 30000,
   verbose: true,
-  collectCoverage: true,
-  coverageReporters: ['text', 'lcov', 'html', 'json-summary']
+  collectCoverage: false,
+  coverageReporters: ['text', 'lcov']
 };

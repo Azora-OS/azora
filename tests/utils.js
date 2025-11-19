@@ -1,5 +1,5 @@
 // Test utilities for Azora OS
-import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('@prisma/client');
 
 class TestUtils {
   constructor() {
@@ -44,4 +44,4 @@ class TestUtils {
   }
 }
 
-export default TestUtils;
+module.exports = TestUtils;
