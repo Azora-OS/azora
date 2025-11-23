@@ -16,17 +16,22 @@ export default function AzoraHomePage() {
       <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-3xl font-bold text-white">AZORA</h1>
-              <span className="ml-2 text-sm text-blue-300">World's Best Education Platform</span>
+            <div className="flex items-center gap-3">
+              <img src="/packages/public/branding/logo-white.svg" alt="AZORA" className="h-10" />
+              <div>
+                <h1 className="text-3xl font-bold text-white">AZORA</h1>
+                <span className="text-xs text-blue-300">World's Best Education Platform</span>
+              </div>
             </div>
             <nav className="hidden md:flex space-x-8">
               <a href="#features" className="text-white hover:text-blue-300">Features</a>
-              <a href="#pricing" className="text-white hover:text-blue-300">Pricing</a>
-              <a href="#forge" className="text-white hover:text-blue-300">AZORA Forge</a>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
-                Start Learning
-              </button>
+              <a href="/pricing" className="text-white hover:text-blue-300">Pricing</a>
+              <a href="/forge" className="text-white hover:text-blue-300">AZORA Forge</a>
+              <a href="/learn">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                  Start Learning
+                </button>
+              </a>
             </nav>
           </div>
         </div>
@@ -39,16 +44,20 @@ export default function AzoraHomePage() {
             Learn. Code. <span className="text-blue-400">Earn.</span>
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            The world's first education platform where students become millionaire CEOs 
+            The world's first education platform where students become millionaire CEOs
             while learning. Revolutionary AI tutoring, real revenue projects, and crypto rewards.
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold">
-              Start 90-Day FREE Trial
-            </button>
-            <button className="border border-white/30 hover:bg-white/10 text-white px-8 py-4 rounded-lg text-lg font-semibold">
-              Watch Demo
-            </button>
+            <a href="/learn">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold">
+                Start 90-Day FREE Trial
+              </button>
+            </a>
+            <a href="/demo">
+              <button className="border border-white/30 hover:bg-white/10 text-white px-8 py-4 rounded-lg text-lg font-semibold">
+                Watch Demo
+              </button>
+            </a>
           </div>
         </div>
       </section>
@@ -62,7 +71,7 @@ export default function AzoraHomePage() {
               <div className="text-gray-300">Active Students</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-green-400">R{(stats.monthlyRevenue/1000000).toFixed(1)}M</div>
+              <div className="text-4xl font-bold text-green-400">R{(stats.monthlyRevenue / 1000000).toFixed(1)}M</div>
               <div className="text-gray-300">Monthly Revenue</div>
             </div>
             <div>
@@ -106,12 +115,14 @@ export default function AzoraHomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-4xl font-bold text-white mb-8">AZORA Forge: GitHub Killer</h3>
           <p className="text-xl text-gray-300 mb-8">
-            Where students become CEOs of revenue-generating projects. 
+            Where students become CEOs of revenue-generating projects.
             Not just code repositories - wealth creation platforms.
           </p>
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg text-lg font-semibold">
-            Become a Student CEO
-          </button>
+          <a href="/forge">
+            <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg text-lg font-semibold">
+              Become a Student CEO
+            </button>
+          </a>
         </div>
       </section>
 

@@ -176,14 +176,14 @@ export class LanguageDetector {
     // If user explicitly set language, use it
     if (userLanguage) {
       const lang = userLanguage.toLowerCase();
-      if (lang.startsWith('en')) return 'en';
-      if (lang.startsWith('fr')) return 'fr';
-      if (lang.startsWith('sw')) return 'sw';
-      if (lang.startsWith('ar')) return 'ar';
-      if (lang.startsWith('pt')) return 'pt';
-      if (lang.startsWith('am')) return 'am';
-      if (lang.startsWith('yo')) return 'yo';
-      if (lang.startsWith('zu')) return 'zu';
+      if (lang.startsWith('en')) {return 'en';}
+      if (lang.startsWith('fr')) {return 'fr';}
+      if (lang.startsWith('sw')) {return 'sw';}
+      if (lang.startsWith('ar')) {return 'ar';}
+      if (lang.startsWith('pt')) {return 'pt';}
+      if (lang.startsWith('am')) {return 'am';}
+      if (lang.startsWith('yo')) {return 'yo';}
+      if (lang.startsWith('zu')) {return 'zu';}
     }
 
     // Default to English

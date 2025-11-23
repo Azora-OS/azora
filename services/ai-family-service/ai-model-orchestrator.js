@@ -38,7 +38,7 @@ class AIModelOrchestrator {
         return await this.callProvider(provider, systemPrompt, userMessage, personality);
       } catch (error) {
         console.error(`${provider} failed:`, error.message);
-        if (!this.enableFallback) throw error;
+        if (!this.enableFallback) {throw error;}
       }
     }
 
@@ -68,8 +68,8 @@ class AIModelOrchestrator {
         })
       });
       const data = await response.json();
-      if (data.error) throw new Error(data.error.message);
-      if (!data.candidates || !data.candidates[0]) throw new Error('No response from Google AI');
+      if (data.error) {throw new Error(data.error.message);}
+      if (!data.candidates || !data.candidates[0]) {throw new Error('No response from Google AI');}
       return data.candidates[0].content.parts[0].text;
     }
 

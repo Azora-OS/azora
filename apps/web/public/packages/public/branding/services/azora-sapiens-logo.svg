@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="sapiensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="sapiensAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Brain with African Baobab Tree roots symbolizing knowledge growth -->
+  <g transform="translate(120, 120)">
+    <!-- Brain structure -->
+    <path d="M -50,-40 Q -70,-50 -70,-30 Q -70,-10 -50,0 L -30,20 Q -40,40 -20,50 Q 0,55 20,50 Q 40,40 30,20 L 50,0 Q 70,-10 70,-30 Q 70,-50 50,-40 L 0,-50 Z" 
+          fill="url(#sapiensGrad)" 
+          opacity="0.2"/>
+    
+    <!-- Neural pathways forming tree roots -->
+    <path d="M 0,-40 L 0,40 M -30,-20 L -30,30 M 30,-20 L 30,30" 
+          stroke="url(#sapiensGrad)" 
+          stroke-width="4" 
+          stroke-linecap="round"/>
+    
+    <!-- Knowledge nodes (baobab fruits) -->
+    <circle cx="0" cy="-40" r="8" fill="#8b5cf6"/>
+    <circle cx="-30" cy="-20" r="7" fill="#06b6d4"/>
+    <circle cx="30" cy="-20" r="7" fill="#06b6d4"/>
+    <circle cx="-30" cy="30" r="8" fill="url(#sapiensAccent)"/>
+    <circle cx="30" cy="30" r="8" fill="url(#sapiensAccent)"/>
+    <circle cx="0" cy="40" r="10" fill="#fbbf24"/>
+    
+    <!-- Growth rings -->
+    <circle cx="0" cy="0" r="60" stroke="url(#sapiensGrad)" stroke-width="2" fill="none" opacity="0.3"/>
+    <circle cx="0" cy="0" r="45" stroke="url(#sapiensAccent)" stroke-width="1.5" fill="none" opacity="0.2"/>
+    
+    <!-- African sun rays (enlightenment) -->
+    <g opacity="0.4">
+      <line x1="-70" y1="0" x2="-80" y2="0" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+      <line x1="70" y1="0" x2="80" y2="0" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+      <line x1="0" y1="-70" x2="0" y2="-80" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+      <line x1="0" y1="70" x2="0" y2="80" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="65" 
+          font-weight="700" 
+          fill="url(#sapiensGrad)">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#sapiensAccent)">Sapiens</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Education • Knowledge • Growth</text>
+  </g>
+</svg>
+

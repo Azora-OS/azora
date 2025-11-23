@@ -24,7 +24,7 @@ function changed(): boolean {
 function commitAndPush(message: string) {
   run('git add -A');
   const diff = run('git status --porcelain');
-  if (!diff.trim()) return;
+  if (!diff.trim()) {return;}
   // Write message to a temporary file to avoid shell escaping issues
   const tmpPath = join(os.tmpdir(), `azora-commit-${Date.now()}.txt`);
   try {
@@ -53,7 +53,7 @@ async function loop() {
     if (now - lastIngest >= ingestIntervalMs) {
       console.log('[auto] Running research:ingest');
       run('npm run research:ingest');
-      if (changed()) commitAndPush('chore(research): auto-ingest findings');
+      if (changed()) {commitAndPush('chore(research): auto-ingest findings');}
       lastIngest = now;
     }
 

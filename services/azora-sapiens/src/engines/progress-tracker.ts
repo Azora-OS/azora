@@ -56,7 +56,7 @@ class ProgressTracker {
   }
 
   calculateCompletionRate(activities: Progress[]): number {
-    if (activities.length === 0) return 0;
+    if (activities.length === 0) {return 0;}
     const completed = activities.filter(a => a.data.completed).length;
     return (completed / activities.length) * 100;
   }
@@ -81,9 +81,9 @@ class ProgressTracker {
 
   determineLevel(activities: Progress[]): 'beginner' | 'intermediate' | 'advanced' | 'expert' {
     const totalAZR = activities.reduce((sum, a) => sum + a.azrEarned, 0);
-    if (totalAZR >= 10000) return 'expert';
-    if (totalAZR >= 5000) return 'advanced';
-    if (totalAZR >= 1000) return 'intermediate';
+    if (totalAZR >= 10000) {return 'expert';}
+    if (totalAZR >= 5000) {return 'advanced';}
+    if (totalAZR >= 1000) {return 'intermediate';}
     return 'beginner';
   }
 }

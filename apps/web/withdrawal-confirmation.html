@@ -4,303 +4,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 AZR Virtual Card Withdrawal - Ledger Confirmed</title>
+    <title>Withdrawal Confirmed - AZORA</title>
+    <link rel="icon" href="/packages/public/branding/icons/app-icon-512.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);
             min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin: 20px auto;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            padding: 40px 30px;
-            text-align: center;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 300;
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .header p {
-            margin: 10px 0 0 0;
-            opacity: 0.9;
-            font-size: 18px;
+        .success-icon {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .content {
-            padding: 40px 30px;
-        }
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
 
-        .success-banner {
-            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
-            border-left: 5px solid #28a745;
-            padding: 25px;
-            margin: 25px 0;
-            border-radius: 8px;
-        }
-
-        .success-banner h3 {
-            margin: 0 0 10px 0;
-            color: #155724;
-            font-size: 24px;
-        }
-
-        .success-banner p {
-            margin: 0;
-            color: #155724;
-            font-size: 16px;
-        }
-
-        .details-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px 0;
-            background: #f8f9fa;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .details-table tr {
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .details-table tr:last-child {
-            border-bottom: none;
-        }
-
-        .details-table td {
-            padding: 20px 25px;
-            vertical-align: top;
-        }
-
-        .details-table .label {
-            font-weight: 600;
-            color: #495057;
-            width: 200px;
-            font-size: 16px;
-        }
-
-        .details-table .value {
-            color: #212529;
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        .value.highlight {
-            color: #007bff;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .card-details {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            border-left: 5px solid #ffc107;
-            padding: 25px;
-            margin: 25px 0;
-            border-radius: 8px;
-        }
-
-        .card-details h4 {
-            margin: 0 0 15px 0;
-            color: #856404;
-            font-size: 20px;
-        }
-
-        .card-details ul {
-            margin: 0;
-            padding-left: 20px;
-            color: #856404;
-        }
-
-        .card-details li {
-            margin: 8px 0;
-            font-size: 16px;
-        }
-
-        .ledger-section {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-left: 5px solid #2196F3;
-            padding: 25px;
-            margin: 25px 0;
-            border-radius: 8px;
-        }
-
-        .ledger-section h4 {
-            margin: 0 0 15px 0;
-            color: #0d47a1;
-            font-size: 20px;
-        }
-
-        .ledger-code {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #495057;
-            overflow-x: auto;
-        }
-
-        .ledger-code div {
-            margin: 5px 0;
-        }
-
-        .funded-banner {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            margin: 30px 0;
-            border-radius: 10px;
-        }
-
-        .funded-banner h3 {
-            margin: 0 0 10px 0;
-            font-size: 28px;
-        }
-
-        .funded-banner p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 18px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 30px;
-            background: #f8f9fa;
-            color: #6c757d;
-            font-size: 14px;
-        }
-
-        .footer p {
-            margin: 5px 0;
-        }
-
-        .emoji {
-            font-size: 24px;
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🚀 AZR Virtual Card Withdrawal</h1>
-            <p>Ledger-Backed Payment Confirmation</p>
-        </div>
+<body class="p-4">
 
-        <div class="content">
-            <div class="success-banner">
-                <h3>✅ Transaction Successful</h3>
-                <p>Your AZR withdrawal has been processed and confirmed on the blockchain ledger.</p>
-            </div>
+    <div class="glass max-w-lg w-full rounded-2xl p-8 relative overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+        <div class="absolute -top-20 -right-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl"></div>
 
-            <table class="details-table">
-                <tr>
-                    <td class="label">AZR Amount:</td>
-                    <td class="value highlight">5,000 AZR</td>
-                </tr>
-                <tr>
-                    <td class="label">Fiat Value:</td>
-                    <td class="value highlight">R5,000</td>
-                </tr>
-                <tr>
-                    <td class="label">Exchange Rate:</td>
-                    <td class="value">1 AZR = 1 ZAR</td>
-                </tr>
-                <tr>
-                    <td class="label">Virtual Card:</td>
-                    <td class="value"
-                        style="font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px;">**** ****
-                        **** 4242</td>
-                </tr>
-                <tr>
-                    <td class="label">Destination:</td>
-                    <td class="value">Google Wallet</td>
-                </tr>
-                <tr>
-                    <td class="label">Wallet Address:</td>
-                    <td class="value"
-                        style="font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px;">
-                        sizwe.ngwenya@azora.world</td>
-                </tr>
-                <tr>
-                    <td class="label">Transaction ID:</td>
-                    <td class="value"
-                        style="font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px;">
-                        azr_withdrawal_1761652286498</td>
-                </tr>
-                <tr>
-                    <td class="label">Status:</td>
-                    <td class="value" style="color: #28a745; font-weight: bold;">CONFIRMED</td>
-                </tr>
-            </table>
-
-            <div class="card-details">
-                <h4>🔐 Virtual Card Details</h4>
-                <p style="margin: 0 0 15px 0; color: #856404;">Your virtual card has been created and funds are
-                    available immediately in your Google Wallet.</p>
-                <ul>
-                    <li><strong>Card Number:</strong> **** **** **** 4242</li>
-                    <li><strong>Expires:</strong> 12/2026</li>
-                    <li><strong>CVV:</strong> 123</li>
-                    <li><strong>Status:</strong> Active & Funded</li>
-                    <li><strong>Available Balance:</strong> R5,000.00</li>
-                </ul>
-            </div>
-
-            <div class="ledger-section">
-                <h4>📊 Blockchain Ledger Confirmation</h4>
-                <p style="margin: 0 0 15px 0; color: #0d47a1;">This transaction is permanently recorded on the Azora
-                    blockchain:</p>
-                <div class="ledger-code">
-                    <div><strong>Transaction ID:</strong> azr_withdrawal_1761652286498</div>
-                    <div><strong>Block Hash:</strong> 43b35fe2c28577b014976e1adf4cd984ba30256be214a506be3a3931094d127f
-                    </div>
-                    <div><strong>Timestamp:</strong> 2025-10-28T11:51:28.014Z</div>
-                    <div><strong>Status:</strong> CONFIRMED</div>
-                    <div><strong>Immutable:</strong> true</div>
-                    <div><strong>Verified:</strong> true</div>
-                </div>
-            </div>
-
-            <div class="funded-banner">
-                <h3>💰 Funds Available Now!</h3>
-                <p>Check your Google Pay app - R5,000 has been credited to your account.</p>
-            </div>
-
+        <div class="text-center mb-8">
             <div
-                style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin: 25px 0; border-left: 5px solid #6c757d;">
-                <h4 style="margin: 0 0 15px 0; color: #495057;">📧 Email Confirmation</h4>
-                <p style="margin: 0; color: #6c757d;">This ledger-backed payment confirmation would normally be sent via
-                    email. Since email services are being configured, please save this page or take a screenshot as your
-                    official transaction receipt.</p>
+                class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 success-icon">
+                <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold mb-2">Withdrawal Confirmed</h1>
+            <p class="text-gray-400 text-sm">Your funds are on their way to your wallet.</p>
+        </div>
+
+        <!-- Receipt Details -->
+        <div class="bg-black/30 rounded-xl p-6 mb-8 border border-white/5 space-y-4">
+            <div class="flex justify-between items-center pb-4 border-b border-white/5">
+                <span class="text-gray-400 text-sm">Amount</span>
+                <span class="text-2xl font-bold text-white">R 5,000.00</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Source</span>
+                <span class="text-white text-sm">AZR Mining Balance</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Destination</span>
+                <span class="text-white text-sm flex items-center gap-2">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
+                        class="w-4 h-4">
+                    Google Wallet
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Transaction ID</span>
+                <span class="text-white text-xs font-mono bg-white/5 px-2 py-1 rounded">0x8f...3a21</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Date</span>
+                <span class="text-white text-sm" id="date"></span>
             </div>
         </div>
 
-        <div class="footer">
-            <p><strong>Azora OS Transaction Confirmation</strong></p>
-            <p>© 2025 Azora ES (Pty) Ltd. All rights reserved.</p>
-            <p>Generated on: October 28, 2025 at 11:51 AM UTC</p>
+        <!-- Blockchain Verification -->
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-8">
+            <div class="text-blue-400">⛓️</div>
+            <div class="text-xs text-blue-300">
+                <strong>Blockchain Verified:</strong> This transaction has been permanently recorded on the Azora
+                Ledger.
+            </div>
         </div>
+
+        <!-- Actions -->
+        <div class="space-y-3">
+            <button onclick="window.location.href='dashboard.html'"
+                class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                Return to Dashboard
+            </button>
+            <button
+                class="w-full bg-transparent border border-white/10 text-white font-medium py-3 rounded-lg hover:bg-white/5 transition-colors">
+                Download Receipt
+            </button>
+        </div>
+
     </div>
+
+    <script>
+        document.getElementById('date').textContent = new Date().toLocaleString();
+    </script>
+
 </body>
 
 </html>

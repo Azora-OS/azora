@@ -15,13 +15,13 @@ class FailurePredictor {
     const metrics = this.history.get(serviceId) || [];
     metrics.push({ ...metric, timestamp: Date.now() });
     
-    if (metrics.length > this.WINDOW) metrics.shift();
+    if (metrics.length > this.WINDOW) {metrics.shift();}
     this.history.set(serviceId, metrics);
   }
 
   predict(serviceId: string): { risk: number; reasons: string[] } {
     const metrics = this.history.get(serviceId);
-    if (!metrics || metrics.length < 10) return { risk: 0, reasons: [] };
+    if (!metrics || metrics.length < 10) {return { risk: 0, reasons: [] };}
 
     const recent = metrics.slice(-10);
     const reasons: string[] = [];
@@ -55,7 +55,7 @@ class FailurePredictor {
   }
 
   private calculateTrend(values: number[]): number {
-    if (values.length < 2) return 0;
+    if (values.length < 2) {return 0;}
     const n = values.length;
     const sumX = (n * (n - 1)) / 2;
     const sumY = values.reduce((a, b) => a + b, 0);
@@ -66,8 +66,8 @@ class FailurePredictor {
 
   getAlert(serviceId: string): string | null {
     const { risk, reasons } = this.predict(serviceId);
-    if (risk > 70) return `CRITICAL: ${reasons.join(', ')} (${risk}% failure risk)`;
-    if (risk > 40) return `WARNING: ${reasons.join(', ')} (${risk}% failure risk)`;
+    if (risk > 70) {return `CRITICAL: ${reasons.join(', ')} (${risk}% failure risk)`;}
+    if (risk > 40) {return `WARNING: ${reasons.join(', ')} (${risk}% failure risk)`;}
     return null;
   }
 }

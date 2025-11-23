@@ -1,17 +1,9 @@
-/*
-AZORA PROPRIETARY LICENSE
-
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-
-See LICENSE file for details.
-*/
-
 const http = require('http');
 
 const options = {
   host: 'localhost',
-  port: process.env.PORT || 3006,
-  path: '/api/health/ready',
+  port: process.env.PORT || 3080,
+  path: '/health',
   timeout: 2000
 };
 
@@ -24,7 +16,7 @@ const request = http.request(options, (res) => {
   }
 });
 
-request.on('error', function(err) {
+request.on('error', function (err) {
   console.log('ERROR');
   process.exit(1);
 });

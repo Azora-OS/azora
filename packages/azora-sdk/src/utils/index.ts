@@ -95,7 +95,7 @@ export function debounce<T extends (...args: any[]) => any>(
   let timeout: NodeJS.Timeout | null = null;
 
   return function(...args: Parameters<T>) {
-    if (timeout) clearTimeout(timeout);
+    if (timeout) {clearTimeout(timeout);}
     timeout = setTimeout(() => func(...args), wait);
   };
 }
@@ -183,7 +183,7 @@ export function buildQueryString(params: Record<string, any>): string {
  * Calculate percentage
  */
 export function calculatePercentage(value: number, total: number): number {
-  if (total === 0) return 0;
+  if (total === 0) {return 0;}
   return (value / total) * 100;
 }
 

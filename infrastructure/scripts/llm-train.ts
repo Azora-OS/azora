@@ -262,7 +262,7 @@ class DivineGPT {
   // Generate text
   generateText(prompt: string, maxLength: number = 100): string {
     const inputTokens = this.tokenizer.encode(prompt);
-    let generatedTokens = [...inputTokens];
+    const generatedTokens = [...inputTokens];
     
     for (let i = 0; i < maxLength; i++) {
       const output = this.forward(generatedTokens);

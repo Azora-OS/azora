@@ -61,7 +61,7 @@ class FaultTolerantSystem {
       service.lastCheck = Date.now();
     }
     const breaker = this.circuitBreakers.get(id);
-    if (breaker) breaker.failures = 0;
+    if (breaker) {breaker.failures = 0;}
   }
 
   private markFailed(id: string): void {
@@ -77,7 +77,7 @@ class FaultTolerantSystem {
     if (breaker) {
       breaker.failures++;
       breaker.lastFail = Date.now();
-      if (breaker.failures >= 5) breaker.open = true;
+      if (breaker.failures >= 5) {breaker.open = true;}
     }
   }
 

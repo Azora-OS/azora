@@ -9,8 +9,8 @@ import { join } from 'path';
 function findExecutables(dir: string, depth: number = 0, maxDepth: number = 5): string[] {
   const executables: string[] = [];
   
-  if (depth > maxDepth) return executables;
-  if (dir.includes('node_modules') || dir.includes('.git')) return executables;
+  if (depth > maxDepth) {return executables;}
+  if (dir.includes('node_modules') || dir.includes('.git')) {return executables;}
   
   try {
     const items = readdirSync(dir);

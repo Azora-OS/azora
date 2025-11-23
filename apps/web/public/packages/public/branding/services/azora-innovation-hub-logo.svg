@@ -1,0 +1,40 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#innovation-gradient)"/>
+  
+  <!-- Rocket Body -->
+  <path d="M256 136L286 236H226L256 136Z" fill="#FF6B35"/>
+  <path d="M226 236H286V306C286 322.569 272.569 336 256 336C239.431 336 226 322.569 226 306V236Z" fill="#FF6B35"/>
+  
+  <!-- Rocket Windows -->
+  <circle cx="256" cy="266" r="15" fill="white" opacity="0.9"/>
+  <circle cx="256" cy="296" r="10" fill="white" opacity="0.7"/>
+  
+  <!-- Rocket Fins -->
+  <path d="M226 266L196 286V246L226 266Z" fill="#8B5CF6"/>
+  <path d="M286 266L316 286V246L286 266Z" fill="#8B5CF6"/>
+  
+  <!-- Rocket Flames -->
+  <path d="M246 336C246 345 251 356 256 366C261 356 266 345 266 336H246Z" fill="#FCD34D"/>
+  <path d="M236 326C236 335 241 346 246 356C251 346 256 335 256 326H236Z" fill="#FBBF24"/>
+  <path d="M256 326C256 335 261 346 266 356C271 346 276 335 276 326H256Z" fill="#FBBF24"/>
+  
+  <!-- Lightbulb (Innovation Symbol) -->
+  <circle cx="336" cy="176" r="30" fill="#FCD34D" opacity="0.3"/>
+  <path d="M336 156C325.507 156 317 164.507 317 175C317 182.18 321.134 188.416 327 191.606V201C327 203.761 329.239 206 332 206H340C342.761 206 345 203.761 345 201V191.606C350.866 188.416 355 182.18 355 175C355 164.507 346.493 156 336 156Z" fill="#F59E0B"/>
+  
+  <!-- Lightbulb Rays -->
+  <path d="M336 136V146M356 156L349.192 162.808M366 176H356M356 196L349.192 189.192M336 206V216M316 196L322.808 189.192M306 176H316M316 156L322.808 162.808" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Text: Azora Innovation Hub -->
+  <text x="256" y="390" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#0A0E27" text-anchor="middle">AZORA</text>
+  <text x="256" y="425" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="24" fill="#FF6B35" text-anchor="middle">INNOVATION HUB</text>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="innovation-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+</svg>

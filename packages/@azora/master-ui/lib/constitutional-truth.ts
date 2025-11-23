@@ -100,7 +100,7 @@ export class ConstitutionalTruth {
    * More lies make truth MORE obvious, not less
    */
   static detectTruthSingularity(claims: TruthAssertion[]): { truth: TruthAssertion; singularityScore: number } | null {
-    if (claims.length === 0) return null
+    if (claims.length === 0) {return null}
 
     // Find the singular truth - single correspondence to reality
     const truthScores = claims.map((claim) => ({

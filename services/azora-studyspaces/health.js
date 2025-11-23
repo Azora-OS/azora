@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 // Service health status
-let serviceHealth = {
+const serviceHealth = {
   status: 'healthy',
   timestamp: new Date().toISOString(),
   uptime: process.uptime(),

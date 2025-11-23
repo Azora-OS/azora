@@ -56,8 +56,8 @@ export default function (data) {
       'response time < 100ms': (r) => r.timings.duration < 100,
     });
     
-    if (!success) errorRate.add(1);
-    else successfulRequests.add(1);
+    if (!success) {errorRate.add(1);}
+    else {successfulRequests.add(1);}
     
     apiDuration.add(res.timings.duration);
   });
@@ -74,8 +74,8 @@ export default function (data) {
       'response time < 500ms': (r) => r.timings.duration < 500,
     });
     
-    if (!success) errorRate.add(1);
-    else successfulRequests.add(1);
+    if (!success) {errorRate.add(1);}
+    else {successfulRequests.add(1);}
     
     apiDuration.add(res.timings.duration);
   });
@@ -92,8 +92,8 @@ export default function (data) {
       'response time < 300ms': (r) => r.timings.duration < 300,
     });
     
-    if (!success) errorRate.add(1);
-    else successfulRequests.add(1);
+    if (!success) {errorRate.add(1);}
+    else {successfulRequests.add(1);}
     
     apiDuration.add(res.timings.duration);
   });
@@ -110,8 +110,8 @@ export default function (data) {
       'response time < 400ms': (r) => r.timings.duration < 400,
     });
     
-    if (!success) errorRate.add(1);
-    else successfulRequests.add(1);
+    if (!success) {errorRate.add(1);}
+    else {successfulRequests.add(1);}
     
     apiDuration.add(res.timings.duration);
   });

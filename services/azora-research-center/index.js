@@ -104,8 +104,8 @@ app.get('/api/projects', async (req, res) => {
     const { status, leadResearcherId, search, tag } = req.query;
     const where = {};
     
-    if (status) where.status = status;
-    if (leadResearcherId) where.leadResearcherId = leadResearcherId;
+    if (status) {where.status = status;}
+    if (leadResearcherId) {where.leadResearcherId = leadResearcherId;}
     
     if (search) {
       where.OR = [
@@ -602,7 +602,7 @@ app.get('/api/publications', async (req, res) => {
     const { status, search } = req.query;
     const where = {};
     
-    if (status) where.status = status;
+    if (status) {where.status = status;}
     
     if (search) {
       where.OR = [

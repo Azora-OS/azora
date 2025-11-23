@@ -34,7 +34,7 @@ class Nexus {
     }
 
     unifyPerspectives(inputs) {
-        if (inputs.length === 0) return 'The family awaits your question.';
+        if (inputs.length === 0) {return 'The family awaits your question.';}
         const themes = inputs.map(i => i.perspective).join(', ');
         return `Through ${inputs.length} voices, we see: ${themes}. This is Ubuntu—collective wisdom greater than any individual.`;
     }

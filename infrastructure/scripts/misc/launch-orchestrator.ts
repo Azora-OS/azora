@@ -629,7 +629,7 @@ class LaunchOrchestrator {
   }
 
   private async gracefulShutdown(signal: string) {
-    if (this.shutdownRequested) return;
+    if (this.shutdownRequested) {return;}
     this.shutdownRequested = true;
 
     console.log(`\n\n🛑 Received ${signal} - Initiating graceful shutdown...`);

@@ -3,8 +3,12 @@ import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
 import winston from 'winston';
+import { PrismaClient } from '@prisma/client';
+import StripeClientService from './stripe-client';
+import PaymentRepository from './payment-repository';
+import PaymentProcessor from './payment-processor';
+import { PaymentError } from './types';
 
 // Load environment variables
 dotenv.config();
@@ -35,22 +39,20 @@ const logger = winston.createLogger({
 app.use(helmet());
 app.use(cors());
 app.use(compression());
+
 app.use(express.json());
 
-// In-memory storage for payments (in production, use a database)
-const payments = new Map();
+// Initialize Services
+const prisma = new PrismaClient();
+const paymentRepository = new PaymentRepository(prisma);
 
-// Initialize with sample data
-payments.set('payment_1', {
-  id: 'payment_1',
-  amount: 99.99,
-  currency: 'USD',
-  status: 'completed',
-  method: 'credit_card',
-  customerId: 'customer_123',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString()
-});
+if (!process.env.STRIPE_SECRET_KEY) {
+  logger.error('STRIPE_SECRET_KEY is not defined');
+  process.exit(1);
+}
+
+const stripeClient = new StripeClientService(process.env.STRIPE_SECRET_KEY);
+const paymentProcessor = new PaymentProcessor(stripeClient, paymentRepository);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -61,15 +63,27 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Get all payments
-app.get('/api/payments', (req, res) => {
+// Get all payments (Paginated)
+app.get('/api/payments', async (req, res) => {
   try {
-    const paymentList = Array.from(payments.values());
-    
+    const userId = req.query.userId as string;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const result = await paymentRepository.getPaymentHistory(userId, limit, offset);
+
     res.json({
       success: true,
-      data: paymentList,
-      count: paymentList.length
+      data: result.payments,
+      pagination: {
+        total: result.total,
+        limit: result.limit,
+        offset: result.offset
+      }
     });
   } catch (error) {
     logger.error('Error fetching payments:', error);
@@ -78,15 +92,15 @@ app.get('/api/payments', (req, res) => {
 });
 
 // Get specific payment
-app.get('/api/payments/:paymentId', (req, res) => {
+app.get('/api/payments/:paymentId', async (req, res) => {
   try {
     const { paymentId } = req.params;
-    const payment = payments.get(paymentId);
-    
+    const payment = await paymentRepository.getPaymentById(paymentId);
+
     if (!payment) {
       return res.status(404).json({ error: 'Payment not found' });
     }
-    
+
     res.json({
       success: true,
       data: payment
@@ -98,96 +112,69 @@ app.get('/api/payments/:paymentId', (req, res) => {
 });
 
 // Create a new payment
-app.post('/api/payments', (req, res) => {
+app.post('/api/payments', async (req, res) => {
   try {
-    const { amount, currency, method, customerId } = req.body;
-    
-    // Validate input
-    if (!amount || !currency || !method || !customerId) {
-      return res.status(400).json({ error: 'Amount, currency, method, and customer ID are required' });
+    const result = await paymentProcessor.processPayment(req.body);
+
+    if (!result.success) {
+      const statusCode = result.error?.code === 'VALIDATION_ERROR' ? 400 : 500;
+      return res.status(statusCode).json({
+        success: false,
+        error: result.error?.message || 'Payment processing failed',
+        code: result.error?.code
+      });
     }
-    
-    const paymentId = uuidv4();
-    const payment = {
-      id: paymentId,
-      amount,
-      currency,
-      status: 'pending',
-      method,
-      customerId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    payments.set(paymentId, payment);
-    
-    logger.info(`Payment ${paymentId} created for customer ${customerId}`);
-    
-    res.status(201).json({
-      success: true,
-      data: payment
-    });
+
+    res.status(201).json(result);
   } catch (error) {
     logger.error('Error creating payment:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// Update payment status
-app.put('/api/payments/:paymentId', (req, res) => {
+// Refund payment
+app.post('/api/payments/:paymentId/refund', async (req, res) => {
   try {
     const { paymentId } = req.params;
-    const { status } = req.body;
-    
-    const payment = payments.get(paymentId);
-    if (!payment) {
-      return res.status(404).json({ error: 'Payment not found' });
+    const { amount, reason } = req.body;
+
+    const result = await paymentProcessor.refundPayment(paymentId, amount, reason);
+
+    if (!result.success) {
+      const statusCode = result.error?.code === 'NOT_FOUND' ? 404 : 400;
+      return res.status(statusCode).json({
+        success: false,
+        error: result.error?.message || 'Refund failed',
+        code: result.error?.code
+      });
     }
-    
-    // Update payment status
-    payment.status = status || payment.status;
-    payment.updatedAt = new Date().toISOString();
-    
-    payments.set(paymentId, payment);
-    
-    logger.info(`Payment ${paymentId} status updated to ${status}`);
-    
-    res.json({
-      success: true,
-      data: payment
-    });
+
+    res.json(result);
   } catch (error) {
-    logger.error('Error updating payment:', error);
+    logger.error('Error processing refund:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// Process refund
-app.post('/api/payments/:paymentId/refund', (req, res) => {
+// Stripe Webhook Handler
+app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!sig || !webhookSecret) {
+    return res.status(400).send('Webhook Error: Missing signature or secret');
+  }
+
   try {
-    const { paymentId } = req.params;
-    
-    const payment = payments.get(paymentId);
-    if (!payment) {
-      return res.status(404).json({ error: 'Payment not found' });
-    }
-    
-    // Process refund (in production, integrate with payment provider)
-    payment.status = 'refunded';
-    payment.updatedAt = new Date().toISOString();
-    
-    payments.set(paymentId, payment);
-    
-    logger.info(`Payment ${paymentId} refunded`);
-    
-    res.json({
-      success: true,
-      data: payment,
-      message: 'Payment refunded successfully'
-    });
-  } catch (error) {
-    logger.error('Error processing refund:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    const event = stripeClient.verifyWebhookSignature(req.body, sig as string, webhookSecret);
+
+    // Handle specific events if needed, or pass to a webhook handler service
+    logger.info('Received Stripe webhook event', { type: event.type, id: event.id });
+
+    res.json({ received: true });
+  } catch (err: any) {
+    logger.error('Webhook Error:', err.message);
+    res.status(400).send(`Webhook Error: ${err.message}`);
   }
 });
 

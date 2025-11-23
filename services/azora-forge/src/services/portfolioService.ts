@@ -20,7 +20,7 @@ export class PortfolioService {
 
   async getPortfolio(userId: string) {
     const portfolio = this.portfolios.get(userId);
-    if (!portfolio) throw new Error('Portfolio not found');
+    if (!portfolio) {throw new Error('Portfolio not found');}
     
     const user = await prisma.user.findUnique({
       where: { id: userId },

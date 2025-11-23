@@ -64,7 +64,7 @@ export class SalezoraService {
   static async optimizeStrategy(campaignId: string) {
     // Integrate with Azora AI for best marketing strategies
     const campaign = await prisma.salesCampaign.findUnique({ where: { id: campaignId } });
-    if (!campaign) throw new Error('Campaign not found');
+    if (!campaign) {throw new Error('Campaign not found');}
     // Mock AI optimization
     const optimizedStrategy = `${campaign.strategy} + AI-enhanced targeting`;
     await prisma.salesCampaign.update({

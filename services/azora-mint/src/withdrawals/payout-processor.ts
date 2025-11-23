@@ -145,11 +145,11 @@ export function updatePayoutStatus(
   failureReason?: string
 ): PayoutStatus | null {
   const payout = getPayoutStatus(payoutId);
-  if (!payout) return null;
+  if (!payout) {return null;}
 
   payout.status = status;
-  if (arrivedAt) payout.arrivedAt = arrivedAt;
-  if (failureReason) payout.failureReason = failureReason;
+  if (arrivedAt) {payout.arrivedAt = arrivedAt;}
+  if (failureReason) {payout.failureReason = failureReason;}
 
   return payout;
 }
@@ -159,7 +159,7 @@ export function updatePayoutStatus(
  */
 export function simulatePayoutCompletion(payoutId: string): PayoutStatus | null {
   const payout = getPayoutStatus(payoutId);
-  if (!payout) return null;
+  if (!payout) {return null;}
 
   payout.status = 'paid';
   payout.arrivedAt = new Date();
@@ -172,7 +172,7 @@ export function simulatePayoutCompletion(payoutId: string): PayoutStatus | null 
  */
 export function simulatePayoutFailure(payoutId: string, reason: string): PayoutStatus | null {
   const payout = getPayoutStatus(payoutId);
-  if (!payout) return null;
+  if (!payout) {return null;}
 
   payout.status = 'failed';
   payout.failureReason = reason;

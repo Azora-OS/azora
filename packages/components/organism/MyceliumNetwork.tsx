@@ -79,11 +79,11 @@ export const MyceliumNetwork: React.FC<MyceliumNetworkProps> = ({
 
   // Animation loop
   useEffect(() => {
-    if (!animated || !canvasRef.current) return;
+    if (!animated || !canvasRef.current) {return;}
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     const updateAndDraw = () => {
       // Set canvas size
@@ -130,7 +130,7 @@ export const MyceliumNetwork: React.FC<MyceliumNetworkProps> = ({
         updatedNodes.forEach(node => {
           node.connections.forEach(connId => {
             const targetNode = updatedNodes.find(n => n.id === connId);
-            if (!targetNode) return;
+            if (!targetNode) {return;}
 
             const x1 = (node.x / 100) * canvas.width;
             const y1 = (node.y / 100) * canvas.height;
@@ -206,7 +206,7 @@ export const MyceliumNetwork: React.FC<MyceliumNetworkProps> = ({
 
   // Mouse interaction
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!interactive || !canvasRef.current) return;
+    if (!interactive || !canvasRef.current) {return;}
 
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();

@@ -33,7 +33,7 @@ export class TutoringEngine {
 
   sendMessage(sessionId: string, content: string, role: 'student' | 'tutor'): Message {
     const session = this.sessions.get(sessionId);
-    if (!session) throw new Error('Session not found');
+    if (!session) {throw new Error('Session not found');}
 
     const message: Message = { role, content, timestamp: new Date() };
     session.messages.push(message);
@@ -104,6 +104,6 @@ export class TutoringEngine {
 
   addInsight(sessionId: string, insight: string): void {
     const session = this.sessions.get(sessionId);
-    if (session) session.insights.push(insight);
+    if (session) {session.insights.push(insight);}
   }
 }

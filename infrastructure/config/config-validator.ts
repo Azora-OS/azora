@@ -60,7 +60,7 @@ export class ConfigValidator {
     for (const [serviceName, schema] of Object.entries(serviceSchemas)) {
       const result = await this.validateService(serviceName, schema)
       results[serviceName] = result
-      if (!result.valid) allValid = false
+      if (!result.valid) {allValid = false}
     }
 
     return { valid: allValid, results }
@@ -130,8 +130,8 @@ export class ConfigValidator {
     }
 
     let overall: 'healthy' | 'warning' | 'critical' = 'healthy'
-    if (criticalCount > 0) overall = 'critical'
-    else if (warningCount > 0) overall = 'warning'
+    if (criticalCount > 0) {overall = 'critical'}
+    else if (warningCount > 0) {overall = 'warning'}
 
     return { overall, services, issues }
   }

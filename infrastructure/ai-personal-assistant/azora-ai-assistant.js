@@ -318,8 +318,8 @@ class ARIA {
     const hour = new Date().getHours();
     const name = this.userContext.first_name;
 
-    if (hour < 12) return `Good morning, ${name}! ☀️`;
-    if (hour < 18) return `Good afternoon, ${name}! 👋`;
+    if (hour < 12) {return `Good morning, ${name}! ☀️`;}
+    if (hour < 18) {return `Good afternoon, ${name}! 👋`;}
     return `Good evening, ${name}! 🌙`;
   }
 

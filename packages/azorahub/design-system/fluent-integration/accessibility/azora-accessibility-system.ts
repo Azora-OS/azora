@@ -426,7 +426,7 @@ class ScreenReaderProvider {
   }
 
   public announce(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) {return;}
 
     const announcement: Announcement = {
       message,
@@ -447,7 +447,7 @@ class ScreenReaderProvider {
   }
 
   private processQueue(): void {
-    if (this.isProcessingQueue || this.announcementQueue.length === 0) return;
+    if (this.isProcessingQueue || this.announcementQueue.length === 0) {return;}
 
     this.isProcessingQueue = true;
     const announcement = this.announcementQueue.shift();
@@ -512,7 +512,7 @@ class KeyboardNavigationProvider {
   }
 
   public handleKeyEvent(event: KeyboardEvent): void {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) {return;}
 
     const shortcut = this.config.shortcuts.find(s => this.matchesShortcut(s.key, event));
     if (shortcut) {
@@ -536,14 +536,14 @@ class KeyboardNavigationProvider {
   }
 
   public navigateToNext(): void {
-    if (this.focusableElements.length === 0) return;
+    if (this.focusableElements.length === 0) {return;}
     
     this.currentFocusIndex = (this.currentFocusIndex + 1) % this.focusableElements.length;
     this.focusableElements[this.currentFocusIndex].focus();
   }
 
   public navigateToPrevious(): void {
-    if (this.focusableElements.length === 0) return;
+    if (this.focusableElements.length === 0) {return;}
     
     this.currentFocusIndex = this.currentFocusIndex <= 0 
       ? this.focusableElements.length - 1 
@@ -611,7 +611,7 @@ class KeyboardNavigationProvider {
   }
 
   private setupSkipLinks(): void {
-    if (!this.config.skipLinks) return;
+    if (!this.config.skipLinks) {return;}
 
     const skipLink = document.createElement('a');
     skipLink.href = '#main-content';

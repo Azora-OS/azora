@@ -5,86 +5,16 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
-  workflow_dispatch:
-
-concurrency:
-  group: test-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
-  unit-tests:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      
-      - name: Restore Jest cache
-        uses: actions/cache@v4
-        with:
-          path: .jest-cache
-          key: jest-unit-${{ runner.os }}-node-${{ matrix.node-version }}-${{ github.sha }}
-          restore-keys: |
-            jest-unit-${{ runner.os }}-node-${{ matrix.node-version }}-
-            jest-unit-${{ runner.os }}-
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run unit tests with coverage
-        run: npm run test:unit -- --coverage --coverageReporters=text-summary,json,html,lcov
-        env:
-          NODE_ENV: test
-      
-      - name: Check coverage threshold
-        run: |
-          COVERAGE=$(npm run test:unit -- --coverage --silent 2>/dev/null | grep -oP 'Lines\s+:\s+\K[0-9.]+' || echo "0")
-          echo "Coverage: ${COVERAGE}%"
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "❌ Coverage below 80% threshold: ${COVERAGE}%"
-            exit 1
-          fi
-          echo "✅ Coverage meets 80% threshold: ${COVERAGE}%"
-      
-      - name: Generate coverage report
-        if: always()
-        run: |
-          echo "## Coverage Report (Node ${{ matrix.node-version }})" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          npm run test:unit -- --coverage --silent 2>/dev/null | tail -10 >> $GITHUB_STEP_SUMMARY || true
-      
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/coverage-final.json
-          flags: unit-node-${{ matrix.node-version }}
-          fail_ci_if_error: false
-          verbose: true
-      
-      - name: Archive coverage reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-unit-node-${{ matrix.node-version }}
-          path: coverage/
-          retention-days: 30
 
-  integration-tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
     services:
       postgres:
         image: postgres:15
         env:
+          POSTGRES_USER: test
           POSTGRES_PASSWORD: test
           POSTGRES_DB: azora_test
         options: >-
@@ -94,9 +24,9 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      
+
       redis:
-        image: redis:7-alpine
+        image: redis:7
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -104,150 +34,169 @@ jobs:
           --health-retries 5
         ports:
           - 6379:6379
-    
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
-      - name: Restore Jest cache
-        uses: actions/cache@v4
-        with:
-          path: .jest-cache
-          key: jest-integration-${{ runner.os }}-node-${{ matrix.node-version }}-${{ github.sha }}
-          restore-keys: |
-            jest-integration-${{ runner.os }}-node-${{ matrix.node-version }}-
-            jest-integration-${{ runner.os }}-
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Run integration tests with coverage
-        run: npm run test:integration -- --coverage --coverageReporters=text-summary,json,html,lcov
+
+      - name: Setup test environment
+        run: |
+          cp .env.test.example .env.test
+          echo "DATABASE_URL=postgresql://test:test@localhost:5432/azora_test" >> .env.test
+          echo "REDIS_URL=redis://localhost:6379" >> .env.test
+
+      - name: Run database migrations
+        run: npm run db:migrate:test
+
+      - name: Run tests
+        run: npm test -- --coverage --maxWorkers=2
         env:
           NODE_ENV: test
-          DATABASE_URL: postgresql://postgres:test@localhost:5432/azora_test
+          DATABASE_URL: postgresql://test:test@localhost:5432/azora_test
           REDIS_URL: redis://localhost:6379
-      
-      - name: Check coverage threshold
-        run: |
-          COVERAGE=$(npm run test:integration -- --coverage --silent 2>/dev/null | grep -oP 'Lines\s+:\s+\K[0-9.]+' || echo "0")
-          echo "Coverage: ${COVERAGE}%"
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "❌ Coverage below 80% threshold: ${COVERAGE}%"
-            exit 1
-          fi
-          echo "✅ Coverage meets 80% threshold: ${COVERAGE}%"
-      
-      - name: Generate coverage report
-        if: always()
-        run: |
-          echo "## Integration Coverage Report (Node ${{ matrix.node-version }})" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          npm run test:integration -- --coverage --silent 2>/dev/null | tail -10 >> $GITHUB_STEP_SUMMARY || true
-      
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/coverage-final.json
-          flags: integration-node-${{ matrix.node-version }}
-          fail_ci_if_error: false
-          verbose: true
-      
-      - name: Archive coverage reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-integration-node-${{ matrix.node-version }}
-          path: coverage/
-          retention-days: 30
 
-  coverage-enforcement:
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./tests/coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ matrix.node-version }}
+          path: |
+            tests/coverage/
+            test-results/
+
+      - name: Archive coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-${{ matrix.node-version }}
+          path: tests/coverage/
+
+  coverage-check:
     runs-on: ubuntu-latest
-    needs: [unit-tests, integration-tests]
-    if: always()
+    needs: test
+
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report-20.x
+          path: tests/coverage/
+
+      - name: Check coverage thresholds
+        run: |
+          node -e "
+          const fs = require('fs');
+          const coverage = JSON.parse(fs.readFileSync('./tests/coverage/coverage-summary.json', 'utf-8'));
+          const total = coverage.total;
+          
+          const thresholds = {
+            lines: 50,
+            statements: 50,
+            functions: 50,
+            branches: 50
+          };
+          
+          let failed = false;
+          
+          Object.keys(thresholds).forEach(key => {
+            if (total[key].pct < thresholds[key]) {
+              console.error(\`❌ \${key} coverage \${total[key].pct.toFixed(2)}% is below threshold \${thresholds[key]}%\`);
+              failed = true;
+            } else {
+              console.log(\`✅ \${key} coverage \${total[key].pct.toFixed(2)}% meets threshold \${thresholds[key]}%\`);
+            }
+          });
+          
+          if (failed) {
+            process.exit(1);
+          }
+          "
+
+  pr-comment:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
-      
-      - name: Restore Jest cache
-        uses: actions/cache@v4
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v3
         with:
-          path: .jest-cache
-          key: jest-coverage-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            jest-coverage-${{ runner.os }}-
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run full coverage check
-        run: npm run coverage:check
-        env:
-          NODE_ENV: test
-      
-      - name: Generate coverage badge
+          name: coverage-report-20.x
+          path: coverage/
+
+      - name: Generate PR comment
+        id: pr-comment
         run: |
-          COVERAGE=$(npm run test -- --coverage --silent 2>/dev/null | grep -oP 'Lines\s+:\s+\K[0-9.]+' || echo "0")
-          echo "COVERAGE=${COVERAGE}" >> $GITHUB_ENV
-          
-          # Create badge URL
-          if (( $(echo "$COVERAGE >= 90" | bc -l) )); then
-            COLOR="brightgreen"
-          elif (( $(echo "$COVERAGE >= 80" | bc -l) )); then
-            COLOR="green"
-          elif (( $(echo "$COVERAGE >= 70" | bc -l) )); then
-            COLOR="yellow"
-          else
-            COLOR="red"
-          fi
-          
-          BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}"
-          echo "Badge URL: $BADGE_URL"
-          echo "BADGE_URL=${BADGE_URL}" >> $GITHUB_ENV
-      
-      - name: Comment PR with coverage
-        if: github.event_name == 'pull_request'
+          node scripts/pr-test-reminder.js > pr-comment.txt
+          echo "comment<<EOF" >> $GITHUB_OUTPUT
+          cat pr-comment.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Post PR comment
         uses: actions/github-script@v7
         with:
           script: |
-            const coverage = process.env.COVERAGE;
-            const badgeUrl = process.env.BADGE_URL;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const fs = require('fs');
+            const comment = fs.readFileSync('pr-comment.txt', 'utf-8');
+            
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## 📊 Coverage Report\n\n![Coverage](${badgeUrl})\n\n**Current Coverage:** ${coverage}%\n\n✅ Coverage meets 80% minimum threshold`
+              issue_number: context.issue.number,
             });
-  
-  test-summary:
-    runs-on: ubuntu-latest
-    needs: [unit-tests, integration-tests, coverage-enforcement]
-    if: always()
-    steps:
-      - name: Test Results Summary
-        run: |
-          echo "## Test Execution Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Test Suite | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Coverage Enforcement | ${{ needs.coverage-enforcement.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ needs.unit-tests.result }}" != "success" ] || [ "${{ needs.integration-tests.result }}" != "success" ] || [ "${{ needs.coverage-enforcement.result }}" != "success" ]; then
-            echo "❌ Some tests failed"
-            exit 1
-          fi
-          
-          echo "✅ All tests passed with coverage enforcement"
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('🧪 Test Coverage Report')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }

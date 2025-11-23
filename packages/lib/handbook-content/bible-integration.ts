@@ -92,9 +92,9 @@ export function getDailyScripture(time?: 'morning' | 'midday' | 'evening' | 'dep
   
   let selectedTime = time;
   if (!selectedTime) {
-    if (hour >= 5 && hour < 12) selectedTime = 'morning';
-    else if (hour >= 12 && hour < 17) selectedTime = 'midday';
-    else selectedTime = 'evening';
+    if (hour >= 5 && hour < 12) {selectedTime = 'morning';}
+    else if (hour >= 12 && hour < 17) {selectedTime = 'midday';}
+    else {selectedTime = 'evening';}
   }
   
   return AZORIAN_BIBLE.daily[selectedTime];

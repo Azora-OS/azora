@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.post('/list', async (req, res) => {
   const { userId, item, price } = req.body;
-  if (!userId || !item || price === undefined) return res.status(400).json({ error: 'Missing fields' });
+  if (!userId || !item || price === undefined) {return res.status(400).json({ error: 'Missing fields' });}
   try {
     const listing = await MarketplaceService.createListing(userId, item, price);
     res.json({ listed: true, id: listing.id });
@@ -33,7 +33,7 @@ router.get('/listings', async (req, res) => {
 
 router.post('/purchase', async (req, res) => {
   const { listingId, buyerId } = req.body;
-  if (!listingId || !buyerId) return res.status(400).json({ error: 'Missing fields' });
+  if (!listingId || !buyerId) {return res.status(400).json({ error: 'Missing fields' });}
   try {
     const transaction = await MarketplaceService.purchaseListing(listingId, buyerId);
     res.json({ purchased: true, transactionId: transaction.id });

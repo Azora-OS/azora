@@ -651,9 +651,9 @@ export class ProductionGradeDeployment extends EventEmitter {
 
   private async validateConfiguration(config: ProductionDeploymentConfig): Promise<void> {
     // Comprehensive configuration validation
-    if (!config.environment) throw new Error('Environment not specified');
-    if (!config.version) throw new Error('Version not specified');
-    if (!config.infrastructure) throw new Error('Infrastructure configuration missing');
+    if (!config.environment) {throw new Error('Environment not specified');}
+    if (!config.version) {throw new Error('Version not specified');}
+    if (!config.infrastructure) {throw new Error('Infrastructure configuration missing');}
   }
 
   private async validateSecurity(config: ProductionDeploymentConfig): Promise<void> {

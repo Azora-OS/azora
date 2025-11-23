@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <defs>
+    <linearGradient id="introBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="introAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="introGlow">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <rect width="1920" height="1080" fill="url(#introBg)"/>
+  
+  <!-- Expanding glow -->
+  <circle cx="960" cy="540" r="0" fill="url(#introGlow)">
+    <animate attributeName="r" from="0" to="800" dur="2s" fill="freeze"/>
+  </circle>
+  
+  <!-- Logo pieces animate in -->
+  <g transform="translate(960, 540)">
+    <!-- Left part of A -->
+    <path d="M -100,170 L -50,-170 L 20,-170 L -30,170 Z" fill="url(#introAccent)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="translate" from="-200,0" to="0,0" begin="0.5s" dur="0.8s" fill="freeze"/>
+    </path>
+    
+    <!-- Right part of A -->
+    <path d="M 50,-170 L 100,170 L 30,170 L -20,-170 Z" fill="url(#introAccent)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.7s" dur="0.5s" fill="freeze"/>
+      <animateTransform attributeName="transform" type="translate" from="200,0" to="0,0" begin="0.7s" dur="0.8s" fill="freeze"/>
+    </path>
+    
+    <!-- Crossbar -->
+    <rect x="-60" y="20" width="120" height="32" rx="16" fill="#06b6d4" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="1.2s" dur="0.4s" fill="freeze"/>
+      <animate attributeName="width" from="0" to="120" begin="1.2s" dur="0.5s" fill="freeze"/>
+    </rect>
+    
+    <!-- Top node -->
+    <circle cx="0" cy="-190" r="0" fill="#ec4899">
+      <animate attributeName="r" from="0" to="18" begin="1.5s" dur="0.3s" fill="freeze"/>
+    </circle>
+    
+    <!-- Orbit ring expands -->
+    <circle cx="0" cy="0" r="0" stroke="#06b6d4" stroke-width="3" fill="none" opacity="0.3">
+      <animate attributeName="r" from="0" to="270" begin="1.8s" dur="0.8s" fill="freeze"/>
+    </circle>
+    
+    <!-- Orbital nodes pop in -->
+    <circle cx="270" cy="0" r="0" fill="#06b6d4">
+      <animate attributeName="r" from="0" to="12" begin="2.4s" dur="0.2s" fill="freeze"/>
+    </circle>
+    <circle cx="-270" cy="0" r="0" fill="#ec4899">
+      <animate attributeName="r" from="0" to="12" begin="2.5s" dur="0.2s" fill="freeze"/>
+    </circle>
+    <circle cx="0" cy="-270" r="0" fill="#8b5cf6">
+      <animate attributeName="r" from="0" to="12" begin="2.6s" dur="0.2s" fill="freeze"/>
+    </circle>
+    <circle cx="0" cy="270" r="0" fill="#06b6d4">
+      <animate attributeName="r" from="0" to="12" begin="2.7s" dur="0.2s" fill="freeze"/>
+    </circle>
+  </g>
+  
+  <!-- Text fades in -->
+  <g transform="translate(960, 800)" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" begin="2.5s" dur="0.8s" fill="freeze"/>
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="110" font-weight="800" fill="white" text-anchor="middle">
+      <tspan font-weight="800">A</tspan><tspan font-weight="600" opacity="0.8">zora </tspan><tspan font-weight="400" opacity="0.6" font-size="85">OS</tspan>
+    </text>
+    <text x="0" y="75" font-family="'Inter', sans-serif" font-size="38" font-weight="500" fill="url(#introAccent)" text-anchor="middle">
+      Universal Human Infrastructure
+    </text>
+  </g>
+  
+  <!-- Final shine effect -->
+  <rect x="-100" y="0" width="200" height="1080" fill="white" opacity="0">
+    <animate attributeName="opacity" values="0;0.3;0" begin="3.2s" dur="0.6s" fill="freeze"/>
+    <animateTransform attributeName="transform" type="translate" from="0,0" to="2020,0" begin="3.2s" dur="0.6s" fill="freeze"/>
+  </rect>
+</svg>
+

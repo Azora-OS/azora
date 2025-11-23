@@ -137,11 +137,11 @@ export class UnifiedErrorHandler {
    * Get HTTP status code for error code
    */
   private static getStatusCode(code: ErrorCode): number {
-    if (code >= 1000 && code < 2000) return 401; // Auth errors
-    if (code >= 2000 && code < 3000) return 400; // Validation errors
-    if (code >= 3000 && code < 4000) return 500; // Database errors
-    if (code >= 4000 && code < 5000) return 503; // Service errors
-    if (code >= 5000 && code < 6000) return 400; // Business logic errors
+    if (code >= 1000 && code < 2000) {return 401;} // Auth errors
+    if (code >= 2000 && code < 3000) {return 400;} // Validation errors
+    if (code >= 3000 && code < 4000) {return 500;} // Database errors
+    if (code >= 4000 && code < 5000) {return 503;} // Service errors
+    if (code >= 5000 && code < 6000) {return 400;} // Business logic errors
     return 500; // System errors
   }
 

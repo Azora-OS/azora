@@ -449,9 +449,9 @@ export class SovereigntyProtocolDeployer {
     const totalTests = allTests.length;
     const successRate = (passedTests / totalTests) * 100;
 
-    if (successRate === 100) return "FULLY_OPERATIONAL";
-    if (successRate >= 90) return "OPERATIONAL_WITH_MINOR_ISSUES";
-    if (successRate >= 75) return "OPERATIONAL_WITH_ISSUES";
+    if (successRate === 100) {return "FULLY_OPERATIONAL";}
+    if (successRate >= 90) {return "OPERATIONAL_WITH_MINOR_ISSUES";}
+    if (successRate >= 75) {return "OPERATIONAL_WITH_ISSUES";}
     return "REQUIRES_IMMEDIATE_ATTENTION";
   }
 

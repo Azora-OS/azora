@@ -272,7 +272,7 @@ export class WorldModel {
    * Calculate trend from time series
    */
   private calculateTrend(values: number[]): number {
-    if (values.length < 2) return 0;
+    if (values.length < 2) {return 0;}
 
     // Simple linear regression
     const n = values.length;

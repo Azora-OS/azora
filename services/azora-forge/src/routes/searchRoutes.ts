@@ -91,13 +91,13 @@ router.get('/listings', [
     }
 
     // Filters
-    if (category) searchQuery.category = category;
-    if (deliveryMethod) searchQuery.deliveryMethod = deliveryMethod;
+    if (category) {searchQuery.category = category;}
+    if (deliveryMethod) {searchQuery.deliveryMethod = deliveryMethod;}
 
     if (minPrice || maxPrice) {
       searchQuery.price = {};
-      if (minPrice) searchQuery.price.$gte = parseFloat(minPrice as string);
-      if (maxPrice) searchQuery.price.$lte = parseFloat(maxPrice as string);
+      if (minPrice) {searchQuery.price.$gte = parseFloat(minPrice as string);}
+      if (maxPrice) {searchQuery.price.$lte = parseFloat(maxPrice as string);}
     }
 
     if (tags) {

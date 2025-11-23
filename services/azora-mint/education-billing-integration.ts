@@ -311,7 +311,7 @@ export class EducationBillingIntegration extends EventEmitter {
     walletType: 'student' | 'parent'
   ): Promise<void> {
     const account = this.accounts.get(accountId);
-    if (!account) throw new Error('Account not found');
+    if (!account) {throw new Error('Account not found');}
     
     if (walletType === 'student') {
       account.linkedWallets.studentWallet = walletId;
@@ -350,7 +350,7 @@ export class EducationBillingIntegration extends EventEmitter {
     appliedTo: TuitionPayment['appliedTo'];
   }): Promise<TuitionPayment> {
     const account = this.accounts.get(payment.accountId);
-    if (!account) throw new Error('Account not found');
+    if (!account) {throw new Error('Account not found');}
     
     const paymentId = uuidv4();
     const paymentNumber = `PAY-EDU-${this.paymentCounter++}`;
@@ -447,9 +447,9 @@ export class EducationBillingIntegration extends EventEmitter {
     console.log('⛏️ Applying mining earnings to tuition balances...');
     
     for (const [accountId, account] of this.accounts) {
-      if (!account.miningEarningsAutoApply) continue;
-      if (account.balance <= 0) continue;
-      if (!account.linkedWallets.studentWallet) continue;
+      if (!account.miningEarningsAutoApply) {continue;}
+      if (account.balance <= 0) {continue;}
+      if (!account.linkedWallets.studentWallet) {continue;}
       
       try {
         // Get student's mining earnings
@@ -512,7 +512,7 @@ export class EducationBillingIntegration extends EventEmitter {
     depositAmount: number;
   }): Promise<PaymentPlan> {
     const account = this.accounts.get(request.accountId);
-    if (!account) throw new Error('Account not found');
+    if (!account) {throw new Error('Account not found');}
     
     const planId = uuidv4();
     const remainingBalance = account.balance - request.depositAmount;
@@ -594,14 +594,14 @@ export class EducationBillingIntegration extends EventEmitter {
     console.log('🤖 Processing auto-payments...');
     
     for (const [accountId, account] of this.accounts) {
-      if (!account.autoPayEnabled) continue;
-      if (account.balance <= 0) continue;
-      if (!account.paymentPlan) continue;
+      if (!account.autoPayEnabled) {continue;}
+      if (account.balance <= 0) {continue;}
+      if (!account.paymentPlan) {continue;}
       
       const plan = account.paymentPlan;
       const nextInstallment = plan.installments.find(i => i.status === 'pending');
       
-      if (!nextInstallment) continue;
+      if (!nextInstallment) {continue;}
       
       // Check if due today
       const today = new Date();
@@ -656,7 +656,7 @@ export class EducationBillingIntegration extends EventEmitter {
     hold: Omit<FinancialHold, 'id' | 'accountId' | 'appliedDate' | 'status'>
   ): Promise<void> {
     const account = this.accounts.get(accountId);
-    if (!account) throw new Error('Account not found');
+    if (!account) {throw new Error('Account not found');}
     
     const newHold: FinancialHold = {
       id: uuidv4(),
@@ -675,7 +675,7 @@ export class EducationBillingIntegration extends EventEmitter {
 
   async releaseAllHolds(accountId: string): Promise<void> {
     const account = this.accounts.get(accountId);
-    if (!account) throw new Error('Account not found');
+    if (!account) {throw new Error('Account not found');}
     
     for (const hold of account.holds) {
       if (hold.status === 'active') {
@@ -696,7 +696,7 @@ export class EducationBillingIntegration extends EventEmitter {
     const today = new Date();
     
     for (const [accountId, account] of this.accounts) {
-      if (!account.paymentPlan) continue;
+      if (!account.paymentPlan) {continue;}
       
       const overdueInstallments = account.paymentPlan.installments.filter(
         i => i.status === 'pending' && i.dueDate < today
@@ -732,11 +732,11 @@ export class EducationBillingIntegration extends EventEmitter {
     
     for (const [accountId, account] of this.accounts) {
       for (const aid of account.financialAid) {
-        if (aid.status !== 'approved') continue;
+        if (aid.status !== 'approved') {continue;}
         
         for (const disbursement of aid.disbursementSchedule) {
-          if (disbursement.status !== 'pending') continue;
-          if (disbursement.date > today) continue;
+          if (disbursement.status !== 'pending') {continue;}
+          if (disbursement.date > today) {continue;}
           
           try {
             // Apply to account balance
@@ -786,7 +786,7 @@ export class EducationBillingIntegration extends EventEmitter {
 
   async getAccountSummary(accountId: string): Promise<any> {
     const account = this.accounts.get(accountId);
-    if (!account) throw new Error('Account not found');
+    if (!account) {throw new Error('Account not found');}
     
     const payments = Array.from(this.payments.values())
       .filter(p => p.accountId === accountId);

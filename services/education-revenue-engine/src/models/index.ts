@@ -60,8 +60,8 @@ export const CourseModel = {
     const skip = (page - 1) * pageSize;
 
     const where: any = {};
-    if (options.tier) where.tier = options.tier;
-    if (options.language) where.language = options.language;
+    if (options.tier) {where.tier = options.tier;}
+    if (options.language) {where.language = options.language;}
 
     const [courses, total] = await Promise.all([
       prisma.course.findMany({

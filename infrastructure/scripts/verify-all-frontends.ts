@@ -55,7 +55,7 @@ function checkFileExists(filePath: string): boolean {
 }
 
 function checkFileContains(filePath: string, searchString: string): boolean {
-  if (!fs.existsSync(filePath)) return false;
+  if (!fs.existsSync(filePath)) {return false;}
   const content = fs.readFileSync(filePath, 'utf8');
   return content.includes(searchString);
 }

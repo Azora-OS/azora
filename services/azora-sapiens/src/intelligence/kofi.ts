@@ -227,7 +227,7 @@ export class KofiIntelligence {
    * Calculate payback period
    */
   private calculatePaybackPeriod(investment: number, monthlyProfit: number): string {
-    if (monthlyProfit <= 0) return 'Not profitable';
+    if (monthlyProfit <= 0) {return 'Not profitable';}
     const months = Math.ceil(investment / monthlyProfit);
     const years = Math.floor(months / 12);
     const remainingMonths = months % 12;
@@ -266,9 +266,9 @@ export class KofiIntelligence {
    * Calculate confidence score
    */
   private calculateConfidence(sources: SearchResultWithContent[]): number {
-    if (sources.length === 0) return 0.3;
-    if (sources.length < 3) return 0.6;
-    if (sources.length < 5) return 0.8;
+    if (sources.length === 0) {return 0.3;}
+    if (sources.length < 3) {return 0.6;}
+    if (sources.length < 5) {return 0.8;}
     return 0.95;
   }
 }

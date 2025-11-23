@@ -7,10 +7,10 @@ const { SafeApiKit } = require('@safe-global/api-kit');
 
 async function main() {
     const RPC_URL = process.env.RPC_URL;
-    if (!RPC_URL) throw new Error("Please set RPC_URL env var");
+    if (!RPC_URL) {throw new Error("Please set RPC_URL env var");}
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
     const ownerPk = process.env.SAFE_OWNER_PRIVATE_KEY;
-    if (!ownerPk) throw new Error("Please set SAFE_OWNER_PRIVATE_KEY for the proposer (run locally, keep secret)");
+    if (!ownerPk) {throw new Error("Please set SAFE_OWNER_PRIVATE_KEY for the proposer (run locally, keep secret)");}
     const signer = new ethers.Wallet(ownerPk, provider);
 
     const ethAdapter = new EthersAdapter({

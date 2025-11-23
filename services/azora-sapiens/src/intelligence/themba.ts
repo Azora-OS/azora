@@ -225,9 +225,9 @@ export class ThembaIntelligence {
    * Calculate confidence score
    */
   private calculateConfidence(sources: SearchResultWithContent[]): number {
-    if (sources.length === 0) return 0.3;
-    if (sources.length < 3) return 0.6;
-    if (sources.length < 5) return 0.8;
+    if (sources.length === 0) {return 0.3;}
+    if (sources.length < 3) {return 0.6;}
+    if (sources.length < 5) {return 0.8;}
     return 0.95;
   }
 }

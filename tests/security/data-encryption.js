@@ -567,7 +567,7 @@ async function testKeyLifecycle() {
       body: JSON.stringify({ algorithm: 'AES-256', usage: 'test' })
     });
 
-    if (!createResponse.ok) return { secure: false };
+    if (!createResponse.ok) {return { secure: false };}
 
     const keyData = await createResponse.json();
     const keyId = keyData.keyId;

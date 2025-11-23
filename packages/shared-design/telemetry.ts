@@ -128,7 +128,7 @@ export class DesignTelemetryService {
       .map((e: any) => e.payload.metadata?.loadTime)
       .filter((t: any) => typeof t === 'number');
 
-    if (loadTimes.length === 0) return 0;
+    if (loadTimes.length === 0) {return 0;}
     return loadTimes.reduce((a, b) => a + b, 0) / loadTimes.length;
   }
 

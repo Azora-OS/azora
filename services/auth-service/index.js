@@ -3,7 +3,8 @@ const { setupMfa, verifyMfa, disableMfa } = require('./src/mfa');
 const { handleGoogleOAuth, handleGitHubOAuth, handleAppleOAuth } = require('./src/oauth');
 const promClient = require('prom-client');
 const { PrismaClient } = require('@prisma/client');
-const { helmetConfig, corsConfig, rateLimiters, errorHandler } = require('../shared/middleware');
+const { setupMiddleware } = require('../shared/middleware');
+const rateLimit = require('express-rate-limit');
 const api = require('./src/api');
 
 const prisma = new PrismaClient();
@@ -30,14 +31,16 @@ const httpRequestsTotal = new promClient.Counter({
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestsTotal);
 
-// Security middleware stack
-app.use(helmetConfig);
-app.use(corsConfig);
-app.use(rateLimiters.auth); // Auth service - strict rate limiting
+// Setup shared middleware (Helmet, CORS, Body Parser, Health Check)
+setupMiddleware(app);
 
-// Body parsing middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Rate Limiter
+const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes'
+});
+app.use(authRateLimiter);
 
 // Metrics middleware
 app.use((req, res, next) => {
@@ -64,11 +67,6 @@ app.post('/api/auth/oauth/google', handleGoogleOAuth);
 app.post('/api/auth/oauth/github', handleGitHubOAuth);
 app.post('/api/auth/oauth/apple', handleAppleOAuth);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', service: 'auth-service' });
-});
-
 // Metrics endpoint
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', register.contentType);
@@ -76,9 +74,16 @@ app.get('/metrics', async (req, res) => {
 });
 
 // API routes
-app.use('/', api);
+app.use('/api/auth', api);
 
-app.use(errorHandler);
+// Error Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    status: 'error',
+    message: err.message || 'Internal Server Error'
+  });
+});
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
@@ -92,7 +97,7 @@ const startServer = async () => {
   try {
     await prisma.$connect();
     console.log('🗄️  Database connected');
-    
+
     app.listen(PORT, () => {
       console.log(`🚀 Azora Auth Service running on port ${PORT}`);
     });

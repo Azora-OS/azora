@@ -234,7 +234,7 @@ export class SecretsManagementService extends EventEmitter {
    * Check access control
    */
   private checkAccess(accessor: string, accessControl: SecretConfig['accessControl']): boolean {
-    if (!accessControl) return true;
+    if (!accessControl) {return true;}
 
     if (accessControl.allowedServices && !accessControl.allowedServices.includes(accessor)) {
       return false;

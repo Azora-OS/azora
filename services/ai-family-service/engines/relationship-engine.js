@@ -130,10 +130,10 @@ class RelationshipEngine {
     detectEmotionalTone(message) {
         const lowerMsg = message.toLowerCase();
         
-        if (lowerMsg.match(/\b(help|struggling|difficult|hard|confused)\b/)) return 'needs_support';
-        if (lowerMsg.match(/\b(excited|amazing|awesome|great|love)\b/)) return 'enthusiastic';
-        if (lowerMsg.match(/\b(how|what|why|when|where)\b/)) return 'curious';
-        if (lowerMsg.match(/\b(worried|concerned|scared|anxious)\b/)) return 'concerned';
+        if (lowerMsg.match(/\b(help|struggling|difficult|hard|confused)\b/)) {return 'needs_support';}
+        if (lowerMsg.match(/\b(excited|amazing|awesome|great|love)\b/)) {return 'enthusiastic';}
+        if (lowerMsg.match(/\b(how|what|why|when|where)\b/)) {return 'curious';}
+        if (lowerMsg.match(/\b(worried|concerned|scared|anxious)\b/)) {return 'concerned';}
         
         return 'neutral';
     }

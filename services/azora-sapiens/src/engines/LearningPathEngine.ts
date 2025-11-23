@@ -58,7 +58,7 @@ export class LearningPathEngine {
 
   completeStep(pathId: string, stepId: string): void {
     const path = this.paths.get(pathId);
-    if (!path) throw new Error('Path not found');
+    if (!path) {throw new Error('Path not found');}
 
     const step = path.steps.find(s => s.id === stepId);
     if (step) {
@@ -77,7 +77,7 @@ export class LearningPathEngine {
 
   getNextStep(pathId: string): PathStep | null {
     const path = this.paths.get(pathId);
-    if (!path) return null;
+    if (!path) {return null;}
     return path.steps.find(s => !s.completed) || null;
   }
 }

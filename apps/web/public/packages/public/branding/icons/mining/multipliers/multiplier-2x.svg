@@ -1,0 +1,12 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bronze Badge -->
+  <circle cx="48" cy="48" r="44" fill="#FEF3C7"/>
+  <circle cx="48" cy="48" r="40" fill="#FDE68A"/>
+  <circle cx="48" cy="48" r="36" fill="#FCD34D"/>
+  <!-- Shine Effect -->
+  <path d="M48 12C48 12 32 28 32 48C32 68 48 84 48 84" stroke="white" stroke-width="2" opacity="0.4"/>
+  <!-- Icon -->
+  <text x="48" y="58" font-family="Inter, sans-serif" font-weight="700" font-size="32" fill="#92400E" text-anchor="middle">2×</text>
+  <!-- Label -->
+  <text x="48" y="88" font-family="Inter, sans-serif" font-weight="600" font-size="12" fill="#B45309" text-anchor="middle">BRONZE</text>
+</svg>

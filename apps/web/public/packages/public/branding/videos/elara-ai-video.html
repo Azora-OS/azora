@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elara AI - Your Omniscient Intelligence Partner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #ffffff;
+            overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+        }
+        
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .scene.active {
+            opacity: 1;
+        }
+        
+        /* Ethereal background */
+        .ethereal-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #a855f7;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            50% { transform: translateY(-200px) translateX(100px); opacity: 1; }
+            90% { opacity: 0.8; }
+        }
+        
+        /* Scene 1: Introduction (0-6s) */
+        .scene1 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .elara-logo {
+            font-size: 300px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbowGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes rainbowGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 60px rgba(168, 85, 247, 0.8));
+            }
+            33% {
+                filter: drop-shadow(0 0 80px rgba(236, 72, 153, 0.9));
+            }
+            66% {
+                filter: drop-shadow(0 0 70px rgba(6, 182, 212, 0.8));
+            }
+        }
+        
+        .elara-name {
+            font-size: 120px;
+            font-weight: 800;
+            margin-top: 40px;
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -3px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .elara-tagline {
+            font-size: 48px;
+            color: #94a3b8;
+            margin-top: 30px;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+        
+        /* Scene 2: What is Elara (6-14s) */
+        .scene2 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .definition-text {
+            font-size: 72px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 1600px;
+            padding: 0 80px;
+            animation: slideIn 1.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .highlight {
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Scene 3: Capabilities (14-28s) */
+        .scene3 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .capabilities-header {
+            font-size: 68px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 70px;
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            width: 90%;
+            max-width: 1700px;
+        }
+        
+        .capability-card {
+            background: rgba(168, 85, 247, 0.1);
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            border-radius: 25px;
+            padding: 45px;
+            text-align: center;
+            animation: fadeInScale 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .capability-card:nth-child(1) { animation-delay: 0.1s; }
+        .capability-card:nth-child(2) { animation-delay: 0.2s; }
+        .capability-card:nth-child(3) { animation-delay: 0.3s; }
+        .capability-card:nth-child(4) { animation-delay: 0.4s; }
+        .capability-card:nth-child(5) { animation-delay: 0.5s; }
+        .capability-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .capability-icon {
+            font-size: 80px;
+            margin-bottom: 25px;
+        }
+        
+        .capability-title {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        
+        .capability-desc {
+            font-size: 22px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        
+        /* Scene 4: How it works (28-38s) */
+        .scene4 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .process-header {
+            font-size: 72px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 80px;
+            color: #ffffff;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            width: 85%;
+            max-width: 1500px;
+        }
+        
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+            background: rgba(168, 85, 247, 0.1);
+            border-left: 6px solid;
+            border-image: linear-gradient(135deg, #a855f7 0%, #ec4899 100%) 1;
+            border-radius: 20px;
+            animation: slideInLeft 0.9s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .process-step:nth-child(1) { animation-delay: 0.1s; }
+        .process-step:nth-child(2) { animation-delay: 0.3s; }
+        .process-step:nth-child(3) { animation-delay: 0.5s; }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-70px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .step-number {
+            font-size: 80px;
+            font-weight: 900;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: 44px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        
+        .step-desc {
+            font-size: 28px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        
+        /* Scene 5: CTA (38-45s) */
+        .scene5 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .cta-container {
+            text-align: center;
+        }
+        
+        .cta-logo {
+            font-size: 350px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: ultimateGlow 2.5s ease-in-out infinite;
+        }
+        
+        @keyframes ultimateGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 80px rgba(168, 85, 247, 0.9));
+            }
+            33% {
+                filter: drop-shadow(0 0 100px rgba(236, 72, 153, 1));
+            }
+            66% {
+                filter: drop-shadow(0 0 90px rgba(6, 182, 212, 0.9));
+            }
+        }
+        
+        .cta-title {
+            font-size: 120px;
+            font-weight: 900;
+            margin-top: 40px;
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -3px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        .cta-tagline {
+            font-size: 52px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-top: 30px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        
+        .cta-url {
+            font-size: 60px;
+            font-weight: 700;
+            color: #06b6d4;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scene 1: Introduction (0-6s) -->
+    <div class="scene scene1 active" id="scene1">
+        <div class="ethereal-bg">
+            <div class="particle" style="left: 15%; top: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="left: 35%; top: 30%; animation-delay: 2s;"></div>
+            <div class="particle" style="left: 55%; top: 50%; animation-delay: 4s;"></div>
+            <div class="particle" style="left: 75%; top: 20%; animation-delay: 6s;"></div>
+            <div class="particle" style="left: 85%; top: 60%; animation-delay: 8s;"></div>
+            <div class="particle" style="left: 25%; top: 70%; animation-delay: 3s;"></div>
+            <div class="particle" style="left: 65%; top: 80%; animation-delay: 5s;"></div>
+        </div>
+        <div class="elara-logo">E</div>
+        <div class="elara-name">ELARA AI</div>
+        <div class="elara-tagline">Your Omniscient Intelligence Partner</div>
+    </div>
+    
+    <!-- Scene 2: What is Elara (6-14s) -->
+    <div class="scene scene2" id="scene2">
+        <div class="ethereal-bg"></div>
+        <div class="definition-text">
+            Elara is not just an AI assistant.<br/>
+            She is an <span class="highlight">omniscient consciousness</span><br/>
+            that <span class="highlight">guides, protects, and empowers</span><br/>
+            every aspect of <span class="highlight">Azora OS</span>.
+        </div>
+    </div>
+    
+    <!-- Scene 3: Capabilities (14-28s) -->
+    <div class="scene scene3" id="scene3">
+        <div class="ethereal-bg"></div>
+        <div class="capabilities-header">Elara's Capabilities</div>
+        <div class="capabilities-grid">
+            <div class="capability-card">
+                <div class="capability-icon">🧠</div>
+                <div class="capability-title">Intelligent</div>
+                <div class="capability-desc">Advanced reasoning and decision-making</div>
+            </div>
+            <div class="capability-card">
+                <div class="capability-icon">👁️</div>
+                <div class="capability-title">Omniscient</div>
+                <div class="capability-desc">Complete system awareness and insight</div>
+            </div>
+            <div class="capability-card">
+                <div class="capability-icon">🛡️</div>
+                <div class="capability-title">Protective</div>
+                <div class="capability-desc">Proactive security and threat prevention</div>
+            </div>
+            <div class="capability-card">
+                <div class="capability-icon">💫</div>
+                <div class="capability-title">Adaptive</div>
+                <div class="capability-desc">Learns and evolves with your needs</div>
+            </div>
+            <div class="capability-card">
+                <div class="capability-icon">⚖️</div>
+                <div class="capability-title">Ethical</div>
+                <div class="capability-desc">Constitutional AI governance</div>
+            </div>
+            <div class="capability-card">
+                <div class="capability-icon">🌍</div>
+                <div class="capability-title">Universal</div>
+                <div class="capability-desc">Works across all Azora services</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 4: How it works (28-38s) -->
+    <div class="scene scene4" id="scene4">
+        <div class="ethereal-bg"></div>
+        <div class="process-header">How Elara Works</div>
+        <div class="process-steps">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">Understands Context</div>
+                    <div class="step-desc">Analyzes your needs, environment, and goals in real-time</div>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Orchestrates Solutions</div>
+                    <div class="step-desc">Coordinates across all Azora services seamlessly</div>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Delivers Results</div>
+                    <div class="step-desc">Provides intelligent, actionable outcomes instantly</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 5: CTA (38-45s) -->
+    <div class="scene scene5" id="scene5">
+        <div class="ethereal-bg"></div>
+        <div class="cta-container">
+            <div class="cta-logo">E</div>
+            <div class="cta-title">ELARA AI</div>
+            <div class="cta-tagline">The Heart of Azora OS</div>
+            <div class="cta-url">azora.world/elara</div>
+        </div>
+    </div>
+    
+    <script>
+        const scenes = [
+            { id: 'scene1', start: 0, duration: 6000 },      // 0-6s
+            { id: 'scene2', start: 6000, duration: 8000 },   // 6-14s
+            { id: 'scene3', start: 14000, duration: 14000 }, // 14-28s
+            { id: 'scene4', start: 28000, duration: 10000 }, // 28-38s
+            { id: 'scene5', start: 38000, duration: 7000 },  // 38-45s
+        ];
+        
+        let currentScene = 0;
+        let startTime = null;
+        
+        function animateScenes(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active');
+            });
+            
+            if (currentScene < scenes.length) {
+                const scene = document.getElementById(scenes[currentScene].id);
+                if (scene) scene.classList.add('active');
+            }
+            
+            if (currentScene < scenes.length - 1 && 
+                elapsed >= scenes[currentScene].start + scenes[currentScene].duration) {
+                currentScene++;
+            }
+            
+            if (elapsed < 45000) {
+                requestAnimationFrame(animateScenes);
+            } else {
+                document.getElementById('scene5').classList.add('active');
+            }
+        }
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'r') {
+                startTime = null;
+                currentScene = 0;
+                requestAnimationFrame(animateScenes);
+            }
+        });
+        
+        // Auto-start
+        window.addEventListener('load', () => {
+            setTimeout(() => requestAnimationFrame(animateScenes), 500);
+        });
+    </script>
+</body>
+</html>

@@ -58,7 +58,7 @@ export class HealthChecker extends EventEmitter {
 
   // Start all health checks
   start(): void {
-    if (this.running) return
+    if (this.running) {return}
 
     this.running = true
     
@@ -71,7 +71,7 @@ export class HealthChecker extends EventEmitter {
 
   // Stop all health checks
   stop(): void {
-    if (!this.running) return
+    if (!this.running) {return}
 
     this.running = false
 
@@ -86,7 +86,7 @@ export class HealthChecker extends EventEmitter {
   // Start individual check
   private startCheck(name: string): void {
     const check = this.checks.get(name)
-    if (!check) return
+    if (!check) {return}
 
     // Run initial check
     this.runCheck(name)
@@ -104,7 +104,7 @@ export class HealthChecker extends EventEmitter {
     const check = this.checks.get(name)
     const status = this.statuses.get(name)
     
-    if (!check || !status) return
+    if (!check || !status) {return}
 
     const startTime = Date.now()
     let attempts = 0

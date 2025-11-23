@@ -169,7 +169,7 @@ async function testMessageThroughput() {
     // Establish connections
     for (let i = 0; i < connections; i++) {
       const ws = await establishWebSocketConnectionForMessaging(i);
-      if (ws) websockets.push(ws);
+      if (ws) {websockets.push(ws);}
     }
 
     const startTime = Date.now();

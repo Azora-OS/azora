@@ -74,9 +74,9 @@ class AILibrarian {
           book.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()));
 
         const matchesFilters = Object.keys(filters).every(key => {
-          if (key === 'category') return book.category === filters[key];
-          if (key === 'author') return book.author === filters[key];
-          if (key === 'year') return book.year === parseInt(filters[key]);
+          if (key === 'category') {return book.category === filters[key];}
+          if (key === 'author') {return book.author === filters[key];}
+          if (key === 'year') {return book.year === parseInt(filters[key]);}
           return true;
         });
 
@@ -103,7 +103,7 @@ class AILibrarian {
   async recommendBooks(userId, count = 5) {
     try {
       const user = users.get(userId);
-      if (!user) return [];
+      if (!user) {return [];}
 
       // Simple recommendation based on user's borrowed books
       const userLoans = Array.from(loans.values()).filter(loan => loan.userId === userId);
@@ -123,7 +123,7 @@ class AILibrarian {
       for (const [id, book] of books) {
         if (book.category === topCategory && !userLoans.some(loan => loan.bookId === id)) {
           recommendations.push({ ...book, id });
-          if (recommendations.length >= count) break;
+          if (recommendations.length >= count) {break;}
         }
       }
 
@@ -140,7 +140,7 @@ class AILibrarian {
   async summarizeBook(bookId) {
     try {
       const book = books.get(bookId);
-      if (!book) return null;
+      if (!book) {return null;}
 
       // Simple summary extraction (in reality, this would use NLP)
       const summary = {
@@ -167,14 +167,14 @@ class AILibrarian {
       // Simple rule-based categorization (in reality, this would use ML)
       const text = (title + ' ' + description).toLowerCase();
 
-      if (text.includes('fiction') || text.includes('novel') || text.includes('story')) return 'Fiction';
-      if (text.includes('science') || text.includes('technology') || text.includes('tech')) return 'Science & Technology';
-      if (text.includes('history') || text.includes('historical')) return 'History';
-      if (text.includes('biography') || text.includes('autobiography')) return 'Biography';
-      if (text.includes('business') || text.includes('entrepreneur')) return 'Business';
-      if (text.includes('health') || text.includes('medical')) return 'Health & Medicine';
-      if (text.includes('art') || text.includes('design')) return 'Arts & Design';
-      if (text.includes('cook') || text.includes('recipe')) return 'Cooking';
+      if (text.includes('fiction') || text.includes('novel') || text.includes('story')) {return 'Fiction';}
+      if (text.includes('science') || text.includes('technology') || text.includes('tech')) {return 'Science & Technology';}
+      if (text.includes('history') || text.includes('historical')) {return 'History';}
+      if (text.includes('biography') || text.includes('autobiography')) {return 'Biography';}
+      if (text.includes('business') || text.includes('entrepreneur')) {return 'Business';}
+      if (text.includes('health') || text.includes('medical')) {return 'Health & Medicine';}
+      if (text.includes('art') || text.includes('design')) {return 'Arts & Design';}
+      if (text.includes('cook') || text.includes('recipe')) {return 'Cooking';}
 
       return 'General';
     } catch (error) {
@@ -399,13 +399,13 @@ app.put('/books/:id', authenticateToken, isAdmin, (req, res) => {
     const { title, author, description, content, category, tags, price } = req.body;
 
     // Update book fields
-    if (title) book.title = title;
-    if (author) book.author = author;
-    if (description !== undefined) book.description = description;
-    if (content !== undefined) book.content = content;
-    if (category) book.category = category;
-    if (tags) book.tags = tags;
-    if (price !== undefined) book.price = price;
+    if (title) {book.title = title;}
+    if (author) {book.author = author;}
+    if (description !== undefined) {book.description = description;}
+    if (content !== undefined) {book.content = content;}
+    if (category) {book.category = category;}
+    if (tags) {book.tags = tags;}
+    if (price !== undefined) {book.price = price;}
     book.updatedAt = new Date().toISOString();
 
     books.set(req.params.id, book);

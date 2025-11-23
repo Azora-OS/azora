@@ -16,10 +16,14 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import { azoraEducation, primaryEducation, secondaryEducation, azoraSapiensUniversity, enhancedMint } from './index'
+import courseRoutes from './src/routes/course.routes'
+import primaryRoutes from './src/routes/primary.routes'
+import secondaryRoutes from './src/routes/secondary.routes'
+import universityRoutes from './src/routes/university.routes'
 
 // Azora Infrastructure Integration
-import { getDatabasePool, getRedisCache, getSupabaseClient } from '../azora-database-layer.js'
-import { EventBus } from '../azora-event-bus.js'
+import { getDatabasePool, getRedisCache, getSupabaseClient } from '../azora-database-layer'
+import { EventBus } from '../azora-event-bus'
 
 const app = express()
 const PORT = process.env.EDUCATION_PORT || 4201
@@ -31,7 +35,8 @@ let supabaseClient: any
 let eventBus: EventBus
 
 // Configuration
-const AZORA_DB_URL = process.env.AZORA_DB_URL || 'postgresql://localhost:5432/azora'
+// Using Prisma with DATABASE_URL from .env (SQLite for local, PostgreSQL for production)
+// const AZORA_DB_URL = process.env.AZORA_DB_URL || 'postgresql://localhost:5432/azora'
 const AZORA_REDIS_URL = process.env.AZORA_REDIS_URL || 'redis://localhost:6379'
 const AZORA_SUPABASE_URL = process.env.AZORA_SUPABASE_URL
 const AZORA_SUPABASE_KEY = process.env.AZORA_SUPABASE_KEY
@@ -164,95 +169,49 @@ app.use(helmet())
 app.use(cors())
 app.use(express.json())
 
-// Initialize Azora Infrastructure and Education System
-async function initializeAzoraEducation() {
-  try {
-    console.log('🔧 Initializing Azora Education Infrastructure...')
+// Mount V1 Routes
+const dbHealth = await dbPool.query('SELECT 1').then(() => 'healthy').catch(() => 'unhealthy')
 
-    // Initialize database components
-    dbPool = getDatabasePool(AZORA_DB_URL)
-    redisCache = getRedisCache(AZORA_REDIS_URL)
-    supabaseClient = getSupabaseClient(AZORA_SUPABASE_URL, AZORA_SUPABASE_KEY)
+// Check Redis health
+const redisHealth = await redisCache.get('education:health').then(() => 'healthy').catch(() => 'unhealthy')
 
-    // Initialize event bus
-    eventBus = new EventBus(AZORA_EVENT_BUS_URL, 'education-service')
-
-    // Setup event listeners
-    await setupEventBusListeners()
-
-    // Test database connection
-    await dbPool.query('SELECT 1')
-    console.log('  ✓ Database connection established')
-
-    // Test Redis connection
-    await redisCache.set('education:health', 'ok')
-    console.log('  ✓ Redis cache connection established')
-
-    // Test Supabase connection (if configured)
-    if (supabaseClient) {
-      await supabaseClient.from('health_check').select('*').limit(1)
-      console.log('  ✓ Supabase connection established')
-    }
-
-    // Initialize education system
-    await azoraEducation.initialize()
-
-    console.log('✅ Azora Education Infrastructure operational')
-  } catch (error) {
-    console.error('❌ Failed to initialize Azora Education Infrastructure:', error)
-    process.exit(1)
-  }
+// Check Supabase health
+let supabaseHealth = 'not_configured'
+if (supabaseClient) {
+  supabaseHealth = await supabaseClient.from('health_check').select('*').limit(1).then(() => 'healthy').catch(() => 'unhealthy')
 }
 
-// Initialize on startup
-initializeAzoraEducation()
+// Check event bus health
+const eventBusHealth = eventBus ? 'healthy' : 'unhealthy'
 
-// ========== HEALTH CHECK ==========
-app.get('/health', async (req, res) => {
-  try {
-    // Check database health
-    const dbHealth = await dbPool.query('SELECT 1').then(() => 'healthy').catch(() => 'unhealthy')
+const isHealthy = dbHealth === 'healthy' && redisHealth === 'healthy' && eventBusHealth === 'healthy'
 
-    // Check Redis health
-    const redisHealth = await redisCache.get('education:health').then(() => 'healthy').catch(() => 'unhealthy')
-
-    // Check Supabase health
-    let supabaseHealth = 'not_configured'
-    if (supabaseClient) {
-      supabaseHealth = await supabaseClient.from('health_check').select('*').limit(1).then(() => 'healthy').catch(() => 'unhealthy')
-    }
-
-    // Check event bus health
-    const eventBusHealth = eventBus ? 'healthy' : 'unhealthy'
-
-    const isHealthy = dbHealth === 'healthy' && redisHealth === 'healthy' && eventBusHealth === 'healthy'
-
-    res.json({
-      status: isHealthy ? 'healthy' : 'unhealthy',
-      service: 'Azora Education System',
-      timestamp: new Date(),
-      infrastructure: {
-        database: dbHealth,
-        redis: redisHealth,
-        supabase: supabaseHealth,
-        eventBus: eventBusHealth
-      },
-      components: {
-        primaryEducation: 'operational',
-        secondaryEducation: 'operational',
-        university: 'operational',
-        mint: 'operational'
-      }
-    })
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    res.status(503).json({
-      status: 'unhealthy',
-      service: 'Azora Education System',
-      error: errorMessage,
-      timestamp: new Date()
-    })
+res.json({
+  status: isHealthy ? 'healthy' : 'unhealthy',
+  service: 'Azora Education System',
+  timestamp: new Date(),
+  infrastructure: {
+    database: dbHealth,
+    redis: redisHealth,
+    supabase: supabaseHealth,
+    eventBus: eventBusHealth
+  },
+  components: {
+    primaryEducation: 'operational',
+    secondaryEducation: 'operational',
+    university: 'operational',
+    mint: 'operational'
   }
+})
+  } catch (error) {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+  res.status(503).json({
+    status: 'unhealthy',
+    service: 'Azora Education System',
+    error: errorMessage,
+    timestamp: new Date()
+  })
+}
 })
 
 // ========== PRIMARY EDUCATION ==========

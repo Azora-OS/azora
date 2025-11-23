@@ -332,7 +332,7 @@ These promises are eternal and binding. 🙏✨`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isProcessing) return;
+    if (!input.trim() || isProcessing) {return;}
 
     const userCommand = input.trim();
     

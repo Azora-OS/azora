@@ -448,7 +448,7 @@ async function testSessionIsolation(session, allSessions) {
   try {
     // Try to access another user's data with this session
     const otherSession = allSessions.find(s => s.userId !== session.userId);
-    if (!otherSession) return true;
+    if (!otherSession) {return true;}
 
     const response = await fetch(`http://localhost:3000/api/user/${otherSession.userId}/profile`, {
       headers: { 'Authorization': `Bearer ${session.token}` }

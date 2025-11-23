@@ -17,7 +17,9 @@ app.use(createRateLimiter(200)); // Gateway - higher limit for routing
 // Service registry
 const services = {
   auth: process.env.AUTH_URL || 'http://localhost:3001',
-  education: process.env.EDUCATION_URL || 'http://localhost:3074',
+  education: process.env.EDUCATION_URL || 'http://localhost:4201',
+  marketplace: process.env.MARKETPLACE_URL || 'http://localhost:4004',
+  payment: process.env.PAYMENT_URL || 'http://localhost:4002',
   mint: process.env.MINT_URL || 'http://localhost:3080',
   forge: process.env.FORGE_URL || 'http://localhost:3200',
   nexus: process.env.NEXUS_URL || 'http://localhost:3000',
@@ -25,8 +27,8 @@ const services = {
 };
 
 // Auth routes (public)
-app.use('/api/auth', createProxyMiddleware({ 
-  target: services.auth, 
+app.use('/api/auth', createProxyMiddleware({
+  target: services.auth,
   changeOrigin: true,
   pathRewrite: { '^/api/auth': '' }
 }));
@@ -35,7 +37,7 @@ app.use('/api/auth', createProxyMiddleware({
 app.get('/api/health', async (req, res) => {
   const axios = require('axios');
   const health = { status: 'healthy', gateway: 'operational', services: {} };
-  
+
   for (const [name, url] of Object.entries(services)) {
     try {
       const response = await axios.get(`${url}/health`, { timeout: 2000 });
@@ -44,46 +46,60 @@ app.get('/api/health', async (req, res) => {
       health.services[name] = { status: 'unhealthy', url, error: error.message };
     }
   }
-  
+
   res.json(health);
 });
 
 // Protected routes - require authentication
-app.use('/api/education', authenticate, createProxyMiddleware({ 
-  target: services.education, 
+app.use('/api/education', authenticate, createProxyMiddleware({
+  target: services.education,
   changeOrigin: true,
   pathRewrite: { '^/api/education': '/api' }
 }));
 
-app.use('/api/mint', authenticate, createProxyMiddleware({ 
-  target: services.mint, 
+app.use('/api/mint', authenticate, createProxyMiddleware({
+  target: services.mint,
   changeOrigin: true,
   pathRewrite: { '^/api/mint': '/api' }
 }));
 
-app.use('/api/forge', authenticate, createProxyMiddleware({ 
-  target: services.forge, 
+app.use('/api/forge', authenticate, createProxyMiddleware({
+  target: services.forge,
   changeOrigin: true,
   pathRewrite: { '^/api/forge': '/api' }
 }));
 
-app.use('/api/nexus', authenticate, createProxyMiddleware({ 
-  target: services.nexus, 
+app.use('/api/nexus', authenticate, createProxyMiddleware({
+  target: services.nexus,
   changeOrigin: true,
   pathRewrite: { '^/api/nexus': '/api' }
 }));
 
-app.use('/api/ai-family', authenticate, createProxyMiddleware({ 
-  target: services.aiFamily, 
+app.use('/api/ai-family', authenticate, createProxyMiddleware({
+  target: services.aiFamily,
   changeOrigin: true,
   pathRewrite: { '^/api/ai-family': '/api' }
+}));
+
+// Marketplace routes (protected)
+app.use('/api/marketplace', authenticate, createProxyMiddleware({
+  target: services.marketplace,
+  changeOrigin: true,
+  pathRewrite: { '^/api/marketplace': '/api' }
+}));
+
+// Payment routes (protected)
+app.use('/api/payment', authenticate, createProxyMiddleware({
+  target: services.payment,
+  changeOrigin: true,
+  pathRewrite: { '^/api/payment': '/api' }
 }));
 
 // Unified endpoints
 app.post('/api/students/enroll', authenticate, async (req, res, next) => {
   const axios = require('axios');
   const { studentId, courseId, userId } = req.body;
-  
+
   try {
     if (!studentId || !courseId || !userId) {
       return res.status(400).json({ success: false, error: 'Missing required fields' });
@@ -91,16 +107,16 @@ app.post('/api/students/enroll', authenticate, async (req, res, next) => {
 
     // Enroll in education service
     const enrollment = await axios.post(`${services.education}/api/enrollments`, { studentId, courseId });
-    
+
     // Create wallet in mint service
     await axios.post(`${services.mint}/api/wallet/create`, { userId });
-    
+
     // Publish event to nexus
     await axios.post(`${services.nexus}/api/events`, {
       type: 'student.enrolled',
       data: { studentId, courseId, userId }
     });
-    
+
     res.json({ success: true, enrollment: enrollment.data });
   } catch (error) {
     next(error);
@@ -110,7 +126,7 @@ app.post('/api/students/enroll', authenticate, async (req, res, next) => {
 app.post('/api/courses/complete', authenticate, async (req, res, next) => {
   const axios = require('axios');
   const { studentId, courseId, score } = req.body;
-  
+
   try {
     if (!studentId || !courseId || score === undefined) {
       return res.status(400).json({ success: false, error: 'Missing required fields' });
@@ -123,7 +139,7 @@ app.post('/api/courses/complete', authenticate, async (req, res, next) => {
       completed: true,
       score
     });
-    
+
     // Issue mining reward
     const reward = await axios.post(`${services.mint}/api/mining/submit`, {
       challenge: { id: courseId },
@@ -131,13 +147,13 @@ app.post('/api/courses/complete', authenticate, async (req, res, next) => {
       address: `student_${studentId}`,
       studentLevel: 1
     });
-    
+
     // Publish event
     await axios.post(`${services.nexus}/api/events`, {
       type: 'course.completed',
       data: { studentId, courseId, score }
     });
-    
+
     res.json({ success: true, reward: reward.data });
   } catch (error) {
     next(error);

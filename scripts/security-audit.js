@@ -21,7 +21,7 @@ const checks = {
 
 services.forEach(service => {
   const indexPath = path.join(servicesDir, service, 'index.js');
-  if (!fs.existsSync(indexPath)) return;
+  if (!fs.existsSync(indexPath)) {return;}
   
   const content = fs.readFileSync(indexPath, 'utf8');
   

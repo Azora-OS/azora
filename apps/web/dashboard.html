@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Azora OS</title>
+    <link rel="icon" href="/packages/public/branding/icons/app-icon-512.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="premium-styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body class="h-screen flex" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);">
+
+    <!-- Sidebar (Icon Only Premium) -->
+    <aside class="w-20 glass-premium border-r border-white/10 flex flex-col items-center py-6 z-50">
+        <!-- Logo -->
+        <div class="mb-8">
+            <img src="/packages/public/branding/icons/app-icon-512.svg" alt="Azora"
+                class="w-10 h-10 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+        </div>
+
+        <!-- Nav Items -->
+        <nav class="flex-1 flex flex-col gap-4 w-full px-2">
+            <a href="dashboard.html" class="p-3 rounded-xl text-white bg-white/10 flex justify-center group relative">
+                <span class="text-xl">🏠</span>
+                <span
+                    class="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Dashboard</span>
+            </a>
+            <a href="learn.html"
+                class="p-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all flex justify-center group relative">
+                <span class="text-xl">🎓</span>
+                <span
+                    class="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Learn</span>
+            </a>
+            <a href="prosperity-dashboard.html"
+                class="p-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all flex justify-center group relative">
+                <span class="text-xl">🏦</span>
+                <span
+                    class="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Mint</span>
+            </a>
+            <a href="community.html"
+                class="p-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all flex justify-center group relative">
+                <span class="text-xl">🚀</span>
+                <span
+                    class="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Spaces</span>
+            </a>
+            <a href="community.html"
+                class="p-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all flex justify-center group relative">
+                <span class="text-xl">👥</span>
+                <span
+                    class="absolute left-14 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-white/10">Community</span>
+            </a>
+        </nav>
+
+        <!-- Settings -->
+        <div class="mt-auto">
+            <button
+                class="p-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all flex justify-center">
+                <span class="text-xl">⚙️</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+
+        <!-- Header -->
+        <header
+            class="h-20 px-8 flex items-center justify-between border-b border-white/5 bg-black/20 backdrop-blur-md z-40">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Welcome back, Felix</h1>
+                <p class="text-xs text-gray-400">System Status: <span class="text-green-400">Optimal</span></p>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Mining Status -->
+                <div class="hidden md:flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <div class="text-xs">
+                        <span class="text-gray-400">Mining:</span>
+                        <span class="font-mono font-bold text-purple-400 ml-1" id="mining-balance">0.042000</span>
+                        <span class="text-gray-500 ml-1">AZR</span>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="flex items-center gap-3 pl-6 border-l border-white/10">
+                    <div class="text-right hidden md:block">
+                        <div class="text-sm font-bold text-white">Felix</div>
+                        <div class="text-xs text-purple-400">Level 3 Scholar</div>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-full glass-premium-dark overflow-hidden border border-white/20 hover:border-purple-500/50 transition-colors cursor-pointer relative group">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User"
+                            class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto px-8 pb-8 space-y-8">
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <!-- Stat 1 -->
+                <div
+                    class="glass-premium p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 bg-white/5 border border-white/10">
+                    <div
+                        class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity text-6xl">
+                        📚</div>
+                    <div class="text-sm text-gray-400 mb-1">Courses Enrolled</div>
+                    <div class="text-3xl font-bold text-white mb-2">4</div>
+                    <div class="text-xs text-green-400 flex items-center gap-1">
+                        <span>▲</span> 1 New this week
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div
+                    class="glass-premium p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 bg-white/5 border border-white/10">
+                    <div
+                        class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity text-6xl">
+                        🔥</div>
+                    <div class="text-sm text-gray-400 mb-1">Learning Streak</div>
+                    <div class="text-3xl font-bold text-white mb-2">12 Days</div>
+                    <div class="text-xs text-orange-400 flex items-center gap-1">
+                        Keep it up!
+                    </div>
+                </div>
+                <!-- Stat 3 -->
+                <div
+                    class="glass-premium p-6 rounded-2xl relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 bg-white/5 border border-white/10">
+                    <div
+                        class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity text-6xl">
+                        💎</div>
+                    <div class="text-sm text-gray-400 mb-1">Total Earnings</div>
+                    <div class="text-3xl font-bold text-white mb-2">1,240 AZR</div>
+                    <div class="text-xs text-purple-400 flex items-center gap-1">
+                        <span>▲</span> 5% from projects
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Courses Section -->
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span class="w-1 h-6 bg-purple-500 rounded-full"></span>
+                        My Courses
+                    </h2>
+                    <button
+                        class="text-xs text-purple-400 hover:text-white transition-colors uppercase tracking-wider font-bold">View
+                        All</button>
+                </div>
+
+                <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Loading State -->
+                    <div class="col-span-full flex justify-center py-12">
+                        <div class="flex items-center gap-2 text-purple-400">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-75"></div>
+                            <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-150"></div>
+                            <span class="ml-2 text-sm">Loading courses...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Dashboard Manager ---
+        class DashboardManager {
+            constructor() {
+                this.grid = document.getElementById('courses-grid');
+                this.init();
+            }
+
+            async init() {
+                try {
+                    const response = await fetch('/data/courses.json');
+                    if (!response.ok) throw new Error('Failed to load courses');
+                    const courses = await response.json();
+                    this.renderCourses(courses);
+                } catch (error) {
+                    console.error('Dashboard Error:', error);
+                    // Fallback data if fetch fails
+                    const fallbackCourses = [
+                        { id: 'cs101', title: 'Intro to CS', description: 'Learn the basics of computer science.', level: 'Beginner' },
+                        { id: 'web201', title: 'Web Development', description: 'Master HTML, CSS, and JavaScript.', level: 'Intermediate' },
+                        { id: 'ai301', title: 'AI Fundamentals', description: 'Understand the core concepts of AI.', level: 'Advanced' },
+                        { id: 'data101', title: 'Data Science', description: 'Analyze data with Python.', level: 'Beginner' }
+                    ];
+                    this.renderCourses(fallbackCourses);
+                }
+            }
+
+            renderCourses(courses) {
+                this.grid.innerHTML = '';
+                courses.forEach(course => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-premium p-6 rounded-2xl group hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer relative overflow-hidden bg-white/5 border border-white/10';
+                    card.onclick = () => window.location.href = `learn.html?courseId=${course.id}`;
+
+                    // Random progress for demo
+                    const progress = Math.floor(Math.random() * 100);
+
+                    card.innerHTML = `
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                                    ${this.getIconForCourse(course.id)}
+                                </div>
+                                <span class="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] text-gray-400 uppercase tracking-wider font-bold">
+                                    ${course.level || 'Beginner'}
+                                </span>
+                            </div>
+
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">${course.title}</h3>
+                            <p class="text-sm text-gray-400 mb-6 line-clamp-2 h-10">${course.description}</p>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>Progress</span>
+                                    <span class="text-purple-400 font-mono">${progress}%</span>
+                                </div>
+                                <div class="h-1.5 w-full bg-gray-700/50 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full relative overflow-hidden" style="width: ${progress}%">
+                                        <div class="absolute inset-0 bg-white/20 animate-shimmer"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    this.grid.appendChild(card);
+                });
+            }
+
+            getIconForCourse(id) {
+                if (id.includes('cs')) return '💻';
+                if (id.includes('web')) return '🌐';
+                if (id.includes('ai')) return '🤖';
+                if (id.includes('data')) return '📊';
+                if (id.includes('bus')) return '💼';
+                return '🎓';
+            }
+        }
+
+        // Initialize
+        new DashboardManager();
+
+        // Mining Simulation
+        let balance = 0.0420;
+        setInterval(() => {
+            balance += 0.000001;
+            document.getElementById('mining-balance').textContent = balance.toFixed(6);
+        }, 1000);
+    </script>
+</body>
+
+</html>

@@ -60,7 +60,7 @@ const MNO_PARTNERS = {
 class ZeroRatingManager {
   static isZeroRatedIP(ip) {
     for (const [operator, config] of Object.entries(MNO_PARTNERS)) {
-      if (config.status !== 'active') continue;
+      if (config.status !== 'active') {continue;}
       
       for (const range of config.ip_ranges) {
         if (this.ipInRange(ip, range)) {

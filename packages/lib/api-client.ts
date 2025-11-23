@@ -38,10 +38,10 @@ export type UserApiConfig = {
 
 // Get user-configured API endpoint from localStorage
 export function getUserApiEndpoint(serviceName: string): string | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined') {return null;}
   try {
     const config = localStorage.getItem('azora_api_config');
-    if (!config) return null;
+    if (!config) {return null;}
     const endpoints: UserApiConfig = JSON.parse(config);
     return endpoints[serviceName] || null;
   } catch {
@@ -51,7 +51,7 @@ export function getUserApiEndpoint(serviceName: string): string | null {
 
 // Save user-configured API endpoint to localStorage
 export function setUserApiEndpoint(serviceName: string, url: string | null): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {return;}
   try {
     const config = localStorage.getItem('azora_api_config');
     const endpoints: UserApiConfig = config ? JSON.parse(config) : {};
@@ -68,7 +68,7 @@ export function setUserApiEndpoint(serviceName: string, url: string | null): voi
 
 // Get all user API configurations
 export function getAllUserApiEndpoints(): UserApiConfig {
-  if (typeof window === 'undefined') return {};
+  if (typeof window === 'undefined') {return {};}
   try {
     const config = localStorage.getItem('azora_api_config');
     return config ? JSON.parse(config) : {};
@@ -376,8 +376,8 @@ export class ForgeApi extends ApiClient {
   // Forge-specific methods
   async getJobs(query?: string, category?: string) {
     const params = new URLSearchParams();
-    if (query) params.append('q', query);
-    if (category) params.append('category', category);
+    if (query) {params.append('q', query);}
+    if (category) {params.append('category', category);}
     return this.get(`/jobs?${params.toString()}`);
   }
 

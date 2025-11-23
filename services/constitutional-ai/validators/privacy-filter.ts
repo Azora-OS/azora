@@ -89,7 +89,7 @@ export class PrivacyFilter implements IPrivacyFilter {
     // Check each PII type that's enabled
     for (const piiType of this.config.piiTypesToDetect) {
       const pattern = PII_PATTERNS[piiType as PIIType];
-      if (!pattern) continue;
+      if (!pattern) {continue;}
 
       // Reset regex lastIndex
       pattern.lastIndex = 0;

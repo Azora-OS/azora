@@ -103,7 +103,7 @@ export class ContinuousResearchRunner {
    * Submit active research tasks to orchestrator
    */
   private async submitActiveTasks(): Promise<void> {
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     console.log('\n📝 Submitting research tasks to orchestrator...\n');
 
@@ -194,7 +194,7 @@ export class ContinuousResearchRunner {
   private async executeResearchCycle(): Promise<void> {
     console.log('\n🔄 Executing Research Cycle...\n');
 
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     // 1. Review completed tasks
     await this.reviewCompletedTasks();
@@ -222,7 +222,7 @@ export class ContinuousResearchRunner {
    * Review completed tasks
    */
   private async reviewCompletedTasks(): Promise<void> {
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     // Check which tasks are completed
     const completedTasks = this.config.active_tasks.filter(
@@ -249,7 +249,7 @@ export class ContinuousResearchRunner {
    * Update task priorities based on progress
    */
   private async updateTaskPriorities(): Promise<void> {
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     // Logic to adjust priorities based on:
     // - Overall research progress
@@ -276,7 +276,7 @@ export class ContinuousResearchRunner {
    * Generate new research tasks
    */
   private async generateNewTasks(): Promise<void> {
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     // Logic to generate new tasks based on:
     // - Completed task results
@@ -342,7 +342,7 @@ export class ContinuousResearchRunner {
    * Save configuration
    */
   private async saveConfiguration(): Promise<void> {
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     try {
       await fs.writeFile(
@@ -360,7 +360,7 @@ export class ContinuousResearchRunner {
    * Display current status
    */
   private displayStatus(): void {
-    if (!this.config) return;
+    if (!this.config) {return;}
 
     console.log('\n═══════════════════════════════════════════════════════');
     console.log('🧠 CONTINUOUS RESEARCH STATUS');

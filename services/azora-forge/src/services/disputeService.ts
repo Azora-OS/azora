@@ -19,7 +19,7 @@ export class DisputeService {
 
   async resolveDispute(jobId: string, resolution: 'CLIENT' | 'FREELANCER') {
     const escrow = await prisma.escrow.findUnique({ where: { jobId } });
-    if (!escrow) throw new Error('Escrow not found');
+    if (!escrow) {throw new Error('Escrow not found');}
 
     await prisma.escrow.update({
       where: { jobId },

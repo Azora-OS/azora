@@ -1989,7 +1989,7 @@ class AzoraSapiens {
 
   async rewardModuleCompletion(userId, programId, moduleName, assessmentScore = null) {
     const enrollment = this.getUserEnrollment(userId, programId);
-    if (!enrollment) return null;
+    if (!enrollment) {return null;}
 
     // Determine reward category based on module difficulty/assessment
     let rewardCategory = 'basic';

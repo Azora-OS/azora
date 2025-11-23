@@ -60,7 +60,7 @@ class PersonalityConsistencyEngine {
      */
     enhancePromptWithPersonality(basePrompt, personalityName, mood = 'neutral') {
         const patterns = this.speechPatterns[personalityName.toLowerCase()];
-        if (!patterns) return basePrompt;
+        if (!patterns) {return basePrompt;}
 
         let enhancement = '\n\n=== PERSONALITY VOICE GUIDELINES ===\n';
 
@@ -116,7 +116,7 @@ class PersonalityConsistencyEngine {
      */
     validatePersonalityConsistency(response, personalityName) {
         const patterns = this.speechPatterns[personalityName.toLowerCase()];
-        if (!patterns) return { consistent: true, score: 1.0 };
+        if (!patterns) {return { consistent: true, score: 1.0 };}
 
         let score = 0;
         let checks = 0;
@@ -127,7 +127,7 @@ class PersonalityConsistencyEngine {
             const hasSignaturePhrase = patterns.phrases.some(phrase => 
                 response.toLowerCase().includes(phrase.toLowerCase())
             );
-            if (hasSignaturePhrase) score++;
+            if (hasSignaturePhrase) {score++;}
         }
 
         // Check for characteristic words
@@ -145,7 +145,7 @@ class PersonalityConsistencyEngine {
             const hasCharacteristicWords = characteristicWords.some(word =>
                 response.toLowerCase().includes(word.toLowerCase())
             );
-            if (hasCharacteristicWords) score++;
+            if (hasCharacteristicWords) {score++;}
         }
 
         const consistencyScore = checks > 0 ? score / checks : 1.0;

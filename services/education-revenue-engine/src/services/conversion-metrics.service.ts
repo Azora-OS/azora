@@ -86,7 +86,7 @@ export class ConversionMetricsService {
    */
   private calculateConversionRate(tierCounts: Record<string, number>): number {
     const totalFreeAndPremium = tierCounts.free + tierCounts.premium;
-    if (totalFreeAndPremium === 0) return 0;
+    if (totalFreeAndPremium === 0) {return 0;}
     return (tierCounts.premium / totalFreeAndPremium) * 100;
   }
 
@@ -106,7 +106,7 @@ export class ConversionMetricsService {
         },
       });
 
-      if (premiumAtStart === 0) return 0;
+      if (premiumAtStart === 0) {return 0;}
 
       // Get users who downgraded to free during period
       const downgraded = await prisma.user.count({
@@ -144,13 +144,13 @@ export class ConversionMetricsService {
         },
       });
 
-      if (!result._count.id || result._count.id === 0) return 0;
+      if (!result._count.id || result._count.id === 0) {return 0;}
 
       // Calculate average revenue per user
       const totalRevenue = result._sum.amount || 0;
       const totalUsers = await prisma.user.count();
 
-      if (totalUsers === 0) return 0;
+      if (totalUsers === 0) {return 0;}
 
       return Number(totalRevenue) / totalUsers;
     } catch (error) {
@@ -176,7 +176,7 @@ export class ConversionMetricsService {
         },
       });
 
-      if (newUsers === 0) return 0;
+      if (newUsers === 0) {return 0;}
 
       // Assume average marketing spend per user acquisition
       // This should be replaced with actual marketing spend data
@@ -194,7 +194,7 @@ export class ConversionMetricsService {
    * Requirements: 5.1, 5.2
    */
   private calculatePaybackPeriod(cac: number, ltv: number): number {
-    if (ltv === 0) return 0;
+    if (ltv === 0) {return 0;}
     return cac / (ltv / 12); // Convert annual LTV to monthly
   }
 

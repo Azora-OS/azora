@@ -238,7 +238,7 @@ export const UnifiedVideoPlatform: React.FC<UnifiedVideoPlatformProps> = ({
 
   const togglePlay = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {return;}
 
     if (isPlaying) {
       video.pause();
@@ -250,7 +250,7 @@ export const UnifiedVideoPlatform: React.FC<UnifiedVideoPlatformProps> = ({
 
   const toggleMute = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {return;}
 
     video.muted = !isMuted;
     setIsMuted(!isMuted);
@@ -326,7 +326,7 @@ export const UnifiedVideoPlatform: React.FC<UnifiedVideoPlatformProps> = ({
 
   // Handle sending a message to Elara
   const handleSendChatMessage = async () => {
-    if (!chatMessage.trim() || isChatLoading) return;
+    if (!chatMessage.trim() || isChatLoading) {return;}
 
     const userMessage: ChatMessage = {
       role: 'user',

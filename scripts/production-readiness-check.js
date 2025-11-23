@@ -75,7 +75,7 @@ const productionChecklist = {
 
 let totalChecks = 0;
 let passedChecks = 0;
-let failedChecks = [];
+const failedChecks = [];
 
 console.log('🔍 RUNNING PRODUCTION READINESS VERIFICATION...\n');
 
@@ -116,10 +116,10 @@ if (failedChecks.length > 0) {
 
 // Determine production readiness level
 let readinessLevel = 'NOT_READY';
-if (readinessScore >= 95) readinessLevel = 'PRODUCTION_READY';
-else if (readinessScore >= 90) readinessLevel = 'NEARLY_READY';
-else if (readinessScore >= 80) readinessLevel = 'MOSTLY_READY';
-else if (readinessScore >= 70) readinessLevel = 'PARTIALLY_READY';
+if (readinessScore >= 95) {readinessLevel = 'PRODUCTION_READY';}
+else if (readinessScore >= 90) {readinessLevel = 'NEARLY_READY';}
+else if (readinessScore >= 80) {readinessLevel = 'MOSTLY_READY';}
+else if (readinessScore >= 70) {readinessLevel = 'PARTIALLY_READY';}
 
 console.log(`\n🎯 PRODUCTION READINESS LEVEL: ${readinessLevel}`);
 

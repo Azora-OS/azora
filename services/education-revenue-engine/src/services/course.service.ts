@@ -85,8 +85,8 @@ export class CourseService {
   ): Promise<{ courses: Course[]; total: number }> {
     try {
       const where: any = {};
-      if (tier) where.tier = tier;
-      if (language) where.language = language;
+      if (tier) {where.tier = tier;}
+      if (language) {where.language = language;}
 
       const [courses, total] = await Promise.all([
         prisma.course.findMany({

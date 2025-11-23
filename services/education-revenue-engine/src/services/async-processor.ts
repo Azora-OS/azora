@@ -122,7 +122,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.CERTIFICATE_GENERATION);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing certificate generation: ${job.id}`);
@@ -138,7 +138,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.ANALYTICS_AGGREGATION);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing analytics aggregation: ${job.id}`);
@@ -154,7 +154,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.EMAIL_NOTIFICATION);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing email notification: ${job.id}`);
@@ -170,7 +170,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.PAYMENT_PROCESSING);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing payment: ${job.id}`);
@@ -186,7 +186,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.REPORT_GENERATION);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing report generation: ${job.id}`);
@@ -202,7 +202,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.DATA_EXPORT);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing data export: ${job.id}`);
@@ -218,7 +218,7 @@ export class AsyncProcessor {
     handler: (data: any) => Promise<void>
   ): Promise<void> {
     const queue = this.queues.get(AsyncTaskType.CLEANUP);
-    if (!queue) return;
+    if (!queue) {return;}
 
     await queue.process(async (job) => {
       logger.info(`Processing cleanup: ${job.id}`);

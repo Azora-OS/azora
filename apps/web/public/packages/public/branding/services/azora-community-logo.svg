@@ -1,0 +1,55 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#community-gradient)"/>
+  
+  <!-- Network Nodes (People) -->
+  <circle cx="256" cy="206" r="22" fill="#14B8A6"/>
+  <circle cx="196" cy="256" r="22" fill="#14B8A6"/>
+  <circle cx="316" cy="256" r="22" fill="#14B8A6"/>
+  <circle cx="226" cy="316" r="22" fill="#14B8A6"/>
+  <circle cx="286" cy="316" r="22" fill="#14B8A6"/>
+  
+  <!-- Connection Lines -->
+  <line x1="256" y1="228" x2="196" y2="234" stroke="#EC4899" stroke-width="3" opacity="0.6"/>
+  <line x1="256" y1="228" x2="316" y2="234" stroke="#EC4899" stroke-width="3" opacity="0.6"/>
+  <line x1="196" y1="278" x2="226" y2="294" stroke="#EC4899" stroke-width="3" opacity="0.6"/>
+  <line x1="316" y1="278" x2="286" y2="294" stroke="#EC4899" stroke-width="3" opacity="0.6"/>
+  <line x1="226" y1="316" x2="286" y2="316" stroke="#EC4899" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Person Icons -->
+  <g transform="translate(256, 206)">
+    <circle cx="0" cy="-5" r="8" fill="white"/>
+    <path d="M-10 10C-10 3 -5 0 0 0C5 0 10 3 10 10" fill="white"/>
+  </g>
+  <g transform="translate(196, 256)">
+    <circle cx="0" cy="-5" r="8" fill="white"/>
+    <path d="M-10 10C-10 3 -5 0 0 0C5 0 10 3 10 10" fill="white"/>
+  </g>
+  <g transform="translate(316, 256)">
+    <circle cx="0" cy="-5" r="8" fill="white"/>
+    <path d="M-10 10C-10 3 -5 0 0 0C5 0 10 3 10 10" fill="white"/>
+  </g>
+  <g transform="translate(226, 316)">
+    <circle cx="0" cy="-5" r="8" fill="white"/>
+    <path d="M-10 10C-10 3 -5 0 0 0C5 0 10 3 10 10" fill="white"/>
+  </g>
+  <g transform="translate(286, 316)">
+    <circle cx="0" cy="-5" r="8" fill="white"/>
+    <path d="M-10 10C-10 3 -5 0 0 0C5 0 10 3 10 10" fill="white"/>
+  </g>
+  
+  <!-- Heart (Connection Symbol) -->
+  <path d="M256 360C256 360 216 340 216 315C216 305 222 298 230 298C235 298 240 301 244 306C248 301 253 298 258 298C266 298 272 305 272 315C272 340 232 360 232 360" transform="translate(24, 0)" fill="#EC4899"/>
+  
+  <!-- Text: Azora Community -->
+  <text x="256" y="390" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="36" fill="#0A0E27" text-anchor="middle">AZORA</text>
+  <text x="256" y="425" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="26" fill="#14B8A6" text-anchor="middle">COMMUNITY</text>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="community-gradient" x1="256" y1="16" x2="256" y2="496">
+      <stop offset="0%" stop-color="#CCFBF1"/>
+      <stop offset="100%" stop-color="#99F6E4"/>
+    </linearGradient>
+  </defs>
+</svg>

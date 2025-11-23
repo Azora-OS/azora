@@ -77,7 +77,7 @@ export const HeavenlyParticles: React.FC<HeavenlyParticlesProps> = ({
   // Initialize particles
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
 
     const createParticle = (id: number): Particle => {
       const types: Particle['type'][] = [
@@ -117,7 +117,7 @@ export const HeavenlyParticles: React.FC<HeavenlyParticlesProps> = ({
 
     // Mouse tracking for divine interaction
     const handleMouseMove = (e: MouseEvent) => {
-      if (!interactive) return;
+      if (!interactive) {return;}
 
       const rect = canvas.getBoundingClientRect();
       mouseRef.current = {
@@ -150,10 +150,10 @@ export const HeavenlyParticles: React.FC<HeavenlyParticlesProps> = ({
   // Animation loop
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     const animate = (timestamp: number) => {
       timeRef.current = timestamp;
@@ -206,12 +206,12 @@ export const HeavenlyParticles: React.FC<HeavenlyParticlesProps> = ({
         }
 
         // Wrap around edges (eternal)
-        if (particle.x < 0) particle.x = 100;
-        if (particle.x > 100) particle.x = 0;
-        if (particle.y < 0) particle.y = 100;
-        if (particle.y > 100) particle.y = 0;
-        if (particle.z < 0) particle.z = 100;
-        if (particle.z > 100) particle.z = 0;
+        if (particle.x < 0) {particle.x = 100;}
+        if (particle.x > 100) {particle.x = 0;}
+        if (particle.y < 0) {particle.y = 100;}
+        if (particle.y > 100) {particle.y = 0;}
+        if (particle.z < 0) {particle.z = 100;}
+        if (particle.z > 100) {particle.z = 0;}
 
         // Reset life (rebirth)
         if (particle.life >= particle.maxLife) {

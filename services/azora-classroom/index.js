@@ -145,9 +145,9 @@ app.get('/api/classrooms', async (req, res) => {
     const { status, instructorId, courseId } = req.query;
     const where = {};
     
-    if (status) where.status = status;
-    if (instructorId) where.instructorId = instructorId;
-    if (courseId) where.courseId = courseId;
+    if (status) {where.status = status;}
+    if (instructorId) {where.instructorId = instructorId;}
+    if (courseId) {where.courseId = courseId;}
     
     const classrooms = await prisma.classroom.findMany({
       where,
@@ -210,8 +210,8 @@ app.put('/api/classrooms/:id', async (req, res) => {
     delete updateData.createdAt;
     
     // Convert date strings to Date objects if provided
-    if (updateData.startTime) updateData.startTime = new Date(updateData.startTime);
-    if (updateData.endTime) updateData.endTime = new Date(updateData.endTime);
+    if (updateData.startTime) {updateData.startTime = new Date(updateData.startTime);}
+    if (updateData.endTime) {updateData.endTime = new Date(updateData.endTime);}
     
     const classroom = await prisma.classroom.update({
       where: { id },

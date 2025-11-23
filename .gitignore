@@ -30,6 +30,9 @@ coverage/
 # Logs
 logs
 *.log
+!enterprise_build.log
+!enterprise_build_utf8.log
+!enterprise_build.log
 
 # Database
 *.db
@@ -62,4 +65,5 @@ test-results/
 playwright-report/
 
 # Vercel
+.vercel
 .vercel

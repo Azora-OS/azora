@@ -1,7 +1,7 @@
 const express = require('express');
 const compression = require('compression');
 const completeRoutes = require('./routes-complete');
-const { helmetConfig, corsConfig, createRateLimiter, errorHandler, authenticate, rateLimiters } = require('../shared/middleware');
+const { helmetConfig, corsConfig, createRateLimiter, errorHandler } = require('../shared/middleware');
 
 const app = express();
 
@@ -12,161 +12,75 @@ app.use(compression());
 app.use(express.json());
 app.use(createRateLimiter(50)); // Financial service - stricter rate limit
 
-// Use comprehensive routes
+// Use comprehensive routes (includes all wallet, mining, staking, economics endpoints)
 app.use(completeRoutes);
 
-const pokEngine = new ProofOfKnowledgeEngine();
-const economicPolicy = new EconomicPolicyEngine();
-const tokenMinter = new TokenMinter(economicPolicy);
-
-// Wallet Management
-app.post('/api/wallet/create', authenticate, (req, res) => {
-  const { userId } = req.body;
-  const wallet = tokenMinter.createWallet(userId);
-  res.json({ success: true, wallet });
-});
-
-app.get('/api/wallet/:address', authenticate, (req, res) => {
-  const wallet = tokenMinter.getWallet(req.params.address);
-  if (!wallet) return res.status(404).json({ error: 'Wallet not found' });
-  res.json({ wallet });
-});
-
-app.get('/api/wallet/:address/balance', authenticate, (req, res) => {
-  const balance = tokenMinter.getBalance(req.params.address);
-  if (!balance) return res.status(404).json({ error: 'Wallet not found' });
-  res.json(balance);
-});
-
-// Proof-of-Knowledge Mining
-app.post('/api/mining/challenge', authenticate, (req, res) => {
-  const { studentId, subject } = req.body;
-  const challenge = pokEngine.generateChallenge(studentId, subject);
-  res.json({ challenge });
-});
-
-app.post('/api/mining/submit', authenticate, (req, res) => {
-  const { challenge, answers, address, studentLevel = 1 } = req.body;
-  const result = pokEngine.mine(challenge, answers, studentLevel);
-  
-  if (!result.success) return res.status(400).json(result);
-
-  const mintResult = tokenMinter.mintReward(address, result.reward, 'proof-of-knowledge');
-  res.json({ ...result, ...mintResult });
-});
-
-// Token Operations
-app.post('/api/transfer', rateLimiters.financial, authenticate, (req, res) => {
-  const { from, to, amount } = req.body;
-  const result = tokenMinter.transfer(from, to, amount);
-  res.json(result);
-});
-
-app.post('/api/stake', rateLimiters.financial, authenticate, (req, res) => {
-  const { address, amount } = req.body;
-  const result = tokenMinter.stake(address, amount);
-  res.json(result);
-});
-
-app.post('/api/unstake', rateLimiters.financial, authenticate, (req, res) => {
-  const { address, amount } = req.body;
-  const result = tokenMinter.unstake(address, amount);
-  res.json(result);
-});
-
-app.post('/api/staking/reward', authenticate, (req, res) => {
-  const { address, days } = req.body;
-  const wallet = tokenMinter.getWallet(address);
-  if (!wallet) return res.status(404).json({ error: 'Wallet not found' });
-  
-  const reward = economicPolicy.calculateStakingReward(wallet.staked, days);
-  const mintResult = tokenMinter.mintReward(address, reward, 'staking-reward');
-  res.json({ reward, ...mintResult });
-});
-
-// Economic Policy
-app.get('/api/economics/stats', (req, res) => {
-  res.json(economicPolicy.getEconomicStats());
-});
-
-app.get('/api/economics/ubi', (req, res) => {
-  const { userCount = 1000 } = req.query;
-  const ubi = economicPolicy.calculateUBI(parseInt(userCount));
-  res.json(ubi);
-});
-
-app.post('/api/economics/adjust', authenticate, (req, res) => {
-  const { demand, supply } = req.body;
-  const newRate = economicPolicy.adjustInflation({ demand, supply });
-  res.json({ inflationRate: newRate });
-});
-
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    service: 'azora-mint',
-    timestamp: new Date(),
-    stats: {
-      wallets: tokenMinter.wallets.size,
-      supply: economicPolicy.currentSupply,
-      maxSupply: economicPolicy.maxSupply
-    }
-  });
-});
-
-
-// Load our verification modules
+// Load verification modules
 const unCompliance = require('./un-compliance-integration');
 const valuationVerification = require('./valuation-verification');
 const institutionalVerification = require('./institutional-verification');
 
 // Initialize modules
 (async () => {
-  await unCompliance.initialize();
-  await valuationVerification.initialize();
-  await institutionalVerification.initialize();
-  
-  // Schedule regular verifications
-  setInterval(async () => {
-    await unCompliance.applyCompliancePremium();
-    await valuationVerification.verifyValuation();
-    await institutionalVerification.verifyInvestments();
-    console.log('Valuation verification completed');
-  }, 5 * 60 * 1000); // Run every 5 minutes
+  try {
+    await unCompliance.initialize();
+    await valuationVerification.initialize();
+    await institutionalVerification.initialize();
+
+    // Schedule regular verifications
+    setInterval(async () => {
+      await unCompliance.applyCompliancePremium();
+      await valuationVerification.verifyValuation();
+      await institutionalVerification.verifyInvestments();
+      console.log('Valuation verification completed');
+    }, 5 * 60 * 1000); // Run every 5 minutes
+  } catch (err) {
+    console.error('Verification module initialization error:', err.message);
+  }
 })();
 
-// Add additional endpoints for verification
-
-// Get UN compliance report
+// Additional verification endpoints
 app.get('/api/un-compliance', async (req, res) => {
-  const report = await unCompliance.generateReport();
-  res.json(report);
+  try {
+    const report = await unCompliance.generateReport();
+    res.json(report);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Get valuation verification
 app.get('/api/valuation-verification', async (req, res) => {
-  const report = await valuationVerification.verifyValuation();
-  res.json(report);
+  try {
+    const report = await valuationVerification.verifyValuation();
+    res.json(report);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Get valuation certificate
 app.get('/api/valuation-certificate', async (req, res) => {
-  const certificate = await valuationVerification.generateValuationCertificate();
-  res.send(certificate);
+  try {
+    const certificate = await valuationVerification.generateValuationCertificate();
+    res.send(certificate);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Get institutional investment verification
 app.get('/api/investment-verification', async (req, res) => {
-  const report = await institutionalVerification.generateReport();
-  res.send(report);
+  try {
+    const report = await institutionalVerification.generateReport();
+    res.send(report);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Provide a full system valuation report
 app.get('/api/full-valuation-report', async (req, res) => {
   try {
     const valuationData = await valuationVerification.verifyValuation();
     const complianceData = await unCompliance.generateReport();
-    
+
     const fullReport = {
       timestamp: new Date().toISOString(),
       valuation: {
@@ -191,11 +105,11 @@ app.get('/api/full-valuation-report', async (req, res) => {
         tradingVolume: valuationData.verificationDetails.liquidity.tradingVolume,
         priceStability: valuationData.verificationDetails.stability.coefficient * 100
       },
-      conclusion: valuationData.isVerified 
+      conclusion: valuationData.isVerified
         ? `Azora OS has been verified to be worth $10 million based on market activity, institutional investment, and UN compliance standards.`
         : `Azora OS is currently valued at $${(valuationData.currentValuation / 1000000).toFixed(1)} million and is working toward full $10 million verification.`
     };
-    
+
     res.json(fullReport);
   } catch (err) {
     console.error('Error generating full valuation report:', err);
@@ -206,5 +120,5 @@ app.get('/api/full-valuation-report', async (req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3080;
-app.listen(PORT, () => console.log(`Azora Mint on ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Azora Mint running on port ${PORT}`));
 module.exports = app;

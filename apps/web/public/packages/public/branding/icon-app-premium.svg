@@ -1,0 +1,92 @@
+<!-- Azora OS Premium App Icon - Production Quality -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <defs>
+    <!-- Premium Background Gradient -->
+    <linearGradient id="bgPremium" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Icon Gradient -->
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.95" />
+    </linearGradient>
+    
+    <!-- Accent Gradient -->
+    <linearGradient id="iconAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Premium Glow -->
+    <filter id="iconGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Depth Effect -->
+    <filter id="iconDepth">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  
+  <!-- Premium Background with iOS-style rounded corners -->
+  <rect width="1024" height="1024" rx="226" fill="url(#bgPremium)"/>
+  
+  <!-- Subtle texture overlay -->
+  <rect width="1024" height="1024" rx="226" fill="url(#bgPremium)" opacity="0.1"/>
+  
+  <!-- Main Icon with professional depth -->
+  <g transform="translate(512, 512)" filter="url(#iconDepth)">
+    <g filter="url(#iconGlow)">
+      <!-- Perfect geometric A -->
+      <!-- Left stroke -->
+      <path d="M -100 190 L -20 -180 C -18 -188 -10 -195 0 -195 L 20 -195 C 28 -195 34 -190 36 -180 L 0 80 L -60 80 Z" 
+            fill="url(#iconGrad)"/>
+      
+      <!-- Right stroke -->
+      <path d="M 36 -180 C 38 -190 44 -195 52 -195 L 72 -195 C 82 -195 90 -188 88 -180 L 100 190 C 102 198 96 205 88 205 L 68 205 C 60 205 54 200 52 190 L 20 80 L 60 80 Z" 
+            fill="url(#iconGrad)"/>
+      
+      <!-- Crossbar with premium accent -->
+      <rect x="-80" y="60" width="160" height="28" rx="14" fill="url(#iconAccent)"/>
+      
+      <!-- Top node - connection point -->
+      <circle cx="36" cy="-220" r="18" fill="url(#iconAccent)"/>
+      
+      <!-- Bottom nodes -->
+      <circle cx="-60" cy="195" r="14" fill="url(#iconGrad)" opacity="0.9"/>
+      <circle cx="68" cy="195" r="14" fill="url(#iconGrad)" opacity="0.9"/>
+    </g>
+    
+    <!-- Fine connecting lines -->
+    <line x1="36" y1="-220" x2="10" y2="-195" stroke="url(#iconAccent)" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+    <line x1="36" y1="-220" x2="62" y2="-195" stroke="url(#iconAccent)" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+    
+    <!-- Orbital ring - subtle tech aesthetic -->
+    <circle cx="0" cy="0" r="340" stroke="url(#iconAccent)" stroke-width="2.5" fill="none" opacity="0.15"/>
+    
+    <!-- Corner accent dots -->
+    <circle cx="0" cy="-360" r="10" fill="url(#iconAccent)" opacity="0.5"/>
+    <circle cx="360" cy="0" r="10" fill="url(#iconAccent)" opacity="0.5"/>
+    <circle cx="0" cy="360" r="10" fill="url(#iconAccent)" opacity="0.5"/>
+    <circle cx="-360" cy="0" r="10" fill="url(#iconAccent)" opacity="0.5"/>
+  </g>
+  
+  <!-- Subtle brand mark at bottom -->
+  <text x="512" y="940" 
+        font-family="'SF Pro Text', 'Inter', sans-serif" 
+        font-size="32" 
+        font-weight="600" 
+        text-anchor="middle"
+        fill="white" 
+        opacity="0.3">
+    <tspan font-weight="700">A</tspan><tspan font-weight="400" opacity="0.8">zora</tspan>
+  </text>
+</svg>
+

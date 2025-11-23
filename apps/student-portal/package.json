@@ -1,33 +1,29 @@
 {
   "name": "student-portal",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@azora/api-client": "file:../../packages/api-client",
-    "@radix-ui/react-slot": "^1.2.4",
-    "@tanstack/react-query": "^5.14.0",
-    "autoprefixer": "^10.4.16",
-    "axios": "^1.6.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.553.0",
-    "next": "16.0.1",
-    "postcss": "^8.5.6",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^3.3.3",
-    "tailwindcss-animate": "^1.0.7"
+    "next": "16.0.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "framer-motion": "^10.16.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.292.0"
   },
   "devDependencies": {
-    "@types/node": "20.19.24",
-    "@types/react": "18.2.33",
-    "typescript": "5.2.2"
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

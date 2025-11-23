@@ -50,7 +50,7 @@ export const SacredCard: React.FC<SacredCardProps> = ({
   const [blessingCount, setBlessingCount] = useState(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!hoverable) return;
+    if (!hoverable) {return;}
 
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;

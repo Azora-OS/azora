@@ -37,7 +37,7 @@ export const OrganicCard: React.FC<OrganicCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!hover3d) return;
+    if (!hover3d) {return;}
     
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;

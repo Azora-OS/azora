@@ -83,7 +83,7 @@ function processFile(filePath) {
 }
 
 function scanDirectory(dir, baseDir = dir) {
-  if (!fs.existsSync(dir)) return;
+  if (!fs.existsSync(dir)) {return;}
 
   const entries = fs.readdirSync(dir);
 
@@ -97,7 +97,7 @@ function scanDirectory(dir, baseDir = dir) {
         break;
       }
     }
-    if (shouldSkip) continue;
+    if (shouldSkip) {continue;}
 
     try {
       const stat = fs.statSync(fullPath);

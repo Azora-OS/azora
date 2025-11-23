@@ -77,7 +77,7 @@ export class ProofOfKnowledgeEngine {
 
     calculateReward(proof: Proof): number {
         const config = this.activityTypes[proof.activityType];
-        if (!config) return 0;
+        if (!config) {return 0;}
 
         let reward = config.baseReward * proof.weight;
 

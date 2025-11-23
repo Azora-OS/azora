@@ -89,7 +89,7 @@ class RepoMonitor {
 
     const lines = diffOutput.trim().split('\n');
     for (const line of lines) {
-      if (line.length < 2) continue;
+      if (line.length < 2) {continue;}
 
       const status = line.substring(0, 1);
       const filePath = line.substring(2);
@@ -118,11 +118,11 @@ class RepoMonitor {
     const ext = path.extname(filePath).toLowerCase();
     const dir = path.dirname(filePath).toLowerCase();
 
-    if (filePath.includes('docs/') || ext === '.md') return 'documentation';
-    if (dir.includes('component') || dir.includes('ui') || ext === '.tsx' || ext === '.jsx') return 'component';
-    if (dir.includes('service') || dir.includes('api') || filePath.includes('.ts') && !filePath.includes('config')) return 'service';
-    if (filePath.includes('config') || ext === '.json' || ext === '.yaml' || ext === '.yml') return 'config';
-    if (dir.includes('script') || ext === '.js' || ext === '.sh' || ext === '.bat') return 'script';
+    if (filePath.includes('docs/') || ext === '.md') {return 'documentation';}
+    if (dir.includes('component') || dir.includes('ui') || ext === '.tsx' || ext === '.jsx') {return 'component';}
+    if (dir.includes('service') || dir.includes('api') || filePath.includes('.ts') && !filePath.includes('config')) {return 'service';}
+    if (filePath.includes('config') || ext === '.json' || ext === '.yaml' || ext === '.yml') {return 'config';}
+    if (dir.includes('script') || ext === '.js' || ext === '.sh' || ext === '.bat') {return 'script';}
 
     return 'other';
   }
@@ -171,7 +171,7 @@ class RepoMonitor {
 
       // Find the unreleased section
       const unreleasedIndex = content.indexOf('## [Unreleased]');
-      if (unreleasedIndex === -1) return;
+      if (unreleasedIndex === -1) {return;}
 
       const unreleasedEndIndex = content.indexOf('## [', unreleasedIndex + 1);
       const unreleasedSection = unreleasedEndIndex === -1 ?
@@ -239,7 +239,7 @@ class RepoMonitor {
 
       // Find the features section
       const featuresIndex = content.indexOf('## Key Features');
-      if (featuresIndex === -1) return;
+      if (featuresIndex === -1) {return;}
 
       // Add new features
       let newFeatures = '';
@@ -279,7 +279,7 @@ class RepoMonitor {
 
       // Find the system overview section
       const overviewIndex = content.indexOf('### **Service Endpoints**');
-      if (overviewIndex === -1) return;
+      if (overviewIndex === -1) {return;}
 
       // Add new services to the list
       let newServices = '';
@@ -318,7 +318,7 @@ class RepoMonitor {
     };
 
     for (const [key, port] of Object.entries(portMap)) {
-      if (serviceName.includes(key)) return port;
+      if (serviceName.includes(key)) {return port;}
     }
 
     // Default port assignment

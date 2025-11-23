@@ -10,7 +10,7 @@ import { SEVERITY_THRESHOLDS } from './constants';
  * Calculate overall severity from bias scores
  */
 export function calculateBiasSeverity(biases: BiasScore[]): BiasSeverity {
-  if (biases.length === 0) return BiasSeverity.LOW;
+  if (biases.length === 0) {return BiasSeverity.LOW;}
   
   const maxConfidence = Math.max(...biases.map(b => b.confidence));
   
@@ -105,8 +105,8 @@ export function extractContext(
   
   let context = text.substring(start, end);
   
-  if (start > 0) context = '...' + context;
-  if (end < text.length) context = context + '...';
+  if (start > 0) {context = '...' + context;}
+  if (end < text.length) {context = context + '...';}
   
   return context;
 }
@@ -170,7 +170,7 @@ export function validateConfig<T extends Record<string, any>>(
  * Truncate text for display
  */
 export function truncateText(text: string, maxLength: number = 100): string {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength) {return text;}
   return text.substring(0, maxLength - 3) + '...';
 }
 
@@ -178,7 +178,7 @@ export function truncateText(text: string, maxLength: number = 100): string {
  * Calculate percentage
  */
 export function calculatePercentage(value: number, total: number): number {
-  if (total === 0) return 0;
+  if (total === 0) {return 0;}
   return Math.round((value / total) * 100);
 }
 

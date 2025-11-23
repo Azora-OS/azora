@@ -67,8 +67,8 @@ class AssessmentEngine {
   }
 
   generateFeedback(score: number, answers: Answer[]): string {
-    if (score >= 90) return 'Excellent work! You have mastered this material.';
-    if (score >= 70) return 'Good job! Review the areas you missed.';
+    if (score >= 90) {return 'Excellent work! You have mastered this material.';}
+    if (score >= 70) {return 'Good job! Review the areas you missed.';}
     return 'Keep practicing. Focus on the fundamentals.';
   }
 
@@ -79,8 +79,8 @@ class AssessmentEngine {
     const recentScores = studentHistory.slice(-5).map(h => h.score);
     const avgScore = recentScores.reduce((a, b) => a + b, 0) / recentScores.length;
 
-    if (avgScore >= 85) return 'increase';
-    if (avgScore < 60) return 'decrease';
+    if (avgScore >= 85) {return 'increase';}
+    if (avgScore < 60) {return 'decrease';}
     return 'maintain';
   }
 }

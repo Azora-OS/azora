@@ -116,7 +116,7 @@ export const OAUTH_CONFIG: OAuthConfig = {
  */
 export function generateOAuthUrl(provider: keyof OAuthConfig): string {
   const config = OAUTH_CONFIG[provider];
-  if (!config) throw new Error(`OAuth provider ${provider} not configured`);
+  if (!config) {throw new Error(`OAuth provider ${provider} not configured`);}
 
   const params = new URLSearchParams({
     client_id: config.clientId,
@@ -152,7 +152,7 @@ export async function exchangeCodeForToken(
   code: string
 ): Promise<{ access_token: string; refresh_token?: string; expires_in?: number }> {
   const config = OAUTH_CONFIG[provider];
-  if (!config) throw new Error(`OAuth provider ${provider} not configured`);
+  if (!config) {throw new Error(`OAuth provider ${provider} not configured`);}
 
   const response = await fetch(config.tokenUrl, {
     method: 'POST',
@@ -184,7 +184,7 @@ export async function getUserInfo(
   accessToken: string
 ): Promise<any> {
   const config = OAUTH_CONFIG[provider];
-  if (!config) throw new Error(`OAuth provider ${provider} not configured`);
+  if (!config) {throw new Error(`OAuth provider ${provider} not configured`);}
 
   const response = await fetch(config.userInfoUrl, {
     headers: {

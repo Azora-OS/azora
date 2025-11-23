@@ -87,7 +87,7 @@ class AzoraNLP {
   encode(tokens) {
     const encoded = tokens.map(token => this.vocabulary.get(token) || 0);
     // Pad or truncate to maxSequenceLength
-    while (encoded.length < this.maxSequenceLength) encoded.push(0);
+    while (encoded.length < this.maxSequenceLength) {encoded.push(0);}
     return encoded.slice(0, this.maxSequenceLength);
   }
 
@@ -117,8 +117,8 @@ class AzoraNLP {
 
   analyzeSentiment(tokens) {
     const score = this.sentiment.getSentiment(tokens);
-    if (score > 0.3) return 'positive';
-    if (score < -0.3) return 'negative';
+    if (score > 0.3) {return 'positive';}
+    if (score < -0.3) {return 'negative';}
     return 'neutral';
   }
 
@@ -167,7 +167,7 @@ class AzoraNLP {
     const labels = ['query', 'transaction', 'help', 'complaint', 'praise'];
     const encoded = new Array(labels.length).fill(0);
     const index = labels.indexOf(label);
-    if (index !== -1) encoded[index] = 1;
+    if (index !== -1) {encoded[index] = 1;}
     return encoded;
   }
 }

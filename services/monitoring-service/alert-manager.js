@@ -23,7 +23,7 @@ class AlertManager extends EventEmitter {
     
     Object.entries(metrics).forEach(([metric, value]) => {
       const threshold = this.thresholds[metric];
-      if (!threshold) return;
+      if (!threshold) {return;}
       
       if (value >= threshold.critical) {
         alerts.push({

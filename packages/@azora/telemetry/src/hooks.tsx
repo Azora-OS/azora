@@ -25,7 +25,7 @@ export function useComponentTelemetry(
 
   useEffect(() => {
     const client = getTelemetry();
-    if (!client) return;
+    if (!client) {return;}
 
     // Track mount
     client.trackComponentMount(componentName, props, metadata);
@@ -59,7 +59,7 @@ export function useInteractionTelemetry(componentName: string) {
   return useCallback(
     (interactionType: string, metadata?: Record<string, any>) => {
       const client = getTelemetry();
-      if (!client) return;
+      if (!client) {return;}
       
       client.trackComponentInteraction(componentName, interactionType, metadata);
     },
@@ -88,7 +88,7 @@ export function useRenderTelemetry(componentName: string) {
     const renderDuration = Date.now() - renderStart.current;
 
     const client = getTelemetry();
-    if (!client) return;
+    if (!client) {return;}
 
     client.trackComponentRender(componentName, renderDuration, renderCount.current);
     
@@ -145,7 +145,7 @@ export function useErrorTelemetry(componentName: string) {
   return useCallback(
     (error: Error, metadata?: Record<string, any>) => {
       const client = getTelemetry();
-      if (!client) return;
+      if (!client) {return;}
       
       client.trackComponentError(componentName, error, metadata);
     },

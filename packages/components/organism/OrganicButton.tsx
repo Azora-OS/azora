@@ -77,7 +77,7 @@ export const OrganicButton: React.FC<OrganicButtonProps> = ({
   // Optimized ripple effect with auto-cleanup
   const createRipple = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!buttonRef.current || prefersReducedMotion) return;
+      if (!buttonRef.current || prefersReducedMotion) {return;}
 
       const rect = buttonRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -96,7 +96,7 @@ export const OrganicButton: React.FC<OrganicButtonProps> = ({
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (loading || disabled) return;
+      if (loading || disabled) {return;}
 
       createRipple(e);
 

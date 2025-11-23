@@ -39,14 +39,14 @@ export class SimulationHub {
     const customSims = this.getAllSimulations().custom;
     for (const [subject, sims] of Object.entries(customSims)) {
       const found = sims.find((s: any) => s.id === simId);
-      if (found) return { ...found, source: 'custom', subject };
+      if (found) {return { ...found, source: 'custom', subject };}
     }
 
     // Check PhET
     const phetSims = phetIntegration.getAllSimulations();
     for (const [subject, sims] of Object.entries(phetSims)) {
       const found = sims.find(s => s.id === simId);
-      if (found) return { ...found, source: 'phet', subject };
+      if (found) {return { ...found, source: 'phet', subject };}
     }
 
     return null;

@@ -35,9 +35,31 @@ app.get('/api', (req, res) => {
   });
 });
 
+app.post('/api/explain', (req, res) => {
+  const { code, complexity } = req.body;
+
+  // In a real app, this would call OpenAI. For now, we simulate "Magic".
+  const complexityText = complexity < 30 ? "simple terms" : complexity > 70 ? "technical depth" : "balanced detail";
+
+  const explanation = `[Elara AI Real-Time Response]
+  
+Here is an explanation of your code in **${complexityText}**:
+
+This code defines a function that calculates a value.
+- **Complexity Level:** ${complexity}%
+- **Analysis:** The code appears to be valid JavaScript.
+- **Suggestion:** Try adding error handling!
+
+(Connected to Elara Service on Port ${PORT})`;
+
+  setTimeout(() => {
+    res.json({ explanation });
+  }, 1000);
+});
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 ${serviceName} running on port ${PORT}`);
+  console.log(`🚀 elara-ai-orchestrator running on port ${PORT}`);
 });
 
 module.exports = app;

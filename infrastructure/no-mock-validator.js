@@ -60,7 +60,7 @@ class NoMockValidator {
     for (const file of files) {
       // Skip directories
       const stat = await fs.promises.stat(file);
-      if (stat.isDirectory()) continue;
+      if (stat.isDirectory()) {continue;}
 
       this.scanFile(file);
     }

@@ -29,16 +29,16 @@ class AdaptiveCurriculum {
   }
 
   private analyzeTrend(scores: number[]): 'improving' | 'declining' | 'stable' {
-    if (scores.length < 3) return 'stable';
+    if (scores.length < 3) {return 'stable';}
     const recent = scores.slice(-3);
     const earlier = scores.slice(-6, -3);
-    if (earlier.length === 0) return 'stable';
+    if (earlier.length === 0) {return 'stable';}
     
     const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
     const earlierAvg = earlier.reduce((a, b) => a + b, 0) / earlier.length;
     
-    if (recentAvg > earlierAvg + 5) return 'improving';
-    if (recentAvg < earlierAvg - 5) return 'declining';
+    if (recentAvg > earlierAvg + 5) {return 'improving';}
+    if (recentAvg < earlierAvg - 5) {return 'declining';}
     return 'stable';
   }
 
@@ -60,8 +60,8 @@ class AdaptiveCurriculum {
   }
 
   private determineDifficulty(avgScore: number, trend: string): 'easier' | 'maintain' | 'harder' {
-    if (avgScore >= 85 && trend === 'improving') return 'harder';
-    if (avgScore < 60 || trend === 'declining') return 'easier';
+    if (avgScore >= 85 && trend === 'improving') {return 'harder';}
+    if (avgScore < 60 || trend === 'declining') {return 'easier';}
     return 'maintain';
   }
 

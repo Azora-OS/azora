@@ -415,13 +415,13 @@ export class LeaderboardUpdater {
    * 0 = perfect equality, 1 = perfect inequality
    */
   private calculateGiniCoefficient(values: number[]): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) {return 0;}
 
     const sorted = [...values].sort((a, b) => a - b);
     const n = sorted.length;
     const sum = sorted.reduce((a, b) => a + b, 0);
 
-    if (sum === 0) return 0;
+    if (sum === 0) {return 0;}
 
     let gini = 0;
     for (let i = 0; i < n; i++) {

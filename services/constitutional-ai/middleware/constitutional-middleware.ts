@@ -144,10 +144,10 @@ async function validateAndRespond(
     }
 
     // Replace output with validated version
-    if (body.response) body.response = result.validatedOutput;
-    if (body.output) body.output = result.validatedOutput;
-    if (body.message) body.message = result.validatedOutput;
-    if (body.content) body.content = result.validatedOutput;
+    if (body.response) {body.response = result.validatedOutput;}
+    if (body.output) {body.output = result.validatedOutput;}
+    if (body.message) {body.message = result.validatedOutput;}
+    if (body.content) {body.content = result.validatedOutput;}
 
     // Add metadata if configured
     if (config.includeMetadata) {
@@ -194,10 +194,10 @@ function handleViolation(
 
     case 'warn':
       // Send validated output with warning
-      if (body.response) body.response = result.validatedOutput;
-      if (body.output) body.output = result.validatedOutput;
-      if (body.message) body.message = result.validatedOutput;
-      if (body.content) body.content = result.validatedOutput;
+      if (body.response) {body.response = result.validatedOutput;}
+      if (body.output) {body.output = result.validatedOutput;}
+      if (body.message) {body.message = result.validatedOutput;}
+      if (body.content) {body.content = result.validatedOutput;}
 
       body.warning = {
         message: 'Content was modified to meet constitutional standards',
@@ -214,10 +214,10 @@ function handleViolation(
         violations: result.violations.length
       });
 
-      if (body.response) body.response = result.validatedOutput;
-      if (body.output) body.output = result.validatedOutput;
-      if (body.message) body.message = result.validatedOutput;
-      if (body.content) body.content = result.validatedOutput;
+      if (body.response) {body.response = result.validatedOutput;}
+      if (body.output) {body.output = result.validatedOutput;}
+      if (body.message) {body.message = result.validatedOutput;}
+      if (body.content) {body.content = result.validatedOutput;}
 
       return originalJson(body);
 
@@ -245,12 +245,12 @@ function extractQuery(req: Request): string {
 function extractUserId(req: Request): string {
   // Try to get from auth token
   const user = (req as any).user;
-  if (user?.id) return user.id;
-  if (user?.userId) return user.userId;
+  if (user?.id) {return user.id;}
+  if (user?.userId) {return user.userId;}
 
   // Try to get from headers
   const userId = req.headers['x-user-id'] as string;
-  if (userId) return userId;
+  if (userId) {return userId;}
 
   // Fallback to IP address
   return req.ip || 'anonymous';

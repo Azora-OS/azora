@@ -28,7 +28,7 @@ class TestUtils {
   async waitFor(condition, timeout = 5000) {
     const start = Date.now();
     while (Date.now() - start < timeout) {
-      if (await condition()) return true;
+      if (await condition()) {return true;}
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     throw new Error('Condition not met within timeout');

@@ -39,8 +39,8 @@ class Jabari {
     }
 
     calculateRisk(activity) {
-        if (activity.includes('login') && activity.includes('new_location')) return 'high';
-        if (activity.includes('password_change')) return 'medium';
+        if (activity.includes('login') && activity.includes('new_location')) {return 'high';}
+        if (activity.includes('password_change')) {return 'medium';}
         return 'low';
     }
 

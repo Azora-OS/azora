@@ -112,7 +112,7 @@ class HealthMonitor {
 
   async startServiceMonitoring(serviceId) {
     const service = this.services.get(serviceId);
-    if (!service) return;
+    if (!service) {return;}
 
     const checkHealth = async () => {
       try {
@@ -242,7 +242,7 @@ class HealthMonitor {
     let totalTick = 0;
     
     cpus.forEach(cpu => {
-      for (let type in cpu.times) {
+      for (const type in cpu.times) {
         totalTick += cpu.times[type];
       }
       totalIdle += cpu.times.idle;
@@ -323,7 +323,7 @@ class HealthMonitor {
 
   calculateAvailability() {
     const services = Array.from(this.services.values());
-    if (services.length === 0) return 100;
+    if (services.length === 0) {return 100;}
     
     const healthyServices = services.filter(s => s.status === 'healthy').length;
     return ((healthyServices / services.length) * 100).toFixed(2);
@@ -548,5 +548,5 @@ class HealthMonitor {
 }
 
 const service = new HealthMonitor();
-if (require.main === module) service.start();
+if (require.main === module) {service.start();}
 module.exports = service;

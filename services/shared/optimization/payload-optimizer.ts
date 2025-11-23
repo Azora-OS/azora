@@ -38,13 +38,13 @@ export class PayloadOptimizer {
     return new Promise((resolve, reject) => {
       if (encoding === 'gzip') {
         zlib.gzip(buffer, (err, compressed) => {
-          if (err) reject(err);
-          else resolve(compressed);
+          if (err) {reject(err);}
+          else {resolve(compressed);}
         });
       } else if (encoding === 'deflate') {
         zlib.deflate(buffer, (err, compressed) => {
-          if (err) reject(err);
-          else resolve(compressed);
+          if (err) {reject(err);}
+          else {resolve(compressed);}
         });
       } else {
         resolve(buffer);
@@ -193,8 +193,8 @@ export class PayloadOptimizer {
    */
   getPayloadSizeFormatted(data: any): string {
     const bytes = this.getPayloadSize(data);
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+    if (bytes < 1024) {return `${bytes} B`;}
+    if (bytes < 1024 * 1024) {return `${(bytes / 1024).toFixed(2)} KB`;}
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   }
 

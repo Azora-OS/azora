@@ -8,6 +8,10 @@ World-class design system for Constitutional AI
 
 // Core utilities
 export * from './utils'
+export * from './components/navigation'
+
+// Premium UI Components
+export { BackgroundGradientAnimation } from './components/background-gradient-animation'
 
 // Master UI Components
 export * from './azora-master-components'

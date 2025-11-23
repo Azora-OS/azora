@@ -136,7 +136,7 @@ export class BankIntegrationService extends EventEmitter {
    */
   async verifyBankAccount(userId: string): Promise<boolean> {
     const account = this.accounts.get(userId)
-    if (!account) throw new Error('Account not found')
+    if (!account) {throw new Error('Account not found')}
 
     console.log(`\\n🔍 Verifying bank account...`)
     console.log(`   Bank: ${account.bank}`)
@@ -218,7 +218,7 @@ export class BankIntegrationService extends EventEmitter {
    */
   async approveLoan(loanId: string): Promise<void> {
     const loan = this.loans.get(loanId)
-    if (!loan) throw new Error('Loan not found')
+    if (!loan) {throw new Error('Loan not found')}
 
     loan.status = 'approved'
     loan.approvedAt = new Date()
@@ -265,7 +265,7 @@ export class BankIntegrationService extends EventEmitter {
    */
   async convertAZRtoZAR(userId: string, azrAmount: number): Promise<number> {
     const account = this.accounts.get(userId)
-    if (!account) throw new Error('Account not found')
+    if (!account) {throw new Error('Account not found')}
 
     // Exchange rate: 1 AZR = R10 (adjust based on market)
     const exchangeRate = 10

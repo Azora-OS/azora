@@ -262,7 +262,7 @@ export class WindowsIntegration extends EventEmitter {
   }
 
   private startVoiceInterface() {
-    if (!this.voiceEngine) return
+    if (!this.voiceEngine) {return}
 
     console.log('\n🎤 Starting Elara voice interface...\n')
     console.log('Say "Hey Elara" to wake me up!')

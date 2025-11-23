@@ -587,7 +587,7 @@ export class LearnTokenService extends EventEmitter {
   }
 
   private getPremiumMultiplier(tier: LearnWallet['premiumTier']): number {
-    if (tier === 'free') return 1.0;
+    if (tier === 'free') {return 1.0;}
     const tierData = this.premiumTiers.get(tier);
     return tierData?.multiplier || 1.0;
   }
@@ -597,13 +597,13 @@ export class LearnTokenService extends EventEmitter {
     const today = new Date();
     
     for (const [studentNumber, wallet] of this.wallets) {
-      if (wallet.premiumTier === 'free') continue;
-      if (!wallet.premiumExpiresAt) continue;
+      if (wallet.premiumTier === 'free') {continue;}
+      if (!wallet.premiumExpiresAt) {continue;}
       
       if (wallet.premiumExpiresAt < today) {
         // Charge monthly fee
         const tier = this.premiumTiers.get(wallet.premiumTier);
-        if (!tier) continue;
+        if (!tier) {continue;}
         
         if (wallet.learnBalance >= tier.price) {
           wallet.learnBalance -= tier.price;

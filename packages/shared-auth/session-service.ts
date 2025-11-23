@@ -165,7 +165,7 @@ export class SessionService {
    */
   async updateLastActivity(sessionId: string): Promise<void> {
     const session = await this.getSession(sessionId);
-    if (!session) return;
+    if (!session) {return;}
 
     session.lastActivityAt = new Date();
     const cache = await this.getCache();

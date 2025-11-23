@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Balance Scale Icon -->
+  <circle cx="32" cy="32" r="30" fill="#EFF6FF"/>
+  <circle cx="32" cy="32" r="28" fill="#DBEAFE"/>
+  <!-- Scale -->
+  <line x1="32" y1="20" x2="32" y2="36" stroke="#0066FF" stroke-width="2.5"/>
+  <line x1="18" y1="28" x2="46" y2="28" stroke="#0066FF" stroke-width="2.5"/>
+  <path d="M18 28L14 36H22L18 28Z" fill="#3B82F6"/>
+  <path d="M46 28L42 36H50L46 28Z" fill="#3B82F6"/>
+  <circle cx="32" cy="20" r="3" fill="#0066FF"/>
+  <!-- Text -->
+  <text x="32" y="52" font-family="Inter, sans-serif" font-weight="600" font-size="10" fill="#0066FF" text-anchor="middle">BALANCED</text>
+  <text x="32" y="60" font-family="Inter, sans-serif" font-weight="400" font-size="8" fill="#3B82F6" text-anchor="middle">25-50% CPU</text>
+</svg>

@@ -358,9 +358,9 @@ router.put('/:domain', async (req: AuthenticatedRequest, res: Response) => {
     }
 
     // Update fields
-    if (category !== undefined) domainListing.category = category;
-    if (description !== undefined) domainListing.description = description;
-    if (tags !== undefined) domainListing.tags = tags;
+    if (category !== undefined) {domainListing.category = category;}
+    if (description !== undefined) {domainListing.description = description;}
+    if (tags !== undefined) {domainListing.tags = tags;}
 
     await domainListing.save();
 

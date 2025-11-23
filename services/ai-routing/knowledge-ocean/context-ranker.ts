@@ -165,20 +165,20 @@ export class ContextRanker {
     const seen = new Set<number>();
 
     for (let i = 0; i < documents.length; i++) {
-      if (seen.has(i)) continue;
+      if (seen.has(i)) {continue;}
 
       const doc = documents[i];
-      if (!doc) continue;
+      if (!doc) {continue;}
 
       deduplicated.push(doc);
       seen.add(i);
 
       // Mark similar documents as seen
       for (let j = i + 1; j < documents.length; j++) {
-        if (seen.has(j)) continue;
+        if (seen.has(j)) {continue;}
 
         const otherDoc = documents[j];
-        if (!otherDoc) continue;
+        if (!otherDoc) {continue;}
 
         const similarity = this.calculateContentSimilarity(doc, otherDoc);
         if (similarity >= this.deduplicateThreshold) {

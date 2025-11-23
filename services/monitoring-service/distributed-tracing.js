@@ -67,7 +67,7 @@ class DistributedTracing {
 
   getTrace(traceId) {
     const trace = this.traces.get(traceId);
-    if (!trace) return null;
+    if (!trace) {return null;}
     
     const spans = trace.spans.map(spanId => this.spans.get(spanId));
     return { ...trace, spans };

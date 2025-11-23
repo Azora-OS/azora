@@ -251,7 +251,7 @@ export class CostOptimizer implements ICostOptimizer {
   ): Promise<boolean> {
     // Check tier max cost
     const config = this.tierCosts.get(tier);
-    if (!config) return true;
+    if (!config) {return true;}
 
     if (cost > config.maxCost) {
       return true;

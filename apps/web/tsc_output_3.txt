@@ -1,0 +1,138 @@
+components/alert-dialog.tsx(7,32): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/button-group.tsx(5,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/calendar.tsx(12,40): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/carousel.tsx(10,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/command.tsx(14,8): error TS2307: Cannot find module '@/components/ui/dialog' or its corresponding type declarations.
+components/constitutional-governor.tsx(4,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+components/constitutional-governor.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/constitutional-governor.tsx(6,58): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+components/constitutional-governor.tsx(7,26): error TS2307: Cannot find module '@/components/ui/progress' or its corresponding type declarations.
+components/constitutional-governor.tsx(8,28): error TS2307: Cannot find module '@/components/ui/scroll-area' or its corresponding type declarations.
+components/constitutional-governor.tsx(9,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/field.tsx(7,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+components/field.tsx(8,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/form.tsx(17,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+components/input-group.tsx(6,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/input-group.tsx(7,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+components/input-group.tsx(8,26): error TS2307: Cannot find module '@/components/ui/textarea' or its corresponding type declarations.
+components/item.tsx(6,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/pagination.tsx(9,40): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/pagination.tsx(75,7): error TS2783: 'size' is specified more than once, so this usage will be overwritten.
+components/pagination.tsx(92,7): error TS2783: 'size' is specified more than once, so this usage will be overwritten.
+components/sidebar.tsx(8,29): error TS2307: Cannot find module '@/hooks/use-mobile' or its corresponding type declarations.
+components/sidebar.tsx(10,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/sidebar.tsx(11,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+components/sidebar.tsx(12,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/sidebar.tsx(19,8): error TS2307: Cannot find module '@/components/ui/sheet' or its corresponding type declarations.
+components/sidebar.tsx(20,26): error TS2307: Cannot find module '@/components/ui/skeleton' or its corresponding type declarations.
+components/sidebar.tsx(26,8): error TS2307: Cannot find module '@/components/ui/tooltip' or its corresponding type declarations.
+components/sidebar.tsx(270,17): error TS7006: Parameter 'event' implicitly has an 'any' type.
+components/system-pulse.tsx(4,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+components/system-pulse.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/theme-provider.tsx(11,41): error TS2307: Cannot find module 'next-themes/dist/types' or its corresponding type declarations.
+components/toaster.tsx(3,26): error TS2307: Cannot find module '@/hooks/use-toast' or its corresponding type declarations.
+components/toaster.tsx(11,8): error TS2307: Cannot find module '@/components/ui/toast' or its corresponding type declarations.
+components/toaster.tsx(18,31): error TS7031: Binding element 'id' implicitly has an 'any' type.
+components/toaster.tsx(18,35): error TS7031: Binding element 'title' implicitly has an 'any' type.
+components/toaster.tsx(18,42): error TS7031: Binding element 'description' implicitly has an 'any' type.
+components/toaster.tsx(18,55): error TS7031: Binding element 'action' implicitly has an 'any' type.
+components/toggle-group.tsx(8,32): error TS2307: Cannot find module '@/components/ui/toggle' or its corresponding type declarations.
+components/ui/alert-dialog.tsx(7,32): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/button-group.tsx(5,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/ui/calendar.tsx(12,40): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/carousel.tsx(10,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/command.tsx(14,8): error TS2307: Cannot find module '@/components/ui/dialog' or its corresponding type declarations.
+components/ui/constitutional-governor.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+components/ui/constitutional-governor.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/constitutional-governor.tsx(6,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+components/ui/constitutional-governor.tsx(7,26): error TS2307: Cannot find module '@/components/ui/progress' or its corresponding type declarations.
+components/ui/constitutional-governor.tsx(8,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+components/ui/diplomatic-relations.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+components/ui/diplomatic-relations.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/diplomatic-relations.tsx(6,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+components/ui/diplomatic-relations.tsx(7,26): error TS2307: Cannot find module '@/components/ui/progress' or its corresponding type declarations.
+components/ui/diplomatic-relations.tsx(8,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+components/ui/diplomatic-relations.tsx(321,50): error TS2304: Cannot find name 'Eye'.
+components/ui/diplomatic-relations.tsx(325,50): error TS2304: Cannot find name 'MessageSquare'.
+components/ui/diplomatic-relations.tsx(378,46): error TS2304: Cannot find name 'FileText'.
+components/ui/diplomatic-relations.tsx(537,38): error TS2304: Cannot find name 'Activity'.
+components/ui/field.tsx(7,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+components/ui/field.tsx(8,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/ui/form.tsx(17,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+components/ui/input-group.tsx(6,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/input-group.tsx(7,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+components/ui/input-group.tsx(8,26): error TS2307: Cannot find module '@/components/ui/textarea' or its corresponding type declarations.
+components/ui/international-collaboration.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+components/ui/international-collaboration.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/international-collaboration.tsx(6,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+components/ui/international-collaboration.tsx(7,26): error TS2307: Cannot find module '@/components/ui/progress' or its corresponding type declarations.
+components/ui/international-collaboration.tsx(8,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+components/ui/international-collaboration.tsx(260,50): error TS2304: Cannot find name 'Eye'.
+components/ui/item.tsx(6,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/ui/pagination.tsx(9,40): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/pagination.tsx(75,7): error TS2783: 'size' is specified more than once, so this usage will be overwritten.
+components/ui/pagination.tsx(92,7): error TS2783: 'size' is specified more than once, so this usage will be overwritten.
+components/ui/sidebar.tsx(8,29): error TS2307: Cannot find module '@/hooks/use-mobile' or its corresponding type declarations.
+components/ui/sidebar.tsx(10,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/sidebar.tsx(11,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+components/ui/sidebar.tsx(12,27): error TS2307: Cannot find module '@/components/ui/separator' or its corresponding type declarations.
+components/ui/sidebar.tsx(19,8): error TS2307: Cannot find module '@/components/ui/sheet' or its corresponding type declarations.
+components/ui/sidebar.tsx(20,26): error TS2307: Cannot find module '@/components/ui/skeleton' or its corresponding type declarations.
+components/ui/sidebar.tsx(26,8): error TS2307: Cannot find module '@/components/ui/tooltip' or its corresponding type declarations.
+components/ui/sidebar.tsx(270,17): error TS7006: Parameter 'event' implicitly has an 'any' type.
+components/ui/system-pulse.tsx(4,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+components/ui/system-pulse.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/ui/system-pulse.tsx(6,26): error TS2307: Cannot find module '@/components/ui/progress' or its corresponding type declarations.
+components/ui/toaster.tsx(3,26): error TS2307: Cannot find module '@/hooks/use-toast' or its corresponding type declarations.
+components/ui/toaster.tsx(11,8): error TS2307: Cannot find module '@/components/ui/toast' or its corresponding type declarations.
+components/ui/toaster.tsx(18,31): error TS7031: Binding element 'id' implicitly has an 'any' type.
+components/ui/toaster.tsx(18,35): error TS7031: Binding element 'title' implicitly has an 'any' type.
+components/ui/toaster.tsx(18,42): error TS7031: Binding element 'description' implicitly has an 'any' type.
+components/ui/toaster.tsx(18,55): error TS7031: Binding element 'action' implicitly has an 'any' type.
+components/ui/toggle-group.tsx(8,32): error TS2307: Cannot find module '@/components/ui/toggle' or its corresponding type declarations.
+components/ui/use-toast.ts(6,53): error TS2307: Cannot find module '@/components/ui/toast' or its corresponding type declarations.
+components/ui/use-toast.ts(158,22): error TS7006: Parameter 'open' implicitly has an 'any' type.
+hooks/useApi.ts(15,3): error TS2323: Cannot redeclare exported variable 'useApi'.
+hooks/useApi.ts(15,3): error TS2484: Export declaration conflicts with exported declaration of 'useApi'.
+hooks/useApi.ts(19,17): error TS2323: Cannot redeclare exported variable 'useApi'.
+hooks/useApi.ts(30,3): error TS18004: No value exists in scope for the shorthand property 'useWalletBalance'. Either declare one or provide an initializer.
+hooks/useApi.ts(31,3): error TS18004: No value exists in scope for the shorthand property 'useStudentProgress'. Either declare one or provide an initializer.
+hooks/useApi.ts(32,3): error TS18004: No value exists in scope for the shorthand property 'useHealthCheck'. Either declare one or provide an initializer.
+hooks/useApi.ts(33,3): error TS18004: No value exists in scope for the shorthand property 'useDashboardData'. Either declare one or provide an initializer.
+src/os/apps/DashboardApp.tsx(38,57): error TS2339: Property 'balance' does not exist on type '{}'.
+src/os/apps/DashboardApp.tsx(39,57): error TS2339: Property 'earned' does not exist on type '{}'.
+src/os/apps/DashboardApp.tsx(40,66): error TS2339: Property 'filter' does not exist on type '{}'.
+src/os/apps/DashboardApp.tsx(41,67): error TS2339: Property 'filter' does not exist on type '{}'.
+src/os/apps/DashboardApp.tsx(42,62): error TS2339: Property 'length' does not exist on type '{}'.
+src/os/apps/DashboardApp.tsx(43,58): error TS2339: Property 'rank' does not exist on type '{}'.
+src/os/apps/LearnApp.tsx(7,30): error TS2307: Cannot find module '../../../components/education/CoursePlayer' or its corresponding type declarations.
+src/os/apps/LearnApp.tsx(8,29): error TS2307: Cannot find module '../../../components/education/PremiumCard' or its corresponding type declarations.
+src/os/apps/LearnApp.tsx(9,42): error TS2307: Cannot find module '../../../lib/animations' or its corresponding type declarations.
+../../packages/shared-design/data-service.ts(9,24): error TS2307: Cannot find module '@azora/shared-database/prisma' or its corresponding type declarations.
+  There are types at 'C:/Users/Azora Sapiens/Documents/azora/node_modules/@azora/shared-database/database/prisma-client.ts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+../../packages/shared-design/data-service.ts(10,33): error TS2307: Cannot find module '@azora/shared-database/redis' or its corresponding type declarations.
+  There are types at 'C:/Users/Azora Sapiens/Documents/azora/node_modules/@azora/shared-database/database/redis-client.ts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+../../packages/shared-design/data-service.ts(32,42): error TS7006: Parameter 'w' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(54,17): error TS7006: Parameter 't' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(55,18): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(55,23): error TS7006: Parameter 't' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(101,51): error TS7006: Parameter 'e' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(102,52): error TS7006: Parameter 'e' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(105,33): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(105,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(108,58): error TS7006: Parameter 'e' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(180,9): error TS2322: Type '{ name: string; status: string; latency: number; }[]' is not assignable to type '{ name: string; status: "healthy" | "degraded" | "down"; latency?: number | undefined; }[]'.
+  Type '{ name: string; status: string; latency: number; }' is not assignable to type '{ name: string; status: "healthy" | "degraded" | "down"; latency?: number | undefined; }'.
+    Types of property 'status' are incompatible.
+      Type 'string' is not assignable to type '"healthy" | "degraded" | "down"'.
+../../packages/shared-design/data-service.ts(197,39): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+../../packages/shared-design/data-service.ts(198,41): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+../../packages/shared-design/data-service.ts(199,39): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+../../packages/shared-design/data-service.ts(228,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+../../packages/shared-design/data-service.ts(233,33): error TS7006: Parameter 't' implicitly has an 'any' type.
+../../packages/shared-design/hooks.ts(36,69): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+../../packages/shared-design/hooks.ts(96,67): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+../../packages/shared-design/hooks.ts(197,71): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.

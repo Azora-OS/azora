@@ -166,6 +166,32 @@ app.post('/api/elara/workspaces/deploy', (req, res) => {
   })
 })
 
+// ========== CHAT ==========
+app.post('/api/chat', (req, res) => {
+  const { message, context } = req.body
+
+  // Simulate AI processing delay
+  setTimeout(() => {
+    let reply = "I'm processing your request..."
+
+    const lowerMsg = message.toLowerCase()
+
+    if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+      reply = "Hello! I am Elara, your AI learning companion. How can I assist you with your Python for Finance course today?"
+    } else if (lowerMsg.includes('summarize')) {
+      reply = "This video covers the **Market Data Types** essential for algorithmic trading:\n\n1. **Tick Data**: Individual trades (price, volume, time).\n2. **OHLCV**: Open, High, Low, Close, Volume bars (aggregated).\n3. **Order Book**: Level 2 data showing bid/ask depth.\n\nUnderstanding these is crucial for building robust trading strategies."
+    } else if (lowerMsg.includes('quiz')) {
+      reply = "Sure! Here's a quick quiz question:\n\n**What pandas function is used to calculate a rolling mean?**\n\nA) `pd.mean()`\nB) `df.rolling().mean()`\nC) `df.moving_average()`\n\nType A, B, or C to answer."
+    } else if (lowerMsg.includes('code') || lowerMsg.includes('explain')) {
+      reply = "The code on screen demonstrates how to calculate a **Simple Moving Average (SMA)** using pandas:\n\n```python\nprices.rolling(window=window).mean()\n```\n\nThis creates a rolling window of size `window` (e.g., 3 days) and calculates the mean for each window. This is a fundamental indicator for trend following."
+    } else {
+      reply = "That's an interesting question about " + (context?.type === 'ide' ? 'the code' : 'the lesson') + ". As an AI, I can help you analyze market structures, debug your Python scripts, or explain financial concepts. Could you be more specific?"
+    }
+
+    res.json({ success: true, reply })
+  }, 1000)
+})
+
 // ========== HEALTH ==========
 app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date() })

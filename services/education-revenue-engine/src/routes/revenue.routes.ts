@@ -242,7 +242,7 @@ router.get('/instructor/:instructorId', async (req: Request, res: Response, next
     const courseIds = courses.map((c: any) => c.id);
 
     // Get revenue for instructor's courses
-    let query: any = {
+    const query: any = {
       courseId: { in: courseIds },
       status: 'completed',
     };
@@ -309,7 +309,7 @@ router.get('/payment-status', async (req: Request, res: Response, next: NextFunc
   try {
     const { period } = req.query;
 
-    let query: any = {};
+    const query: any = {};
     if (period && typeof period === 'string') {
       query.period = period;
     }

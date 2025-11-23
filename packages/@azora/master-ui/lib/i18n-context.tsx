@@ -155,7 +155,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("language", lang)
   }
 
-  if (!mounted) return <>{children}</>
+  if (!mounted) {return <>{children}</>}
 
   return <I18nContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>{children}</I18nContext.Provider>
 }
