@@ -91,9 +91,9 @@ function getTargetDirectory(filename) {
   }
   
   // Default categorization
-  if (filename.endsWith('.md')) return 'docs/misc/';
-  if (filename.endsWith('.js') || filename.endsWith('.ts')) return 'scripts/misc/';
-  if (filename.endsWith('.json')) return 'config/';
+  if (filename.endsWith('.md')) {return 'docs/misc/';}
+  if (filename.endsWith('.js') || filename.endsWith('.ts')) {return 'scripts/misc/';}
+  if (filename.endsWith('.json')) {return 'config/';}
   
   return 'misc/';
 }

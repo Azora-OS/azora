@@ -53,7 +53,7 @@ export class SecretsManager {
   // Retrieve and decrypt secret
   getSecret(key: string): string | null {
     const config = this.secrets.get(key)
-    if (!config) return null
+    if (!config) {return null}
 
     // Check expiration
     if (config.expiresAt && config.expiresAt < new Date()) {
@@ -172,21 +172,21 @@ export class SecretsManager {
     const issues: string[] = []
     let score = 0
 
-    if (secret.length < 16) issues.push('Too short (minimum 16 characters)')
-    else if (secret.length >= 32) score += 2
-    else score += 1
+    if (secret.length < 16) {issues.push('Too short (minimum 16 characters)')}
+    else if (secret.length >= 32) {score += 2}
+    else {score += 1}
 
-    if (!/[a-z]/.test(secret)) issues.push('Missing lowercase letters')
-    else score += 1
+    if (!/[a-z]/.test(secret)) {issues.push('Missing lowercase letters')}
+    else {score += 1}
 
-    if (!/[A-Z]/.test(secret)) issues.push('Missing uppercase letters')
-    else score += 1
+    if (!/[A-Z]/.test(secret)) {issues.push('Missing uppercase letters')}
+    else {score += 1}
 
-    if (!/[0-9]/.test(secret)) issues.push('Missing numbers')
-    else score += 1
+    if (!/[0-9]/.test(secret)) {issues.push('Missing numbers')}
+    else {score += 1}
 
-    if (!/[^a-zA-Z0-9]/.test(secret)) issues.push('Missing special characters')
-    else score += 1
+    if (!/[^a-zA-Z0-9]/.test(secret)) {issues.push('Missing special characters')}
+    else {score += 1}
 
     return {
       valid: issues.length === 0 && score >= 4,

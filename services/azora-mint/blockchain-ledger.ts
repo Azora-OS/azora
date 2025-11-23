@@ -365,7 +365,7 @@ export class AzoraBlockchain extends EventEmitter {
     let balance = 0
 
     for (const entry of entries) {
-      if (entry.currency !== currency || !entry.confirmed) continue
+      if (entry.currency !== currency || !entry.confirmed) {continue}
 
       if (entry.to === address) {
         balance += entry.amount

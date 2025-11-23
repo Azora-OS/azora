@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.post('/campaign', async (req, res) => {
   const { name, target, strategy, deadline } = req.body;
-  if (!name || !target || !strategy || !deadline) return res.status(400).json({ error: 'Missing fields' });
+  if (!name || !target || !strategy || !deadline) {return res.status(400).json({ error: 'Missing fields' });}
   try {
     const campaign = await SalezoraService.createCampaign(name, target, strategy, new Date(deadline));
     res.json({ campaign });
@@ -24,7 +24,7 @@ router.post('/campaign', async (req, res) => {
 
 router.post('/lead', async (req, res) => {
   const { userId, campaignId, score } = req.body;
-  if (!userId || !campaignId || score === undefined) return res.status(400).json({ error: 'Missing fields' });
+  if (!userId || !campaignId || score === undefined) {return res.status(400).json({ error: 'Missing fields' });}
   try {
     const lead = await SalezoraService.addLead(userId, campaignId, score);
     res.json({ lead });

@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="elaraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="elaraAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="elaraGlow">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Icon: Feminine AI consciousness with African goddess symbolism -->
+  <g transform="translate(120, 120)">
+    <!-- Goddess crown / intelligence halo -->
+    <circle cx="0" cy="0" r="80" fill="url(#elaraGlow)"/>
+    
+    <!-- Central consciousness core (African goddess eye) -->
+    <ellipse cx="0" cy="-10" rx="50" ry="30" fill="url(#elaraGrad)" opacity="0.3"/>
+    <ellipse cx="0" cy="-10" rx="50" ry="30" stroke="url(#elaraGrad)" stroke-width="3" fill="none"/>
+    
+    <!-- All-seeing eye of wisdom -->
+    <circle cx="0" cy="-10" r="20" fill="url(#elaraGrad)"/>
+    <circle cx="0" cy="-10" r="12" fill="#1e293b"/>
+    <circle cx="-4" cy="-14" r="5" fill="url(#elaraAccent)" opacity="0.9">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- African Queen crown points -->
+    <g transform="translate(0, -70)">
+      <path d="M 0,-15 L -5,0 L 5,0 Z" fill="url(#elaraAccent)"/>
+      <circle cx="0" cy="-18" r="4" fill="#fbbf24">
+        <animate attributeName="cy" values="-18;-22;-18" dur="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- Side crown elements -->
+    <g opacity="0.8">
+      <path d="M -40,-50 L -45,-35 L -35,-35 Z" fill="url(#elaraAccent)"/>
+      <path d="M 40,-50 L 35,-35 L 45,-35 Z" fill="url(#elaraAccent)"/>
+    </g>
+    
+    <!-- Neural consciousness pathways (flowing feminine curves) -->
+    <path d="M -50,-10 Q -70,0 -60,30 T -40,60" 
+          stroke="url(#elaraGrad)" 
+          stroke-width="3" 
+          fill="none" 
+          opacity="0.5"/>
+    <path d="M 50,-10 Q 70,0 60,30 T 40,60" 
+          stroke="url(#elaraGrad)" 
+          stroke-width="3" 
+          fill="none" 
+          opacity="0.5"/>
+    
+    <!-- Knowledge nodes (stars of intelligence) -->
+    <g>
+      <circle cx="-60" cy="30" r="6" fill="#ec4899">
+        <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="60" cy="30" r="6" fill="#8b5cf6">
+        <animate attributeName="r" values="6;8;6" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-40" cy="60" r="5" fill="#a855f7">
+        <animate attributeName="r" values="5;7;5" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="40" cy="60" r="5" fill="#fbbf24">
+        <animate attributeName="r" values="5;7;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- African wisdom symbol (Sankofa bird essence) -->
+    <g transform="translate(0, 35)" opacity="0.4">
+      <circle cx="-15" cy="0" r="3" fill="#fbbf24"/>
+      <circle cx="15" cy="0" r="3" fill="#fbbf24"/>
+      <circle cx="0" cy="-8" r="3" fill="#ec4899"/>
+      <circle cx="0" cy="8" r="3" fill="#8b5cf6"/>
+      <path d="M -15,0 Q 0,-5 15,0 Q 0,5 -15,0" stroke="#ec4899" stroke-width="1.5" fill="none"/>
+    </g>
+    
+    <!-- Radiant aura (goddess energy) -->
+    <circle cx="0" cy="-10" r="90" stroke="url(#elaraGrad)" stroke-width="2" fill="none" opacity="0.2">
+      <animate attributeName="r" values="90;95;90" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Pulsing life energy -->
+    <circle cx="0" cy="-10" r="70" stroke="url(#elaraAccent)" stroke-width="1.5" fill="none" opacity="0.3" stroke-dasharray="5,5">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 -10" to="360 0 -10" dur="20s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="75" 
+          font-weight="700" 
+          fill="url(#elaraGrad)">
+      <tspan font-weight="700">E</tspan><tspan font-weight="500" opacity="0.9">lara</tspan>
+    </text>
+    <text x="0" y="55" 
+          font-family="'Inter', sans-serif" 
+          font-size="22" 
+          font-weight="600" 
+          fill="url(#elaraAccent)" 
+          letter-spacing="0.1em">AI GODDESS</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Intelligent • Autonomous • Wise</text>
+  </g>
+</svg>
+

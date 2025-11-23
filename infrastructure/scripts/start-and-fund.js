@@ -89,11 +89,11 @@ async function main() {
             `const AZORA_MASTER_SYSTEM = "${AZORA_MASTER_SYSTEM}";`
         );
         loanScript = loanScript.replace(
-            /const BOOTSTRAP_SYSTEM = "0x\.\.\.";    \/\/ Replace with deployed address/,
+            /const BOOTSTRAP_SYSTEM = "0x\.\.\."; {4}\/\/ Replace with deployed address/,
             `const BOOTSTRAP_SYSTEM = "${BOOTSTRAP_SYSTEM}";`
         );
         loanScript = loanScript.replace(
-            /const WITHDRAWAL_SYSTEM = "0x\.\.\.";   \/\/ Replace with deployed address/,
+            /const WITHDRAWAL_SYSTEM = "0x\.\.\."; {3}\/\/ Replace with deployed address/,
             `const WITHDRAWAL_SYSTEM = "${WITHDRAWAL_SYSTEM}";`
         );
 

@@ -189,10 +189,10 @@ class AIResponseEngine {
 
   detectMood(message) {
     const lowerMsg = message.toLowerCase();
-    if (lowerMsg.includes('!') || lowerMsg.includes('excited') || lowerMsg.includes('amazing')) return 'excited';
-    if (lowerMsg.includes('?') && lowerMsg.includes('hmm')) return 'thoughtful';
-    if (lowerMsg.includes('love') || lowerMsg.includes('proud')) return 'happy';
-    if (lowerMsg.includes('concern') || lowerMsg.includes('careful')) return 'concerned';
+    if (lowerMsg.includes('!') || lowerMsg.includes('excited') || lowerMsg.includes('amazing')) {return 'excited';}
+    if (lowerMsg.includes('?') && lowerMsg.includes('hmm')) {return 'thoughtful';}
+    if (lowerMsg.includes('love') || lowerMsg.includes('proud')) {return 'happy';}
+    if (lowerMsg.includes('concern') || lowerMsg.includes('careful')) {return 'concerned';}
     return 'neutral';
   }
 

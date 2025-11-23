@@ -37,7 +37,7 @@ export function ApiSettings({
   }, [serviceName, defaultUrl]);
 
   const handleTest = async () => {
-    if (!url.trim()) return;
+    if (!url.trim()) {return;}
 
     setTesting(true);
     setTestResult(null);

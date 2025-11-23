@@ -10,7 +10,7 @@ const authenticateToken = (req, res, next) => {
   }
 
   jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret', (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid token' });
+    if (err) {return res.status(403).json({ error: 'Invalid token' });}
     req.user = user;
     next();
   });

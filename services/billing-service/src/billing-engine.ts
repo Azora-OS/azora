@@ -253,7 +253,7 @@ export class BillingEngine {
       include: { items: true },
     });
 
-    if (!invoice) return null;
+    if (!invoice) {return null;}
 
     return {
       id: invoice.id,

@@ -181,7 +181,7 @@ class PremiumUpgrader {
    */
   private applyPremiumImprovements(filePath: string, content: string): number {
     let improvements = 0;
-    let newContent = content;
+    const newContent = content;
 
     // Add proper error handling
     if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {

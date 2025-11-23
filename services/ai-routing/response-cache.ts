@@ -229,7 +229,7 @@ export class ResponseCache {
       const pattern = `${this.config.keyPrefix}*`;
       const keys = await this.redis.keys(pattern);
 
-      if (keys.length === 0) return;
+      if (keys.length === 0) {return;}
 
       let oldestKey = keys[0];
       let minTTL = await this.redis.ttl(oldestKey);

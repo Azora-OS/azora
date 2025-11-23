@@ -287,9 +287,9 @@ export class SkillVerificationService {
    * Determine skill level from test score or grade
    */
   private static determineSkillLevel(score: number): SkillBadge['level'] {
-    if (score >= 90) return 'Expert';
-    if (score >= 80) return 'Advanced';
-    if (score >= 70) return 'Intermediate';
+    if (score >= 90) {return 'Expert';}
+    if (score >= 80) {return 'Advanced';}
+    if (score >= 70) {return 'Intermediate';}
     return 'Beginner';
   }
 

@@ -41,7 +41,7 @@ export class DataRetentionManager {
     cutoffDate.setDate(cutoffDate.getDate() - policy.retentionDays);
 
     try {
-      let deletedCount = 0;
+      const deletedCount = 0;
 
       switch (policy.dataType) {
         case 'user_activity_logs':

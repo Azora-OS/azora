@@ -202,7 +202,7 @@ async function testPermissionValidation() {
     const results = [];
     for (const test of permissionTests) {
       const token = await getAuthTokenForRole(test.user.split('-')[1]); // Extract role from user ID
-      if (!token) continue;
+      if (!token) {continue;}
 
       const result = await testPermissionCheck(token, test.permission, test.resource);
       const correct = result.allowed === test.shouldAllow;
@@ -275,7 +275,7 @@ async function testPrivilegeEscalationPrevention() {
     const results = [];
     for (const attempt of escalationAttempts) {
       const token = await getAuthTokenForRole(attempt.user.split('-')[1]);
-      if (!token) continue;
+      if (!token) {continue;}
 
       const blocked = await testPrivilegeEscalationAttempt(token, attempt);
       results.push({
@@ -319,7 +319,7 @@ async function testResourceOwnershipValidation() {
     const results = [];
     for (const test of ownershipTests) {
       const token = await getAuthTokenForRole(test.user.split('-')[1] || test.user);
-      if (!token) continue;
+      if (!token) {continue;}
 
       const result = await testResourceAccess(token, test.resource, test.operation);
       const correct = result.allowed === test.shouldAllow;
@@ -456,7 +456,7 @@ async function testAdministrativeAccessControls() {
     const results = [];
     for (const test of adminTests) {
       const token = await getAuthTokenForRole(test.user);
-      if (!token) continue;
+      if (!token) {continue;}
 
       const result = await testAdminOperation(token, test.operation);
       let correct = result.allowed === test.shouldAllow;
@@ -505,7 +505,7 @@ async function getAuthTokenForRole(role) {
     };
 
     const cred = credentials[role];
-    if (!cred) return null;
+    if (!cred) {return null;}
 
     const response = await fetch('http://localhost:3000/auth/login', {
       method: 'POST',

@@ -61,15 +61,15 @@ export class AssessmentEngine {
 
   submitAnswer(assessmentId: string, questionId: string, answer: string): void {
     const assessment = this.assessments.get(assessmentId);
-    if (!assessment) throw new Error('Assessment not found');
-    if (assessment.completed) throw new Error('Assessment already completed');
+    if (!assessment) {throw new Error('Assessment not found');}
+    if (assessment.completed) {throw new Error('Assessment already completed');}
 
     assessment.answers.set(questionId, answer);
   }
 
   completeAssessment(assessmentId: string): { score: number; total: number; percentage: number } {
     const assessment = this.assessments.get(assessmentId);
-    if (!assessment) throw new Error('Assessment not found');
+    if (!assessment) {throw new Error('Assessment not found');}
 
     let score = 0;
     let total = 0;

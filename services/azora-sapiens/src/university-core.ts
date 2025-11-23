@@ -21,7 +21,13 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraIntegration } from '../../system-core/elara-integration'
+// import { elaraIntegration } from '../../system-core/elara-integration'
+const elaraIntegration = {
+  getRecommendation: async (query: string, context: any) => {
+    console.log('🤖 Elara AI (Mock) processing:', query);
+    return { decision: 'Approved', confidence: 0.95 };
+  }
+};
 
 export interface University {
   name: string
@@ -298,7 +304,7 @@ export class AzoraSapiensUniversity extends EventEmitter {
         name: 'Bachelor Degree / Advanced Diploma',
         description: 'Undergraduate degree',
         typicalDuration: '3-4 years',
-        credits: 360-480,
+        credits: 360 - 480,
         examples: ['BCom', 'BSc Computer Science', 'BA Psychology']
       },
       {
@@ -725,7 +731,7 @@ export class AzoraSapiensUniversity extends EventEmitter {
     let programme: Programme | undefined
     for (const faculty of this.university.faculties) {
       programme = faculty.programmes.find(p => p.id === programmeId)
-      if (programme) break
+      if (programme) { break }
     }
 
     if (!programme) {

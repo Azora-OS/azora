@@ -188,7 +188,7 @@ export class ForgeOrganismIntegration extends EventEmitter {
    */
   async releaseEscrowAndDistribute(transactionId: string): Promise<void> {
     const transaction = this.transactions.get(transactionId);
-    if (!transaction) throw new Error('Transaction not found');
+    if (!transaction) {throw new Error('Transaction not found');}
     
     console.log(`💸 Releasing escrow: ${transaction.mintTransactionId}`);
     
@@ -377,7 +377,7 @@ export class ForgeOrganismIntegration extends EventEmitter {
     
     try {
       const listing = await Listing.findById(listingId);
-      if (!listing) throw new Error('Listing not found');
+      if (!listing) {throw new Error('Listing not found');}
       
       // If high-value service (e.g., > R5000), check if it's a job opportunity
       if (listing.price > 5000 && listing.deliveryMethod === 'service') {
@@ -407,11 +407,11 @@ export class ForgeOrganismIntegration extends EventEmitter {
    */
   async shareSuccessOnCommunity(transactionId: string): Promise<void> {
     const transaction = this.transactions.get(transactionId);
-    if (!transaction || transaction.status !== 'completed') return;
+    if (!transaction || transaction.status !== 'completed') {return;}
     
     try {
       const seller = this.sellerProfiles.get(transaction.sellerId);
-      if (!seller) return;
+      if (!seller) {return;}
       
       // Create community post
       await axios.post(`${this.config.communityServiceUrl}/api/posts`, {
@@ -559,7 +559,7 @@ export class ForgeOrganismIntegration extends EventEmitter {
     completedTransactions?: number;
   }): Promise<void> {
     const profile = this.sellerProfiles.get(sellerId);
-    if (!profile) return;
+    if (!profile) {return;}
     
     if (stats.totalSales) {
       profile.totalSales += stats.totalSales;
@@ -634,8 +634,8 @@ export class ForgeOrganismIntegration extends EventEmitter {
 
   async initiateTransaction(listingId: string, buyerId: string): Promise<ForgeTransaction> {
     const listing = await Listing.findById(listingId);
-    if (!listing) throw new Error('Listing not found');
-    if (listing.status !== 'active') throw new Error('Listing not available');
+    if (!listing) {throw new Error('Listing not found');}
+    if (listing.status !== 'active') {throw new Error('Listing not available');}
     
     const transaction: ForgeTransaction = {
       id: `tx-${Date.now()}`,

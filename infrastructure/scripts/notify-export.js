@@ -57,7 +57,7 @@ function sendEmail(subject, body) {
 }
 
 function sendSlack(body) {
-  if (!slackWebhookUrl) return
+  if (!slackWebhookUrl) {return}
   const data = JSON.stringify({ text: body })
   const url = new URL(slackWebhookUrl)
   const req = https.request({
@@ -78,7 +78,7 @@ function sendSlack(body) {
 }
 
 function sendSMS(body) {
-  if (!smsApiUrl || !smsApiKey || !adminPhone) return
+  if (!smsApiUrl || !smsApiKey || !adminPhone) {return}
   const data = JSON.stringify({ to: adminPhone, message: body })
   const url = new URL(smsApiUrl)
   const req = https.request({
@@ -104,9 +104,9 @@ function sendSMS(body) {
 
 function notifyAll(subject, body) {
   const prefs = getPrefs()
-  if (prefs.email) sendEmail(subject, body)
-  if (prefs.slack) sendSlack(`*${subject}*\n${body}`)
-  if (prefs.sms) sendSMS(`${subject}: ${body}`)
+  if (prefs.email) {sendEmail(subject, body)}
+  if (prefs.slack) {sendSlack(`*${subject}*\n${body}`)}
+  if (prefs.sms) {sendSMS(`${subject}: ${body}`)}
 }
 
 module.exports = { notifyAll }

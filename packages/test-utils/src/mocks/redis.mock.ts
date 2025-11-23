@@ -22,7 +22,7 @@ export class RedisMock {
   async del(...keys: string[]): Promise<number> {
     let deleted = 0;
     keys.forEach(key => {
-      if (this.store.delete(key)) deleted++;
+      if (this.store.delete(key)) {deleted++;}
       this.expirations.delete(key);
     });
     return deleted;

@@ -158,7 +158,7 @@ export class TelemetryClient {
    * Generic event tracking
    */
   track(event: TelemetryEvent) {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) {return;}
 
     const fullEvent: TelemetryEvent = {
       ...event,
@@ -183,7 +183,7 @@ export class TelemetryClient {
    * Flush events to analytics service
    */
   async flush() {
-    if (this.eventQueue.length === 0) return;
+    if (this.eventQueue.length === 0) {return;}
 
     const eventsToSend = [...this.eventQueue];
     this.eventQueue = [];

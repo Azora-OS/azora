@@ -238,7 +238,7 @@ const handleAppleOAuth = async (req, res) => {
 
     const decodedToken = jwt.decode(id_token);
 
-    let userEmail = decodedToken.email;
+    const userEmail = decodedToken.email;
     let userName = 'Apple User';
 
     if (appleUserData) {

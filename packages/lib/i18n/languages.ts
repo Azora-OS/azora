@@ -113,7 +113,7 @@ export function getLanguagesByRegion(region: string): Language[] {
  * Detect user's preferred language
  */
 export function detectLanguage(): string {
-  if (typeof window === 'undefined') return 'en';
+  if (typeof window === 'undefined') {return 'en';}
 
   // Try browser language
   const browserLang = navigator.language || (navigator as any).userLanguage;

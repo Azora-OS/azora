@@ -308,10 +308,10 @@ export class CostAlertManager {
    * Send notifications through configured channels
    */
   private async sendNotifications(alert: AlertEvent, config: NotificationConfig): Promise<void> {
-    if (alert.alertType === 'warning' && !config.enableWarnings) return;
-    if (alert.alertType === 'critical' && !config.enableCritical) return;
-    if (alert.alertType === 'daily_limit' && !config.enableDailyLimit) return;
-    if (alert.alertType === 'hourly_limit' && !config.enableHourlyLimit) return;
+    if (alert.alertType === 'warning' && !config.enableWarnings) {return;}
+    if (alert.alertType === 'critical' && !config.enableCritical) {return;}
+    if (alert.alertType === 'daily_limit' && !config.enableDailyLimit) {return;}
+    if (alert.alertType === 'hourly_limit' && !config.enableHourlyLimit) {return;}
 
     for (const channel of config.channels) {
       try {
@@ -456,7 +456,7 @@ export class CostAlertManager {
    */
   async getCurrentHourlySpending(userId: string): Promise<number> {
     const tracker = this.spendingTracker.get(userId);
-    if (!tracker) return 0;
+    if (!tracker) {return 0;}
 
     const now = new Date();
     const hoursPassed = (now.getTime() - tracker.lastHourReset.getTime()) / (1000 * 60 * 60);

@@ -172,8 +172,8 @@ export class WorldClassEducation extends EventEmitter {
   private async generateRecommendations(studentId: string, activities: any[]): Promise<string[]> {
     const avgScore = this.calculateComprehension(activities);
     
-    if (avgScore < 60) return ['Focus on fundamentals', 'Request tutor support', 'Practice more'];
-    if (avgScore < 80) return ['Challenge yourself', 'Explore advanced topics', 'Join study groups'];
+    if (avgScore < 60) {return ['Focus on fundamentals', 'Request tutor support', 'Practice more'];}
+    if (avgScore < 80) {return ['Challenge yourself', 'Explore advanced topics', 'Join study groups'];}
     return ['Mentor others', 'Contribute to research', 'Lead projects'];
   }
 

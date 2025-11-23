@@ -1,0 +1,24 @@
+
+> azora-os-web@1.0.0 build
+> vite build
+
+[36mvite v7.2.2 [32mbuilding client environment for production...[36m[39m
+transforming...
+<script src="pricing-config.js"> in "/signup.html" can't be bundled without type="module" attribute
+<script src="pricing-config.js"> in "/login.html" can't be bundled without type="module" attribute
+[32m✓[39m 1683 modules transformed.
+[31m✗[39m Build failed in 5.11s
+[31merror during build:
+[31mCould not resolve "../../../lib/animations" from "src/os/apps/LearnApp.tsx"[31m
+file: [36mC:/Users/Azora Sapiens/Documents/azora/apps/web/src/os/apps/LearnApp.tsx[31m
+    at getRollupError (file:///C:/Users/Azora%20Sapiens/Documents/azora/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///C:/Users/Azora%20Sapiens/Documents/azora/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at ModuleLoader.handleInvalidResolvedId (file:///C:/Users/Azora%20Sapiens/Documents/azora/node_modules/rollup/dist/es/shared/node-entry.js:21590:24)
+    at file:///C:/Users/Azora%20Sapiens/Documents/azora/node_modules/rollup/dist/es/shared/node-entry.js:21550:26[39m
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\Azora Sapiens\Documents\azora\apps\web
+npm error workspace azora-os-web@1.0.0
+npm error location C:\Users\Azora Sapiens\Documents\azora\apps\web
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c vite build

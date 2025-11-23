@@ -294,7 +294,7 @@ export const mockData = {
 // Helper function to get mock data for any endpoint
 export function getMockData(service: string, endpoint: string): any {
   const serviceData = mockData[service as keyof typeof mockData];
-  if (!serviceData) return null;
+  if (!serviceData) {return null;}
 
   if (typeof serviceData === 'object' && endpoint in serviceData) {
     const endpointValue = serviceData[endpoint as keyof typeof serviceData];

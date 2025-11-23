@@ -50,7 +50,7 @@ export class ComplianceService {
     try {
       this.logger.info(`Performing KYC verification for user: ${userId}`);
 
-      let status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
+      const status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
 
       // Validate required fields
       if (!data.firstName || !data.lastName || !data.email) {
@@ -86,7 +86,7 @@ export class ComplianceService {
     try {
       this.logger.info(`Performing AML screening for user: ${userId}`);
 
-      let status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
+      const status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
 
       // Validate required fields
       if (!data.firstName || !data.lastName) {
@@ -136,7 +136,7 @@ export class ComplianceService {
     try {
       this.logger.info(`Flagging user ${userId} for manual review: ${reason}`);
 
-      let status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
+      const status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
 
       if (status.kycStatus !== 'verified') {
         status.kycStatus = 'manual_review';
@@ -165,7 +165,7 @@ export class ComplianceService {
     try {
       this.logger.info(`Approving compliance for user: ${userId}`);
 
-      let status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
+      const status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
 
       status.kycStatus = 'verified';
       status.amlStatus = 'passed';
@@ -191,7 +191,7 @@ export class ComplianceService {
     try {
       this.logger.info(`Rejecting compliance for user: ${userId}, reason: ${reason}`);
 
-      let status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
+      const status = this.complianceRecords.get(userId) || this.createInitialStatus(userId);
 
       status.kycStatus = 'failed';
       status.amlStatus = 'failed';

@@ -236,7 +236,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
 
   const getAIResponse = (userMessage: string): { response: string; mood?: Mood } => {
     const personality = AI_PERSONALITIES[currentMember as keyof typeof AI_PERSONALITIES];
-    if (!personality) return { response: "I'm not available right now!" };
+    if (!personality) {return { response: "I'm not available right now!" };}
 
     const lowerMessage = userMessage.toLowerCase();
     const responses = personality.responses as Record<string, string[]>;
@@ -297,7 +297,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
   };
 
   const handleSendMessage = () => {
-    if (!input.trim()) return;
+    if (!input.trim()) {return;}
 
     // Add user message
     const userMessage: Message = {

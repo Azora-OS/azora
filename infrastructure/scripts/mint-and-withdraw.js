@@ -16,11 +16,11 @@ async function main() {
 
   try {
     const mintTx = await founderWithdrawalService.mintAsCEO(azrAmount);
-    if (mintTx.status !== 'success') throw new Error(mintTx.error || 'Mint failed');
+    if (mintTx.status !== 'success') {throw new Error(mintTx.error || 'Mint failed');}
     console.log('Minted:', mintTx);
 
     const withdrawTx = await founderWithdrawalService.instantWithdrawToAccount(azrAmount, method, bankDetails);
-    if (withdrawTx.status !== 'success') throw new Error(withdrawTx.error || 'Withdraw failed');
+    if (withdrawTx.status !== 'success') {throw new Error(withdrawTx.error || 'Withdraw failed');}
     console.log(`Withdrawn via ${method}:`, withdrawTx);
 
     const balance = await founderWithdrawalService.checkBalance();

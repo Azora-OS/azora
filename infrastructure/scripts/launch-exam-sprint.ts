@@ -361,13 +361,13 @@ function generatePersonalizedEmailContent(
   // Create exam preparation features list
   const prepFeatures = [];
   if (config.examPreparation.studyMaterials)
-    prepFeatures.push('📚 Comprehensive Study Materials');
+    {prepFeatures.push('📚 Comprehensive Study Materials');}
   if (config.examPreparation.practiceTests)
-    prepFeatures.push('📝 Practice Tests & Quizzes');
+    {prepFeatures.push('📝 Practice Tests & Quizzes');}
   if (config.examPreparation.aiTutoring)
-    prepFeatures.push('🤖 24/7 AI Tutoring with Elara');
+    {prepFeatures.push('🤖 24/7 AI Tutoring with Elara');}
   if (config.examPreparation.peerStudyGroups)
-    prepFeatures.push('👥 Peer Study Groups');
+    {prepFeatures.push('👥 Peer Study Groups');}
 
   const prepFeaturesList = prepFeatures
     .map(feature => `<li>${feature}</li>`)

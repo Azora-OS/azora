@@ -1,0 +1,41 @@
+{
+    "name": "@azora/api-client",
+    "version": "1.0.0",
+    "description": "Typed API client for Azora OS backend services",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        },
+        "./react-query-hooks": {
+            "import": "./dist/react-query-hooks.mjs",
+            "require": "./dist/react-query-hooks.js",
+            "types": "./dist/react-query-hooks.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsup src/index.ts src/react-query-hooks.ts --format cjs,esm --dts",
+        "dev": "tsup src/index.ts src/react-query-hooks.ts --format cjs,esm --dts --watch",
+        "lint": "eslint src --ext .ts",
+        "type-check": "tsc --noEmit"
+    },
+    "keywords": [
+        "azora",
+        "api"
+    ],
+    "peerDependencies": {
+        "@tanstack/react-query": "^5.0.0"
+    },
+    "devDependencies": {
+        "@tanstack/react-query": "^5.0.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.3.0"
+    },
+    "dependencies": {
+        "axios": "^1.6.0"
+    }
+}

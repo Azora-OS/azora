@@ -156,7 +156,7 @@ export class AzoraWorkspaces extends EventEmitter {
    */
   public async stopWorkspace(id: string): Promise<void> {
     const workspace = this.workspaces.get(id);
-    if (!workspace) throw new Error('Workspace not found');
+    if (!workspace) {throw new Error('Workspace not found');}
 
     workspace.status = 'stopped';
     this.emit('workspace-stopped', workspace);
@@ -167,7 +167,7 @@ export class AzoraWorkspaces extends EventEmitter {
    */
   public async deleteWorkspace(id: string): Promise<void> {
     const workspace = this.workspaces.get(id);
-    if (!workspace) throw new Error('Workspace not found');
+    if (!workspace) {throw new Error('Workspace not found');}
 
     workspace.status = 'deleted';
     this.workspaces.delete(id);

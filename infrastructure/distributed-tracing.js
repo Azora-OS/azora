@@ -281,7 +281,7 @@ class AIRecoveryEngine {
 
       // Calculate metrics
       pattern.averageResponseTime += trace.duration || 0;
-      if (trace.status_code >= 400) pattern.errorRate++;
+      if (trace.status_code >= 400) {pattern.errorRate++;}
 
       // Build dependency graph
       if (trace.neighbors && Array.isArray(trace.neighbors)) {

@@ -258,13 +258,18 @@ app.post('/api/models/:modelId/feedback', (req, res) => {
       return res.status(404).json({ error: 'Model not found' });
     }
 
+    // Validate and sanitize userId
+    const validatedUserId = userId && typeof userId === 'string' && userId.length <= 50 
+      ? userId.replace(/[^a-zA-Z0-9-_]/g, '') 
+      : 'anonymous';
+
     // Record feedback
     const feedbackRecord = {
       id: uuidv4(),
       modelId,
       feedback,
       rating: rating || 0,
-      userId: userId || 'anonymous',
+      userId: validatedUserId,
       timestamp: new Date().toISOString()
     };
 

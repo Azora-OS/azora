@@ -55,7 +55,7 @@ class FullSystemAutomation extends EventEmitter {
    */
   async testSupabase() {
     const { data, error } = await supabase.from('users').select('count').limit(1)
-    if (error && error.code !== 'PGRST116') throw error
+    if (error && error.code !== 'PGRST116') {throw error}
     return true
   }
 
@@ -64,7 +64,7 @@ class FullSystemAutomation extends EventEmitter {
    */
   async testService(port: number) {
     const response = await fetch(`http://localhost:${port}/health`)
-    if (!response.ok) throw new Error('Service not ready')
+    if (!response.ok) {throw new Error('Service not ready')}
     return true
   }
 
@@ -228,7 +228,7 @@ class FullSystemAutomation extends EventEmitter {
    */
   async testSupabase() {
     const { data, error } = await supabase.from('users').select('count').limit(1)
-    if (error && error.code !== 'PGRST116') throw error
+    if (error && error.code !== 'PGRST116') {throw error}
     return true
   }
 
@@ -237,7 +237,7 @@ class FullSystemAutomation extends EventEmitter {
    */
   async testService(port: number) {
     const response = await fetch(`http://localhost:${port}/health`)
-    if (!response.ok) throw new Error('Service not ready')
+    if (!response.ok) {throw new Error('Service not ready')}
     return true
   }
 

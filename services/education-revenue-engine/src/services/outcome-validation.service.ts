@@ -18,8 +18,8 @@ export class OutcomeValidationService {
         : 0;
 
       const issues: string[] = [];
-      if (completionRate < 50) issues.push('Low completion rate');
-      if (avgScore < 70) issues.push('Low average scores');
+      if (completionRate < 50) {issues.push('Low completion rate');}
+      if (avgScore < 70) {issues.push('Low average scores');}
 
       logger.info('Outcomes validated', { courseId });
       return { courseId, avgScore, completionRate, issues, flagged: issues.length > 0 };

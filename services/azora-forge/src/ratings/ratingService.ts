@@ -256,8 +256,8 @@ export class RatingService {
     }
 
     // Volume badges
-    if (data.totalRatings >= 100) badges.push('100+ Reviews');
-    else if (data.totalRatings >= 50) badges.push('50+ Reviews');
+    if (data.totalRatings >= 100) {badges.push('100+ Reviews');}
+    else if (data.totalRatings >= 50) {badges.push('50+ Reviews');}
 
     return badges;
   }

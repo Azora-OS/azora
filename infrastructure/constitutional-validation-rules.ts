@@ -284,7 +284,7 @@ export class ValidationRuleBuilder {
    * Enable/disable Ubuntu validation
    */
   withUbuntu(enabled: boolean, threshold?: number): this {
-    if (!this.config.constitutional) this.config.constitutional = {};
+    if (!this.config.constitutional) {this.config.constitutional = {};}
     this.config.constitutional.ubuntuEnabled = enabled;
     if (threshold !== undefined) {
       this.config.constitutional.ubuntuThreshold = threshold;
@@ -296,7 +296,7 @@ export class ValidationRuleBuilder {
    * Enable/disable bias detection
    */
   withBiasDetection(enabled: boolean, autoMitigate?: boolean): this {
-    if (!this.config.constitutional) this.config.constitutional = {};
+    if (!this.config.constitutional) {this.config.constitutional = {};}
     this.config.constitutional.biasDetectionEnabled = enabled;
     if (autoMitigate !== undefined) {
       this.config.constitutional.autoMitigateBias = autoMitigate;
@@ -308,7 +308,7 @@ export class ValidationRuleBuilder {
    * Enable/disable privacy filter
    */
   withPrivacyFilter(enabled: boolean, redactPII?: boolean): this {
-    if (!this.config.constitutional) this.config.constitutional = {};
+    if (!this.config.constitutional) {this.config.constitutional = {};}
     this.config.constitutional.privacyFilterEnabled = enabled;
     if (redactPII !== undefined) {
       this.config.constitutional.piiRedactionEnabled = redactPII;
@@ -320,7 +320,7 @@ export class ValidationRuleBuilder {
    * Enable/disable harm prevention
    */
   withHarmPrevention(enabled: boolean, threshold?: number): this {
-    if (!this.config.constitutional) this.config.constitutional = {};
+    if (!this.config.constitutional) {this.config.constitutional = {};}
     this.config.constitutional.harmPreventionEnabled = enabled;
     if (threshold !== undefined) {
       this.config.constitutional.harmSeverityThreshold = threshold;
@@ -332,7 +332,7 @@ export class ValidationRuleBuilder {
    * Set minimum compliance score
    */
   withMinComplianceScore(score: number): this {
-    if (!this.config.constitutional) this.config.constitutional = {};
+    if (!this.config.constitutional) {this.config.constitutional = {};}
     this.config.constitutional.minComplianceScore = score;
     return this;
   }
@@ -341,7 +341,7 @@ export class ValidationRuleBuilder {
    * Set violation action
    */
   withViolationAction(action: 'block' | 'warn' | 'log'): this {
-    if (!this.config.middleware) this.config.middleware = {};
+    if (!this.config.middleware) {this.config.middleware = {};}
     this.config.middleware.onViolation = action;
     return this;
   }
@@ -350,7 +350,7 @@ export class ValidationRuleBuilder {
    * Add skip paths
    */
   withSkipPaths(paths: string[]): this {
-    if (!this.config.middleware) this.config.middleware = {};
+    if (!this.config.middleware) {this.config.middleware = {};}
     this.config.middleware.skipPaths = [
       ...(this.config.middleware.skipPaths || []),
       ...paths
@@ -362,7 +362,7 @@ export class ValidationRuleBuilder {
    * Enable strict mode
    */
   withStrictMode(enabled: boolean): this {
-    if (!this.config.constitutional) this.config.constitutional = {};
+    if (!this.config.constitutional) {this.config.constitutional = {};}
     this.config.constitutional.strictMode = enabled;
     return this;
   }

@@ -225,10 +225,10 @@ async function checkGraphQLGateway(): Promise<void> {
         });
       } else {
         const missing = [];
-        if (!hasDatabaseImport) missing.push('database-service');
-        if (!hasPIVCEngine) missing.push('PIVC engine');
-        if (!hasCLA) missing.push('CLA');
-        if (!usesDatabase) missing.push('database calls');
+        if (!hasDatabaseImport) {missing.push('database-service');}
+        if (!hasPIVCEngine) {missing.push('PIVC engine');}
+        if (!hasCLA) {missing.push('CLA');}
+        if (!usesDatabase) {missing.push('database calls');}
 
         checks.push({
           name: 'GraphQL Gateway Integration',
@@ -344,9 +344,9 @@ async function runAllChecks(): Promise<void> {
     }
     console.log();
 
-    if (check.status === '✅') passed++;
-    else if (check.status === '❌') failed++;
-    else if (check.status === '⚠️') warnings++;
+    if (check.status === '✅') {passed++;}
+    else if (check.status === '❌') {failed++;}
+    else if (check.status === '⚠️') {warnings++;}
   }
 
   console.log('='.repeat(60));

@@ -111,7 +111,7 @@ export const VideoLearningPlatform: React.FC<VideoLearningPlatformProps> = ({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {return;}
 
     const updateTime = () => {
       setCurrentTime(video.currentTime);
@@ -148,7 +148,7 @@ export const VideoLearningPlatform: React.FC<VideoLearningPlatformProps> = ({
 
   const togglePlay = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {return;}
 
     if (isPlaying) {
       video.pause();
@@ -160,7 +160,7 @@ export const VideoLearningPlatform: React.FC<VideoLearningPlatformProps> = ({
 
   const toggleMute = () => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {return;}
 
     video.muted = !isMuted;
     setIsMuted(!isMuted);

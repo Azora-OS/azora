@@ -168,8 +168,8 @@ app.put('/api/subscriptions/:id', (req, res) => {
       return res.status(404).json({ error: 'Subscription not found' });
     }
     
-    if (planId) subscription.planId = planId;
-    if (status) subscription.status = status;
+    if (planId) {subscription.planId = planId;}
+    if (status) {subscription.status = status;}
     subscription.updatedAt = new Date().toISOString();
     
     subscriptions.set(id, subscription);

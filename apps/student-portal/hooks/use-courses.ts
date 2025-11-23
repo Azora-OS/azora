@@ -1,1 +1,0 @@
-export { useCourses, useCourse } from '@azora/api-client/react-hooks';

@@ -528,7 +528,7 @@ app.post('/api/livestock-health', async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    if (!db.livestock) db.livestock = [];
+    if (!db.livestock) {db.livestock = [];}
     db.livestock.push(newRecord);
     await writeDB(db);
 
@@ -590,7 +590,7 @@ app.post('/api/plant-growth', async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    if (!db.plants) db.plants = [];
+    if (!db.plants) {db.plants = [];}
     db.plants.push(newRecord);
     await writeDB(db);
 
@@ -661,7 +661,7 @@ app.post('/api/farm-analysis', async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    if (!db.analyses) db.analyses = [];
+    if (!db.analyses) {db.analyses = [];}
     db.analyses.push(newRecord);
     await writeDB(db);
 
@@ -753,7 +753,7 @@ app.post('/api/mine-azr', async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    if (!db.mining) db.mining = [];
+    if (!db.mining) {db.mining = [];}
     db.mining.push(miningRecord);
     await writeDB(db);
 
@@ -1844,7 +1844,7 @@ app.post('/api/withdraw/azr-to-google-wallet', async (req, res) => {
 
     // Store withdrawal record (in production, this would go to database)
     const db = await readDB();
-    if (!db.withdrawals) db.withdrawals = [];
+    if (!db.withdrawals) {db.withdrawals = [];}
     db.withdrawals.push(withdrawalRecord);
     await writeDB(db);
 

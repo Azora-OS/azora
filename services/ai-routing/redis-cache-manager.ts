@@ -178,7 +178,7 @@ export class RedisCacheManager implements ICacheManager {
       const stats = await this.getStats();
       const total = stats.hits + stats.misses;
 
-      if (total === 0) return 0;
+      if (total === 0) {return 0;}
       return (stats.hits / total) * 100;
     } catch (error) {
       console.error('Error calculating cache hit rate:', error);

@@ -77,7 +77,7 @@ export const Immersive3DCard: React.FC<Immersive3DCardProps> = ({
 
   // Intersection Observer for performance
   useEffect(() => {
-    if (!enableIntersectionObserver || !cardRef.current) return;
+    if (!enableIntersectionObserver || !cardRef.current) {return;}
 
     const observer = new IntersectionObserver(
       entries => {
@@ -99,10 +99,10 @@ export const Immersive3DCard: React.FC<Immersive3DCardProps> = ({
   // Throttled mouse move handler
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!cardRef.current || !tilt || !isVisible) return;
+      if (!cardRef.current || !tilt || !isVisible) {return;}
 
       // Throttle to ~60fps
-      if (throttleTimeoutRef.current) return;
+      if (throttleTimeoutRef.current) {return;}
 
       throttleTimeoutRef.current = setTimeout(() => {
         throttleTimeoutRef.current = undefined;
@@ -122,7 +122,7 @@ export const Immersive3DCard: React.FC<Immersive3DCardProps> = ({
 
   useEffect(() => {
     const card = cardRef.current;
-    if (!card || !tilt || !isVisible) return;
+    if (!card || !tilt || !isVisible) {return;}
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => {

@@ -176,7 +176,7 @@ export class ElaraOrchestrator {
   private async healthCheckService(serviceName: string): Promise<boolean> {
     try {
       const config = this.services.get(serviceName);
-      if (!config) return false;
+      if (!config) {return false;}
 
       const url = `${config.url}:${config.port}/health`;
       const response = await fetch(url, { signal: AbortSignal.timeout(config.timeout) });

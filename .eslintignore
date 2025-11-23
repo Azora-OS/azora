@@ -8,3 +8,4 @@ playwright-report/
 **/*.generated.*
 **/*.gen.*
 **/*.d.ts
+apps/

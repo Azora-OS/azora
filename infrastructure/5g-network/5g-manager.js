@@ -191,7 +191,7 @@ class FiveGNetworkManager {
   }
 
   static get5GCapabilities(operator) {
-    if (!operator) return null;
+    if (!operator) {return null;}
     
     return {
       maxSpeed: operator.maxSpeed,

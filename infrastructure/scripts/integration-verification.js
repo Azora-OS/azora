@@ -68,7 +68,7 @@ const checks = [
 ];
 
 let passed = 0;
-let total = checks.length;
+const total = checks.length;
 
 console.log('\n📋 Component Status:');
 console.log('-------------------');
@@ -79,7 +79,7 @@ for (const check of checks) {
     const status = result ? '✅' : '❌';
     console.log(`${status} ${check.name}: ${check.description}`);
 
-    if (result) passed++;
+    if (result) {passed++;}
   } catch (error) {
     console.log(`❌ ${check.name}: Error - ${error.message}`);
   }

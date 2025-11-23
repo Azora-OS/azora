@@ -38,10 +38,10 @@ export function getCDNImageURL(
   const baseUrl = getCDNAssetURL(imagePath, options?.region);
   const params = new URLSearchParams();
   
-  if (options?.width) params.set('w', options.width.toString());
-  if (options?.height) params.set('h', options.height.toString());
-  if (options?.quality) params.set('q', options.quality.toString());
-  if (options?.format) params.set('f', options.format);
+  if (options?.width) {params.set('w', options.width.toString());}
+  if (options?.height) {params.set('h', options.height.toString());}
+  if (options?.quality) {params.set('q', options.quality.toString());}
+  if (options?.format) {params.set('f', options.format);}
   
   return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
 }

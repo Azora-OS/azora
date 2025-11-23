@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZORA Forge - Create Project</title>
+    <link rel="icon" href="/packages/public/branding/icons/app-icon-512.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-select:checked+div {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto mb-12 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <a href="dashboard.html" class="glass p-2 rounded-full hover:bg-white/10 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <span class="text-3xl">⚒️</span> AZORA Forge
+                </h1>
+                <p class="text-gray-400 text-sm">Launch a revenue-generating project</p>
+            </div>
+        </div>
+        <div class="hidden md:block text-right">
+            <div class="text-sm text-gray-400">Potential Revenue</div>
+            <div class="text-xl font-bold text-green-400">R10k - R100k / mo</div>
+        </div>
+    </header>
+
+    <!-- Main Form -->
+    <main class="max-w-4xl mx-auto">
+        <form id="projectForm" class="space-y-8">
+
+            <!-- Step 1: Project Type -->
+            <section class="glass rounded-2xl p-8">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <span class="bg-purple-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                    Choose Project Template
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <label class="cursor-pointer relative group">
+                        <input type="radio" name="template" value="saas" class="card-select hidden">
+                        <div
+                            class="glass p-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all h-full text-center">
+                            <div class="text-4xl mb-3">🚀</div>
+                            <h3 class="font-bold">Micro-SaaS</h3>
+                            <p class="text-xs text-gray-400 mt-2">Subscription-based software tool. High margin.</p>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer relative group">
+                        <input type="radio" name="template" value="content" class="card-select hidden">
+                        <div
+                            class="glass p-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all h-full text-center">
+                            <div class="text-4xl mb-3">📱</div>
+                            <h3 class="font-bold">Content Brand</h3>
+                            <p class="text-xs text-gray-400 mt-2">Blog, newsletter, or media channel with ads/sponsors.
+                            </p>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer relative group">
+                        <input type="radio" name="template" value="ecommerce" class="card-select hidden">
+                        <div
+                            class="glass p-6 rounded-xl border border-white/10 hover:bg-white/5 transition-all h-full text-center">
+                            <div class="text-4xl mb-3">🛍️</div>
+                            <h3 class="font-bold">Digital Store</h3>
+                            <p class="text-xs text-gray-400 mt-2">Sell digital assets, templates, or art.</p>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Step 2: Details -->
+            <section class="glass rounded-2xl p-8">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <span class="bg-purple-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                    Project Details
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Project Name</label>
+                        <input type="text"
+                            class="w-full bg-black/30 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+                            placeholder="e.g., FinBot AI">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Description (Elara will help build this)</label>
+                        <textarea rows="3"
+                            class="w-full bg-black/30 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+                            placeholder="What problem does it solve?"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Revenue Model -->
+            <section class="glass rounded-2xl p-8 border border-green-500/30">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <span class="bg-green-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
+                    Revenue Projection
+                </h2>
+
+                <div class="bg-black/40 rounded-xl p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-gray-400">Your Share (Student CEO)</span>
+                        <span class="text-green-400 font-bold">90%</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-gray-400">Platform Fee</span>
+                        <span class="text-gray-400 font-bold">10%</span>
+                    </div>
+                    <div class="h-px bg-white/10 my-4"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-white font-bold">Est. Monthly Earnings</span>
+                        <span class="text-2xl font-bold text-green-400">R5,000+</span>
+                    </div>
+                </div>
+
+                <button type="button" onclick="launchProject()"
+                    class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 rounded-xl shadow-lg transform hover:scale-105 transition-all">
+                    🚀 Initialize Project with Elara
+                </button>
+                <p class="text-center text-xs text-gray-500 mt-4">By launching, you agree to the Revenue Sharing
+                    Agreement.</p>
+            </section>
+
+        </form>
+    </main>
+
+    <script>
+        function launchProject() {
+            const btn = document.querySelector('button[type="button"]');
+            btn.innerText = "Constructing Project Environment...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert("Project Environment Created! Redirecting to Workspace...");
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>

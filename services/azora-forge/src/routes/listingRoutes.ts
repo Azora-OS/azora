@@ -76,11 +76,11 @@ router.get('/', [
 
     const query: any = { status: 'active' };
 
-    if (category) query.category = category;
+    if (category) {query.category = category;}
     if (minPrice || maxPrice) {
       query.price = {};
-      if (minPrice) query.price.$gte = parseFloat(minPrice as string);
-      if (maxPrice) query.price.$lte = parseFloat(maxPrice as string);
+      if (minPrice) {query.price.$gte = parseFloat(minPrice as string);}
+      if (maxPrice) {query.price.$lte = parseFloat(maxPrice as string);}
     }
 
     let searchQuery = Listing.find(query);

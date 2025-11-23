@@ -90,7 +90,7 @@ describe('Azora Library Service', () => {
   describe('Education System Integration', () => {
     let adminToken;
     let testBookId;
-    let testCourseId = 'course-123';
+    const testCourseId = 'course-123';
 
     // Register and login as admin for testing
     beforeAll(async () => {

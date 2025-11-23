@@ -52,7 +52,7 @@ class DocumentationUpdater {
     console.log('🔍 Scanning codebase...');
 
     const scanDirectory = (dir: string, category: keyof CodebaseStats) => {
-      if (!fs.existsSync(dir)) return;
+      if (!fs.existsSync(dir)) {return;}
 
       const files = fs.readdirSync(dir, { recursive: true });
       for (const file of files) {

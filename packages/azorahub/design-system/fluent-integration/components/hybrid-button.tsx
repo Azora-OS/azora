@@ -335,7 +335,7 @@ export const AzoraFluentButton: React.FC<AzoraFluentButtonProps> = ({
 
   // Handle reveal effect mouse tracking
   const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!buttonRef.current) return;
+    if (!buttonRef.current) {return;}
     
     const rect = buttonRef.current.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 100;
@@ -346,7 +346,7 @@ export const AzoraFluentButton: React.FC<AzoraFluentButtonProps> = ({
 
   // Handle click with ripple effect
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (disabled || loading) return;
+    if (disabled || loading) {return;}
     
     // Create ripple effect
     if (buttonRef.current) {

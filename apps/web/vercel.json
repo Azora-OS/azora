@@ -1,56 +1,14 @@
 {
-    "version": 2,
-    "name": "azora-os-web",
-    "builds": [
-        {
-            "src": "package.json",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "dist"
-            }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/index.html"
-        }
-    ],
-    "headers": [
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "framework": "vite",
+    "rewrites": [
         {
             "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "X-Frame-Options",
-                    "value": "DENY"
-                },
-                {
-                    "key": "X-Content-Type-Options",
-                    "value": "nosniff"
-                },
-                {
-                    "key": "Referrer-Policy",
-                    "value": "strict-origin-when-cross-origin"
-                },
-                {
-                    "key": "Permissions-Policy",
-                    "value": "geolocation=(), microphone=(), camera=()"
-                }
-            ]
+            "destination": "/index.html"
         }
     ],
-    "functions": {
-        "api/**/*.js": {
-            "runtime": "nodejs18.x"
-        }
-    },
     "env": {
-        "NODE_ENV": "production"
-    },
-    "azora": {
-        "platform": "web",
-        "deployment_type": "vercel",
-        "security_level": "high",
-        "unity_enabled": true
+        "VITE_API_URL": "https://api.azora.world"
     }
 }

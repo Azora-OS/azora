@@ -1047,8 +1047,8 @@ class PerformanceAnalyzer {
     
     const complexityScore = nestedStructures + functions * 2;
     
-    if (complexityScore < 5) return 'low';
-    if (complexityScore < 15) return 'medium';
+    if (complexityScore < 5) {return 'low';}
+    if (complexityScore < 15) {return 'medium';}
     return 'high';
   }
 
@@ -1154,8 +1154,8 @@ class AccessibilityChecker {
   }
 
   private determineWCAGLevel(issues: string[]): 'A' | 'AA' | 'AAA' {
-    if (issues.length === 0) return 'AAA';
-    if (issues.length < 3) return 'AA';
+    if (issues.length === 0) {return 'AAA';}
+    if (issues.length < 3) {return 'AA';}
     return 'A';
   }
 }
@@ -1266,7 +1266,7 @@ class EngineMetrics {
   }
 
   public getAverageResponseTime(): number {
-    if (this.responseTimes.length === 0) return 0;
+    if (this.responseTimes.length === 0) {return 0;}
     const sum = this.responseTimes.reduce((a, b) => a + b, 0);
     return sum / this.responseTimes.length;
   }

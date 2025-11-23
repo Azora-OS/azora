@@ -175,7 +175,7 @@ export class JWTService {
    */
   isTokenExpired(token: string): boolean {
     const expiry = this.getTokenExpiry(token);
-    if (!expiry) return true;
+    if (!expiry) {return true;}
 
     return Date.now() / 1000 >= expiry;
   }

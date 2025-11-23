@@ -143,7 +143,7 @@ export class CacheService {
   async deletePattern(pattern: string): Promise<number> {
     try {
       const keys = await this.redis.keys(pattern);
-      if (keys.length === 0) return 0;
+      if (keys.length === 0) {return 0;}
 
       const result = await this.redis.del(...keys);
       logger.debug(`Cache deleted ${result} keys matching pattern: ${pattern}`);

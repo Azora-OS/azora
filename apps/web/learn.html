@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn - Azora OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <link rel="stylesheet" href="premium-styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes typing-dot {
+
+            0%,
+            60%,
+            100% {
+                opacity: 0.3;
+            }
+
+            30% {
+                opacity: 1;
+            }
+        }
+
+        .typing-dot:nth-child(1) {
+            animation: typing-dot 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation: typing-dot 1.4s infinite 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation: typing-dot 1.4s infinite 0.4s;
+        }
+    </style>
+</head>
+
+<body
+    class="h-screen flex flex-col bg-[url('/packages/public/branding/backgrounds/mesh-gradient.png')] bg-cover bg-center">
+
+    <!-- Header -->
+    <header
+        class="h-14 border-b border-white/10 flex items-center justify-between px-6 glass-premium sticky top-0 z-50">
+        <!-- Left: Logo Only -->
+        <div class="flex items-center">
+            <a href="/" class="flex items-center logo-premium hover:scale-110 transition-transform duration-300">
+                <img src="/packages/public/branding/logo-icon-only.svg" alt="Azora" class="w-10 h-10 logo-glow">
+            </a>
+        </div>
+
+        <!-- Center: Course Selector -->
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block z-50">
+            <select id="course-selector"
+                class="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-purple-500/50 transition-colors cursor-pointer">
+                <option value="" disabled selected>Select a Course</option>
+                <!-- Populated by JS -->
+            </select>
+        </div>
+
+        <!-- Right: User & Status -->
+        <div class="flex items-center gap-4">
+            <!-- Progress -->
+            <div class="hidden md:flex items-center gap-3">
+                <div class="text-xs text-gray-400">Lesson 3/12</div>
+                <div class="w-32 h-2 bg-gray-700/50 rounded-full overflow-hidden border border-white/5">
+                    <div class="h-full bg-gradient-to-r from-green-500 to-emerald-400 relative overflow-hidden"
+                        style="width: 25%">
+                        <div class="absolute inset-0 bg-white/20 animate-shimmer"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Mining Status -->
+            <div
+                class="flex items-center gap-2 px-3 py-1 bg-black/40 rounded-full border border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.1)]">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></div>
+                <span class="text-xs font-mono text-green-400">Mining: 0.042 AZR/h</span>
+            </div>
+            <!-- User -->
+            <div
+                class="w-9 h-9 rounded-full glass-premium-dark overflow-hidden border border-white/20 hover:border-purple-500/50 transition-colors cursor-pointer relative group">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User"
+                    class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
+                <div
+                    class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div
+        class="flex-1 flex overflow-hidden glass-premium mx-4 my-4 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
+
+        <!-- Left Panel: Content (Video/Sim/IDE) -->
+        <div class="flex-1 flex flex-col min-w-0 border-r border-white/10 relative group">
+            <!-- Content Tabs -->
+            <div class="h-12 flex border-b border-white/10 bg-black/40 backdrop-blur-md" id="tabs-container">
+                <button id="tab-elara" class="tab-premium tab-premium-active">
+                    🌟 Elara Teaches
+                </button>
+                <button id="tab-video" class="tab-premium">
+                    🎥 Lesson Video
+                </button>
+                <button id="tab-ide" class="tab-premium">
+                    💻 Code Editor
+                </button>
+                <button id="tab-simulation" class="tab-premium">
+                    🧪 Simulations
+                </button>
+                <button id="tab-whiteboard" class="tab-premium">
+                    🎨 Whiteboard
+                </button>
+                <button id="tab-notes" class="tab-premium">
+                    📝 Notes
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="flex-1 overflow-hidden relative">
+
+                <!-- 1. Elara Teaches (Default) -->
+                <div id="content-elara"
+                    class="tab-content h-full flex flex-col items-center justify-center p-8 glass-premium text-center relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-blue-900/10 pointer-events-none">
+                    </div>
+                    <div class="relative z-10 max-w-2xl">
+                        <div
+                            class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-white/10 shadow-[0_0_30px_rgba(168,85,247,0.2)] animate-float">
+                            <img src="/packages/public/branding/services/elara-icon-only.svg"
+                                class="w-14 h-14 opacity-90 drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+                        </div>
+                        <h2
+                            class="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white">
+                            Welcome to Module 3</h2>
+                        <p class="text-gray-300 mb-8 text-lg leading-relaxed">
+                            Today we're diving into <span class="text-purple-400 font-semibold">Market Analysis with
+                                Python</span>.
+                            I've prepared a personalized learning path for you based on your previous code submissions.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                            <div
+                                class="p-4 rounded-xl glass-premium-dark border border-white/5 hover:border-purple-500/30 transition-all hover:-translate-y-1 cursor-pointer group">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div
+                                        class="p-2 rounded-lg bg-blue-500/20 text-blue-400 group-hover:text-blue-300 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                                            </path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-200">Start Video Lesson</h3>
+                                </div>
+                                <p class="text-xs text-gray-500 pl-[3.25rem]">5 min concept overview</p>
+                            </div>
+                            <div
+                                class="p-4 rounded-xl glass-premium-dark border border-white/5 hover:border-purple-500/30 transition-all hover:-translate-y-1 cursor-pointer group">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div
+                                        class="p-2 rounded-lg bg-purple-500/20 text-purple-400 group-hover:text-purple-300 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-200">Open Code Editor</h3>
+                                </div>
+                                <p class="text-xs text-gray-500 pl-[3.25rem]">Practice moving averages</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Video -->
+                <div id="content-video"
+                    class="tab-content hidden h-full flex items-center justify-center glass-premium-light">
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 cursor-pointer hover:scale-110 transition-transform group">
+                            <svg class="w-8 h-8 text-white ml-1 group-hover:text-purple-400 transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400">Video Player Placeholder</p>
+                    </div>
+                </div>
+
+                <!-- 3. IDE -->
+                <div id="content-ide" class="tab-content hidden h-full flex flex-col glass-premium-dark">
+                    <div class="h-8 bg-black/40 border-b border-white/5 flex items-center justify-between px-4">
+                        <span class="text-xs text-gray-400 font-mono">analysis.py</span>
+                        <button
+                            class="text-xs flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Run Code
+                        </button>
+                    </div>
+                    <div id="monaco-editor" class="flex-1"></div>
+                </div>
+
+                <!-- 4. Simulations -->
+                <div id="content-simulation" class="tab-content hidden h-full flex glass-premium-light">
+                    <!-- Sidebar List -->
+                    <div class="w-64 border-r border-white/10 bg-black/20 flex flex-col">
+                        <div class="p-3 border-b border-white/10">
+                            <input type="text" placeholder="Search simulations..."
+                                class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-purple-500/50 transition-colors">
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-2 space-y-1" id="sim-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <!-- Main View -->
+                    <div class="flex-1 relative bg-white/5">
+                        <div id="sim-placeholder"
+                            class="absolute inset-0 flex items-center justify-center text-gray-500">
+                            Select a simulation to start
+                        </div>
+                        <iframe id="sim-frame" class="w-full h-full hidden border-0" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- 5. Whiteboard -->
+                <div id="content-whiteboard" class="tab-content hidden h-full flex flex-col bg-white">
+                    <!-- Toolbar -->
+                    <div class="h-12 border-b border-gray-200 flex items-center justify-between px-4 bg-gray-50">
+                        <div class="flex items-center gap-2">
+                            <button id="tool-pen" class="p-2 rounded hover:bg-gray-200 text-gray-700 active-tool"
+                                title="Pen">
+                                ✏️
+                            </button>
+                            <button id="tool-eraser" class="p-2 rounded hover:bg-gray-200 text-gray-700" title="Eraser">
+                                🧹
+                            </button>
+                            <div class="w-px h-6 bg-gray-300 mx-2"></div>
+                            <input type="color" id="color-picker" value="#000000"
+                                class="w-8 h-8 rounded cursor-pointer">
+                            <input type="range" id="line-width" min="1" max="20" value="3" class="w-24">
+                        </div>
+                        <button id="clear-board"
+                            class="px-3 py-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm font-medium transition-colors">
+                            Clear Board
+                        </button>
+                    </div>
+                    <!-- Canvas -->
+                    <div class="flex-1 relative cursor-crosshair overflow-hidden" id="canvas-container">
+                        <canvas id="whiteboard-canvas" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- 6. Notes -->
+                <div id="content-notes" class="tab-content hidden h-full p-6 glass-premium-light">
+                    <textarea
+                        class="w-full h-full bg-transparent resize-none focus:outline-none text-gray-300 font-mono leading-relaxed"
+                        placeholder="# My Course Notes&#10;&#10;- Key concept 1..."></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Panel: Chat (Elara) -->
+        <div class="w-96 border-l border-white/10 flex flex-col bg-black/40 backdrop-blur-md">
+            <!-- Chat Header -->
+            <div class="h-12 border-b border-white/10 flex items-center px-4 justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-sm font-medium text-gray-200">Elara AI Tutor</span>
+                </div>
+                <button class="text-gray-500 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" id="chat-messages">
+                <!-- Welcome Message -->
+                <div class="flex gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-purple-900/50 flex-shrink-0 flex items-center justify-center border border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+                        <img src="/packages/public/branding/services/elara-icon-only.svg" class="w-5 h-5">
+                    </div>
+                    <div class="flex-1">
+                        <div class="chat-bubble-elara text-sm">
+                            Hello! I'm Elara. I can help you understand the video, debug your code, or explain complex
+                            finance concepts. What shall we work on?
+                        </div>
+                        <div class="text-[10px] text-gray-500 mt-1 ml-1">Just now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-white/10 bg-black/60">
+                <div class="relative">
+                    <textarea id="chat-input" rows="1"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 resize-none scrollbar-hide"
+                        placeholder="Ask Elara..."></textarea>
+                    <button onclick="sendMessage()"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-purple-600 hover:bg-purple-500 rounded-lg text-white transition-all hover:scale-105 shadow-lg shadow-purple-900/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1">
+                    <button onclick="sendQuickAction('Explain this code')"
+                        class="whitespace-nowrap px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
+                        Explain code
+                    </button>
+                    <button onclick="sendQuickAction('Generate quiz')"
+                        class="whitespace-nowrap px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
+                        Generate quiz
+                    </button>
+                    <button onclick="sendQuickAction('Summarize video')"
+                        class="whitespace-nowrap px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
+                        Summarize video
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Monaco Editor Setup ---
+        require.config({
+            paths: {
+                'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs'
+            }
+        });
+        require(['vs/editor/editor.main'], function () {
+            window.editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+                value: [
+                    'import pandas as pd',
+                    'import numpy as np',
+                    '',
+                    'def calculate_moving_average(data, window_size):',
+                    '    return data.rolling(window=window_size).mean()',
+                    '',
+                    '# Example Data',
+                    'prices = pd.Series([100, 102, 104, 103, 105, 107, 108])',
+                    'ma_3 = calculate_moving_average(prices, 3)',
+                    'print(ma_3)'
+                ].join('\\n'),
+                language: 'python',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: {
+                    enabled: false
+                },
+                fontSize: 14,
+                fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                padding: {
+                    top: 20
+                }
+            });
+        });
+
+        // --- Chat Logic ---
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if (this.value === '') this.style.height = 'auto';
+        });
+
+        function sendQuickAction(action) {
+            chatInput.value = action;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            appendMessage(message, 'user');
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            const typingId = appendTypingIndicator();
+
+            // Simple responses for demo
+            const lowerMsg = message.toLowerCase();
+
+            // 1. Math/Calculation
+            if (lowerMsg.includes('calculate') || lowerMsg.includes('what is') &&
+                (lowerMsg.includes('+') ||
+                    lowerMsg.includes('-') || lowerMsg.includes('*') || lowerMsg.includes('/'))) {
+                try {
+                    const mathExpr = message.match(/[\\d\\+\\-\\*\\/\\(\\)\\.\\s]+/);
+                    if (mathExpr) {
+                        const result = eval(mathExpr[0]);
+                        setTimeout(() => {
+                            document.getElementById(typingId).remove();
+                            appendMessage(`The result is **${result}**`, 'elara');
+                        }, 800);
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Math parsing failed:', e);
+                }
+            }
+
+            // 2. Basic Identity / Greetings
+            if (lowerMsg.includes('who are you') || lowerMsg === 'hi' || lowerMsg === 'hello') {
+                setTimeout(() => {
+                    document.getElementById(typingId).remove();
+                    if (lowerMsg.includes('who')) {
+                        appendMessage("I am **Elara**, your AI learning companion. I'm connected to the Azora Knowledge Ocean to help you master this course.", 'elara');
+                    } else {
+                        appendMessage("Hello! 👋 I'm ready to help you learn. Ask me anything about the video or your code.", 'elara');
+                    }
+                }, 600);
+                return;
+            }
+
+            // --- Capture Context ---
+            let context = null;
+            if (activeTab === 'ide' && window.editor) {
+                context = {
+                    type: 'ide',
+                    content: window.editor.getValue()
+                };
+            } else if (activeTab === 'notes') {
+                const notesContent = document.querySelector('#content-notes textarea').value;
+                if (notesContent) {
+                    context = {
+                        type: 'notes',
+                        content: notesContent
+                    };
+                }
+            }
+
+            try {
+                // Call Real API
+                const response = await fetch('http://localhost:3001/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        context: context
+                    })
+                });
+
+                const data = await response.json();
+
+                // Remove typing indicator
+                document.getElementById(typingId).remove();
+
+                if (data.success) {
+                    appendMessage(data.reply, 'elara');
+                } else {
+                    appendMessage("I encountered an error processing your request.", 'elara');
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById(typingId).remove();
+                appendMessage("I'm having trouble connecting to the neural network. Please ensure the Sapiens service is running on port 3001.", 'elara');
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = sender === 'user' ? 'flex gap-3 flex-row-reverse' : 'flex gap-3';
+
+            const avatar = sender === 'user' ?
+                '<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix">' :
+                '<img src="/packages/public/branding/services/elara-icon-only.svg" class="w-5 h-5">';
+
+            const bgClass = sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-elara';
+            const avatarBg = sender === 'user' ? 'bg-gray-700 border border-white/20' :
+                'bg-purple-900/50 border border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.3)]';
+
+            // Convert newlines to breaks for display
+            const formattedText = text.replace(/\\n/g, '<br>');
+
+            // Handle code blocks in markdown-like syntax
+            const codeBlockRegex = /```(\\w+)?\\n([\\s\\S]*?)```/g;
+            const processedText = formattedText.replace(codeBlockRegex, (match, lang, code) => {
+                return `<div class="bg-black/50 p-2 rounded-lg my-2 font-mono text-xs overflow-x-auto border border-white/10">${code}</div>`;
+            });
+
+            div.innerHTML = `
+                            <div class="w-8 h-8 rounded-full ${avatarBg} flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                ${avatar}
+                            </div>
+                            <div class="flex-1">
+                                <div class="${bgClass} text-sm">
+                                    ${processedText}
+                                </div>
+                                <div class="text-[10px] text-gray-500 mt-1 ${sender === 'user' ? 'text-right mr-1' : 'ml-1'}">
+                                    Just now</div>
+                            </div>
+                            `;
+
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function appendTypingIndicator() {
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex gap-3';
+            div.innerHTML = `
+                            <div class="w-8 h-8 rounded-full bg-purple-900/50 flex-shrink-0 flex items-center justify-center border border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+                                <img src="/packages/public/branding/services/elara-icon-only.svg" class="w-5 h-5">
+                            </div>
+                            <div class="flex-1">
+                                <div class="chat-bubble-elara w-16 flex items-center gap-1">
+                                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                                </div>
+                            </div>
+                            `;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return id;
+        }
+
+        // --- Tab Switching Logic ---
+        let activeTab = 'elara';
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            // Hide all content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Show selected content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+
+            // Reset tab styles
+            document.querySelectorAll('#tabs-container button').forEach(btn => {
+                btn.classList.remove('tab-premium-active');
+            });
+
+            // Highlight selected tab
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if (activeBtn) activeBtn.classList.add('tab-premium-active');
+
+            // Resize Monaco if visible
+            if (tabName === 'ide' && window.editor) {
+                window.editor.layout();
+            }
+
+            // Resize Canvas if visible
+            if (tabName === 'whiteboard' && window.resizeCanvas) {
+                setTimeout(window.resizeCanvas, 10);
+            }
+        }
+
+        // --- Simulation Logic ---
+        const simulations = {
+            physics: [{
+                id: 'forces-and-motion-basics',
+                name: 'Forces and Motion',
+                grade: '6-12'
+            }, {
+                id: 'energy-skate-park-basics',
+                name: 'Energy Skate Park',
+                grade: '6-12'
+            }, {
+                id: 'projectile-motion',
+                name: 'Projectile Motion',
+                grade: '9-12'
+            }, {
+                id: 'wave-on-a-string',
+                name: 'Wave on a String',
+                grade: '6-12'
+            },],
+            chemistry: [{
+                id: 'build-an-atom',
+                name: 'Build an Atom',
+                grade: '6-12'
+            }, {
+                id: 'ph-scale',
+                name: 'pH Scale',
+                grade: '9-12'
+            }, {
+                id: 'states-of-matter',
+                name: 'States of Matter',
+                grade: '6-12'
+            }, {
+                id: 'molecule-shapes',
+                name: 'Molecule Shapes',
+                grade: '9-12'
+            },],
+            math: [{
+                id: 'graphing-lines',
+                name: 'Graphing Lines',
+                grade: '6-12'
+            }, {
+                id: 'function-builder',
+                name: 'Function Builder',
+                grade: '6-12'
+            },]
+        };
+
+        function initSimulations() {
+            const listContainer = document.getElementById('sim-list');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = '';
+
+            Object.entries(simulations).forEach(([subject, sims]) => {
+                // Category Header
+                const header = document.createElement('div');
+                header.className = 'px-2 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider mt-2';
+                header.textContent = subject;
+                listContainer.appendChild(header);
+
+                // Sim Items
+                sims.forEach(sim => {
+                    const btn = document.createElement('button');
+                    btn.className = 'w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2 group';
+                    btn.innerHTML = `
+                    <span
+                        class="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-purple-500 transition-colors"></span>
+                    ${sim.name}
+                    `;
+                    btn.onclick = () => loadSimulation(sim.id);
+                    listContainer.appendChild(btn);
+                });
+            });
+        }
+
+        function loadSimulation(simId) {
+            const frame = document.getElementById('sim-frame');
+            const placeholder = document.getElementById('sim-placeholder');
+
+            if (placeholder) placeholder.classList.add('hidden');
+            if (frame) {
+                frame.classList.remove('hidden');
+                // Construct URL
+                const url = `https://phet.colorado.edu/sims/html/${simId}/latest/${simId}_en.html`;
+                frame.src = url;
+            }
+        }
+
+        // --- Whiteboard Logic ---
+        const canvas = document.getElementById('whiteboard-canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        let currentTool = 'pen';
+        let currentColor = '#000000';
+        let currentLineWidth = 3;
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            if (container) {
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        // Initial resize called in switchTab
+
+        function startDrawing(e) {
+            drawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            drawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineWidth = currentLineWidth;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+
+        // Tool Listeners
+        document.getElementById('tool-pen').addEventListener('click', () => {
+            currentTool = 'pen';
+            document.getElementById('tool-pen').classList.add('active-tool');
+            document.getElementById('tool-eraser').classList.remove('active-tool');
+        });
+
+        document.getElementById('tool-eraser').addEventListener('click', () => {
+            currentTool = 'eraser';
+            document.getElementById('tool-eraser').classList.add('active-tool');
+            document.getElementById('tool-pen').classList.remove('active-tool');
+        });
+
+        document.getElementById('color-picker').addEventListener('change', (e) => {
+            currentColor = e.target.value;
+        });
+
+        document.getElementById('line-width').addEventListener('input', (e) => {
+            currentLineWidth = e.target.value;
+        });
+
+        document.getElementById('clear-board').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // --- Course Manager Logic ---
+        class CourseManager {
+            constructor() {
+                this.courses = [];
+                this.selector = document.getElementById('course-selector');
+                this.init();
+            }
+
+            async init() {
+                try {
+                    const response = await fetch('/data/courses.json');
+                    if (!response.ok) throw new Error('Failed to load courses');
+                    this.courses = await response.json();
+                    this.populateSelector();
+                    this.selector.addEventListener('change', (e) => this.loadCourse(e.target.value));
+
+                    // Check URL Params for courseId
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const courseIdParam = urlParams.get('courseId');
+
+                    if (courseIdParam && this.courses.find(c => c.id === courseIdParam)) {
+                        this.loadCourse(courseIdParam);
+                        this.selector.value = courseIdParam;
+                    } else if (this.courses.length > 0) {
+                        // Default to first course
+                        this.loadCourse(this.courses[0].id);
+                        this.selector.value = this.courses[0].id;
+                    }
+                } catch (error) {
+                    console.error('CourseManager Error:', error);
+                }
+            }
+
+            populateSelector() {
+                if (!this.selector) return;
+                this.selector.innerHTML = '';
+                this.courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.title;
+                    this.selector.appendChild(option);
+                });
+            }
+
+            loadCourse(courseId) {
+                const course = this.courses.find(c => c.id === courseId);
+                if (!course) return;
+
+                // Update Elara Teaches Content
+                const titleEl = document.querySelector('#content-elara h2');
+                const descEl = document.querySelector('#content-elara p');
+
+                if (titleEl) titleEl.textContent = `Welcome to ${course.title}`;
+                if (descEl) descEl.innerHTML = `${course.description} <br><br> <span class="text-purple-400 font-semibold">Current Level: ${course.level}</span>`;
+
+                // Update Browser Title
+                document.title = `${course.title} - Azora Learn`;
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach Tab Listeners
+            const tabs = ['elara', 'video', 'ide', 'simulation', 'whiteboard', 'notes'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`tab-${tab}`);
+                if (btn) {
+                    btn.addEventListener('click', () => switchTab(tab));
+                }
+            });
+
+            // Initialize Simulations
+            initSimulations();
+
+            // Initialize Course Manager
+            new CourseManager();
+        });
+    </script>
+</body>
+
+</html>

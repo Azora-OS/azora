@@ -14,8 +14,8 @@ const STAKING_POOL_WALLET_ID = process.env.STAKING_POOL_WALLET_ID!;
 class StakingService {
   async stake(userId: string, amount: number, lockPeriodDays: number) {
     const wallet = await prisma.wallet.findUnique({ where: { userId } });
-    if (!wallet) throw new Error('Wallet not found');
-    if (wallet.balance < amount) throw new Error('Insufficient AZR balance');
+    if (!wallet) {throw new Error('Wallet not found');}
+    if (wallet.balance < amount) {throw new Error('Insufficient AZR balance');}
     const apy = lockPeriodDays > 180 ? 0.10 : 0.05;
 
     return prisma.$transaction([
@@ -42,10 +42,10 @@ class StakingService {
 
   async unstake(userId: string, stakingRecordId: string) {
     const stake = await prisma.staking.findUnique({ where: { id: stakingRecordId }, include: { wallet: true } });
-    if (!stake || stake.wallet.userId !== userId) throw new Error('Staking record not found or permission denied');
-    if (stake.active === false) throw new Error('Stake is already inactive');
+    if (!stake || stake.wallet.userId !== userId) {throw new Error('Staking record not found or permission denied');}
+    if (stake.active === false) {throw new Error('Stake is already inactive');}
     const lockEndDate = new Date(stake.startDate.getTime() + stake.lockPeriod * 24 * 60 * 60 * 1000);
-    if (new Date() < lockEndDate) throw new Error(`Lock period not over. Can unstake on ${lockEndDate.toISOString()}`);
+    if (new Date() < lockEndDate) {throw new Error(`Lock period not over. Can unstake on ${lockEndDate.toISOString()}`);}
 
     return prisma.$transaction([
       prisma.wallet.update({ where: { id: stake.walletId }, data: { balance: { increment: stake.amount }, staked: { decrement: stake.amount } } }),
@@ -67,10 +67,10 @@ class StakingService {
   async distributeStakingRewards() {
     const stakingPoolWallet = await prisma.wallet.findUnique({ where: { id: STAKING_POOL_WALLET_ID } });
     const rewardPie = stakingPoolWallet?.balance || 0;
-    if (rewardPie <= 0) return;
+    if (rewardPie <= 0) {return;}
     const totalStakedResult = await prisma.staking.aggregate({ _sum: { amount: true }, where: { active: true } });
     const totalStaked = totalStakedResult._sum.amount || 0;
-    if (totalStaked === 0) return;
+    if (totalStaked === 0) {return;}
     const rewardRate = rewardPie / totalStaked;
     const allStakes = await prisma.staking.findMany({ where: { active: true } });
     const rewardTransactions: any[] = [];

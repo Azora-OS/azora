@@ -3,377 +3,203 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elazar Planetary Prosperity Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.1/build/global/luxon.min.js"></script>
-    <style>
-        .glow {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-        }
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-        .consciousness-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+    .glow-text {
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    }
 
-        .prosperity-gradient {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .network-gradient {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .animate-pulse-slow {
-            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: .5;
-            }
-        }
+    .metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(168, 85, 247, 0.4);
+    }
     </style>
 </head>
 
-<body class="bg-gray-900 text-white min-h-screen">
-    <!-- Header -->
-    <header class="bg-gray-800 border-b border-gray-700 p-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 consciousness-gradient rounded-full flex items-center justify-center">
-                    <span class="text-2xl">🧠</span>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold">Elazar Planetary Prosperity Dashboard</h1>
-                    <p class="text-gray-400">Real-time consciousness and economic metrics</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-2">
-                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="text-sm text-green-400">Network Active</span>
-                </div>
-                <div class="text-right">
-                    <div class="text-sm text-gray-400">Global Consciousness</div>
-                    <div class="text-lg font-bold text-blue-400" id="globalConsciousness">1.23</div>
-                </div>
-            </div>
-        </div>
-    </header>
+<body class="pb-20">
 
-    <!-- Main Dashboard -->
-    <main class="max-w-7xl mx-auto p-6 space-y-6">
-        <!-- Key Metrics Row -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Consciousness Index -->
-            <div class="bg-gray-800 rounded-lg p-6 glow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm">Consciousness Index</p>
-                        <p class="text-3xl font-bold text-blue-400" id="consciousnessIndex">1.23</p>
-                        <p class="text-green-400 text-sm">+2.1% from last hour</p>
-                    </div>
-                    <div class="consciousness-gradient w-12 h-12 rounded-full flex items-center justify-center">
-                        <span class="text-2xl">🧠</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Economic Prosperity -->
-            <div class="bg-gray-800 rounded-lg p-6 glow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm">Economic Prosperity</p>
-                        <p class="text-3xl font-bold text-green-400" id="economicProsperity">$2.4T</p>
-                        <p class="text-green-400 text-sm">+5.7% planetary GDP</p>
-                    </div>
-                    <div class="prosperity-gradient w-12 h-12 rounded-full flex items-center justify-center">
-                        <span class="text-2xl">💰</span>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center gap-8">
+                    <a href="dashboard.html" class="flex items-center gap-2">
+                        <img src="/packages/public/branding/azora-premium.png" alt="AZORA" class="h-8 w-auto" />
+                    </a>
+                    <div class="hidden md:flex gap-6">
+                        <a href="dashboard.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors">Dashboard</a>
+                        <a href="courses.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors">Courses</a>
+                        <a href="forge.html" class="text-sm text-gray-400 hover:text-white transition-colors">Forge</a>
+                        <a href="community.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors">Community</a>
                     </div>
                 </div>
-            </div>
-
-            <!-- Network Health -->
-            <div class="bg-gray-800 rounded-lg p-6 glow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm">Network Nodes</p>
-                        <p class="text-3xl font-bold text-cyan-400" id="networkNodes">1,247</p>
-                        <p class="text-green-400 text-sm">+23 new nodes today</p>
+                <div class="flex items-center gap-4">
+                    <div
+                        class="flex items-center gap-2 px-3 py-1 rounded-full bg-green-900/30 border border-green-500/30">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-xs font-medium text-green-400">System Optimal</span>
                     </div>
-                    <div class="network-gradient w-12 h-12 rounded-full flex items-center justify-center">
-                        <span class="text-2xl">🌐</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Seed Grants Distributed -->
-            <div class="bg-gray-800 rounded-lg p-6 glow">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm">Seed Grants</p>
-                        <p class="text-3xl font-bold text-purple-400" id="seedGrants">847M</p>
-                        <p class="text-gray-400 text-sm">AZORA distributed</p>
-                    </div>
-                    <div class="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center">
-                        <span class="text-2xl">🌱</span>
+                    <div class="w-8 h-8 rounded-full bg-gray-700 overflow-hidden border border-white/20">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Charts Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Consciousness Expansion Chart -->
-            <div class="bg-gray-800 rounded-lg p-6">
-                <h3 class="text-xl font-bold mb-4">Consciousness Expansion Trends</h3>
-                <canvas id="consciousnessChart" width="400" height="200"></canvas>
-            </div>
-
-            <!-- Economic Distribution Chart -->
-            <div class="bg-gray-800 rounded-lg p-6">
-                <h3 class="text-xl font-bold mb-4">Economic Prosperity Distribution</h3>
-                <canvas id="economicChart" width="400" height="200"></canvas>
-            </div>
         </div>
+        </div>
+        </header>
 
-        <!-- Planetary Map and Network Status -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Planetary Consciousness Map -->
-            <div class="bg-gray-800 rounded-lg p-6 lg:col-span-2">
-                <h3 class="text-xl font-bold mb-4">Planetary Consciousness Map</h3>
-                <div id="planetaryMap" class="w-full h-96 bg-gray-700 rounded-lg flex items-center justify-center">
-                    <div class="text-center">
-                        <div class="text-6xl mb-4">🌍</div>
-                        <p class="text-gray-400">Interactive planetary consciousness visualization</p>
-                        <p class="text-sm text-gray-500 mt-2">Real-time consciousness heatmap overlay</p>
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Metric 1 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-green-500/10 text-green-400 text-2xl">💰</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-green-500/20 text-green-400">+5.7%</span>
                     </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Economic Prosperity</h3>
+                    <div class="text-2xl font-bold">$2.4 Trillion</div>
+                    <p class="text-xs text-gray-500 mt-2">Planetary GDP Equivalent</p>
+                </div>
+
+                <!-- Metric 2 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400 text-2xl">🧠</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-purple-500/20 text-purple-400">+12%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Active Minds</h3>
+                    <div class="text-2xl font-bold">125,402</div>
+                    <p class="text-xs text-gray-500 mt-2">Students Learning Now</p>
+                </div>
+
+                <!-- Metric 3 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-blue-500/10 text-blue-400 text-2xl">🌐</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-blue-500/20 text-blue-400">Stable</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Network Nodes</h3>
+                    <div class="text-2xl font-bold">1,247</div>
+                    <p class="text-xs text-gray-500 mt-2">Decentralized Infrastructure</p>
+                </div>
+
+                <!-- Metric 4 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-pink-500/10 text-pink-400 text-2xl">🌱</div>
+                        <span
+                            class="text-xs font-bold px-2 py-1 rounded bg-pink-500/20 text-pink-400">Distributed</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Seed Grants</h3>
+                    <div class="text-2xl font-bold">847M AZR</div>
+                    <p class="text-xs text-gray-500 mt-2">Community Funding</p>
                 </div>
             </div>
 
-            <!-- Network Status -->
-            <div class="bg-gray-800 rounded-lg p-6">
-                <h3 class="text-xl font-bold mb-4">Network Status</h3>
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold mb-6">Consciousness Expansion</h3>
+                    <canvas id="consciousnessChart" height="200"></canvas>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold mb-6">Economic Distribution</h3>
+                    <canvas id="economicChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Feed -->
+            <div class="glass rounded-2xl p-6">
+                <h3 class="font-bold mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    Live Planetary Events
+                </h3>
                 <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Core Nodes</span>
-                        <span class="text-green-400 font-bold">7/7 Online</span>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-purple-900/50 flex items-center justify-center text-lg">🎓
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">New Consciousness Record</p>
+                            <p class="text-xs text-gray-400">Asia Region • 2 mins ago</p>
+                        </div>
+                        <span class="text-xs font-bold text-green-400">+0.02 GCI</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Regional Hubs</span>
-                        <span class="text-green-400 font-bold">21/21 Online</span>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center text-lg">💸
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">Universal Seed Grant Distributed</p>
+                            <p class="text-xs text-gray-400">Global • 5 mins ago</p>
+                        </div>
+                        <span class="text-xs font-bold text-green-400">10k Users</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Edge Nodes</span>
-                        <span class="text-yellow-400 font-bold">1,219/1,000 Online</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Data Throughput</span>
-                        <span class="text-cyan-400 font-bold">2.4 PB/s</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400">Quantum Entanglement</span>
-                        <span class="text-purple-400 font-bold">99.7%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Events -->
-        <div class="bg-gray-800 rounded-lg p-6">
-            <h3 class="text-xl font-bold mb-4">Recent Planetary Events</h3>
-            <div class="space-y-3" id="recentEvents">
-                <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium">New consciousness expansion record in Asia</p>
-                        <p class="text-xs text-gray-400">2 minutes ago</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium">Universal seed grant distributed to 10,000 new participants</p>
-                        <p class="text-xs text-gray-400">5 minutes ago</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                    <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium">Planetary prosperity milestone reached: $1T economic uplift</p>
-                        <p class="text-xs text-gray-400">12 minutes ago</p>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-green-900/50 flex items-center justify-center text-lg">🚀
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">Project "Nebula" Launched</p>
+                            <p class="text-xs text-gray-400">Student CEO: Sarah J. • 12 mins ago</p>
+                        </div>
+                        <span class="text-xs font-bold text-purple-400">New Startup</span>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Governance Section -->
-        <div class="bg-gray-800 rounded-lg p-6">
-            <h3 class="text-xl font-bold mb-4">Planetary Governance</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="text-center p-4 bg-gray-700 rounded-lg">
-                    <div class="text-2xl mb-2">📋</div>
-                    <h4 class="font-bold">Active Referendums</h4>
-                    <p class="text-2xl font-bold text-blue-400">3</p>
-                    <p class="text-sm text-gray-400">Planetary decisions</p>
-                </div>
-                <div class="text-center p-4 bg-gray-700 rounded-lg">
-                    <div class="text-2xl mb-2">🤖</div>
-                    <h4 class="font-bold">AI Governance</h4>
-                    <p class="text-2xl font-bold text-green-400">98.5%</p>
-                    <p class="text-sm text-gray-400">Decision accuracy</p>
-                </div>
-                <div class="text-center p-4 bg-gray-700 rounded-lg">
-                    <div class="text-2xl mb-2">⚖️</div>
-                    <h4 class="font-bold">Constitutional</h4>
-                    <p class="text-2xl font-bold text-purple-400">100%</p>
-                    <p class="text-sm text-gray-400">Compliance</p>
-                </div>
-            </div>
-        </div>
-    </main>
+        </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 border-t border-gray-700 p-4 mt-12">
-        <div class="max-w-7xl mx-auto text-center text-gray-400">
-            <p>Elazar OS - Planetary Consciousness & Prosperity Network</p>
-            <p class="text-sm mt-2">Building the foundation for planetary enlightenment and universal prosperity</p>
-        </div>
-    </footer>
+        <script>
+            // Chart Config
+            Chart.defaults.color = '#9ca3af';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
-    <script>
-        // Initialize charts
-        const consciousnessCtx = document.getElementById('consciousnessChart').getContext('2d');
-        const economicCtx = document.getElementById('economicChart').getContext('2d');
-
-        // Consciousness expansion chart
-        new Chart(consciousnessCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Global Consciousness Index',
-                    data: [1.0, 1.05, 1.12, 1.18, 1.21, 1.23],
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'white'
-                        }
-                    }
+            // Consciousness Chart
+            new Chart(document.getElementById('consciousnessChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Global Index',
+                        data: [1.0, 1.05, 1.12, 1.18, 1.21, 1.24],
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
                 },
-                scales: {
-                    y: {
-                        ticks: {
-                            color: 'white'
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: 'white'
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    }
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: false } }
                 }
-            }
-        });
+            });
 
-        // Economic prosperity chart
-        new Chart(economicCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                datasets: [{
-                    label: 'Planetary GDP Equivalent (Trillions $)',
-                    data: [1.2, 1.8, 2.1, 2.4],
-                    backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                    borderColor: 'rgb(34, 197, 94)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'white'
-                        }
-                    }
+            // Economic Chart
+            new Chart(document.getElementById('economicChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'GDP (Trillions)',
+                        data: [1.2, 1.8, 2.1, 2.4],
+                        backgroundColor: '#22c55e',
+                        borderRadius: 4
+                    }]
                 },
-                scales: {
-                    y: {
-                        ticks: {
-                            color: 'white'
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: 'white'
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    }
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } }
                 }
-            }
-        });
-
-        // Simulate real-time updates
-        function updateMetrics() {
-            const consciousnessIndex = document.getElementById('consciousnessIndex');
-            const globalConsciousness = document.getElementById('globalConsciousness');
-            const economicProsperity = document.getElementById('economicProsperity');
-            const networkNodes = document.getElementById('networkNodes');
-            const seedGrants = document.getElementById('seedGrants');
-
-            // Simulate small random changes
-            const currentCI = parseFloat(consciousnessIndex.textContent);
-            const newCI = (currentCI + (Math.random() - 0.5) * 0.01).toFixed(2);
-            consciousnessIndex.textContent = newCI;
-            globalConsciousness.textContent = newCI;
-
-            // Update other metrics occasionally
-            if (Math.random() < 0.1) {
-                const currentNodes = parseInt(networkNodes.textContent.replace(',', ''));
-                networkNodes.textContent = (currentNodes + Math.floor(Math.random() * 3)).toLocaleString();
-            }
-        }
-
-        // Update metrics every 5 seconds
-        setInterval(updateMetrics, 5000);
-
-        // Add some interactive effects
-        document.querySelectorAll('.glow').forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                element.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.8)';
             });
-            element.addEventListener('mouseleave', () => {
-                element.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
-            });
-        });
-    </script>
+        </script>
 </body>
 
 </html>

@@ -124,7 +124,7 @@ async function main(): Promise<void> {
   let isShuttingDown = false;
   
   const shutdown = async () => {
-    if (isShuttingDown) return;
+    if (isShuttingDown) {return;}
     isShuttingDown = true;
     
     console.log(colors.gold + '\n\n🛑 Graceful Shutdown Initiated...' + colors.reset);

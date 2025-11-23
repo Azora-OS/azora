@@ -646,7 +646,7 @@ class InteractiveSimulations {
     const { shapeId } = payload;
     const shape = state.shapes.find((s) => s.id === shapeId);
 
-    if (!shape) return state;
+    if (!shape) {return state;}
 
     // Simplified measurements
     const measurements = {

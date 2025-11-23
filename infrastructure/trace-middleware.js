@@ -73,7 +73,7 @@ function createTraceMiddleware(serviceName) {
 
 // Helper to track neighbor calls
 function trackNeighborCall(req, neighborService) {
-  if (!req.neighbors) req.neighbors = [];
+  if (!req.neighbors) {req.neighbors = [];}
   if (!req.neighbors.includes(neighborService)) {
     req.neighbors.push(neighborService);
   }

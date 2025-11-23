@@ -110,12 +110,12 @@ class KnowledgeAssessment {
   }
 
   adaptiveQuestionSelection(currentScore: number, previousAnswers: boolean[]): 'easier' | 'same' | 'harder' {
-    if (previousAnswers.length < 3) return 'same';
+    if (previousAnswers.length < 3) {return 'same';}
     
     const recentCorrect = previousAnswers.slice(-3).filter(a => a).length;
     
-    if (recentCorrect >= 2 && currentScore >= 70) return 'harder';
-    if (recentCorrect <= 1 && currentScore < 50) return 'easier';
+    if (recentCorrect >= 2 && currentScore >= 70) {return 'harder';}
+    if (recentCorrect <= 1 && currentScore < 50) {return 'easier';}
     return 'same';
   }
 }

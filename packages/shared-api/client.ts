@@ -14,7 +14,7 @@ class AzoraAPIClient {
 
     this.client.interceptors.request.use(
       (config) => {
-        if (this.csrfToken) config.headers['X-CSRF-Token'] = this.csrfToken;
+        if (this.csrfToken) {config.headers['X-CSRF-Token'] = this.csrfToken;}
         return config;
       },
       (error) => Promise.reject(error)
@@ -23,7 +23,7 @@ class AzoraAPIClient {
     this.client.interceptors.response.use(
       (response) => {
         const csrf = response.headers['x-csrf-token'];
-        if (csrf) this.csrfToken = csrf;
+        if (csrf) {this.csrfToken = csrf;}
         return response;
       },
       (error) => {

@@ -166,8 +166,8 @@ export class AuthenticationSecurity {
   static regenerateSession(req: Request): Promise<void> {
     return new Promise((resolve, reject) => {
       req.session.regenerate((err) => {
-        if (err) reject(err);
-        else resolve();
+        if (err) {reject(err);}
+        else {resolve();}
       });
     });
   }

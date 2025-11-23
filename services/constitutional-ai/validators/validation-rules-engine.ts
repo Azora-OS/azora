@@ -252,7 +252,7 @@ export class ValidationRulesEngine {
 
     // Match against each enabled rule
     for (const rule of this.rules.values()) {
-      if (!rule.enabled) continue;
+      if (!rule.enabled) {continue;}
 
       const match = this.matchRule(rule, text);
       matches.push(match);
@@ -332,7 +332,7 @@ export class ValidationRulesEngine {
    * Calculate confidence score for a match
    */
   private calculateConfidence(matchCount: number, rule: ValidationRule): number {
-    if (matchCount === 0) return 0;
+    if (matchCount === 0) {return 0;}
 
     // Base confidence on match count and rule weight
     const baseConfidence = Math.min(1.0, matchCount * 0.2);

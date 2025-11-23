@@ -77,7 +77,7 @@ function checkSecrets() {
       if (result.trim()) {
         log(`⚠ Potential ${name} found:`, 'yellow');
         result.split('\n').slice(0, 3).forEach(line => {
-          if (line) log(`  ${line}`, 'yellow');
+          if (line) {log(`  ${line}`, 'yellow');}
         });
         secretsFound = true;
       }

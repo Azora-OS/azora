@@ -485,7 +485,7 @@ export class PenetrationTester {
       report += '## Critical Issues\n';
       critical.forEach((r) => {
         report += `- **${r.vulnerability}**: ${r.details}\n`;
-        if (r.remediation) report += `  - Remediation: ${r.remediation}\n`;
+        if (r.remediation) {report += `  - Remediation: ${r.remediation}\n`;}
       });
       report += '\n';
     }
@@ -494,7 +494,7 @@ export class PenetrationTester {
       report += '## High Priority Issues\n';
       high.forEach((r) => {
         report += `- **${r.vulnerability}**: ${r.details}\n`;
-        if (r.remediation) report += `  - Remediation: ${r.remediation}\n`;
+        if (r.remediation) {report += `  - Remediation: ${r.remediation}\n`;}
       });
       report += '\n';
     }
@@ -503,7 +503,7 @@ export class PenetrationTester {
       report += '## Medium Priority Issues\n';
       medium.forEach((r) => {
         report += `- **${r.vulnerability}**: ${r.details}\n`;
-        if (r.remediation) report += `  - Remediation: ${r.remediation}\n`;
+        if (r.remediation) {report += `  - Remediation: ${r.remediation}\n`;}
       });
     }
 

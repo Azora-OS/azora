@@ -406,28 +406,28 @@ export class AzoraCRDTManager extends EventEmitter {
   // Content Operations
   public getText(documentId: string, key: string = 'content'): Y.Text | undefined {
     const document = this.documents.get(documentId);
-    if (!document) return undefined;
+    if (!document) {return undefined;}
     
     return document.ydoc.getText(key);
   }
 
   public getMap(documentId: string, key: string = 'data'): Y.Map<any> | undefined {
     const document = this.documents.get(documentId);
-    if (!document) return undefined;
+    if (!document) {return undefined;}
     
     return document.ydoc.getMap(key);
   }
 
   public getArray(documentId: string, key: string = 'items'): Y.Array<any> | undefined {
     const document = this.documents.get(documentId);
-    if (!document) return undefined;
+    if (!document) {return undefined;}
     
     return document.ydoc.getArray(key);
   }
 
   public getXmlFragment(documentId: string, key: string = 'xml'): Y.XmlFragment | undefined {
     const document = this.documents.get(documentId);
-    if (!document) return undefined;
+    if (!document) {return undefined;}
     
     return document.ydoc.getXmlFragment(key);
   }
@@ -435,7 +435,7 @@ export class AzoraCRDTManager extends EventEmitter {
   // Awareness Operations
   public setAwarenessState(documentId: string, state: Partial<AwarenessState>): void {
     const document = this.documents.get(documentId);
-    if (!document) return;
+    if (!document) {return;}
     
     this.awarenessManager.setState(document.awareness, state);
     this.emit('awareness-updated', { documentId, state });
@@ -443,7 +443,7 @@ export class AzoraCRDTManager extends EventEmitter {
 
   public getAwarenessStates(documentId: string): Map<number, AwarenessState> {
     const document = this.documents.get(documentId);
-    if (!document) return new Map();
+    if (!document) {return new Map();}
     
     return this.awarenessManager.getStates(document.awareness);
   }
@@ -529,7 +529,7 @@ export class AzoraCRDTManager extends EventEmitter {
   // Undo/Redo
   public undo(documentId: string): void {
     const document = this.documents.get(documentId);
-    if (!document) return;
+    if (!document) {return;}
     
     const undoManager = document.ydoc.getUndoManager?.();
     if (undoManager) {
@@ -540,7 +540,7 @@ export class AzoraCRDTManager extends EventEmitter {
 
   public redo(documentId: string): void {
     const document = this.documents.get(documentId);
-    if (!document) return;
+    if (!document) {return;}
     
     const undoManager = document.ydoc.getUndoManager?.();
     if (undoManager) {
@@ -628,7 +628,7 @@ export class AzoraCRDTManager extends EventEmitter {
 
   private handleDocumentUpdate(documentId: string, update: Uint8Array, origin: any): void {
     const document = this.documents.get(documentId);
-    if (!document) return;
+    if (!document) {return;}
     
     // Update metadata
     document.metadata.updatedAt = Date.now();
@@ -649,7 +649,7 @@ export class AzoraCRDTManager extends EventEmitter {
 
   private handleAwarenessChange(documentId: string): void {
     const document = this.documents.get(documentId);
-    if (!document) return;
+    if (!document) {return;}
     
     const states = this.awarenessManager.getStates(document.awareness);
     
@@ -658,11 +658,11 @@ export class AzoraCRDTManager extends EventEmitter {
 
   private detectDocumentType(ydoc: Y.Doc): DocumentType {
     // Simple type detection based on available shared types
-    if (ydoc.getText('content')) return 'text';
-    if (ydoc.getMap('data')) return 'json';
-    if (ydoc.getArray('items')) return 'canvas';
-    if (ydoc.getArray('messages')) return 'chat';
-    if (ydoc.getMap('state')) return 'state';
+    if (ydoc.getText('content')) {return 'text';}
+    if (ydoc.getMap('data')) {return 'json';}
+    if (ydoc.getArray('items')) {return 'canvas';}
+    if (ydoc.getArray('messages')) {return 'chat';}
+    if (ydoc.getMap('state')) {return 'state';}
     
     return 'text'; // Default
   }
@@ -699,7 +699,7 @@ class CompositeProvider implements DocumentProvider {
     
     // Create providers
     for (const config of sorted) {
-      if (!config.enabled) continue;
+      if (!config.enabled) {continue;}
       
       let provider: DocumentProvider | null = null;
       

@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export class JobMatchingService {
   async matchFreelancersToJob(jobId: string, limit = 10) {
     const job = await prisma.job.findUnique({ where: { id: jobId } });
-    if (!job) throw new Error('Job not found');
+    if (!job) {throw new Error('Job not found');}
 
     const freelancers = await prisma.user.findMany({
       where: { role: { in: ['FREELANCER', 'BOTH'] }, skills: { hasSome: job.skills } },

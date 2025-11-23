@@ -39,11 +39,11 @@ class Zola {
     }
 
     detectTrend(data) {
-        if (data.length < 2) return 'insufficient_data';
+        if (data.length < 2) {return 'insufficient_data';}
         const avg = data.reduce((a, b) => a + b, 0) / data.length;
         const recent = data.slice(-3).reduce((a, b) => a + b, 0) / 3;
-        if (recent > avg * 1.1) return 'upward';
-        if (recent < avg * 0.9) return 'downward';
+        if (recent > avg * 1.1) {return 'upward';}
+        if (recent < avg * 0.9) {return 'downward';}
         return 'stable';
     }
 

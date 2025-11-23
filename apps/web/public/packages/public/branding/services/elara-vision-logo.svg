@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="visionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="visionAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="visionGlow">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Icon: Camera/Eye vision with African pattern recognition -->
+  <g transform="translate(120, 120)">
+    <!-- Radial glow -->
+    <circle cx="0" cy="0" r="90" fill="url(#visionGlow)"/>
+    
+    <!-- Camera lens outer ring -->
+    <circle cx="0" cy="0" r="60" fill="none" stroke="url(#visionGrad)" stroke-width="4"/>
+    <circle cx="0" cy="0" r="70" fill="none" stroke="url(#visionAccent)" stroke-width="2" opacity="0.4"/>
+    
+    <!-- Lens aperture blades (African geometric pattern) -->
+    <g opacity="0.6">
+      <path d="M 0,-40 L 15,-15 L -15,-15 Z" fill="url(#visionGrad)"/>
+      <path d="M 35,-20 L 15,15 L 35,10 Z" fill="url(#visionGrad)"/>
+      <path d="M 35,20 L 5,35 L 15,15 Z" fill="url(#visionGrad)"/>
+      <path d="M 0,40 L -15,15 L 15,15 Z" fill="url(#visionGrad)"/>
+      <path d="M -35,20 L -15,15 L -5,35 Z" fill="url(#visionGrad)"/>
+      <path d="M -35,-20 L -35,10 L -15,15 Z" fill="url(#visionGrad)"/>
+    </g>
+    
+    <!-- Central eye/lens -->
+    <circle cx="0" cy="0" r="30" fill="url(#visionGrad)" opacity="0.3"/>
+    <circle cx="0" cy="0" r="30" stroke="url(#visionGrad)" stroke-width="3" fill="none"/>
+    <circle cx="0" cy="0" r="15" fill="#1e293b"/>
+    
+    <!-- Intelligent gleam -->
+    <circle cx="-5" cy="-5" r="6" fill="#06b6d4" opacity="0.9">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Focus points (pattern recognition nodes) -->
+    <g>
+      <circle cx="-75" cy="-45" r="8" fill="#06b6d4" opacity="0.6">
+        <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="75" cy="-45" r="8" fill="#8b5cf6" opacity="0.6">
+        <animate attributeName="r" values="8;10;8" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-75" cy="45" r="8" fill="#10b981" opacity="0.6">
+        <animate attributeName="r" values="8;10;8" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="75" cy="45" r="8" fill="#ec4899" opacity="0.6">
+        <animate attributeName="r" values="8;10;8" dur="2.6s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- Focus frame (viewfinder corners) -->
+    <g stroke="url(#visionAccent)" stroke-width="3" opacity="0.5">
+      <path d="M -80,-60 L -80,-80 L -60,-80"/>
+      <path d="M 80,-60 L 80,-80 L 60,-80"/>
+      <path d="M -80,60 L -80,80 L -60,80"/>
+      <path d="M 80,60 L 80,80 L 60,80"/>
+    </g>
+    
+    <!-- Scanning lines (AI analysis) -->
+    <g opacity="0.3">
+      <line x1="-60" y1="-70" x2="60" y2="-70" stroke="#06b6d4" stroke-width="1">
+        <animate attributeName="y1" values="-70;70" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="y2" values="-70;70" dur="3s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    
+    <!-- Recognition grid -->
+    <g opacity="0.15" stroke="url(#visionAccent)" stroke-width="1">
+      <line x1="-60" y1="-20" x2="60" y2="-20"/>
+      <line x1="-60" y1="20" x2="60" y2="20"/>
+      <line x1="-20" y1="-60" x2="-20" y2="60"/>
+      <line x1="20" y1="-60" x2="20" y2="60"/>
+    </g>
+    
+    <!-- Outer scan ring -->
+    <circle cx="0" cy="0" r="95" stroke="url(#visionGrad)" stroke-width="2" fill="none" opacity="0.2" stroke-dasharray="10,5">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" 
+          font-family="'Inter', 'SF Pro Display', sans-serif" 
+          font-size="75" 
+          font-weight="700" 
+          fill="url(#visionAccent)">
+      <tspan font-weight="700">E</tspan><tspan font-weight="500" opacity="0.9">lara</tspan>
+    </text>
+    <text x="0" y="50" 
+          font-family="'Inter', sans-serif" 
+          font-size="55" 
+          font-weight="600" 
+          fill="url(#visionGrad)">Vision</text>
+    <text x="0" y="85" 
+          font-family="'Inter', sans-serif" 
+          font-size="18" 
+          font-weight="400" 
+          fill="#94a3b8">Computer Vision • Recognition • Insight</text>
+  </g>
+</svg>
+

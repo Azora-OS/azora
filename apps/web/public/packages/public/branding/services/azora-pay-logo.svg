@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" fill="none">
+  <defs>
+    <linearGradient id="payGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="payAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Digital wallet with African coin patterns -->
+  <g transform="translate(120, 120)">
+    <!-- Wallet -->
+    <rect x="-60" y="-40" width="120" height="80" rx="8" fill="url(#payGrad)" opacity="0.2"/>
+    <rect x="-60" y="-40" width="120" height="80" rx="8" stroke="url(#payGrad)" stroke-width="3" fill="none"/>
+    
+    <!-- Wallet flap -->
+    <path d="M -60,-40 L -40,-20 L 40,-20 L 60,-40 Z" fill="url(#payAccent)" opacity="0.6"/>
+    
+    <!-- African coin symbol -->
+    <circle cx="0" cy="5" r="25" fill="url(#payAccent)"/>
+    <text x="0" y="18" font-family="Inter, sans-serif" font-size="32" font-weight="800" fill="#1e293b" text-anchor="middle">A</text>
+    
+    <!-- Payment waves -->
+    <g opacity="0.5">
+      <path d="M -70,0 Q -75,-10 -80,0" stroke="#10b981" stroke-width="2" fill="none">
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 70,0 Q 75,-10 80,0" stroke="#10b981" stroke-width="2" fill="none">
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    
+    <!-- Transaction nodes -->
+    <circle cx="-70" cy="-50" r="8" fill="#fbbf24">
+      <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="70" cy="-50" r="8" fill="#10b981">
+      <animate attributeName="r" values="8;10;8" dur="2.3s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Service Name -->
+  <g transform="translate(280, 110)">
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="65" font-weight="700" fill="url(#payAccent)">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora</tspan>
+    </text>
+    <text x="0" y="50" font-family="'Inter', sans-serif" font-size="55" font-weight="600" fill="url(#payGrad)">Pay</text>
+    <text x="0" y="85" font-family="'Inter', sans-serif" font-size="18" font-weight="400" fill="#94a3b8">Payments • Transactions • Wallet</text>
+  </g>
+</svg>
+

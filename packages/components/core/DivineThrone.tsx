@@ -79,7 +79,7 @@ export const DivineThrone: React.FC<DivineThroneProps> = ({
 
   // Auto theme switching based on time of day
   useEffect(() => {
-    if (!autoTheme) return;
+    if (!autoTheme) {return;}
 
     const updateTheme = () => {
       const hour = new Date().getHours();

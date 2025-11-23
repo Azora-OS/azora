@@ -109,7 +109,7 @@ export function addMessageToConversation(
   content: string
 ): ConversationContext | null {
   const conversation = getConversation(sessionId);
-  if (!conversation) return null;
+  if (!conversation) {return null;}
 
   conversation.messages.push({
     role,
@@ -125,7 +125,7 @@ export function addMessageToConversation(
  */
 export function getConversationHistory(sessionId: string) {
   const conversation = getConversation(sessionId);
-  if (!conversation) return [];
+  if (!conversation) {return [];}
 
   return conversation.messages.map((msg) => ({
     role: msg.role,
@@ -262,7 +262,7 @@ export function getLearningRecommendations(userContext: UserContext): string[] {
  */
 export function exportConversation(sessionId: string): string {
   const conversation = getConversation(sessionId);
-  if (!conversation) return '';
+  if (!conversation) {return '';}
 
   return JSON.stringify(conversation, null, 2);
 }

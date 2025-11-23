@@ -53,10 +53,10 @@ export class TokenMinter {
 
   mintReward(address: string, amount: number, reason: string): { success: boolean; message?: string; balance?: number; minted?: number } {
     const result = this.policy.mintTokens(amount, reason);
-    if (!result.success) return result;
+    if (!result.success) {return result;}
 
     const wallet = this.wallets.get(address);
-    if (!wallet) return { success: false, message: 'Wallet not found' };
+    if (!wallet) {return { success: false, message: 'Wallet not found' };}
 
     wallet.balance += amount;
     wallet.earned += amount;
@@ -77,10 +77,10 @@ export class TokenMinter {
     const from = this.wallets.get(fromAddress);
     const to = this.wallets.get(toAddress);
 
-    if (!from || !to) return { success: false, message: 'Wallet not found' };
+    if (!from || !to) {return { success: false, message: 'Wallet not found' };}
 
     const validation = this.policy.validateTransaction(amount, from.balance);
-    if (!validation.valid) return { success: false, message: validation.message };
+    if (!validation.valid) {return { success: false, message: validation.message };}
 
     from.balance -= amount;
     to.balance += amount;
@@ -99,10 +99,10 @@ export class TokenMinter {
 
   stake(address: string, amount: number): { success: boolean; message?: string; staked?: number; balance?: number } {
     const wallet = this.wallets.get(address);
-    if (!wallet) return { success: false, message: 'Wallet not found' };
+    if (!wallet) {return { success: false, message: 'Wallet not found' };}
 
     const validation = this.policy.validateTransaction(amount, wallet.balance);
-    if (!validation.valid) return { success: false, message: validation.message };
+    if (!validation.valid) {return { success: false, message: validation.message };}
 
     wallet.balance -= amount;
     wallet.staked += amount;

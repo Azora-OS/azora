@@ -99,7 +99,7 @@ export class AzoraForge {
    */
   async smartCommit(projectId: string, changes: any[]): Promise<void> {
     const project = this.projects.get(projectId);
-    if (!project) throw new Error('Project not found');
+    if (!project) {throw new Error('Project not found');}
 
     // AI generates commit message
     const commitMessage = await this.generateSmartCommitMessage(changes);
@@ -119,7 +119,7 @@ export class AzoraForge {
    */
   async collaborateRealTime(projectId: string, contributors: string[]): Promise<void> {
     const project = this.projects.get(projectId);
-    if (!project) throw new Error('Project not found');
+    if (!project) {throw new Error('Project not found');}
 
     // Enable real-time code sync
     await this.enableRealtimeSync(projectId, contributors);
@@ -142,7 +142,7 @@ export class AzoraForge {
     studentEarnings: number;
   }> {
     const project = this.projects.get(projectId);
-    if (!project) throw new Error('Project not found');
+    if (!project) {throw new Error('Project not found');}
 
     // Deploy to AZORA cloud
     const deploymentUrl = await this.deployToAzoraCloud(projectId);
@@ -168,7 +168,7 @@ export class AzoraForge {
    */
   async listInMarketplace(projectId: string): Promise<void> {
     const project = this.projects.get(projectId);
-    if (!project) throw new Error('Project not found');
+    if (!project) {throw new Error('Project not found');}
 
     // Add to AZORA marketplace
     await this.addToMarketplace(project);

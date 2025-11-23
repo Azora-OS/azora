@@ -78,7 +78,7 @@ function copyFile(source: string, dest: string): boolean {
 
 function copyDirectory(source: string, dest: string): boolean {
   try {
-    if (!fs.existsSync(source)) return false;
+    if (!fs.existsSync(source)) {return false;}
 
     ensureDir(dest);
     const files = fs.readdirSync(source);

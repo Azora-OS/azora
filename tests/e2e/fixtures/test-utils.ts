@@ -404,7 +404,7 @@ export async function getElementBoundingBox(page: Page, selector: string) {
 export async function isElementInViewport(page: Page, selector: string): Promise<boolean> {
   return await page.evaluate((sel) => {
     const element = document.querySelector(sel);
-    if (!element) return false;
+    if (!element) {return false;}
     
     const rect = element.getBoundingClientRect();
     return (

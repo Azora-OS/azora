@@ -335,7 +335,7 @@ export class LearningOutcomesService {
           where: { enrollmentId: enrollment.id },
         });
 
-        if (outcomes.length === 0) continue;
+        if (outcomes.length === 0) {continue;}
 
         const totalModules = enrollment.course.modules.length;
         const completedModules = new Set(outcomes.map(o => o.moduleId)).size;

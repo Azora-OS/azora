@@ -98,7 +98,7 @@ export class TeacherCourseBuilderService {
   async publishCourse(courseId: string): Promise<{ success: boolean; message: string }> {
     try {
       const course = await prisma.course.findUnique({ where: { id: courseId } });
-      if (!course) throw new Error('Course not found');
+      if (!course) {throw new Error('Course not found');}
 
       logger.info('Course published', { courseId });
       return { success: true, message: 'Course published successfully' };

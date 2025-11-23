@@ -51,6 +51,8 @@
     "prisma": "^5.0.0",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.0"
+    "typescript": "5.4.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
   }
 }

@@ -80,7 +80,7 @@ export const FlowerOfLife: React.FC<FlowerOfLifeProps> = ({
 
   // Create divine energy pulses
   useEffect(() => {
-    if (!divineEnergy || !animated) return;
+    if (!divineEnergy || !animated) {return;}
 
     const interval = setInterval(() => {
       const newPulse = {
@@ -101,7 +101,7 @@ export const FlowerOfLife: React.FC<FlowerOfLifeProps> = ({
 
   // Update pulse progress
   useEffect(() => {
-    if (!divineEnergy || !animated || energyPulses.length === 0) return;
+    if (!divineEnergy || !animated || energyPulses.length === 0) {return;}
 
     const interval = setInterval(() => {
       setEnergyPulses(prev =>
@@ -300,7 +300,7 @@ export const FlowerOfLife: React.FC<FlowerOfLifeProps> = ({
           const nextCircle = circles[nextCircleIndex];
 
           // Ensure nextCircle exists before rendering the line
-          if (!nextCircle) return null;
+          if (!nextCircle) {return null;}
 
           return (
             <line

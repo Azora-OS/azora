@@ -48,8 +48,8 @@ class Naledi {
     }
 
     getNextSteps(experience) {
-        if (experience < 2) return ['Build portfolio', 'Network actively', 'Gain certifications'];
-        if (experience < 5) return ['Seek leadership roles', 'Mentor others', 'Expand expertise'];
+        if (experience < 2) {return ['Build portfolio', 'Network actively', 'Gain certifications'];}
+        if (experience < 5) {return ['Seek leadership roles', 'Mentor others', 'Expand expertise'];}
         return ['Consider senior positions', 'Build thought leadership', 'Explore entrepreneurship'];
     }
 

@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 
 import qualificationRoutes from './routes/qualificationRoutes';
 import tutoringRoutes from './routes/tutoringRoutes';
+import chatRoutes from './routes/chatRoutes';
 
 dotenv.config();
 
@@ -13,8 +14,8 @@ dotenv.config();
 const { authenticateToken, rateLimiter } = require('@azora/shared-auth');
 
 const app: Express = express();
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
-const SERVICE_NAME: string = process.env.SERVICE_NAME || 'service';
+const PORT: number = parseInt(process.env.PORT || '3001', 10);
+const SERVICE_NAME: string = process.env.SERVICE_NAME || 'azora-sapiens';
 
 // Middleware
 app.use(helmet());
@@ -31,8 +32,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {
-  res.json({ 
-    status: 'healthy', 
+  res.json({
+    status: 'healthy',
     service: SERVICE_NAME,
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
@@ -42,13 +43,14 @@ app.get('/health', (req: Request, res: Response) => {
 // API routes
 app.use('/api/qualifications', qualificationRoutes);
 app.use('/api/tutoring', authenticateToken, tutoringRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Error handling
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Error:', err);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Internal server error',
-    message: err.message 
+    message: err.message
   });
 });
 

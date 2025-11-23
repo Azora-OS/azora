@@ -914,11 +914,11 @@ export class AzorahubUnifiedExperience extends EventEmitter {
   private getEnabledFeatures(): string[] {
     const features: string[] = [];
     
-    if (this.config.ai.enabled) features.push('ai');
-    if (this.config.accessibility.enabled) features.push('accessibility');
-    if (this.config.collaboration.enabled) features.push('collaboration');
-    if (this.config.performance.monitoring) features.push('performance');
-    if (this.config.security.encryption) features.push('security');
+    if (this.config.ai.enabled) {features.push('ai');}
+    if (this.config.accessibility.enabled) {features.push('accessibility');}
+    if (this.config.collaboration.enabled) {features.push('collaboration');}
+    if (this.config.performance.monitoring) {features.push('performance');}
+    if (this.config.security.encryption) {features.push('security');}
     
     return features;
   }

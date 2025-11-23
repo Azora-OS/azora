@@ -16,7 +16,7 @@ export class AzoraServices {
         ...options?.headers,
       },
     });
-    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+    if (!response.ok) {throw new Error(`API Error: ${response.statusText}`);}
     return response.json();
   }
 

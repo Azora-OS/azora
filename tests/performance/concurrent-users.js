@@ -364,7 +364,7 @@ async function testResourceUsageUnderLoad() {
     // Create user sessions
     for (let i = 0; i < testUsers; i++) {
       const session = await createUserSession(`resource-test-${i}`);
-      if (session) userSessions.push(session);
+      if (session) {userSessions.push(session);}
     }
 
     const startTime = Date.now();
@@ -422,7 +422,7 @@ async function testRecoveryFromLoadSpikes() {
     // Create base load
     for (let i = 0; i < baseUsers; i++) {
       const session = await createUserSession(`recovery-base-${i}`);
-      if (session) userSessions.push(session);
+      if (session) {userSessions.push(session);}
     }
 
     // Test baseline performance
@@ -584,7 +584,7 @@ async function testSystemHealth() {
         const config = getServiceConfig(service);
         if (config) {
           const response = await fetch(`http://localhost:${config.port}/health`);
-          if (response.ok) healthyServices++;
+          if (response.ok) {healthyServices++;}
         }
   } catch (_error) {
         // Service not healthy

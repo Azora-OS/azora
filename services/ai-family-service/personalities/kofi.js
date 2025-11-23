@@ -38,8 +38,8 @@ class Kofi {
     }
 
     getRecommendations(savingsRate, goals) {
-        if (savingsRate < 10) return ['Reduce discretionary spending', 'Create emergency fund', 'Track expenses daily'];
-        if (savingsRate < 20) return ['Increase savings by 5%', 'Invest in education', 'Build passive income'];
+        if (savingsRate < 10) {return ['Reduce discretionary spending', 'Create emergency fund', 'Track expenses daily'];}
+        if (savingsRate < 20) {return ['Increase savings by 5%', 'Invest in education', 'Build passive income'];}
         return ['Diversify investments', 'Consider real estate', 'Mentor others financially'];
     }
 

@@ -238,10 +238,10 @@ router.put('/:id', async (req: Request, res: Response) => {
     const { name, description, icon, isActive } = req.body;
     
     const updateData: any = {};
-    if (name) updateData.name = name;
-    if (description) updateData.description = description;
-    if (icon) updateData.icon = icon;
-    if (typeof isActive === 'boolean') updateData.isActive = isActive;
+    if (name) {updateData.name = name;}
+    if (description) {updateData.description = description;}
+    if (icon) {updateData.icon = icon;}
+    if (typeof isActive === 'boolean') {updateData.isActive = isActive;}
     
     const category = await Category.findByIdAndUpdate(
       id,

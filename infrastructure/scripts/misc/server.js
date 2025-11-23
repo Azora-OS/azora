@@ -32,8 +32,8 @@ try {
 }
 
 // Use var instead of let to avoid redeclaration errors
-var app = express()
-var PORT = getEnv().PORT || 3001
+const app = express()
+const PORT = getEnv().PORT || 3001
 
 // Security Middleware
 app.use(getHelmetConfig());

@@ -12,6 +12,66 @@
     {
       "src": "services/elara-onboarding/package.json",
       "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-auth/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-education/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-marketplace/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-pay/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-mint/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-sapiens/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-studyspaces/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-research-center/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-forge/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-assessment/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-analytics/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-erp/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-finance/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-treasury/package.json",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "services/azora-pricing/package.json",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -25,13 +85,75 @@
     },
     {
       "src": "/api/onboarding/(.*)",
-      "dest": "services/elara-onboarding/dist/index.ts"
+      "dest": "services/elara-onboarding/dist/index.js"
+    },
+    {
+      "src": "/api/auth/(.*)",
+      "dest": "services/azora-auth/dist/index.js"
+    },
+    {
+      "src": "/api/education-service/(.*)",
+      "dest": "services/azora-education/dist/index.js"
+    },
+    {
+      "src": "/api/marketplace/(.*)",
+      "dest": "services/azora-marketplace/dist/index.js"
+    },
+    {
+      "src": "/api/pay/(.*)",
+      "dest": "services/azora-pay/dist/index.js"
+    },
+    {
+      "src": "/api/mint/(.*)",
+      "dest": "services/azora-mint/dist/index.js"
+    },
+    {
+      "src": "/api/sapiens/(.*)",
+      "dest": "services/azora-sapiens/dist/index.js"
+    },
+    {
+      "src": "/api/studyspaces/(.*)",
+      "dest": "services/azora-studyspaces/dist/index.js"
+    },
+    {
+      "src": "/api/research/(.*)",
+      "dest": "services/azora-research-center/dist/index.js"
+    },
+    {
+      "src": "/api/forge/(.*)",
+      "dest": "services/azora-forge/dist/index.js"
+    },
+    {
+      "src": "/api/assessment/(.*)",
+      "dest": "services/azora-assessment/dist/index.js"
+    },
+    {
+      "src": "/api/analytics/(.*)",
+      "dest": "services/azora-analytics/dist/index.js"
+    },
+    {
+      "src": "/api/erp/(.*)",
+      "dest": "services/azora-erp/dist/index.js"
+    },
+    {
+      "src": "/api/finance/(.*)",
+      "dest": "services/azora-finance/dist/index.js"
+    },
+    {
+      "src": "/api/treasury/(.*)",
+      "dest": "services/azora-treasury/dist/index.js"
+    },
+    {
+      "src": "/api/pricing/(.*)",
+      "dest": "services/azora-pricing/dist/index.js"
     }
   ],
   "env": {
     "DATABASE_URL": "@database_url",
     "REDIS_URL": "@redis_url",
     "OPENAI_API_KEY": "@openai_api_key",
-    "PINECONE_API_KEY": "@pinecone_api_key"
+    "PINECONE_API_KEY": "@pinecone_api_key",
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key"
   }
 }

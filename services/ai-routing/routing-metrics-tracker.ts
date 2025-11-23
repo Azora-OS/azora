@@ -85,7 +85,7 @@ export class RoutingMetricsTracker {
     cached: boolean = false
   ): Promise<void> {
     const metrics = this.inMemoryMetrics.get(tier);
-    if (!metrics) return;
+    if (!metrics) {return;}
 
     // Update in-memory metrics
     metrics.totalRequests += 1;

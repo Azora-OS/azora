@@ -88,7 +88,7 @@ class ChaosTestSuite {
                 const response = await axios.get(`${this.baseURL}/api/health`, {
                     timeout: 5000
                 });
-                if (response.status === 200) successCount++;
+                if (response.status === 200) {successCount++;}
             } catch (error) {
                 console.log(`Request ${i + 1} failed:`, error.message);
             }

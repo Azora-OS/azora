@@ -43,7 +43,7 @@ export const UniversalAvatar: React.FC<UniversalAvatarProps> = ({
   showGlow = true,
 }) => {
   const config = AVATAR_CONFIGS[character.toLowerCase()];
-  if (!config) return null;
+  if (!config) {return null;}
 
   const getMouthPath = () => {
     switch (mood) {
@@ -57,8 +57,8 @@ export const UniversalAvatar: React.FC<UniversalAvatarProps> = ({
   };
 
   const getEyeExpression = () => {
-    if (mood === 'thinking') return { rx: 2, ry: 3 };
-    if (mood === 'excited') return { rx: 4, ry: 5 };
+    if (mood === 'thinking') {return { rx: 2, ry: 3 };}
+    if (mood === 'excited') {return { rx: 4, ry: 5 };}
     return { rx: 3, ry: 4 };
   };
 

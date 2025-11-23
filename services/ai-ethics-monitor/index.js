@@ -269,13 +269,13 @@ function calculateEthicalScore(decision, context) {
   let adjustment = 0;
   
   if (context && context.sensitivity) {
-    if (context.sensitivity === 'high') adjustment -= 10;
-    else if (context.sensitivity === 'medium') adjustment -= 5;
+    if (context.sensitivity === 'high') {adjustment -= 10;}
+    else if (context.sensitivity === 'medium') {adjustment -= 5;}
   }
   
   if (context && context.impact) {
-    if (context.impact === 'high') adjustment -= 15;
-    else if (context.impact === 'medium') adjustment -= 7;
+    if (context.impact === 'high') {adjustment -= 15;}
+    else if (context.impact === 'medium') {adjustment -= 7;}
   }
   
   // Ensure score stays within bounds

@@ -210,7 +210,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeProps> = ({
         {showConnections && familyMembers.map(fromMember => (
           fromMember.connections.map(toId => {
             const toMember = familyMembers.find(m => m.id === toId);
-            if (!toMember) return null;
+            if (!toMember) {return null;}
 
             const isHighlighted = 
               hoveredMember === fromMember.id || 
@@ -357,7 +357,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeProps> = ({
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-lg px-6 py-4 rounded-xl border border-purple-500/30 max-w-md">
           {(() => {
             const member = familyMembers.find(m => m.id === selectedMember);
-            if (!member) return null;
+            if (!member) {return null;}
             
             return (
               <>

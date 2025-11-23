@@ -163,9 +163,9 @@ export class LanguageService {
     const amharicRegex = /[\u1200-\u137F]/g;
     const swahiliRegex = /\b(na|ni|kwa|ya|za|la|le|li|lo|lu)\b/gi;
 
-    if (arabicRegex.test(text)) return 'ar';
-    if (amharicRegex.test(text)) return 'am';
-    if (swahiliRegex.test(text)) return 'sw';
+    if (arabicRegex.test(text)) {return 'ar';}
+    if (amharicRegex.test(text)) {return 'am';}
+    if (swahiliRegex.test(text)) {return 'sw';}
 
     return null;
   }
@@ -177,11 +177,11 @@ export class LanguageService {
     const languages = header.split(',').map((lang) => lang.split(';')[0].trim());
 
     for (const lang of languages) {
-      if (lang.startsWith('en')) return 'en';
-      if (lang.startsWith('fr')) return 'fr';
-      if (lang.startsWith('ar')) return 'ar';
-      if (lang.startsWith('am')) return 'am';
-      if (lang.startsWith('sw')) return 'sw';
+      if (lang.startsWith('en')) {return 'en';}
+      if (lang.startsWith('fr')) {return 'fr';}
+      if (lang.startsWith('ar')) {return 'ar';}
+      if (lang.startsWith('am')) {return 'am';}
+      if (lang.startsWith('sw')) {return 'sw';}
     }
 
     return null;

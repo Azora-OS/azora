@@ -133,10 +133,10 @@ export function decodeJWT(token: string): { header: any; payload: any; signature
  */
 export function isJWTExpired(token: string): boolean {
   const decoded = decodeJWT(token);
-  if (!decoded) return true;
+  if (!decoded) {return true;}
 
   const exp = decoded.payload.exp;
-  if (!exp) return false;
+  if (!exp) {return false;}
 
   return Date.now() >= exp * 1000;
 }

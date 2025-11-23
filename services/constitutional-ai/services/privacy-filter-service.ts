@@ -217,7 +217,7 @@ export class PrivacyFilterService {
 
     for (const match of matches) {
       const customPattern = this.config.customRedactionPatterns[match.type];
-      if (!customPattern) continue;
+      if (!customPattern) {continue;}
 
       const adjustedStart = match.startIndex + offset;
       const adjustedEnd = match.endIndex + offset;

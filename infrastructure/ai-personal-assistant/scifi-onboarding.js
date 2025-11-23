@@ -301,9 +301,9 @@ Welcome to Azora. Let's build your future together.
     // More complete profiles get higher bonuses
     let bonus = 10; // Base signup bonus
 
-    if (profile.goals?.length >= 3) bonus += 2;
-    if (profile.skills?.currentSkills?.length > 0) bonus += 3;
-    if (profile.financial?.targetAmount) bonus += 5;
+    if (profile.goals?.length >= 3) {bonus += 2;}
+    if (profile.skills?.currentSkills?.length > 0) {bonus += 3;}
+    if (profile.financial?.targetAmount) {bonus += 5;}
 
     return bonus;
   }

@@ -382,7 +382,7 @@ async function testRateLimitRecovery() {
     console.log('  Triggering rate limit...');
     for (let i = 0; i < excessiveRequests; i++) {
       await fetch(endpoint);
-      if (i % 20 === 0) await new Promise(resolve => setTimeout(resolve, 10));
+      if (i % 20 === 0) {await new Promise(resolve => setTimeout(resolve, 10));}
     }
 
     // Wait for rate limit to be triggered

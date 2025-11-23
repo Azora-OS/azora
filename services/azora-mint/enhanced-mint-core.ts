@@ -497,9 +497,9 @@ export class EnhancedAzoraMint extends EventEmitter {
       p => p.duration === lockPeriod
     )
 
-    if (lockPeriod >= 365) return 25 // 25% APR for 1 year+
-    if (lockPeriod >= 180) return 15 // 15% APR for 6 months+
-    if (lockPeriod >= 90) return 10 // 10% APR for 3 months+
+    if (lockPeriod >= 365) {return 25} // 25% APR for 1 year+
+    if (lockPeriod >= 180) {return 15} // 15% APR for 6 months+
+    if (lockPeriod >= 90) {return 10} // 10% APR for 3 months+
     return 5 // 5% APR for shorter periods
   }
 

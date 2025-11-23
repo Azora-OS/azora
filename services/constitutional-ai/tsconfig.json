@@ -3,7 +3,9 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./",
@@ -32,11 +34,20 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@/validators/*": ["./validators/*"],
-      "@/types/*": ["./types/*"],
-      "@/utils/*": ["./utils/*"]
-    }
+      "@/*": [
+        "./*"
+      ],
+      "@/validators/*": [
+        "./validators/*"
+      ],
+      "@/types/*": [
+        "./types/*"
+      ],
+      "@/utils/*": [
+        "./utils/*"
+      ]
+    },
+    "noEmit": false
   },
   "include": [
     "**/*.ts"

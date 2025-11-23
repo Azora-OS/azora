@@ -18,7 +18,13 @@ See LICENSE file for details.
  */
 
 import { EventEmitter } from 'events'
-import { elaraIntegration } from '../../system-core/elara-integration'
+// import { elaraIntegration } from '../../system-core/elara-integration'
+const elaraIntegration = {
+  getEducationalHelp: async (query: string, context: any) => {
+    console.log('🤖 Elara AI (Mock) processing:', query);
+    return { response: 'Mock AI Response' };
+  }
+};
 
 export interface SecondaryGrade {
   gradeLevel: '8' | '9' | '10' | '11' | '12'

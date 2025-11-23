@@ -16,7 +16,7 @@ const csrfProtection = csrf({
 // Authentication
 const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Authentication required' });
+  if (!token) {return res.status(401).json({ error: 'Authentication required' });}
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'azora-secret-key');
@@ -29,8 +29,8 @@ const authenticate = (req, res, next) => {
 
 // Authorization
 const authorize = (...roles) => (req, res, next) => {
-  if (!req.user) return res.status(401).json({ error: 'Authentication required' });
-  if (!roles.includes(req.user.role)) return res.status(403).json({ error: 'Insufficient permissions' });
+  if (!req.user) {return res.status(401).json({ error: 'Authentication required' });}
+  if (!roles.includes(req.user.role)) {return res.status(403).json({ error: 'Insufficient permissions' });}
   next();
 };
 
@@ -109,7 +109,7 @@ const sanitizeInput = (req, res, next) => {
         return entities[char];
       });
     }
-    if (Array.isArray(obj)) return obj.map(sanitize);
+    if (Array.isArray(obj)) {return obj.map(sanitize);}
     if (obj && typeof obj === 'object') {
       return Object.keys(obj).reduce((acc, key) => {
         acc[key] = sanitize(obj[key]);
@@ -119,9 +119,9 @@ const sanitizeInput = (req, res, next) => {
     return obj;
   };
   
-  if (req.body) req.body = sanitize(req.body);
-  if (req.query) req.query = sanitize(req.query);
-  if (req.params) req.params = sanitize(req.params);
+  if (req.body) {req.body = sanitize(req.body);}
+  if (req.query) {req.query = sanitize(req.query);}
+  if (req.params) {req.params = sanitize(req.params);}
   next();
 };
 

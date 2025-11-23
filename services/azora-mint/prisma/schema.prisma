@@ -8,61 +8,62 @@ generator client {
 }
 
 model Wallet {
-  id            String   @id @default(uuid())
-  userId        String   @unique
-  address       String   @unique
-  balance       Float    @default(0)
-  stakedAmount  Float    @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  transactions  Transaction[]
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  address   String   @unique
+  balance   Float    @default(0)
+  staked    Float    @default(0)
+  earned    Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions   Transaction[]
   stakingRecords StakingRecord[]
-  miningRecords MiningRecord[]
+  miningRecords  MiningRecord[]
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  walletId    String
-  type        String
-  amount      Float
-  currency    String   @default("AZR")
-  status      String   @default("pending")
-  metadata    Json?
-  createdAt   DateTime @default(now())
-  
-  wallet      Wallet   @relation(fields: [walletId], references: [id])
-  
+  id        String   @id @default(uuid())
+  walletId  String
+  type      String
+  amount    Float
+  currency  String   @default("AZR")
+  status    String   @default("pending")
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
   @@index([walletId])
   @@index([createdAt])
 }
 
 model StakingRecord {
-  id          String   @id @default(uuid())
-  walletId    String
-  amount      Float
-  startDate   DateTime @default(now())
-  endDate     DateTime?
-  apy         Float    @default(5.0)
-  status      String   @default("active")
-  rewards     Float    @default(0)
-  
-  wallet      Wallet   @relation(fields: [walletId], references: [id])
-  
+  id        String    @id @default(uuid())
+  walletId  String
+  amount    Float
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+  apy       Float     @default(5.0)
+  status    String    @default("active")
+  rewards   Float     @default(0)
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
   @@index([walletId])
   @@index([status])
 }
 
 model MiningRecord {
-  id          String   @id @default(uuid())
-  walletId    String
-  activity    String
+  id           String   @id @default(uuid())
+  walletId     String
+  activity     String
   tokensEarned Float
-  timestamp   DateTime @default(now())
-  metadata    Json?
-  
-  wallet      Wallet   @relation(fields: [walletId], references: [id])
-  
+  timestamp    DateTime @default(now())
+  metadata     Json?
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
   @@index([walletId])
   @@index([timestamp])
 }
