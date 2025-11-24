@@ -15,7 +15,7 @@
   "dependencies": {
     "@azora/shared-database": "file:../shared-database",
     "@azora/shared-auth": "file:../shared-auth",
-    "openai": "^4.24.7"
+    "openai": "^6.9.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
