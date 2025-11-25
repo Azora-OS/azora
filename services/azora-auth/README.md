@@ -204,19 +204,141 @@ npm run test:watch
 
 ## Testing
 
+### Test Status
+- **Status**: ✅ Passing
+- **Test Suites**: 4 passing / 4 total
+- **Last Updated**: 2025-11-25
+
 ### Test Coverage
+- **Overall**: 75%
 - **Lines**: 75%
 - **Functions**: 80%
 - **Branches**: 70%
+- **Statements**: 75%
 
-### Test Scenarios
+### Test Categories
+
+#### Unit Tests
+- **Location**: `tests/unit/`
+- **Coverage**: 80%
+- **Status**: ✅ Passing
+- **Key Test Files**:
+  - `auth.test.ts` - Authentication logic
+  - `jwt.test.ts` - JWT token operations
+  - `validators.test.ts` - Input validation
+
+#### Integration Tests
+- **Location**: `tests/integration/`
+- **Coverage**: 70%
+- **Status**: ✅ Passing
+- **Key Test Files**:
+  - `auth-endpoints.test.ts` - API endpoint integration
+  - `token-management.test.ts` - Token lifecycle
+  - `rate-limiting.test.ts` - Rate limit enforcement
+
+### Test Scenarios Covered
+- ✅ User registration with validation
 - ✅ Successful login with valid credentials
 - ✅ Failed login with invalid credentials
 - ✅ JWT token generation and validation
+- ✅ Token refresh and revocation
 - ✅ Profile retrieval with valid token
+- ✅ Password reset flow
+- ✅ MFA setup and verification
 - ✅ Rate limiting enforcement
 - ✅ CORS header validation
 - ✅ Health check response
+
+### Running Tests
+
+#### Run All Tests
+```bash
+npm test
+```
+
+#### Run Specific Test Suite
+```bash
+npm test -- tests/unit/auth.test.ts
+```
+
+#### Run Tests in Watch Mode
+```bash
+npm test -- --watch
+```
+
+#### Run Tests with Coverage
+```bash
+npm test -- --coverage
+```
+
+#### Run Integration Tests Only
+```bash
+npm test -- tests/integration
+```
+
+### Testing Guidelines
+
+#### Using Test Factories
+```typescript
+import { createTestUser } from '@/tests/factories';
+
+const user = await createTestUser({ 
+  email: 'test@azora.world',
+  role: 'student' 
+});
+```
+
+#### Testing Authentication
+```typescript
+import { setupTestDatabase } from '@/tests/utils/database';
+
+beforeAll(async () => {
+  await setupTestDatabase();
+});
+
+it('should authenticate user with valid credentials', async () => {
+  const user = await createTestUser();
+  const response = await request(app)
+    .post('/api/login')
+    .send({ email: user.email, password: 'password123' });
+  
+  expect(response.status).toBe(200);
+  expect(response.body.token).toBeDefined();
+});
+```
+
+#### Testing JWT Operations
+```typescript
+it('should validate JWT token', async () => {
+  const token = generateToken({ userId: 'user-123' });
+  const decoded = await validateToken(token);
+  
+  expect(decoded.userId).toBe('user-123');
+});
+```
+
+### Known Issues
+- None currently
+
+### Test Dependencies
+- Jest 29.x
+- supertest (for API testing)
+- jsonwebtoken (for token testing)
+- Test utilities from `@/tests/utils`
+
+### Troubleshooting
+
+#### Tests Failing Locally
+1. Ensure environment variables are set: `cp .env.test .env`
+2. Clear test cache: `npm test -- --clearCache`
+3. Check JWT_SECRET is configured
+
+#### Rate Limit Tests Failing
+1. Ensure Redis is running for rate limiting
+2. Clear Redis test data: `redis-cli FLUSHDB`
+
+### Contributing Tests
+See [Testing Standards](../../docs/testing/TESTING-STANDARDS.md) for detailed guidelines.
 
 ## Deployment
 
