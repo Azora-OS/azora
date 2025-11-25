@@ -1,76 +1,91 @@
-# AI Orchestrator Service
+# 🧠 AI Orchestrator Service
 
-The AI Orchestrator Service is responsible for coordinating and managing AI models within the Azora ecosystem. It provides a centralized interface for registering AI models, orchestrating complex AI tasks across multiple models, and monitoring performance metrics.
+> **Constitutional AI Core • Ethics Engine • Model Coordination**
 
-## Features
+[![Service Status](https://img.shields.io/badge/status-active-success.svg)](../../docs/launch-dashboard.html)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
+[![TypeScript](https://img.shields.io/badge/language-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 
-- AI model registration and management
-- Multi-model task orchestration
-- Performance monitoring and metrics
-- RESTful API with comprehensive endpoints
-- Health check endpoint
-- Comprehensive logging
-- Containerized deployment with Docker
+## 🌟 Overview
 
-## API Endpoints
+The **AI Orchestrator** is the "Superego" of the Azora ecosystem. It serves as the central nervous system for all AI interactions, ensuring every decision, generation, and action adheres to the **Azora Constitution**.
 
-### Health Check
-- `GET /health` - Service health status
+### Key Capabilities
+- **Constitutional Guardrails**: Enforces 20+ ethical rules on all AI outputs.
+- **Critique Engine**: Implements a "Critique-Refine" loop before any action is finalized.
+- **Model Routing**: Intelligently routes requests to the most appropriate model (GPT-4, Claude, Llama, etc.).
+- **Fairness Scoring**: Automatically scores outputs for bias, transparency, and privacy.
 
-### AI Models
-- `GET /api/models` - Get all registered AI models
-- `GET /api/models/:modelId` - Get specific AI model
-- `POST /api/models` - Register a new AI model
-- `PUT /api/models/:modelId` - Update model status
+## 🏗️ Architecture
 
-### Orchestration
-- `POST /api/orchestrate` - Orchestrate AI task execution
-- `GET /api/orchestrate/:orchestrationId` - Get orchestration status
+This service sits between the user-facing applications and the raw LLMs.
 
-### Performance
-- `GET /api/performance` - Get model performance metrics
-
-## Installation
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the service:
-   ```bash
-   npm start
-   ```
-
-## Environment Variables
-
-- `PORT` - Port to run the service on (default: 3014)
-- `LOG_LEVEL` - Logging level (default: info)
-
-## Docker
-
-The service includes a Dockerfile for containerized deployment:
-
-```bash
-docker build -t ai-orchestrator .
-docker run -p 3014:3014 ai-orchestrator
+```mermaid
+graph LR
+    User[User Request] --> API[API Gateway]
+    API --> Orch[AI Orchestrator]
+    Orch --> Const[Constitutional Check]
+    Const --> Model[LLM Provider]
+    Model --> Critique[Critique Engine]
+    Critique -->|Approved| Response[Final Response]
+    Critique -->|Rejected| Refine[Refinement Loop]
 ```
 
-## Testing
+## 🔌 API Endpoints
 
-Run tests with:
+### Core
+- `POST /api/generate` - Generate content with constitutional checks
+- `POST /api/chat` - Chat interface with memory and ethics
+- `GET /health` - Service health status
+
+### Constitutional
+- `POST /api/critique` - Run standalone critique on text
+- `GET /api/rules` - List active constitutional rules
+
+## 🔧 Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Service port | `3014` |
+| `OPENAI_API_KEY` | Key for OpenAI models | - |
+| `ANTHROPIC_API_KEY` | Key for Claude models | - |
+| `CONSTITUTION_MODE` | Strictness level | `STRICT` |
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js v18+
+- Docker (optional)
+
+### Installation
+
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
 npm test
 ```
 
-## Contributing
+## 🧪 Testing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a pull request
+We use Jest for unit and integration testing.
 
-## License
+```bash
+# Run all tests
+npm test
 
-Proprietary - Azora ES (Pty) Ltd
+# Run specific test file
+npm test -- src/critique/engine.test.ts
+```
+
+## 🤝 Contributing
+
+Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+---
+
+**Built with Ubuntu Philosophy: "I am because we are."**

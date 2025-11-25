@@ -138,6 +138,26 @@ app.post('/api/compliance', (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'ai-ethics-monitor',
+    ubuntu: 'I serve because we prosper together',
+    timestamp: new Date().toISOString(),
+    reports: ethicsReports.size,
+    compliance: complianceReports.size
+  });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    service: 'ai-ethics-monitor',
+    status: 'active',
+    version: '1.0.0'
+  });
+});
 // Get all ethics reports
 app.get('/api/reports', (req, res) => {
   try {

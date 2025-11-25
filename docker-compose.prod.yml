@@ -1,230 +1,77 @@
-# Azora OS - Production Docker Compose
-# High-availability deployment configuration
-
 version: '3.8'
 
 services:
-  # Load Balancer
-  nginx:
-    image: nginx:alpine
-    container_name: azora-nginx-lb
+  # 🧠 Constitutional AI
+  ai-orchestrator:
+    build: ./services/ai-orchestrator
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - api-gateway-1
-      - api-gateway-2
-      - frontend-1
-      - frontend-2
-    networks:
-      - azora-network
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 2G
-
-  # API Gateway Cluster
-  api-gateway-1:
-    build:
-      context: ./services/api-gateway
-      dockerfile: Dockerfile.prod
-    container_name: azora-api-gateway-1
+      - "3014:3014"
     environment:
+      - PORT=3014
       - NODE_ENV=production
-      - PORT=4000
-      - INSTANCE_ID=1
+    restart: always
     networks:
-      - azora-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - azora-net
 
-  api-gateway-2:
-    build:
-      context: ./services/api-gateway
-      dockerfile: Dockerfile.prod
-    container_name: azora-api-gateway-2
-    environment:
-      - NODE_ENV=production
-      - PORT=4000
-      - INSTANCE_ID=2
-    networks:
-      - azora-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Frontend Cluster
-  frontend-1:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    container_name: azora-frontend-1
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=https://api.azora.world
-      - INSTANCE_ID=1
-    networks:
-      - azora-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  frontend-2:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    container_name: azora-frontend-2
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=https://api.azora.world
-      - INSTANCE_ID=2
-    networks:
-      - azora-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Core Services
-  auth-service:
-    build:
-      context: ./services/auth-service
-      dockerfile: Dockerfile.prod
-    container_name: azora-auth-service
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-    networks:
-      - azora-network
-    restart: unless-stopped
-    deploy:
-      replicas: 2
-
-  education-service:
-    build:
-      context: ./services/azora-education
-      dockerfile: Dockerfile.prod
-    container_name: azora-education-service
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-    networks:
-      - azora-network
-    restart: unless-stopped
-    deploy:
-      replicas: 2
-
-  # Database Cluster
-  database-primary:
-    image: postgres:16-alpine
-    container_name: azora-db-primary
-    environment:
-      - POSTGRES_USER=azora_prod
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=azora_production
-      - POSTGRES_REPLICATION_MODE=master
-      - POSTGRES_REPLICATION_USER=replicator
-      - POSTGRES_REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-    volumes:
-      - postgres-primary-data:/var/lib/postgresql/data
-    networks:
-      - azora-network
-    restart: unless-stopped
-
-  database-replica:
-    image: postgres:16-alpine
-    container_name: azora-db-replica
-    environment:
-      - POSTGRES_MASTER_SERVICE=database-primary
-      - POSTGRES_REPLICATION_MODE=slave
-      - POSTGRES_REPLICATION_USER=replicator
-      - POSTGRES_REPLICATION_PASSWORD=${REPLICATION_PASSWORD}
-    volumes:
-      - postgres-replica-data:/var/lib/postgresql/data
-    networks:
-      - azora-network
-    restart: unless-stopped
-    depends_on:
-      - database-primary
-
-  # Redis Cluster
-  redis-master:
-    image: redis:7-alpine
-    container_name: azora-redis-master
-    command: redis-server --appendonly yes --replica-announce-ip redis-master
-    volumes:
-      - redis-master-data:/data
-    networks:
-      - azora-network
-    restart: unless-stopped
-
-  redis-replica:
-    image: redis:7-alpine
-    container_name: azora-redis-replica
-    command: redis-server --slaveof redis-master 6379 --replica-announce-ip redis-replica
-    volumes:
-      - redis-replica-data:/data
-    networks:
-      - azora-network
-    restart: unless-stopped
-    depends_on:
-      - redis-master
-
-  # Monitoring
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: azora-prometheus
+  # 🔐 Authentication
+  azora-auth:
+    build: ./services/azora-auth
     ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus-data:/prometheus
-    networks:
-      - azora-network
-    restart: unless-stopped
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: azora-grafana
-    ports:
-      - "3030:3000"
+      - "4001:4001"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
-    volumes:
-      - grafana-data:/var/lib/grafana
+      - PORT=4001
+      - NODE_ENV=production
+    restart: always
     networks:
-      - azora-network
-    restart: unless-stopped
+      - azora-net
 
-volumes:
-  postgres-primary-data:
-  postgres-replica-data:
-  redis-master-data:
-  redis-replica-data:
-  prometheus-data:
-  grafana-data:
+  # ⛓️ Blockchain & Tokenomics
+  azora-mint:
+    build: ./services/azora-mint
+    ports:
+      - "3011:3011"
+    environment:
+      - PORT=3011
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  # 💰 Payments
+  azora-pay:
+    build: ./services/azora-pay
+    ports:
+      - "3010:3010"
+    environment:
+      - PORT=3010
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  # 🐵 Antifragile Infrastructure
+  chaos-monkey:
+    build: ./services/chaos-monkey
+    ports:
+      - "3050:3050"
+    environment:
+      - PORT=3050
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  phoenix-server:
+    build: ./services/phoenix-server
+    ports:
+      - "3051:3051"
+    environment:
+      - PORT=3051
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
 
 networks:
-  azora-network:
+  azora-net:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
