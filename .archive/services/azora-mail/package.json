@@ -1,0 +1,25 @@
+{
+  "name": "azora-mail",
+  "version": "1.0.0",
+  "description": "Azora Mail - Complete email infrastructure service",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.7",
+    "smtp-server": "^3.13.0",
+    "imapflow": "^1.0.157",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
+

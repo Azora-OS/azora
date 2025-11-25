@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Earning {
+  id              String   @id @default(uuid())
+  studentId       String
+  amount          Float
+  currency        String   @default("AZR")
+  source          String
+  type            String
+  status          String   @default("pending")
+  metadata        String?
+  earnedAt        DateTime @default(now())
+  processedAt     DateTime?
+
+  @@index([studentId])
+  @@index([source])
+  @@map("earnings")
+}
+
+model Milestone {
+  id              String   @id @default(uuid())
+  studentId       String
+  type            String
+  description     String
+  rewardAmount    Float
+  currency        String   @default("AZR")
+  achieved        Boolean  @default(false)
+  achievedAt      DateTime?
+  createdAt       DateTime @default(now())
+
+  @@index([studentId])
+  @@map("milestones")
+}
+
+model Withdrawal {
+  id              String   @id @default(uuid())
+  studentId       String
+  amount          Float
+  currency        String   @default("AZR")
+  method          String
+  status          String   @default("pending")
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
+
+  @@index([studentId])
+  @@index([status])
+  @@map("withdrawals")
+}

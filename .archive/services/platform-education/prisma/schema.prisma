@@ -1,0 +1,62 @@
+// Azora OS - platform-education Database Schema
+// Ubuntu: "My data strengthens our foundation"
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  instructorId String
+  isPublished Boolean  @default(false)
+  price       Decimal  @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  
+  @@index([instructorId])
+  @@map("courses")
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  studentId  String
+  courseId   String
+  progress   Int      @default(0)
+  status     EnrollmentStatus @default(ACTIVE)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+  SUSPENDED
+}
+
+// Constitutional Compliance
+model ConstitutionalLog {
+  id        String   @id @default(uuid())
+  action    String
+  userId    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("constitutional_logs")
+}

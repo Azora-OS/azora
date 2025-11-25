@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Azora OS Shared Design Layer - Real data access for Head of Design (Sonnet Claude)",
   "type": "module",
+  "azora": {
+    "internal": true,
+    "ecosystem": "azora-os",
+    "tier": "internal"
+  },
   "main": "./index.ts",
   "exports": {
     ".": "./index.ts",
@@ -12,16 +17,16 @@
     "./utils": "./utils.ts",
     "./data": "./data-service.ts",
     "./hooks": "./hooks.ts",
-    "./api": "./api-routes.ts"
+    "./api": "./api-routes.ts",
+    "./layouts/*": "./layouts/*.tsx"
   },
   "scripts": {
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-database": "file:../shared-database",
+    "@auth/core": "0.34.3",
     "@azora/shared-auth": "file:../shared-auth",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.4.0",
+    "@azora/shared-database": "file:../shared-database",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
@@ -50,28 +55,35 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
+    "@tanstack/react-query": "5.90.10",
+    "axios": "1.13.2",
     "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
+    "next-auth": "4.24.13",
     "next-themes": "^0.4.6",
     "react-day-picker": "9.8.0",
     "react-hook-form": "^7.60.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.4",
+    "socket.io-client": "4.8.1",
     "sonner": "^1.7.4",
+    "tailwind-merge": "^3.4.0",
     "vaul": "^0.9.9",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "zustand": "5.0.8"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
     "@types/express": "^4.17.21",
     "@types/node": "^20.0.0",
-    "typescript": "5.4.5",
+    "@types/react": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0"
+    "@typescript-eslint/parser": "^7.0.0",
+    "typescript": "5.4.5"
   },
   "peerDependencies": {
     "express": "^4.18.0",

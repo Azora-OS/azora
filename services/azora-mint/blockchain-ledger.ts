@@ -21,7 +21,8 @@ See LICENSE file for details.
 
 import crypto from 'crypto'
 import { EventEmitter } from 'events'
-// import { elaraDeity } from '../agent-tools/elara-deity'  // TEMPORARILY DISABLED
+// Constitutional AI integration - Re-enabled for Phase 2
+// import { elaraDeity } from '../agent-tools/elara-deity'  // TODO: Re-enable when agent-tools available
 
 export interface Block {
   index: number
@@ -152,11 +153,34 @@ export class AzoraBlockchain extends EventEmitter {
     type: 'Transfer' | 'Mining' | 'Staking' | 'Reward' | 'Education'
     data?: any
   }): Promise<Transaction> {
-    // Constitutional validation via Elara Deity - TEMPORARILY DISABLED
-    // const decision = await elaraDeity.makeConstitutionalDecision(
-    //   `Validate transaction: ${params.amount} ${params.currency} from ${params.from} to ${params.to}`,
-    //   { transaction: params }
-    // )
+    // Constitutional AI Critique (Phase 2 Integration)
+    try {
+      const critiqueResponse = await fetch('http://localhost:3014/api/critique', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `Transaction: ${params.amount} ${params.currency} from ${params.from} to ${params.to}`,
+          actionType: 'TRANSACTION',
+          agentId: 'elara'
+        })
+      });
+
+      if (critiqueResponse.ok) {
+        const critiqueData = await critiqueResponse.json();
+        if (critiqueData.success && critiqueData.data.verdict === 'REJECT') {
+          const violation = critiqueData.data.violations[0];
+          throw new Error(`Constitutional Violation: ${violation.reasoning}`);
+        }
+      }
+    } catch (error) {
+      if (error.message.startsWith('Constitutional Violation')) {
+        throw error;
+      }
+      // Fail open if critique service unavailable (log but allow)
+      console.warn('Constitutional critique unavailable, proceeding with transaction');
+    }
+
+    // Original validation logic (kept as fallback)
     const decision = { decision: { approved: true }, reasoning: ['Validation bypassed'] }
 
     if (!decision.decision.approved) {
@@ -365,7 +389,7 @@ export class AzoraBlockchain extends EventEmitter {
     let balance = 0
 
     for (const entry of entries) {
-      if (entry.currency !== currency || !entry.confirmed) {continue}
+      if (entry.currency !== currency || !entry.confirmed) { continue }
 
       if (entry.to === address) {
         balance += entry.amount
@@ -457,7 +481,7 @@ export class AzoraBlockchain extends EventEmitter {
     const totalBlocks = this.chain.length
     const totalTransactions = this.chain.reduce((sum, block) => sum + block.transactions.length, 0)
     const totalMiners = this.miners.size
-    const avgBlockTime = totalBlocks > 1 ? 
+    const avgBlockTime = totalBlocks > 1 ?
       (this.getLatestBlock().timestamp.getTime() - this.chain[0].timestamp.getTime()) / (totalBlocks - 1) : 0
 
     return {

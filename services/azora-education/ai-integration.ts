@@ -43,9 +43,40 @@ export class AIEducationService extends EventEmitter {
     console.log('🤖 AI Education Service initialized')
   }
 
+  // --- CONSTITUTIONAL AI INTEGRATION ---
+  private async critiquePrompt(prompt: string, actionType: string): Promise<void> {
+    try {
+      // In production, use env var for URL
+      const response = await fetch('http://localhost:3014/api/critique', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          actionType,
+          agentId: 'elara' // Default to Elara for education
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data.verdict === 'REJECT') {
+          const violation = data.data.violations[0];
+          throw new Error(`Constitutional Violation (${violation.category}): ${violation.reasoning}`);
+        }
+      }
+    } catch (error) {
+      if (error.message.startsWith('Constitutional Violation')) {
+        throw error;
+      }
+      // Fail open if critique service is down, but log it
+      logger.error('Constitutional critique failed (service unavailable?)', { error });
+    }
+  }
+
   async generatePersonalizedContent(userId: string, topic: string, level: string) {
+    await this.critiquePrompt(`Create a lesson about ${topic} for a student at ${level} level.`, 'CONTENT_GEN');
     await rateLimiter.removeTokens(1)
-    
+
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -64,10 +95,10 @@ export class AIEducationService extends EventEmitter {
       })
 
       const content = response.choices[0]?.message?.content
-      
+
       // Log for monitoring
       logger.info('AI content generated', { userId, topic, level })
-      
+
       return {
         content,
         metadata: {
@@ -83,8 +114,10 @@ export class AIEducationService extends EventEmitter {
   }
 
   async assessStudentResponse(question: string, studentAnswer: string, correctAnswer: string) {
+    // Assessment is less risky, but we can still critique the feedback generation if needed.
+    // Skipping strict critique for assessment to reduce latency, unless answer contains flagged content.
     await rateLimiter.removeTokens(1)
-    
+
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -148,8 +181,9 @@ export class AIEducationService extends EventEmitter {
   }
 
   async generateLearningPath(userId: string, strengths: string[], weaknesses: string[]) {
+    await this.critiquePrompt(`Create a learning path for a student with strengths in: ${strengths.join(', ')} and weaknesses in: ${weaknesses.join(', ')}`, 'CONTENT_GEN');
     await rateLimiter.removeTokens(1)
-    
+
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -167,10 +201,10 @@ export class AIEducationService extends EventEmitter {
       })
 
       const path = response.choices[0]?.message?.content
-      
+
       logger.info('Learning path generated', { userId, strengths, weaknesses })
       this.emit('learning-path-generated', { userId, path })
-      
+
       return {
         path,
         recommendations: this.extractRecommendations(path || ''),
@@ -183,8 +217,9 @@ export class AIEducationService extends EventEmitter {
   }
 
   async tutorQuestion(question: string, context: string, language: string = 'en') {
+    await this.critiquePrompt(`Context: ${context}\n\nQuestion: ${question}`, 'CHAT');
     await rateLimiter.removeTokens(1)
-    
+
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -203,9 +238,9 @@ export class AIEducationService extends EventEmitter {
       })
 
       const answer = response.choices[0]?.message?.content
-      
+
       this.emit('question-answered', { question, answer, language })
-      
+
       return {
         answer,
         followUpQuestions: this.generateFollowUpQuestions(question, answer || ''),
@@ -218,8 +253,9 @@ export class AIEducationService extends EventEmitter {
   }
 
   async generateQuiz(topic: string, difficulty: number, questionCount: number = 5) {
+    await this.critiquePrompt(`Generate ${questionCount} multiple choice questions about ${topic} at difficulty level ${difficulty}/10.`, 'CONTENT_GEN');
     await rateLimiter.removeTokens(1)
-    
+
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -238,10 +274,10 @@ export class AIEducationService extends EventEmitter {
 
       const content = response.choices[0]?.message?.content || '[]'
       const questions = JSON.parse(content)
-      
+
       logger.info('Quiz generated', { topic, difficulty, questionCount })
       this.emit('quiz-generated', { topic, questions })
-      
+
       return {
         questions,
         topic,

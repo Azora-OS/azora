@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id              String   @id @default(uuid())
+  userId          String
+  type            String
+  amount          Float
+  currency        String   @default("AZR")
+  status          String   @default("pending")
+  fromAccount     String?
+  toAccount       String?
+  reference       String?
+  createdAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@map("transactions")
+}
+
+model Wallet {
+  id              String   @id @default(uuid())
+  userId          String
+  currency        String   @default("AZR")
+  balance         Float    @default(0)
+  lockedBalance   Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, currency])
+  @@map("wallets")
+}
+
+model TransactionFee {
+  id              String   @id @default(uuid())
+  transactionId   String
+  feeType         String
+  amount          Float
+  currency        String   @default("AZR")
+  createdAt       DateTime @default(now())
+
+  @@index([transactionId])
+  @@map("transaction_fees")
+}

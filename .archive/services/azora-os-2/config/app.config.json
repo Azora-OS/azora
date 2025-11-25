@@ -1,0 +1,51 @@
+{
+  "appName": "Azora OS",
+  "version": "1.0.0",
+  "description": "A comprehensive operating system for decentralized applications.",
+  "author": "Azora Team",
+  "license": "MIT",
+  "apiBaseUrl": "https://api.azora-os.com",
+  "frontendBaseUrl": "https://frontend.azora-os.com",
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "username": "azora_user",
+    "password": "securepassword",
+    "database": "azora_db"
+  },
+  "features": {
+    "authentication": true,
+    "payments": true,
+    "analytics": true,
+    "notifications": true,
+    "governance": true
+  },
+  "logging": {
+    "level": "info",
+    "file": "/var/log/azora-os/app.log"
+  },
+  "security": {
+    "enableHttps": true,
+    "allowedOrigins": [
+      "https://frontend.azora-os.com",
+      "https://admin.azora-os.com"
+    ]
+  },
+  "aiModels": {
+    "enabled": true,
+    "modelPaths": [
+      "ai-models/recommendationModel.py",
+      "ai-models/anomalyDetectionModel.py"
+    ]
+  },
+  "deployment": {
+    "docker": {
+      "image": "azora-os:latest",
+      "containerName": "azora-os-container"
+    },
+    "kubernetes": {
+      "namespace": "azora",
+      "replicas": 3
+    }
+  }
+}

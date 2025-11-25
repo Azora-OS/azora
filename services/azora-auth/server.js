@@ -56,7 +56,7 @@ const jwt = require('jsonwebtoken');
 
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
-  
+
   // Mock authentication
   if (email && password) {
     const token = jwt.sign(
@@ -64,7 +64,7 @@ app.post('/api/login', (req, res) => {
       'ubuntu-secret-key',
       { expiresIn: '24h' }
     );
-    
+
     res.json({
       success: true,
       token,
@@ -98,6 +98,6 @@ app.use((error, req, res, next) => {
 
 // Start Ubuntu Service
 app.listen(PORT, () => {
-  console.log(`🚀 ${serviceName} running on port ${PORT}`);
+  console.log(`🚀 azora-auth running on port ${PORT}`);
   console.log('⚡ Ubuntu: "I serve because we prosper together!"');
 });

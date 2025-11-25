@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  assessment-db:
+    image: postgres:15
+    container_name: azora-assessment-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_assessment
+    ports:
+      - "5433:5432"
+    volumes:
+      - assessment_db_data:/var/lib/postgresql/data
+    networks:
+      - assessment-network
+
+  assessment-service:
+    build: .
+    container_name: azora-assessment-service
+    ports:
+      - "3005:3005"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@assessment-db:5432/azora_assessment
+      - PORT=3005
+      - NODE_ENV=development
+    depends_on:
+      - assessment-db
+    networks:
+      - assessment-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  assessment_db_data:
+
+networks:
+  assessment-network:
+    driver: bridge

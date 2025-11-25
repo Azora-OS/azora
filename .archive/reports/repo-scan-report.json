@@ -1,0 +1,432 @@
+{
+  "timestamp": "2025-11-17T09:44:03.125Z",
+  "summary": {
+    "complete": 14,
+    "incomplete": 53,
+    "missing": 0,
+    "health": "NEEDS_WORK"
+  },
+  "complete": [
+    "✅ services/auth-service",
+    "✅ services/azora-education",
+    "✅ services/azora-forge",
+    "✅ services/azora-mint",
+    "✅ services/azora-sapiens",
+    "✅ apps/app",
+    "✅ apps/azora-ui",
+    "✅ apps/enterprise-mobile",
+    "✅ apps/enterprise-ui",
+    "✅ apps/marketplace-ui",
+    "✅ apps/master-ui",
+    "✅ apps/pay-ui",
+    "✅ apps/student-portal",
+    "✅ apps/student-portal-mobile"
+  ],
+  "incomplete": [
+    {
+      "path": "services/ai-ethics-monitor",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/ai-evolution-engine",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/ai-family-service",
+      "missing": [
+        "tests"
+      ]
+    },
+    {
+      "path": "services/ai-orchestrator",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src"
+      ]
+    },
+    {
+      "path": "services/ai-routing",
+      "missing": [
+        "jest.config.js",
+        ".env.example",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/analytics-dashboard",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/api-gateway",
+      "missing": [
+        "healthcheck.js"
+      ]
+    },
+    {
+      "path": "services/arbiter-system",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/audit-logging-service",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-assessment",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-careers",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-classroom",
+      "missing": [
+        "tests",
+        "src"
+      ]
+    },
+    {
+      "path": "services/azora-corporate-learning",
+      "missing": [
+        ".env.example",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-erp",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-judiciary-service",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-ledger",
+      "missing": [
+        "jest.config.js",
+        ".env.example"
+      ]
+    },
+    {
+      "path": "services/azora-library",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-pay",
+      "missing": [
+        "tests",
+        "src"
+      ]
+    },
+    {
+      "path": "services/azora-pricing",
+      "missing": [
+        "jest.config.js",
+        ".env.example"
+      ]
+    },
+    {
+      "path": "services/azora-research-center",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src"
+      ]
+    },
+    {
+      "path": "services/azora-studyspaces",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azora-treasury",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/azr-token",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/billing-service",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/constitutional-ai",
+      "missing": [
+        "Dockerfile",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/constitutional-court-service",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/defi-lending",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/enrollment-service",
+      "missing": [
+        "src"
+      ]
+    },
+    {
+      "path": "services/enterprise",
+      "missing": [
+        "index.js",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/exchange-rate-service",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/governance-service",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/health-monitor",
+      "missing": [
+        "tests",
+        "src"
+      ]
+    },
+    {
+      "path": "services/kyc-aml-service",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/lending-service",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/marketplace",
+      "missing": [
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/orchestrator",
+      "missing": [
+        "package.json",
+        "Dockerfile",
+        "healthcheck.js",
+        "README.md",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/payment",
+      "missing": [
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/personalization-engine",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/project-marketplace",
+      "missing": [
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/quantum-ai-orchestrator",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/quantum-deep-mind",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/quantum-tracking",
+      "missing": [
+        ".env.example",
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/shared",
+      "missing": [
+        "jest.config.js",
+        ".env.example",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/shield_service",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/subscription",
+      "missing": [
+        "index.js",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/tamper-proof-data-service",
+      "missing": [
+        "tests",
+        "src",
+        "prisma"
+      ]
+    },
+    {
+      "path": "services/tokens",
+      "missing": [
+        "jest.config.js",
+        ".env.example",
+        "prisma"
+      ]
+    },
+    {
+      "path": "apps/cloud-ui",
+      "missing": [
+        "next.config.js"
+      ]
+    },
+    {
+      "path": "apps/compliance-ui",
+      "missing": [
+        "next.config.js"
+      ]
+    },
+    {
+      "path": "apps/dev-ui",
+      "missing": [
+        "next.config.js"
+      ]
+    },
+    {
+      "path": "apps/ingestion-ui",
+      "missing": [
+        "next.config.js"
+      ]
+    },
+    {
+      "path": "apps/learn-ui",
+      "missing": [
+        "next.config.js"
+      ]
+    },
+    {
+      "path": "apps/web",
+      "missing": [
+        "tsconfig.json"
+      ]
+    }
+  ],
+  "missing": []
+}

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  studyspaces-db:
+    image: postgres:15
+    container_name: azora-studyspaces-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_studyspaces
+    ports:
+      - "5437:5432"
+    volumes:
+      - studyspaces_db_data:/var/lib/postgresql/data
+    networks:
+      - studyspaces-network
+
+  studyspaces-service:
+    build: .
+    container_name: azora-studyspaces-service
+    ports:
+      - "3009:3009"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@studyspaces-db:5432/azora_studyspaces
+      - PORT=3009
+      - NODE_ENV=development
+    depends_on:
+      - studyspaces-db
+    networks:
+      - studyspaces-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  studyspaces_db_data:
+
+networks:
+  studyspaces-network:
+    driver: bridge

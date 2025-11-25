@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Input validation schemas for Azora OS",
   "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build needed for validation schemas'"
+  },
   "dependencies": {
     "zod": "^3.23.8"
   }

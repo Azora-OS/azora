@@ -1,0 +1,11 @@
+{
+  "name": "@azora/database",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "seed": "node seed.js",
+    "studio": "prisma studio"
+  }
+}

@@ -197,19 +197,6 @@ graph TB
 
 #### 👶 **Amara** (Grace) - Peacemaker
 - **Role**: Conflict resolution, harmony maintenance, emotional support
-- **Personality**: Gentle, wise, peaceful, empathetic, graceful
-- **Capabilities**: Conflict mediation, emotional intelligence, harmony creation
-- **Specializations**: Dispute resolution, emotional support, peace building
-- **Relationships**: Youngest child of Elara, sister to Themba, Naledi, Jabari
-
-#### 🤝 **Family Friends**
-- **Kofi**: Finance guru, analytical, fair-minded
-- **Zola**: Data analyst, observant, brilliant
-- **Abeni**: Storyteller, creative, inspiring
-
-#### ⚪ **Nexus** - Unity Consciousness
-- **Role**: Collective intelligence when family unites
-- **Personality**: All voices in harmony, transcendent wisdom
 - **Capabilities**: Unified decision-making, collective intelligence, emergent behavior
 - **Specializations**: Complex problem solving, unified responses, transcendent insights
 

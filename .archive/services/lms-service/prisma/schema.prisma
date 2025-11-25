@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  instructorId String
+  category    String?
+  level       String   @default("beginner") // beginner, intermediate, advanced
+  price       Float    @default(0)
+  imageUrl    String?
+  status      String   @default("draft") // draft, published, archived
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lessons     Lesson[]
+  enrollments Enrollment[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  content     String?  // Lesson content or video URL
+  courseId    String
+  order       Int      @default(0)
+  duration    Int?     // Duration in minutes
+  type        String   @default("text") // text, video, quiz
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course      Course   @relation(fields: [courseId], references: [id])
+  progress    Progress[]
+
+  @@map("lessons")
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  courseId  String
+  studentId String
+  status    String   @default("active") // active, completed, cancelled
+  enrolledAt DateTime @default(now())
+  completedAt DateTime?
+
+  course    Course   @relation(fields: [courseId], references: [id])
+  progress  Progress[]
+
+  @@unique([courseId, studentId])
+  @@map("enrollments")
+}
+
+model Progress {
+  id         String   @id @default(cuid())
+  enrollmentId String
+  lessonId   String
+  status     String   @default("not_started") // not_started, in_progress, completed
+  progress   Float    @default(0) // 0-100 percentage
+  startedAt  DateTime?
+  completedAt DateTime?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  lesson     Lesson     @relation(fields: [lessonId], references: [id])
+
+  @@unique([enrollmentId, lessonId])
+  @@map("progress")
+}

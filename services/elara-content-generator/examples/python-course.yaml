@@ -1,0 +1,65 @@
+title: "Python Programming Masterclass"
+description: "Learn Python from absolute beginner to job-ready developer. Build real projects and master Python fundamentals."
+level: "beginner"
+category: "Programming"
+price: 499
+
+modules:
+  - title: "Python Basics"
+    lessons:
+      - title: "Introduction to Python"
+        duration: 20
+        topics:
+          - "What is Python and why learn it?"
+          - "Installing Python and VS Code"
+          - "Writing your first Hello World program"
+          - "Understanding the Python REPL"
+        hands_on:
+          - "Install Python on your computer"
+          - "Create and run your first Python script"
+      
+      - title: "Variables and Data Types"
+        duration: 20
+        topics:
+          - "Numbers: integers and floats"
+          - "Strings and string methods"
+          - "Booleans and None type"
+          - "Type conversion and casting"
+        hands_on:
+          - "Build a simple calculator"
+          - "Create a temperature converter"
+      
+      - title: "Control Flow - If Statements"
+        duration: 20
+        topics:
+          - "Comparison operators"
+          - "Logical operators (and, or, not)"
+          - "If, elif, else statements"
+          - "Nested conditions"
+        hands_on:
+          - "Build a grade calculator"
+          - "Create a simple decision tree"
+
+  - title: "Working with Data"
+    lessons:
+      - title: "Lists and Tuples"
+        duration: 20
+        topics:
+          - "Creating and accessing lists"
+          - "List methods and operations"
+          - "List comprehensions"
+          - "Tuples vs lists"
+        hands_on:
+          - "Build a todo list application"
+          - "Create a shopping cart system"
+      
+      - title: "Dictionaries and Sets"
+        duration: 20
+        topics:
+          - "Dictionary basics and methods"
+          - "Nested dictionaries"
+          - "Sets and set operations"
+          - "When to use each data structure"
+        hands_on:
+          - "Create a contact book"
+          - "Build a word frequency counter"

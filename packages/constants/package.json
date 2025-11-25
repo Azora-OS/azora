@@ -4,6 +4,7 @@
   "description": "Ubuntu-powered @azora/constants service",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'No build needed for constants package'",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest"

@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Assessment {
+  id           String   @id @default(uuid())
+  title        String
+  subject      String
+  grade        Int?
+  type         String   @default("quiz")
+  duration     Int      @default(60)
+  passingScore Int      @default(70)
+  questions    Json
+  createdBy    String
+  createdAt    DateTime @default(now())
+  
+  submissions  Submission[]
+}
+
+model Submission {
+  id           String   @id @default(uuid())
+  assessmentId String
+  studentId    String
+  answers      Json
+  score        Float
+  percentage   Float
+  passed       Boolean
+  feedback     Json?
+  submittedAt  DateTime @default(now())
+  gradedAt     DateTime @default(now())
+  
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+}
+
+model Gradebook {
+  id          String   @id @default(uuid())
+  studentId   String
+  subject     String
+  grades      Json[]
+  average     Float
+  trend       String
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([studentId, subject])
+}
+
+model Analytics {
+  id          String   @id @default(uuid())
+  studentId   String   @unique
+  totalTests  Int      @default(0)
+  avgScore    Float    @default(0)
+  passRate    Float    @default(0)
+  trend       String   @default("stable")
+  strengths   String[]
+  weaknesses  String[]
+  updatedAt   DateTime @updatedAt
+}

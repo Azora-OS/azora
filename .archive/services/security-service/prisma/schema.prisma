@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SecurityEvent {
+  id              String   @id @default(uuid())
+  userId          String?
+  eventType       String
+  severity        String   @default("low")
+  ipAddress       String?
+  userAgent       String?
+  details         String?
+  status          String   @default("detected")
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([eventType])
+  @@index([severity])
+  @@map("security_events")
+}
+
+model BlockedEntity {
+  id              String   @id @default(uuid())
+  entityType      String
+  entityId        String
+  reason          String
+  blockedAt       DateTime @default(now())
+  expiresAt       DateTime?
+
+  @@unique([entityType, entityId])
+  @@map("blocked_entities")
+}
+
+model SessionValidation {
+  id              String   @id @default(uuid())
+  sessionId       String
+  userId          String
+  isValid         Boolean  @default(true)
+  ipAddress       String?
+  lastValidated   DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([userId])
+  @@map("session_validations")
+}

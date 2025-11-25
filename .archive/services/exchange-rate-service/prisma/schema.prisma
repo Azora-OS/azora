@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ExchangeRate {
+  id              String   @id @default(uuid())
+  fromCurrency    String
+  toCurrency      String
+  rate            Float
+  source          String   @default("manual")
+  validFrom       DateTime @default(now())
+  validUntil      DateTime?
+  createdAt       DateTime @default(now())
+
+  @@unique([fromCurrency, toCurrency, validFrom])
+  @@index([fromCurrency, toCurrency])
+  @@map("exchange_rates")
+}
+
+model CurrencyPair {
+  id              String   @id @default(uuid())
+  fromCurrency    String
+  toCurrency      String
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  @@unique([fromCurrency, toCurrency])
+  @@map("currency_pairs")
+}
+
+model Conversion {
+  id              String   @id @default(uuid())
+  userId          String
+  fromCurrency    String
+  toCurrency      String
+  fromAmount      Float
+  toAmount        Float
+  rate            Float
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@map("conversions")
+}

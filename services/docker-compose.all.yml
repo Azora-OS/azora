@@ -30,30 +30,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Core Services
-  api-gateway:
-    build: ./api-gateway
-    ports:
-      - "4000:4000"
-    environment:
-      - NODE_ENV=production
-      - PORT=4000
-    depends_on:
-      - redis
-    restart: unless-stopped
+  # Core Services removed - using consolidated versions
+  # api-gateway -> azora-api-gateway
+  # auth-service -> azora-auth
 
-  auth-service:
-    build: ./auth-service
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - DATABASE_URL=postgresql://azora:azora2024@postgres:5432/azora_os
-    depends_on:
-      - postgres
-      - redis
-    restart: unless-stopped
+
+
 
   # AI Services
   ai-ethics-monitor:

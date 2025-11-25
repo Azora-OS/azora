@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  ai-ethics-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: azora-ai-ethics-monitor
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=production
+      - PORT=3005
+      - DATABASE_URL=postgresql://postgres:azora2024@localhost:5432/azora_ethics?schema=public
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+      - MONITORING_QUEUE_NAME=ai-ethics-monitoring
+      - AUDIT_QUEUE_NAME=ai-ethics-audit
+      - CACHE_TTL=3600
+      - MAX_REQUEST_SIZE=10mb
+      - RATE_LIMIT_WINDOW=15
+      - RATE_LIMIT_MAX_REQUESTS=100
+      - AZORA_CONSTITUTION_ENABLED=true
+      - BIAS_DETECTION_THRESHOLD=0.7
+      - FAIRNESS_CHECK_ENABLED=true
+      - TRANSPARENCY_LOGGING_ENABLED=true
+      - AUDIT_RETENTION_DAYS=365
+      - INTERVENTION_AUTO_TRIGGER=true
+      - METRICS_AGGREGATION_INTERVAL=24h
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: azora-ethics-postgres
+    environment:
+      - POSTGRES_DB=azora_ethics
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=azora2024
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./prisma/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d azora_ethics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: azora-ethics-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: azora-ethics-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@azora.os
+      - PGADMIN_DEFAULT_PASSWORD=azora2024
+    ports:
+      - "5051:80"
+    depends_on:
+      - postgres
+    networks:
+      - azora-network
+    restart: unless-stopped
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  redis_data:
+  pgadmin_data:
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-ethics-network

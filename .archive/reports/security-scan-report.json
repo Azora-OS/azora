@@ -1,0 +1,1251 @@
+{
+  "timestamp": "2025-11-17T09:27:16.717Z",
+  "summary": {
+    "critical": 88,
+    "high": 37,
+    "medium": 29,
+    "low": 0,
+    "total": 154
+  },
+  "findings": [
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\content-disposition\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\media-typer\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\path-to-regexp\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\charset.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\encoding.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\language.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\mediaType.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\dist\\qs.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\lib\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\test\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\body-parser\\lib\\types\\json.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\debug\\node_modules\\ms\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\express\\lib\\router\\layer.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\request.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\response.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "api-gateway"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "api-gateway"
+    },
+    {
+      "type": "SQL Injection Risk",
+      "severity": "HIGH",
+      "file": "sqlite-index.js",
+      "line": "Multiple",
+      "description": "Potential SQL injection vulnerability detected",
+      "service": "auth-service"
+    },
+    {
+      "type": "SQL Injection Risk",
+      "severity": "HIGH",
+      "file": "node_modules\\.prisma\\client\\index.d.ts",
+      "line": "Multiple",
+      "description": "Potential SQL injection vulnerability detected",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "src\\auth.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\.prisma\\client\\edge.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\.prisma\\client\\index-browser.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\.prisma\\client\\index.d.ts",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\.prisma\\client\\index.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\.prisma\\client\\wasm.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\bcrypt\\test\\async.test.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\bcrypt\\test\\implementation.test.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\bcrypt\\test\\promise.test.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\bcrypt\\test\\sync.test.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "auth-service"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "quantum-auth.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "auth-service"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "simple-index.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "auth-service"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "sqlite-index.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "auth-service"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^5.1.0",
+      "service": "auth-service"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: jsonwebtoken@^9.0.2",
+      "service": "auth-service"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\content-disposition\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\media-typer\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\path-to-regexp\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\charset.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\encoding.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\language.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\mediaType.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\dist\\qs.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\lib\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\test\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\body-parser\\lib\\types\\json.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\debug\\node_modules\\ms\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\express\\lib\\router\\layer.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-education"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "config\\index.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-education"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "docker\\init-mongo.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\@types\\express-serve-static-core\\index.d.ts",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-education"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\@types\\express-serve-static-core\\index.d.ts",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-education"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\request.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\response.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "mock-server.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "server.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\@types\\express\\index.d.ts",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\@types\\express-serve-static-core\\index.d.ts",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-education"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-education"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "azora-education"
+    },
+    {
+      "type": "SQL Injection Risk",
+      "severity": "HIGH",
+      "file": "ai-reinvestment.js",
+      "line": "Multiple",
+      "description": "Potential SQL injection vulnerability detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "mining-service.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\content-disposition\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\media-typer\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\path-to-regexp\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\charset.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\encoding.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\language.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\mediaType.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\dist\\qs.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\lib\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\test\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\body-parser\\lib\\types\\json.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\debug\\node_modules\\ms\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\express\\lib\\router\\layer.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "ai-reinvestment.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "defi.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "revenue.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "staking.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "subscription.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\request.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\response.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "ai-reinvestment.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "defi.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "liquidity.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "mining-engine.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "mining-service.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "mock-server.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "revenue.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "staking.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "subscription.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "azora-mint"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\content-disposition\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\media-typer\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\path-to-regexp\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\charset.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\encoding.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\language.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\mediaType.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\dist\\qs.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\lib\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\test\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\body-parser\\lib\\types\\json.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\debug\\node_modules\\ms\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\express\\lib\\router\\layer.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\request.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\response.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "job-matcher.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-forge"
+    },
+    {
+      "type": "CORS Misconfiguration",
+      "severity": "HIGH",
+      "file": "job-matcher.js",
+      "line": "Multiple",
+      "description": "Overly permissive CORS configuration",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "mock-server.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "src\\index.ts",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "src\\server.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "__tests__\\marketplace.test.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "azora-forge"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\content-disposition\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\media-typer\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\path-to-regexp\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\charset.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\encoding.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\language.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\negotiator\\lib\\mediaType.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\dist\\qs.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\lib\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\qs\\test\\parse.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\body-parser\\lib\\types\\json.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\debug\\node_modules\\ms\\index.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Command Injection Risk",
+      "severity": "CRITICAL",
+      "file": "node_modules\\express\\lib\\router\\layer.js",
+      "line": "Multiple",
+      "description": "Direct command execution detected",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\@types\\express-serve-static-core\\index.d.ts",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\@types\\express-serve-static-core\\index.d.ts",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Hardcoded Credentials",
+      "severity": "CRITICAL",
+      "file": "node_modules\\dotenv\\lib\\main.js",
+      "line": "Multiple",
+      "description": "Potential hardcoded credentials found",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\request.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Authentication",
+      "severity": "HIGH",
+      "file": "node_modules\\express\\lib\\response.js",
+      "line": "Multiple",
+      "description": "Endpoints without authentication middleware",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "CORS Misconfiguration",
+      "severity": "HIGH",
+      "file": "index.js",
+      "line": "Multiple",
+      "description": "Overly permissive CORS configuration",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "server.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\@types\\express\\index.d.ts",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\@types\\express-serve-static-core\\index.d.ts",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Missing Security Headers",
+      "severity": "MEDIUM",
+      "file": "node_modules\\express\\lib\\application.js",
+      "line": "Multiple",
+      "description": "Missing helmet middleware for security headers",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "azora-studyspaces"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "azora-erp"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "enterprise"
+    },
+    {
+      "type": "Vulnerable Dependency",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": "dependencies",
+      "description": "Potentially vulnerable package: express@^4.18.2",
+      "service": "subscription"
+    }
+  ],
+  "owaspCompliance": {
+    "A01-Broken-Access-Control": 24,
+    "A02-Cryptographic-Failures": 18,
+    "A03-Injection": 73,
+    "A05-Security-Misconfiguration": 29,
+    "A06-Vulnerable-Components": 10
+  }
+}

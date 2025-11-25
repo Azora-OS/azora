@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  library-db:
+    image: postgres:15
+    container_name: azora-library-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_library
+    ports:
+      - "5435:5432"
+    volumes:
+      - library_db_data:/var/lib/postgresql/data
+    networks:
+      - library-network
+
+  library-service:
+    build: .
+    container_name: azora-library-service
+    ports:
+      - "3007:3007"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@library-db:5432/azora_library
+      - PORT=3007
+      - NODE_ENV=development
+    depends_on:
+      - library-db
+    networks:
+      - library-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  library_db_data:
+
+networks:
+  library-network:
+    driver: bridge

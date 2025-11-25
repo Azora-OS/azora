@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PaymentMethod {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // card, bank_account, paypal
+  providerId  String   // Stripe payment method ID
+  last4       String?
+  brand       String?
+  expiryMonth Int?
+  expiryYear  Int?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  payments    Payment[]
+
+  @@map("payment_methods")
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  paymentMethodId String?
+  amount          Float
+  currency        String   @default("USD")
+  status          String   @default("pending") // pending, processing, succeeded, failed, canceled, refunded
+  description     String?
+  providerId      String?  // Stripe payment intent ID
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+
+  @@map("payments")
+}
+
+model Subscription {
+  id            String   @id @default(cuid())
+  userId        String
+  planId        String
+  status        String   @default("active") // active, canceled, past_due, incomplete
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+  providerId    String?  // Stripe subscription ID
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  invoices      Invoice[]
+
+  @@map("subscriptions")
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  currency    String   @default("USD")
+  interval    String   // month, year
+  features    Json?    // Plan features
+  providerId  String?  // Stripe price ID
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("plans")
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  userId         String
+  amount         Float
+  currency       String   @default("USD")
+  status         String   @default("draft") // draft, open, paid, void, uncollectible
+  providerId     String?  // Stripe invoice ID
+  pdfUrl         String?
+  hostedUrl      String?
+  dueDate        DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+
+  @@map("invoices")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // payment, refund, chargeback, adjustment
+  amount      Float
+  currency    String   @default("USD")
+  description String?
+  balance     Float    // Account balance after transaction
+  providerId  String?  // Stripe balance transaction ID
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@map("transactions")
+}

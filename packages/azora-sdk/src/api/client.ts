@@ -6,7 +6,12 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 See LICENSE file for details.
 */
 
-import type { AzoraSDKConfig, APIResponse, RequestOptions } from '../types';
+import type { AzoraConfig, ApiResponse } from '../types';
+
+interface RequestOptions {
+  headers?: Record<string, string>;
+  timeout?: number;
+}
 
 /**
  * Azora API Client
@@ -14,7 +19,7 @@ import type { AzoraSDKConfig, APIResponse, RequestOptions } from '../types';
  * Handles all HTTP requests to Azora OS services
  */
 export class AzoraAPIClient {
-  private config: AzoraSDKConfig;
+  private config: AzoraConfig;
   private baseURL: string;
 
   public education: EducationAPI;
@@ -25,7 +30,7 @@ export class AzoraAPIClient {
   public safety: SafetyAPI;
   public arbiter: ArbiterAPI;
 
-  constructor(config: AzoraSDKConfig) {
+  constructor(config: AzoraConfig) {
     this.config = config;
     this.baseURL = config.baseURL || this.getDefaultBaseURL(config.environment!);
 
@@ -43,7 +48,7 @@ export class AzoraAPIClient {
     path: string,
     data?: any,
     options?: RequestOptions
-  ): Promise<APIResponse<T>> {
+  ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${path}`;
     const headers = {
       'Content-Type': 'application/json',
@@ -72,7 +77,7 @@ export class AzoraAPIClient {
     }
   }
 
-  updateConfig(config: AzoraSDKConfig): void {
+  updateConfig(config: AzoraConfig): void {
     this.config = config;
     this.baseURL = config.baseURL || this.getDefaultBaseURL(config.environment!);
   }
@@ -90,7 +95,7 @@ export class AzoraAPIClient {
 // API Modules
 
 class EducationAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async listCourses(page = 1, perPage = 20) {
     return this.client.request('GET', `/api/v1/courses?page=${page}&perPage=${perPage}`);
@@ -106,7 +111,7 @@ class EducationAPI {
 }
 
 class PaymentsAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async createPayment(data: { amount: number; currency: string; userId: string; metadata?: any }) {
     return this.client.request('POST', '/api/v1/payments', data);
@@ -118,7 +123,7 @@ class PaymentsAPI {
 }
 
 class AuthAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async login(email: string, password: string) {
     return this.client.request('POST', '/api/v1/auth/login', { email, password });
@@ -134,7 +139,7 @@ class AuthAPI {
 }
 
 class RetailAIAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async getDashboard(clientId: string) {
     return this.client.request('GET', `/api/v1/retail/dashboard/${clientId}`);
@@ -146,7 +151,7 @@ class RetailAIAPI {
 }
 
 class ColdChainAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async getShipmentStatus(shipmentId: string) {
     return this.client.request('GET', `/api/v1/shipments/${shipmentId}/status`);
@@ -158,7 +163,7 @@ class ColdChainAPI {
 }
 
 class SafetyAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async reportIncident(data: any) {
     return this.client.request('POST', '/api/v1/incidents', data);
@@ -170,7 +175,7 @@ class SafetyAPI {
 }
 
 class ArbiterAPI {
-  constructor(private client: AzoraAPIClient) {}
+  constructor(private client: AzoraAPIClient) { }
 
   async getReputation(arbiterId: string) {
     return this.client.request('GET', `/api/v1/reputation/${arbiterId}`);

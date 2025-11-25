@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Elazar OS</string>
+    <string name="title_elazar_os">Elazar OS</string>
+    <string name="initializing">Initializing Elazar OS...</string>
+    <string name="device_tracking_active">Device tracking active</string>
+    <string name="google_sign_in_failed">Google Sign-In failed</string>
+    <string name="permissions_required">Permissions required for full functionality</string>
+    <string name="location_permission_title">Location Permission</string>
+    <string name="location_permission_message">Elazar OS needs location access for device tracking and synchronization.</string>
+    <string name="bluetooth_permission_title">Bluetooth Permission</string>
+    <string name="bluetooth_permission_message">Elazar OS needs Bluetooth access for device discovery and proximity tracking.</string>
+    <string name="storage_permission_title">Storage Permission</string>
+    <string name="storage_permission_message">Elazar OS needs storage access for data synchronization and offline capabilities.</string>
+    <string name="camera_permission_title">Camera Permission</string>
+    <string name="camera_permission_message">Elazar OS needs camera access for biometric authentication and augmented reality features.</string>
+    <string name="notification_permission_title">Notification Permission</string>
+    <string name="notification_permission_message">Elazar OS needs notification access for system alerts and synchronization updates.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings">Settings</string>
+    <!-- TODO: Replace with your actual Google OAuth 2.0 client ID for the server -->
+    <string name="server_client_id">your_google_oauth_client_id_here</string>
+</resources>

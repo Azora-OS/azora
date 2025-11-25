@@ -183,7 +183,7 @@ app.post('/api/portfolios/:userId/projects', async (req, res) => {
   }
 });
 
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'healthy', service: 'azora-forge', features: ['jobs', 'escrow', 'matching', 'disputes', 'portfolios'] });
 });
 

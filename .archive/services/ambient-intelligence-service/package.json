@@ -1,0 +1,26 @@
+{
+  "name": "@azora/ambient-intelligence-service",
+  "version": "1.0.0",
+  "description": "Ambient AI permeating everyday life",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@azora/branding": "file:../../packages/branding",
+    "@azora/design-system": "file:../../packages/@azora/design-system",
+    "@azora/telemetry": "file:../../packages/@azora/telemetry",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

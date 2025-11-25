@@ -1,0 +1,51 @@
+directories:
+  output: release
+  buildResources: build
+appId: world.azora.os
+productName: Azora OS
+copyright: Copyright © 2025 Azora ES (Pty) Ltd
+files:
+  - filter:
+      - '**/*'
+      - '!build/*'
+      - '!dist/*'
+      - '!*.md'
+      - '!docs/*'
+win:
+  target: nsis
+  icon: assets/icon.ico
+  requestedExecutionLevel: asInvoker
+  extraResources:
+    - from: assets
+      to: assets
+      filter:
+        - '**/*'
+mac:
+  target: dmg
+  icon: assets/icon.icns
+  category: public.app-category.productivity
+  extraResources:
+    - from: assets
+      to: assets
+      filter:
+        - '**/*'
+linux:
+  target: AppImage
+  icon: assets/icon.png
+  category: Utility
+  extraResources:
+    - from: assets
+      to: assets
+      filter:
+        - '**/*'
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+  installerHeaderIcon: assets/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Azora OS
+electronVersion: 25.9.8

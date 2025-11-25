@@ -1,0 +1,305 @@
+// Azora OS Database Schema
+// Last Updated: November 10, 2025
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// USER MANAGEMENT
+// ==========================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          UserRole  @default(STUDENT)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  profile       Profile?
+  enrollments   Enrollment[]
+  wallet        Wallet?
+  transactions  Transaction[]
+  progress      Progress[]
+  
+  @@index([email])
+  @@index([role])
+}
+
+enum UserRole {
+  STUDENT
+  EDUCATOR
+  ADMIN
+  INSTITUTION
+}
+
+model Profile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  phone       String?
+  avatar      String?
+  bio         String?
+  country     String?
+  city        String?
+  timezone    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// EDUCATION
+// ==========================================
+
+model Course {
+  id              String         @id @default(uuid())
+  title           String
+  description     String
+  instructorId    String
+  duration        Int            // in hours
+  price           Decimal        @db.Decimal(10, 2)
+  currency        String         @default("AZR")
+  difficulty      Difficulty     @default(BEGINNER)
+  isPublished     Boolean        @default(false)
+  
+  topics          String[]
+  thumbnailUrl    String?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  lessons         Lesson[]
+  enrollments     Enrollment[]
+  
+  @@index([instructorId])
+  @@index([isPublished])
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  title       String
+  content     String
+  order       Int
+  duration    Int      // in minutes
+  videoUrl    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  progress    Progress[]
+  
+  @@index([courseId])
+  @@index([order])
+}
+
+model Enrollment {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  status      EnrollmentStatus @default(ACTIVE)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([status])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model Progress {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId        String
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  completed       Boolean  @default(false)
+  timeSpent       Int      @default(0) // in seconds
+  lastAccessedAt  DateTime @default(now())
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+}
+
+// ==========================================
+// FINANCE
+// ==========================================
+
+model Wallet {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  balance     Decimal  @default(0) @db.Decimal(18, 8)
+  currency    String   @default("AZR")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Transaction {
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  amount        Decimal           @db.Decimal(18, 8)
+  currency      String            @default("AZR")
+  type          TransactionType
+  status        TransactionStatus @default(PENDING)
+  description   String?
+  
+  // Metadata
+  reference     String?           @unique
+  metadata      Json?
+  
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+  EARN
+  SPEND
+  TRANSFER
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// ==========================================
+// SAFETY & SECURITY
+// ==========================================
+
+model SafetyIncident {
+  id          String           @id @default(uuid())
+  type        IncidentType
+  severity    IncidentSeverity
+  latitude    Float
+  longitude   Float
+  description String
+  reportedBy  String?
+  status      IncidentStatus   @default(OPEN)
+  
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([type])
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum IncidentType {
+  CRIME
+  ACCIDENT
+  EMERGENCY
+  HARASSMENT
+  THEFT
+  OTHER
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+// ==========================================
+// CHRONICLE PROTOCOL
+// ==========================================
+
+model ChronicleEntry {
+  id            String   @id @default(uuid())
+  type          String
+  data          Json
+  hash          String   @unique
+  previousHash  String?
+  blockchainTx  String?
+  
+  createdAt     DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+  @@index([hash])
+}
+
+// ==========================================
+// SESSIONS
+// ==========================================
+
+model Session {
+  id            String   @id @default(uuid())
+  userId        String
+  token         String   @unique
+  refreshToken  String?  @unique
+  expiresAt     DateTime
+  ipAddress     String?
+  userAgent     String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+}

@@ -1,0 +1,196 @@
+// Enhanced Schema for Real Course Content
+// Copy this to schema.prisma when ready for Phase 2
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "sqlite" for local
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  firstName     String
+  lastName      String
+  email         String   @unique
+  
+  enrollments   Enrollment[]
+  progress      LessonCompletion[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("students")
+}
+
+model Course {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  instructorId  String
+  price         Float    @default(0)
+  currency      String   @default("USD")
+  duration      Int      // total hours
+  level         String
+  category      String
+  thumbnail     String?  // Course image URL
+  
+  modules       Module[]
+  enrollments   Enrollment[]
+  
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("courses")
+}
+
+model Module {
+  id            String   @id @default(cuid())
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  order         Int
+  
+  lessons       Lesson[]  // NEW: Actual lessons
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("modules")
+}
+
+// NEW: Lesson model for actual content
+model Lesson {
+  id            String   @id @default(cuid())
+  moduleId      String
+  module        Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  order         Int
+  duration      Int      // minutes
+  
+  // Content type
+  type          String   // video, text, quiz, code, project
+  
+  // Flexible content storage (JSON)
+  content       Json     // Stores type-specific data
+  
+  // Video fields
+  videoUrl      String?
+  videoProvider String?  // youtube, vimeo, s3, mux
+  videoId       String?
+  thumbnail     String?
+  
+  // Text fields
+  textContent   String?  // Markdown content
+  
+  // Code fields
+  codeTemplate  String?
+  codeLanguage  String?
+  codeSolution  String?
+  
+  // Resources
+  resources     Json?    // Array of {title, url, type}
+  
+  // Completion tracking
+  completions   LessonCompletion[]
+  
+  // Access control
+  isFree        Boolean  @default(false)
+  isPreview     Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("lessons")
+}
+
+// NEW: Track lesson completion
+model LessonCompletion {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lessonId      String
+  lesson        Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  completed     Boolean  @default(false)
+  timeSpent     Int      @default(0) // minutes
+  score         Float?   // for quizzes (0-100)
+  attempts      Int      @default(1)
+  
+  // For code exercises
+  lastCode      String?
+  
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  lastAccessedAt DateTime @default(now())
+
+  @@unique([studentId, lessonId])
+  @@map("lesson_completions")
+}
+
+model Enrollment {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  status        String   @default("active")
+  progress      Float    @default(0) // 0-100
+  
+  enrolledAt    DateTime @default(now())
+  completedAt   DateTime?
+  expiresAt     DateTime? // For time-limited access
+
+  @@unique([studentId, courseId])
+  @@map("enrollments")
+}
+
+// Example content JSON structures:
+
+// Video lesson:
+// {
+//   "provider": "vimeo",
+//   "videoId": "123456789",
+//   "embedUrl": "https://player.vimeo.com/video/123456789",
+//   "transcript": "Full transcript...",
+//   "captions": "https://..."
+// }
+
+// Text lesson:
+// {
+//   "markdown": "# Lesson Title\n\nContent here...",
+//   "images": ["https://...", "https://..."]
+// }
+
+// Quiz lesson:
+// {
+//   "questions": [
+//     {
+//       "question": "What is 2+2?",
+//       "type": "multiple_choice",
+//       "options": ["3", "4", "5"],
+//       "correct": 1,
+//       "explanation": "2+2 equals 4"
+//     }
+//   ],
+//   "passingScore": 70
+// }
+
+// Code lesson:
+// {
+//   "language": "python",
+//   "instructions": "Write a function...",
+//   "starterCode": "def hello():\n    pass",
+//   "tests": [
+//     {"input": "hello()", "expected": "Hello World"}
+//   ]
+// }

@@ -1,5 +1,5 @@
 {
-  "name": "azora-sapiens",
+  "name": "azora-sapiens-service",
   "version": "1.0.0",
   "description": "AI tutoring, personalized learning, homework help",
   "main": "dist/index.js",

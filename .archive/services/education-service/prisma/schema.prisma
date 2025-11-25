@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Curriculum {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  subject     String
+  grade       String   // K-12, undergraduate, graduate, etc.
+  objectives  Json?    // Learning objectives
+  status      String   @default("draft") // draft, published, archived
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  modules     Module[]
+  assessments Assessment[]
+
+  @@map("curricula")
+}
+
+model Module {
+  id           String   @id @default(cuid())
+  curriculumId String
+  title        String
+  description  String?
+  order        Int      @default(0)
+  content      Json?    // Module content structure
+  duration     Int?     // Estimated duration in minutes
+  prerequisites Json?   // Required modules or knowledge
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  lessons      Lesson[]
+
+  @@map("modules")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  moduleId    String
+  title       String
+  content     String   // Lesson content
+  type        String   @default("text") // text, video, interactive
+  resources   Json?    // Additional resources
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  module      Module   @relation(fields: [moduleId], references: [id])
+
+  @@map("lessons")
+}
+
+model Assessment {
+  id           String   @id @default(cuid())
+  curriculumId String
+  title        String
+  description  String?
+  type         String   // quiz, exam, project, assignment
+  questions    Json     // Assessment questions
+  passingScore Float    @default(70)
+  timeLimit    Int?     // Time limit in minutes
+  attempts     Int      @default(1) // Number of attempts allowed
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  submissions  Submission[]
+
+  @@map("assessments")
+}
+
+model Submission {
+  id            String   @id @default(cuid())
+  assessmentId  String
+  studentId     String
+  answers       Json     // Student answers
+  score         Float?
+  passed        Boolean?
+  attemptNumber Int      @default(1)
+  startedAt     DateTime @default(now())
+  submittedAt   DateTime?
+  gradedAt      DateTime?
+
+  assessment    Assessment @relation(fields: [assessmentId], references: [id])
+
+  @@unique([assessmentId, studentId, attemptNumber])
+  @@map("submissions")
+}
+
+model Certification {
+  id          String   @id @default(cuid())
+  curriculumId String?
+  title       String
+  description String?
+  issuer      String
+  criteria    Json     // Certification criteria
+  template    Json?    // Certificate template
+  validFor    Int?     // Validity period in months
+  createdAt   DateTime @default(now())
+
+  awards      CertificationAward[]
+
+  @@map("certifications")
+}
+
+model CertificationAward {
+  id              String   @id @default(cuid())
+  certificationId String
+  studentId       String
+  awardedAt       DateTime @default(now())
+  expiresAt       DateTime?
+  certificateUrl  String?
+
+  certification   Certification @relation(fields: [certificationId], references: [id])
+
+  @@unique([certificationId, studentId])
+  @@map("certification_awards")
+}

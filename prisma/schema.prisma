@@ -169,6 +169,7 @@ model CourseModule {
 model Enrollment {
   id          String           @id @default(cuid())
   userId      String
+  studentId   String           // Alias for userId for backward compatibility
   courseId    String
   status      EnrollmentStatus @default(ACTIVE)
   progress    Float            @default(0)
@@ -197,6 +198,7 @@ model Payment {
   idempotencyKey        String          @unique
   receiptId             String?
   receipt               Receipt?
+  refunds               Refund[]
   refundedAmount        Int?
   refundReason          String?
   errorCode             String?
@@ -312,6 +314,47 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
+  SUCCEEDED
+}
+
+model Refund {
+  id                String          @id @default(cuid())
+  paymentId         String
+  stripeRefundId    String          @unique
+  amount            Int             // in cents
+  currency          String          @default("usd")
+  reason            String?
+  status            RefundStatus    @default(PENDING)
+  metadata          Json            @default("{}")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([status])
+  @@map("refunds")
+}
+
+model WebhookEvent {
+  id            String          @id @default(cuid())
+  stripeEventId String          @unique
+  eventType     String
+  processed     Boolean         @default(false)
+  data          Json
+  createdAt     DateTime        @default(now())
+  processedAt   DateTime?
+
+  @@index([eventType])
+  @@index([processed])
+  @@map("webhook_events")
+}
+
+enum RefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELLED
 }
 
 enum SubscriptionTier {
@@ -455,6 +498,7 @@ model Transaction {
   amount      Decimal           @db.Decimal(20, 8)
   currency    String
   status      TransactionStatus @default(PENDING)
+  description String
   fromAddress String?
   toAddress   String?
   metadata    Json?
@@ -490,6 +534,8 @@ enum TransactionType {
   MINING_REWARD
   PAYMENT
   REFUND
+  CREDIT
+  DEBIT
 }
 
 enum TransactionStatus {

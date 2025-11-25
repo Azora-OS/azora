@@ -1,29 +1,13 @@
 {
   "name": "azora-monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "packages/@azora/*"
-  ],
+  "version": "2.0.0",
+  "description": "Azora Ecosystem - Constitutional, Auditable, Antifragile, Ubuntu-driven",
   "scripts": {
-    "dev": "npm run dev --workspace=apps/azora-ui",
-    "build": "npm run build --workspaces",
-    "clean": "npm run clean --workspaces",
-    "test": "npm run test --workspaces --if-present",
-    "test:watch": "npm run test:watch --workspaces --if-present",
-    "test:coverage": "npm run test:coverage --workspaces --if-present",
-    "test:changed": "jest --onlyChanged --passWithNoTests",
-    "test:reminder": "node scripts/test-reminder.js",
-    "test:checklist": "node scripts/test-reminder.js full",
-    "test:affected": "jest --onlyChanged --passWithNoTests --maxWorkers=50%",
-    "test:optimized": "node scripts/run-optimized-tests.js",
-    "coverage:check": "node scripts/check-coverage-gates.ts",
-    "precommit:coverage": "node scripts/pre-commit-coverage-check.js",
-    "test:requirements": "node scripts/test-requirement-reminder.js"
-  },
-  "dependencies": {
-    "pg": "8.16.3"
+    "start:all": "powershell -ExecutionPolicy Bypass -File ./scripts/launch-all-services.ps1",
+    "start:core": "concurrently \"npm --prefix services/azora-api-gateway start\" \"npm --prefix services/azora-auth start\" \"npm --prefix services/ai-orchestrator start\"",
+    "start:blockchain": "concurrently \"npm --prefix services/azora-mint start\" \"npm --prefix services/azora-ledger start\"",
+    "start:antifragile": "concurrently \"npm --prefix services/chaos-monkey start\" \"npm --prefix services/phoenix-server start\"",
+    "health:check": "node scripts/launch/01-health-check.js",
+    "service:audit": "node scripts/launch/10-service-audit.js"
   }
 }

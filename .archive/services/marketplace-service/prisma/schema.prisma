@@ -1,0 +1,71 @@
+// Azora OS - Marketplace Service Schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Job {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  employerId  String
+  category    String?
+  location    String?
+  salary      Decimal?  @db.Decimal(10, 2)
+  currency    String    @default("AZR")
+  type        JobType   @default(FULL_TIME)
+  status      JobStatus @default(OPEN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  
+  applications JobApplication[]
+  
+  @@index([employerId])
+  @@index([status])
+  @@map("jobs")
+}
+
+model JobApplication {
+  id        String              @id @default(uuid())
+  jobId     String
+  userId    String
+  status    ApplicationStatus   @default(PENDING)
+  coverLetter String?
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  
+  job       Job                 @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@unique([jobId, userId])
+  @@index([userId])
+  @@map("job_applications")
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+  INTERNSHIP
+}
+
+enum JobStatus {
+  OPEN
+  CLOSED
+  FILLED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}

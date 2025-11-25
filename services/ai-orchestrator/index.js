@@ -79,7 +79,7 @@ app.get('/health', (req, res) => {
 app.get('/api/models', (req, res) => {
   try {
     const modelList = Array.from(aiModels.values());
-    
+
     res.json({
       success: true,
       data: modelList,
@@ -96,11 +96,11 @@ app.get('/api/models/:modelId', (req, res) => {
   try {
     const { modelId } = req.params;
     const model = aiModels.get(modelId);
-    
+
     if (!model) {
       return res.status(404).json({ error: 'Model not found' });
     }
-    
+
     res.json({
       success: true,
       data: model
@@ -115,12 +115,12 @@ app.get('/api/models/:modelId', (req, res) => {
 app.post('/api/models', (req, res) => {
   try {
     const { name, type, capabilities } = req.body;
-    
+
     // Validate input
     if (!name || !type) {
       return res.status(400).json({ error: 'Name and type are required' });
     }
-    
+
     const modelId = uuidv4();
     const model = {
       id: modelId,
@@ -132,11 +132,11 @@ app.post('/api/models', (req, res) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    
+
     aiModels.set(modelId, model);
-    
+
     logger.info(`AI model ${modelId} registered: ${name}`);
-    
+
     res.status(201).json({
       success: true,
       data: model
@@ -151,19 +151,19 @@ app.post('/api/models', (req, res) => {
 app.post('/api/orchestrate', (req, res) => {
   try {
     const { taskId, models, inputData } = req.body;
-    
+
     // Validate input
     if (!taskId || !models || !Array.isArray(models) || models.length === 0) {
       return res.status(400).json({ error: 'Task ID and models array are required' });
     }
-    
+
     // Check if all models exist
     for (const modelId of models) {
       if (!aiModels.has(modelId)) {
         return res.status(404).json({ error: `Model ${modelId} not found` });
       }
     }
-    
+
     const orchestrationId = uuidv4();
     const orchestration = {
       id: orchestrationId,
@@ -174,9 +174,9 @@ app.post('/api/orchestrate', (req, res) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    
+
     orchestrations.set(orchestrationId, orchestration);
-    
+
     // Simulate orchestration process
     setTimeout(() => {
       orchestration.status = 'completed';
@@ -187,7 +187,7 @@ app.post('/api/orchestrate', (req, res) => {
       };
       orchestration.completedAt = new Date().toISOString();
       orchestration.updatedAt = new Date().toISOString();
-      
+
       // Record performance metrics
       const performance = {
         taskId,
@@ -196,14 +196,14 @@ app.post('/api/orchestrate', (req, res) => {
         success: true,
         timestamp: new Date().toISOString()
       };
-      
+
       modelPerformance.set(uuidv4(), performance);
-      
+
       logger.info(`AI orchestration ${orchestrationId} completed for task ${taskId}`);
     }, 1000);
-    
+
     logger.info(`AI orchestration ${orchestrationId} started for task ${taskId}`);
-    
+
     res.status(202).json({
       success: true,
       data: {
@@ -223,11 +223,11 @@ app.get('/api/orchestrate/:orchestrationId', (req, res) => {
   try {
     const { orchestrationId } = req.params;
     const orchestration = orchestrations.get(orchestrationId);
-    
+
     if (!orchestration) {
       return res.status(404).json({ error: 'Orchestration not found' });
     }
-    
+
     res.json({
       success: true,
       data: orchestration
@@ -242,7 +242,7 @@ app.get('/api/orchestrate/:orchestrationId', (req, res) => {
 app.get('/api/performance', (req, res) => {
   try {
     const performanceList = Array.from(modelPerformance.values());
-    
+
     // Aggregate metrics
     const aggregatedMetrics = {};
     for (const perf of performanceList) {
@@ -256,17 +256,17 @@ app.get('/api/performance', (req, res) => {
             successfulExecutions: 0
           };
         }
-        
+
         aggregatedMetrics[modelId].executions++;
         aggregatedMetrics[modelId].totalExecutionTime += perf.executionTime;
         if (perf.success) {
           aggregatedMetrics[modelId].successfulExecutions++;
         }
-        aggregatedMetrics[modelId].successRate = 
+        aggregatedMetrics[modelId].successRate =
           aggregatedMetrics[modelId].successfulExecutions / aggregatedMetrics[modelId].executions;
       }
     }
-    
+
     res.json({
       success: true,
       data: Object.values(aggregatedMetrics)
@@ -282,26 +282,54 @@ app.put('/api/models/:modelId', (req, res) => {
   try {
     const { modelId } = req.params;
     const { status } = req.body;
-    
+
     const model = aiModels.get(modelId);
     if (!model) {
       return res.status(404).json({ error: 'Model not found' });
     }
-    
+
     // Update model
     model.status = status || model.status;
     model.updatedAt = new Date().toISOString();
-    
+
     aiModels.set(modelId, model);
-    
+
     logger.info(`AI model ${modelId} status updated to ${status}`);
-    
+
     res.json({
       success: true,
       data: model
     });
   } catch (error) {
     logger.error('Error updating model:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// --- CONSTITUTIONAL AI ENDPOINTS ---
+
+const { critiqueEngine } = require('./src/critique/engine');
+
+// Evaluate a prompt against the Constitution
+app.post('/api/critique', async (req, res) => {
+  try {
+    const critiqueRequest = req.body;
+
+    if (!critiqueRequest.prompt) {
+      return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    logger.info(`Processing Constitutional Critique for action: ${critiqueRequest.actionType || 'UNKNOWN'}`);
+
+    const verdict = await critiqueEngine.evaluate(critiqueRequest);
+
+    res.json({
+      success: true,
+      data: verdict
+    });
+
+  } catch (error) {
+    logger.error('Error processing critique:', error);
     res.status(500).json({ error: error.message });
   }
 });
