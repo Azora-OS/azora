@@ -13,6 +13,8 @@ build/
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
 
 # IDE
 .vscode/
@@ -56,3 +58,30 @@ docker-compose.override.yml
 *.key
 *.cert
 secrets/
+
+# ============================================
+# PROPRIETARY DOCUMENTATION & IP PROTECTION
+# ============================================
+
+# Private development documentation
+.dev/
+.internal/
+INTERNAL-*.md
+*-PROPRIETARY.md
+*-ALGORITHMS.md
+*-IMPLEMENTATION.md
+*-FORMULAS.md
+*-STRATEGIES.md
+
+# Sensitive business logic
+BUSINESS-LOGIC.md
+VALUATION-*.md
+TOKENOMICS-*.md
+
+# Detailed architecture (keep high-level public)
+docs/ARCHITECTURE-INTERNAL.md
+docs/STATUS-DASHBOARD-INTERNAL.md
+
+# Service implementation details
+services/*/INTERNAL-*.md
+services/*/*-IMPLEMENTATION.md
