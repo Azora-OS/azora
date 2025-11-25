@@ -7,14 +7,32 @@ World-class design system for Constitutional AI
 */
 
 // Core utilities
-export * from './utils'
+export * from './utils/index'
 export * from './components/navigation'
 
 // Premium UI Components
 export { BackgroundGradientAnimation } from './components/background-gradient-animation'
+export { Button } from './components/Button'
+export { FinanceDashboard } from './components/FinanceDashboard'
+export { AIFamilyChat } from './components/AIFamilyChat'
 
 // Master UI Components
 export * from './azora-master-components'
+
+// Layouts
+export * from './layouts/AppLayout'
+
+// Hooks
+export * from './hooks/useWallet'
+export * from './hooks/useApi'
+
+// API & Backend Integration (Phase 2)
+export { default as api, apiClient } from './lib/api-client'
+export { default as wsClient } from './lib/websocket-client'
+export { authOptions } from './lib/auth-config'
+
+// State Management
+export * from './stores'
 
 // Data services (existing)
 export * from './data-service'

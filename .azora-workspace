@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "license": "AZORA_INTERNAL",
+  "ecosystem": "azora-os",
+  "created": "2024-11-24T18:37:00Z",
+  "owner": "Azora ES (Pty) Ltd",
+  "features": {
+    "microservices": true,
+    "payments": true,
+    "blockchain": true,
+    "ai": true,
+    "premiumUI": true,
+    "fullStack": true,
+    "kubernetes": true,
+    "monitoring": true
+  },
+  "azstudio": {
+    "enabled": true,
+    "fullAccess": true,
+    "templates": "all",
+    "codeGeneration": "unlimited"
+  },
+  "security": {
+    "encrypted": true,
+    "validated": true,
+    "expires": "never"
+  }
+}

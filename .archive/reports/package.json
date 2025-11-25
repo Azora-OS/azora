@@ -1,0 +1,24 @@
+{
+  "name": "azora-os",
+  "version": "3.0.0",
+  "description": "Azora OS - Ubuntu Constitutional AI Operating System",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "services/*",
+    "mobile/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:services\" \"npm run dev:apps\"",
+    "dev:services": "concurrently \"npm run dev --workspace=services/azora-api-gateway\" \"npm run dev --workspace=services/azora-auth\"",
+    "dev:apps": "npm run dev --workspace=apps/azora-student-portal",
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.2.2"
+  }
+}

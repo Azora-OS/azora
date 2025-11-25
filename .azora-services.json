@@ -1,0 +1,54 @@
+{
+  "services": {
+    "azora-mint": {
+      "port": 3080,
+      "url": "http://localhost:3080",
+      "status": "stopped",
+      "healthPath": "/health"
+    },
+    "azora-education": {
+      "port": 4201,
+      "url": "http://localhost:4201",
+      "status": "unhealthy",
+      "healthPath": "/health"
+    },
+    "azora-marketplace": {
+      "port": 4004,
+      "url": "http://localhost:4004",
+      "status": "stopped",
+      "healthPath": "/health"
+    },
+    "azora-forge": {
+      "port": 4300,
+      "url": "http://localhost:4300",
+      "status": "stopped",
+      "healthPath": "/health"
+    },
+    "api-gateway": {
+      "port": 4000,
+      "url": "http://localhost:4000",
+      "status": "stopped",
+      "healthPath": "/health"
+    },
+    "ai-family-service": {
+      "port": 4100,
+      "url": "http://localhost:4100",
+      "status": "stopped",
+      "healthPath": "/health"
+    },
+    "auth-service": {
+      "port": 4001,
+      "url": "http://localhost:4001",
+      "status": "stopped",
+      "healthPath": "/health"
+    },
+    "payment": {
+      "port": 4010,
+      "url": "http://localhost:4010",
+      "status": "stopped",
+      "healthPath": "/health"
+    }
+  },
+  "updated": "2025-11-25T07:49:46.209Z",
+  "environment": "development"
+}

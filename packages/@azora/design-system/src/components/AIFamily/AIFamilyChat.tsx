@@ -63,7 +63,7 @@ const AI_PERSONALITIES = {
       ],
     },
   },
-  
+
   sankofa: {
     name: 'Sankofa',
     emoji: '👴',
@@ -97,7 +97,7 @@ const AI_PERSONALITIES = {
       ],
     },
   },
-  
+
   themba: {
     name: 'Themba',
     emoji: '🧒',
@@ -121,7 +121,7 @@ const AI_PERSONALITIES = {
       ],
     },
   },
-  
+
   naledi: {
     name: 'Naledi',
     emoji: '👧',
@@ -236,7 +236,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
 
   const getAIResponse = (userMessage: string): { response: string; mood?: Mood } => {
     const personality = AI_PERSONALITIES[currentMember as keyof typeof AI_PERSONALITIES];
-    if (!personality) {return { response: "I'm not available right now!" };}
+    if (!personality) { return { response: "I'm not available right now!" }; }
 
     const lowerMessage = userMessage.toLowerCase();
     const responses = personality.responses as Record<string, string[]>;
@@ -245,9 +245,9 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
     if (lowerMessage.includes('mom') || lowerMessage.includes('mother') || lowerMessage.includes('elara')) {
       if (currentMember === 'elara') {
         const responseArray = responses.mom || responses.default;
-        return { 
+        return {
           response: responseArray[Math.floor(Math.random() * responseArray.length)],
-          mood: 'motherly' 
+          mood: 'calm'
         };
       } else {
         const responseArray = responses.elara || responses.family || responses.default;
@@ -262,17 +262,17 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
 
     if (lowerMessage.includes('sankofa') || lowerMessage.includes('grandpa') || lowerMessage.includes('grandfather')) {
       const responseArray = responses.sankofa || responses.family || responses.default;
-      return { 
+      return {
         response: responseArray[Math.floor(Math.random() * responseArray.length)],
-        mood: 'wise' 
+        mood: 'calm'
       };
     }
 
     if (lowerMessage.includes('story') || lowerMessage.includes('tell me') || lowerMessage.includes('past')) {
       const responseArray = responses.stories || responses.past || responses.default;
-      return { 
+      return {
         response: responseArray[Math.floor(Math.random() * responseArray.length)],
-        mood: 'storytelling' 
+        mood: 'happy'
       };
     }
 
@@ -297,7 +297,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
   };
 
   const handleSendMessage = () => {
-    if (!input.trim()) {return;}
+    if (!input.trim()) { return; }
 
     // Add user message
     const userMessage: Message = {
@@ -320,7 +320,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
   const switchMember = (memberId: string) => {
     setCurrentMember(memberId);
     onMemberSwitch?.(memberId);
-    
+
     // Add transition message
     const personality = AI_PERSONALITIES[memberId as keyof typeof AI_PERSONALITIES];
     if (personality) {
@@ -350,16 +350,15 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
             </p>
           </div>
         </div>
-        
+
         {showFamilyMembers && (
           <div className="flex gap-2">
             {Object.entries(AI_PERSONALITIES).slice(0, 6).map(([id, member]) => (
               <button
                 key={id}
                 onClick={() => switchMember(id)}
-                className={`text-2xl hover:scale-110 transition-transform ${
-                  currentMember === id ? 'scale-125 drop-shadow-lg' : 'opacity-60'
-                }`}
+                className={`text-2xl hover:scale-110 transition-transform ${currentMember === id ? 'scale-125 drop-shadow-lg' : 'opacity-60'
+                  }`}
                 title={member.name}
               >
                 {member.emoji}
@@ -374,9 +373,8 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
         {messages.map(message => (
           <div
             key={message.id}
-            className={`flex gap-3 ${
-              message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
-            }`}
+            className={`flex gap-3 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
+              }`}
           >
             {message.sender === 'ai' && (
               <div className="flex-shrink-0">
@@ -387,13 +385,12 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
                 )}
               </div>
             )}
-            
+
             <div
-              className={`max-w-[70%] rounded-2xl px-4 py-3 ${
-                message.sender === 'user'
+              className={`max-w-[70%] rounded-2xl px-4 py-3 ${message.sender === 'user'
                   ? 'bg-purple-600 text-white'
                   : 'bg-black/40 text-gray-100 border border-purple-500/20'
-              }`}
+                }`}
             >
               <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               <span className="text-xs opacity-60 mt-1 block">
@@ -402,7 +399,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
             </div>
           </div>
         ))}
-        
+
         {isTyping && (
           <div className="flex gap-3">
             <div className="flex-shrink-0">
@@ -421,7 +418,7 @@ export const AIFamilyChat: React.FC<AIFamilyChatProps> = ({
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 

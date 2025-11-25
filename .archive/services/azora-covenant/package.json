@@ -1,0 +1,37 @@
+{
+  "name": "crypto-ledger-security",
+  "version": "1.0.0",
+  "description": "Advanced cryptographic security service with quantum-resistant encryption and blockchain ledger",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"No tests specified\""
+  },
+  "keywords": [
+    "cryptography",
+    "blockchain",
+    "quantum-resistant",
+    "zero-knowledge-proofs",
+    "security",
+    "ledger"
+  ],
+  "author": "Autonomous Logistics Team",
+  "license": "AZORA PROPRIETARY LICENSE",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "morgan": "^1.10.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.2",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@nomicfoundation/hardhat-verify": "^3.0.4",
+    "@openzeppelin/contracts": "^5.4.0",
+    "hardhat": "^3.0.9"
+  }
+}

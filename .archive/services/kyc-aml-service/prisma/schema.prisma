@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model KycVerification {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  status          String   @default("pending")
+  level           String   @default("basic")
+  documentType    String?
+  documentNumber  String?
+  verifiedAt      DateTime?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@map("kyc_verifications")
+}
+
+model AmlCheck {
+  id              String   @id @default(uuid())
+  userId          String
+  checkType       String
+  riskScore       Float
+  status          String   @default("clear")
+  details         String?
+  checkedAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@map("aml_checks")
+}
+
+model SuspiciousActivity {
+  id              String   @id @default(uuid())
+  userId          String
+  activityType    String
+  description     String
+  riskLevel       String   @default("medium")
+  status          String   @default("reported")
+  reportedAt      DateTime @default(now())
+  resolvedAt      DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@map("suspicious_activities")
+}

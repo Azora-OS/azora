@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  classroom-db:
+    image: postgres:15
+    container_name: azora-classroom-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_classroom
+    ports:
+      - "5434:5432"
+    volumes:
+      - classroom_db_data:/var/lib/postgresql/data
+    networks:
+      - classroom-network
+
+  classroom-service:
+    build: .
+    container_name: azora-classroom-service
+    ports:
+      - "3006:3006"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@classroom-db:5432/azora_classroom
+      - PORT=3006
+      - NODE_ENV=development
+    depends_on:
+      - classroom-db
+    networks:
+      - classroom-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  classroom_db_data:
+
+networks:
+  classroom-network:
+    driver: bridge

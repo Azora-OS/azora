@@ -86,7 +86,7 @@ services:
   # Mint Service - NFT Creation & Management
   mint-service:
     build:
-      context: ./services/mint-service
+      context: ./services/azora-mint
       dockerfile: Dockerfile
     container_name: azora-mint-service
     ports:
@@ -108,7 +108,7 @@ services:
   # LMS Service - Learning Management System
   lms-service:
     build:
-      context: ./services/lms-service
+      context: ./services/azora-classroom
       dockerfile: Dockerfile
     container_name: azora-lms-service
     ports:
@@ -130,7 +130,7 @@ services:
   # Forge Service - AI Content Generation
   forge-service:
     build:
-      context: ./services/forge-service
+      context: ./services/azora-forge
       dockerfile: Dockerfile
     container_name: azora-forge-service
     ports:
@@ -153,7 +153,7 @@ services:
   # Nexus Service - AI Agent Orchestration
   nexus-service:
     build:
-      context: ./services/nexus-service
+      context: ./services/ai-orchestrator
       dockerfile: Dockerfile
     container_name: azora-nexus-service
     ports:
@@ -176,7 +176,7 @@ services:
   # Education Service - Curriculum & Assessment
   education-service:
     build:
-      context: ./services/education-service
+      context: ./services/azora-education
       dockerfile: Dockerfile
     container_name: azora-education-service
     ports:
@@ -199,7 +199,7 @@ services:
   # Payments Service - Payment Processing
   payments-service:
     build:
-      context: ./services/payments-service
+      context: ./services/payment
       dockerfile: Dockerfile
     container_name: azora-payments-service
     ports:

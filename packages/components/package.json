@@ -4,6 +4,7 @@
   "description": "Ubuntu-powered @azora/components service",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'No build needed for service package'",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest"

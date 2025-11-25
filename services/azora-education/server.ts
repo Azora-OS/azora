@@ -20,6 +20,7 @@ import courseRoutes from './src/routes/course.routes'
 import primaryRoutes from './src/routes/primary.routes'
 import secondaryRoutes from './src/routes/secondary.routes'
 import universityRoutes from './src/routes/university.routes'
+import { PrismaClient } from '@prisma/client'
 
 // Azora Infrastructure Integration
 import { getDatabasePool, getRedisCache, getSupabaseClient } from '../azora-database-layer'
@@ -33,6 +34,7 @@ let dbPool: any
 let redisCache: any
 let supabaseClient: any
 let eventBus: EventBus
+const prisma = new PrismaClient()
 
 // Configuration
 // Using Prisma with DATABASE_URL from .env (SQLite for local, PostgreSQL for production)
@@ -170,48 +172,51 @@ app.use(cors())
 app.use(express.json())
 
 // Mount V1 Routes
-const dbHealth = await dbPool.query('SELECT 1').then(() => 'healthy').catch(() => 'unhealthy')
+// Health Check
+app.get('/health', async (req, res) => {
+  try {
+    const dbHealth = await dbPool.query('SELECT 1').then(() => 'healthy').catch(() => 'unhealthy')
 
-// Check Redis health
-const redisHealth = await redisCache.get('education:health').then(() => 'healthy').catch(() => 'unhealthy')
+    // Check Redis health
+    const redisHealth = await redisCache.get('education:health').then(() => 'healthy').catch(() => 'unhealthy')
 
-// Check Supabase health
-let supabaseHealth = 'not_configured'
-if (supabaseClient) {
-  supabaseHealth = await supabaseClient.from('health_check').select('*').limit(1).then(() => 'healthy').catch(() => 'unhealthy')
-}
+    // Check Supabase health
+    let supabaseHealth = 'not_configured'
+    if (supabaseClient) {
+      supabaseHealth = await supabaseClient.from('health_check').select('*').limit(1).then(() => 'healthy').catch(() => 'unhealthy')
+    }
 
-// Check event bus health
-const eventBusHealth = eventBus ? 'healthy' : 'unhealthy'
+    // Check event bus health
+    const eventBusHealth = eventBus ? 'healthy' : 'unhealthy'
 
-const isHealthy = dbHealth === 'healthy' && redisHealth === 'healthy' && eventBusHealth === 'healthy'
+    const isHealthy = dbHealth === 'healthy' && redisHealth === 'healthy' && eventBusHealth === 'healthy'
 
-res.json({
-  status: isHealthy ? 'healthy' : 'unhealthy',
-  service: 'Azora Education System',
-  timestamp: new Date(),
-  infrastructure: {
-    database: dbHealth,
-    redis: redisHealth,
-    supabase: supabaseHealth,
-    eventBus: eventBusHealth
-  },
-  components: {
-    primaryEducation: 'operational',
-    secondaryEducation: 'operational',
-    university: 'operational',
-    mint: 'operational'
-  }
-})
+    res.json({
+      status: isHealthy ? 'healthy' : 'unhealthy',
+      service: 'Azora Education System',
+      timestamp: new Date(),
+      infrastructure: {
+        database: dbHealth,
+        redis: redisHealth,
+        supabase: supabaseHealth,
+        eventBus: eventBusHealth
+      },
+      components: {
+        primaryEducation: 'operational',
+        secondaryEducation: 'operational',
+        university: 'operational',
+        mint: 'operational'
+      }
+    })
   } catch (error) {
-  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-  res.status(503).json({
-    status: 'unhealthy',
-    service: 'Azora Education System',
-    error: errorMessage,
-    timestamp: new Date()
-  })
-}
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(503).json({
+      status: 'unhealthy',
+      service: 'Azora Education System',
+      error: errorMessage,
+      timestamp: new Date()
+    })
+  }
 })
 
 // ========== PRIMARY EDUCATION ==========
@@ -416,6 +421,177 @@ app.get('/api/programmes/all', (_req, res) => {
 app.get('/api/statistics', (_req, res) => {
   const stats = azoraEducation.getStatistics()
   res.json(stats)
+})
+
+// ========== COURSES & ENROLLMENTS (MVP) ==========
+
+// List all courses
+app.get('/api/courses', async (req, res) => {
+  try {
+    const courses = await prisma.course.findMany({
+      where: { published: true },
+      include: {
+        _count: {
+          select: { modules: true, enrollments: true }
+        }
+      }
+    })
+    res.json(courses)
+  } catch (error: any) {
+    console.error('Error fetching courses:', error)
+    res.status(500).json({ error: 'Failed to fetch courses' })
+  }
+})
+
+// Get course details
+app.get('/api/courses/:id', async (req, res) => {
+  try {
+    const course = await prisma.course.findUnique({
+      where: { id: req.params.id },
+      include: {
+        modules: {
+          orderBy: { order: 'asc' }
+        }
+      }
+    })
+
+    if (!course) {
+      return res.status(404).json({ error: 'Course not found' })
+    }
+
+    res.json(course)
+  } catch (error: any) {
+    console.error('Error fetching course details:', error)
+    res.status(500).json({ error: 'Failed to fetch course details' })
+  }
+})
+
+// Get course content (modules)
+app.get('/api/courses/:id/content', async (req, res) => {
+  try {
+    const modules = await prisma.module.findMany({
+      where: { courseId: req.params.id },
+      orderBy: { order: 'asc' }
+    })
+    res.json(modules)
+  } catch (error: any) {
+    console.error('Error fetching course content:', error)
+    res.status(500).json({ error: 'Failed to fetch course content' })
+  }
+})
+
+// Enroll in course
+app.post('/api/enrollments', async (req, res) => {
+  try {
+    const { userId, courseId } = req.body
+
+    if (!userId || !courseId) {
+      return res.status(400).json({ error: 'Missing userId or courseId' })
+    }
+
+    // Check if already enrolled
+    const existing = await prisma.enrollment.findUnique({
+      where: {
+        studentId_courseId: {
+          studentId: userId,
+          courseId: courseId
+        }
+      }
+    })
+
+    if (existing) {
+      return res.status(400).json({ error: 'Already enrolled' })
+    }
+
+    // Create enrollment
+    // Note: In a real app, we would verify payment here or listen to payment event
+    const enrollment = await prisma.enrollment.create({
+      data: {
+        studentId: userId,
+        courseId: courseId,
+        status: 'active',
+        progress: 0
+      }
+    })
+
+    res.json(enrollment)
+  } catch (error: any) {
+    console.error('Error enrolling in course:', error)
+    res.status(500).json({ error: 'Failed to enroll' })
+  }
+})
+
+// Get user enrollments
+app.get('/api/enrollments/:userId', async (req, res) => {
+  try {
+    const enrollments = await prisma.enrollment.findMany({
+      where: { studentId: req.params.userId },
+      include: {
+        course: true
+      }
+    })
+    res.json(enrollments)
+  } catch (error: any) {
+    console.error('Error fetching enrollments:', error)
+    res.status(500).json({ error: 'Failed to fetch enrollments' })
+  }
+})
+
+// Generate course with Elara AI
+app.post('/api/courses/generate', async (req, res) => {
+  try {
+    const { outline } = req.body
+
+    // Call Elara Content Generator
+    const elaraResponse = await fetch('http://localhost:3004/api/generate/course', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ outline })
+    })
+
+    if (!elaraResponse.ok) {
+      throw new Error('Failed to generate course content')
+    }
+
+    const generatedLessons = await elaraResponse.json()
+
+    // Create course in database
+    const course = await prisma.course.create({
+      data: {
+        title: outline.title,
+        description: `AI-generated course on ${outline.title}`,
+        price: outline.price || 49.99,
+        instructorId: outline.instructorId || 'elara-ai',
+        category: outline.category || 'Technology',
+        level: outline.level || 'beginner',
+        duration: `${outline.modules?.length || 4} weeks`,
+        published: false, // Admin needs to review before publishing
+        modules: {
+          create: generatedLessons.map((lesson: any, index: number) => ({
+            title: lesson.topic,
+            description: lesson.content.title,
+            content: JSON.stringify(lesson.content),
+            order: index + 1,
+            duration: outline.modules?.find((m: any) =>
+              m.topics?.some((t: any) => t.title === lesson.topic)
+            )?.topics?.find((t: any) => t.title === lesson.topic)?.duration || 15
+          }))
+        }
+      },
+      include: {
+        modules: true
+      }
+    })
+
+    res.json({
+      success: true,
+      course,
+      message: 'Course generated successfully. Please review and publish.'
+    })
+  } catch (error: any) {
+    console.error('Error generating course:', error)
+    res.status(500).json({ error: 'Failed to generate course', details: error.message })
+  }
 })
 
 // ========== START SERVER ==========

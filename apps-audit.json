@@ -1,0 +1,471 @@
+﻿[
+    {
+        "Name":  "azora-buildspaces",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "14.2.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "next",
+                             "framer-motion",
+                             "lucide-react",
+                             "clsx",
+                             "tailwind-merge",
+                             "@monaco-editor/react",
+                             "reactflow",
+                             "socket.io-client",
+                             "@azora/shared-design"
+                         ]
+    },
+    {
+        "Name":  "azora-classroom",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-classroom",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "lucide-react",
+                             "tailwind-merge",
+                             "react",
+                             "clsx",
+                             "@azora/shared-design",
+                             "react-dom",
+                             "framer-motion",
+                             "next"
+                         ]
+    },
+    {
+        "Name":  "azora-cloud",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-cloud",
+        "HasPackageJson":  true,
+        "Framework":  "Unknown",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Unknown",
+        "Dependencies":  [
+
+                         ]
+    },
+    {
+        "Name":  "azora-compliance",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-compliance",
+        "HasPackageJson":  true,
+        "Framework":  "Unknown",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Unknown",
+        "Dependencies":  [
+
+                         ]
+    },
+    {
+        "Name":  "azora-dev",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-dev",
+        "HasPackageJson":  true,
+        "Framework":  "Unknown",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Unknown",
+        "Dependencies":  [
+
+                         ]
+    },
+    {
+        "Name":  "azora-enterprise-suite",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-enterprise-suite",
+        "HasPackageJson":  true,
+        "Framework":  "React",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "clsx",
+                             "framer-motion",
+                             "lucide-react",
+                             "react",
+                             "react-dom",
+                             "react-router-dom",
+                             "recharts"
+                         ]
+    },
+    {
+        "Name":  "azora-enterprise-suite-mobile",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-enterprise-suite-mobile",
+        "HasPackageJson":  true,
+        "Framework":  "React Native",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Mobile",
+        "Dependencies":  [
+                             "@react-native-async-storage/async-storage",
+                             "@react-navigation/bottom-tabs",
+                             "@react-navigation/native",
+                             "@react-navigation/native-stack",
+                             "axios",
+                             "csurf",
+                             "expo",
+                             "expo-notifications",
+                             "hardhat",
+                             "lerna",
+                             "nodemailer",
+                             "react",
+                             "react-native",
+                             "react-native-chart-kit",
+                             "react-native-safe-area-context",
+                             "react-native-screens",
+                             "react-native-svg",
+                             "vite"
+                         ]
+    },
+    {
+        "Name":  "azora-finance",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-finance",
+        "HasPackageJson":  true,
+        "Framework":  "React",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "framer-motion",
+                             "clsx",
+                             "lucide-react",
+                             "react-router-dom",
+                             "recharts"
+                         ]
+    },
+    {
+        "Name":  "azora-incubator",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-incubator",
+        "HasPackageJson":  true,
+        "Framework":  "React",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "clsx",
+                             "framer-motion",
+                             "lucide-react",
+                             "react",
+                             "react-dom",
+                             "react-router-dom",
+                             "recharts"
+                         ]
+    },
+    {
+        "Name":  "azora-investor-portal",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-investor-portal",
+        "HasPackageJson":  true,
+        "Framework":  "React",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "framer-motion",
+                             "clsx",
+                             "lucide-react",
+                             "react-router-dom",
+                             "recharts"
+                         ]
+    },
+    {
+        "Name":  "azora-jobspaces",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-jobspaces",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "14.2.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "next",
+                             "@azora/shared-design",
+                             "@azora/api-client",
+                             "@azora/branding"
+                         ]
+    },
+    {
+        "Name":  "azora-library",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-library",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "lucide-react",
+                             "tailwind-merge",
+                             "react",
+                             "clsx",
+                             "@azora/shared-design",
+                             "react-dom",
+                             "framer-motion",
+                             "next"
+                         ]
+    },
+    {
+        "Name":  "azora-master",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-master",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "^15.0.0",
+        "HasRouting":  false,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "next",
+                             "tailwindcss",
+                             "@tailwindcss/postcss",
+                             "class-variance-authority",
+                             "clsx",
+                             "tailwind-merge",
+                             "lucide-react",
+                             "framer-motion"
+                         ]
+    },
+    {
+        "Name":  "azora-mint",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-mint",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "lucide-react",
+                             "tailwind-merge",
+                             "react",
+                             "clsx",
+                             "@azora/shared-design",
+                             "react-dom",
+                             "framer-motion",
+                             "next"
+                         ]
+    },
+    {
+        "Name":  "azora-oracle",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-oracle",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "lucide-react",
+                             "tailwind-merge",
+                             "react",
+                             "clsx",
+                             "@azora/shared-design",
+                             "react-dom",
+                             "framer-motion",
+                             "next"
+                         ]
+    },
+    {
+        "Name":  "azora-pay",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-pay",
+        "HasPackageJson":  true,
+        "Framework":  "React",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "clsx",
+                             "framer-motion",
+                             "lucide-react",
+                             "react",
+                             "react-dom",
+                             "react-router-dom",
+                             "recharts"
+                         ]
+    },
+    {
+        "Name":  "azora-research-center",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-research-center",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "lucide-react",
+                             "tailwind-merge",
+                             "react",
+                             "clsx",
+                             "@azora/shared-design",
+                             "react-dom",
+                             "framer-motion",
+                             "next"
+                         ]
+    },
+    {
+        "Name":  "azora-sapiens",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-sapiens",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "next",
+                             "framer-motion",
+                             "lucide-react",
+                             "clsx",
+                             "tailwind-merge",
+                             "@azora/shared-design",
+                             "@stripe/stripe-js"
+                         ]
+    },
+    {
+        "Name":  "azora-sapiens-backup-20251125-001654",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-sapiens-backup-20251125-001654",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "14.2.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "next",
+                             "framer-motion",
+                             "lucide-react",
+                             "clsx",
+                             "tailwind-merge",
+                             "@azora/shared-design"
+                         ]
+    },
+    {
+        "Name":  "azora-sapiens-mobile",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-sapiens-mobile",
+        "HasPackageJson":  true,
+        "Framework":  "React Native",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Mobile",
+        "Dependencies":  [
+                             "@react-native-async-storage/async-storage",
+                             "@react-native-community/netinfo",
+                             "@react-navigation/bottom-tabs",
+                             "@react-navigation/native",
+                             "@react-navigation/native-stack",
+                             "axios",
+                             "csurf",
+                             "expo",
+                             "expo-local-authentication",
+                             "expo-notifications",
+                             "expo-secure-store",
+                             "hardhat",
+                             "lerna",
+                             "nodemailer",
+                             "react",
+                             "react-native",
+                             "react-native-safe-area-context",
+                             "react-native-screens",
+                             "vite"
+                         ]
+    },
+    {
+        "Name":  "azora-ui",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-ui",
+        "HasPackageJson":  true,
+        "Framework":  "Next.js",
+        "Version":  "16.0.3",
+        "HasRouting":  true,
+        "HasDesignSystem":  true,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "next",
+                             "framer-motion",
+                             "clsx",
+                             "@azora/master-ui",
+                             "lucide-react"
+                         ]
+    },
+    {
+        "Name":  "azrome",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azrome",
+        "HasPackageJson":  true,
+        "Framework":  "React",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Web",
+        "Dependencies":  [
+                             "react",
+                             "react-dom",
+                             "electron-updater"
+                         ]
+    },
+    {
+        "Name":  "web",
+        "Path":  "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\web",
+        "HasPackageJson":  true,
+        "Framework":  "Unknown",
+        "Version":  null,
+        "HasRouting":  true,
+        "HasDesignSystem":  false,
+        "HasTests":  false,
+        "Type":  "Unknown",
+        "Dependencies":  [
+
+                         ]
+    }
+]

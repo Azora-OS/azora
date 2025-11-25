@@ -1,0 +1,1 @@
+// auto-scaler service placeholder

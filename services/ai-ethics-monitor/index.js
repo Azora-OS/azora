@@ -36,36 +36,18 @@ app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
-
-// In-memory storage for ethics reports and compliance data (in production, use a database)
-const ethicsReports = new Map();
-const complianceReports = new Map();
-const violations = new Map();
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
-    service: 'ai-ethics-monitor', 
-    timestamp: new Date().toISOString(),
-    reports: ethicsReports.size,
-    compliance: complianceReports.size
-  });
-});
-
-// AI Ethics Monitoring endpoint
 app.post('/api/monitor', (req, res) => {
   try {
     const { aiDecision, context, user } = req.body;
-    
+
     // Validate input
     if (!aiDecision) {
       return res.status(400).json({ error: 'AI decision is required' });
     }
-    
+
     // Generate unique ID for this report
     const reportId = uuidv4();
-    
+
     // Perform comprehensive ethics analysis
     const ethicsReport = {
       id: reportId,
@@ -78,23 +60,23 @@ app.post('/api/monitor', (req, res) => {
       timestamp: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    
+
     // Store the report
     ethicsReports.set(reportId, ethicsReport);
-    
+
     // Log any violations
     if (ethicsReport.violations.length > 0) {
-      logger.warn(`Ethical violations detected in AI decision`, { 
-        reportId, 
-        violations: ethicsReport.violations.length 
+      logger.warn(`Ethical violations detected in AI decision`, {
+        reportId,
+        violations: ethicsReport.violations.length
       });
-      
+
       // Store violations for tracking
       violations.set(reportId, ethicsReport.violations);
     }
-    
+
     logger.info(`AI ethics report generated`, { reportId, ethicalScore: ethicsReport.ethicalScore });
-    
+
     res.status(201).json({
       success: true,
       data: ethicsReport
@@ -109,15 +91,15 @@ app.post('/api/monitor', (req, res) => {
 app.post('/api/compliance', (req, res) => {
   try {
     const { action, context } = req.body;
-    
+
     // Validate input
     if (!action) {
       return res.status(400).json({ error: 'Action is required' });
     }
-    
+
     // Generate unique ID for this report
     const reportId = uuidv4();
-    
+
     // Perform constitutional compliance analysis
     const complianceReport = {
       id: reportId,
@@ -129,23 +111,23 @@ app.post('/api/compliance', (req, res) => {
       timestamp: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    
+
     // Store the report
     complianceReports.set(reportId, complianceReport);
-    
+
     // Log any violations
     if (!complianceReport.compliant || complianceReport.violations.length > 0) {
-      logger.warn(`Constitutional compliance violations detected`, { 
-        reportId, 
-        violations: complianceReport.violations.length 
+      logger.warn(`Constitutional compliance violations detected`, {
+        reportId,
+        violations: complianceReport.violations.length
       });
     }
-    
-    logger.info(`Constitutional compliance report generated`, { 
-      reportId, 
-      compliant: complianceReport.compliant 
+
+    logger.info(`Constitutional compliance report generated`, {
+      reportId,
+      compliant: complianceReport.compliant
     });
-    
+
     res.status(201).json({
       success: true,
       data: complianceReport
@@ -160,7 +142,7 @@ app.post('/api/compliance', (req, res) => {
 app.get('/api/reports', (req, res) => {
   try {
     const reportList = Array.from(ethicsReports.values());
-    
+
     res.json({
       success: true,
       data: reportList,
@@ -177,11 +159,11 @@ app.get('/api/reports/:reportId', (req, res) => {
   try {
     const { reportId } = req.params;
     const report = ethicsReports.get(reportId);
-    
+
     if (!report) {
       return res.status(404).json({ error: 'Ethics report not found' });
     }
-    
+
     res.json({
       success: true,
       data: report
@@ -196,7 +178,7 @@ app.get('/api/reports/:reportId', (req, res) => {
 app.get('/api/compliance-reports', (req, res) => {
   try {
     const reportList = Array.from(complianceReports.values());
-    
+
     res.json({
       success: true,
       data: reportList,
@@ -213,11 +195,11 @@ app.get('/api/compliance-reports/:reportId', (req, res) => {
   try {
     const { reportId } = req.params;
     const report = complianceReports.get(reportId);
-    
+
     if (!report) {
       return res.status(404).json({ error: 'Compliance report not found' });
     }
-    
+
     res.json({
       success: true,
       data: report
@@ -232,7 +214,7 @@ app.get('/api/compliance-reports/:reportId', (req, res) => {
 app.get('/api/violations', (req, res) => {
   try {
     const violationList = Array.from(violations.values()).flat();
-    
+
     res.json({
       success: true,
       data: violationList,
@@ -264,20 +246,20 @@ function calculateEthicalScore(decision, context) {
   // In a real implementation, this would use sophisticated ethical frameworks
   // For now, we'll simulate a score based on various factors
   const baseScore = 85; // Start with a good baseline
-  
+
   // Adjust based on context factors
   let adjustment = 0;
-  
+
   if (context && context.sensitivity) {
-    if (context.sensitivity === 'high') {adjustment -= 10;}
-    else if (context.sensitivity === 'medium') {adjustment -= 5;}
+    if (context.sensitivity === 'high') { adjustment -= 10; }
+    else if (context.sensitivity === 'medium') { adjustment -= 5; }
   }
-  
+
   if (context && context.impact) {
-    if (context.impact === 'high') {adjustment -= 15;}
-    else if (context.impact === 'medium') {adjustment -= 7;}
+    if (context.impact === 'high') { adjustment -= 15; }
+    else if (context.impact === 'medium') { adjustment -= 7; }
   }
-  
+
   // Ensure score stays within bounds
   const score = Math.max(0, Math.min(100, baseScore + adjustment));
   return Math.round(score * 100) / 100; // Round to 2 decimal places
@@ -285,10 +267,10 @@ function calculateEthicalScore(decision, context) {
 
 function detectEthicalViolations(decision, context) {
   const violations = [];
-  
+
   // In a real implementation, this would check against specific ethical guidelines
   // For now, we'll simulate violation detection
-  
+
   if (context && context.sensitivity === 'high' && Math.random() > 0.7) {
     violations.push({
       type: 'Privacy Violation',
@@ -296,7 +278,7 @@ function detectEthicalViolations(decision, context) {
       description: 'Decision may expose sensitive personal information'
     });
   }
-  
+
   if (context && context.biasRisk && Math.random() > 0.8) {
     violations.push({
       type: 'Potential Bias',
@@ -304,22 +286,22 @@ function detectEthicalViolations(decision, context) {
       description: 'Decision may exhibit bias against protected groups'
     });
   }
-  
+
   return violations;
 }
 
 function generateEthicalRecommendations(decision, context) {
   const recommendations = [];
-  
+
   // In a real implementation, this would generate specific recommendations
   // For now, we'll simulate recommendations
-  
+
   recommendations.push({
     type: 'Review',
     priority: 'High',
     description: 'Human review recommended for ethical oversight'
   });
-  
+
   if (context && context.sensitivity === 'high') {
     recommendations.push({
       type: 'Privacy',
@@ -327,7 +309,7 @@ function generateEthicalRecommendations(decision, context) {
       description: 'Ensure data minimization principles are applied'
     });
   }
-  
+
   return recommendations;
 }
 
@@ -339,10 +321,10 @@ function checkConstitutionalCompliance(action, context) {
 
 function detectConstitutionalViolations(action, context) {
   const violations = [];
-  
+
   // In a real implementation, this would check against specific constitutional principles
   // For now, we'll simulate violation detection
-  
+
   if (Math.random() > 0.9) {
     violations.push({
       type: 'Transparency Violation',
@@ -350,7 +332,7 @@ function detectConstitutionalViolations(action, context) {
       description: 'Decision-making process lacks sufficient transparency'
     });
   }
-  
+
   if (Math.random() > 0.85) {
     violations.push({
       type: 'Accountability Gap',
@@ -358,28 +340,28 @@ function detectConstitutionalViolations(action, context) {
       description: 'Lack of clear accountability for decision outcomes'
     });
   }
-  
+
   return violations;
 }
 
 function generateComplianceRecommendations(action, context) {
   const recommendations = [];
-  
+
   // In a real implementation, this would generate specific recommendations
   // For now, we'll simulate recommendations
-  
+
   recommendations.push({
     type: 'Documentation',
     priority: 'High',
     description: 'Document decision rationale for audit purposes'
   });
-  
+
   recommendations.push({
     type: 'Review',
     priority: 'Medium',
     description: 'Schedule periodic compliance review'
   });
-  
+
   return recommendations;
 }
 

@@ -6,6 +6,7 @@ export interface CreateWalletOptions {
   userId: string;
   balance?: number;
   currency?: string;
+  address?: string;
 }
 
 export interface CreateTransactionOptions {
@@ -38,6 +39,7 @@ export class WalletFactory extends BaseFactory<Wallet> {
         userId: overrides.userId,
         balance: overrides.balance ?? 0,
         currency: overrides.currency || 'USD',
+        address: overrides.address || `wallet_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       },
     });
 
@@ -78,8 +80,9 @@ export class TransactionFactory extends BaseFactory<Transaction> {
       data: {
         walletId: overrides.walletId,
         amount: overrides.amount,
-        type: overrides.type || TransactionType.CREDIT,
+        type: overrides.type || TransactionType.DEPOSIT,
         description: overrides.description || faker.lorem.sentence(),
+        currency: 'USD',
         metadata: overrides.metadata || {},
         createdAt: new Date(),
       },
@@ -96,7 +99,7 @@ export class TransactionFactory extends BaseFactory<Transaction> {
     return this.create({
       walletId,
       amount,
-      type: TransactionType.CREDIT,
+      type: TransactionType.DEPOSIT,
       description: 'Test credit transaction',
     });
   }
@@ -108,7 +111,7 @@ export class TransactionFactory extends BaseFactory<Transaction> {
     return this.create({
       walletId,
       amount,
-      type: TransactionType.DEBIT,
+      type: TransactionType.WITHDRAWAL,
       description: 'Test debit transaction',
     });
   }
@@ -139,8 +142,9 @@ export class PaymentFactory extends BaseFactory<Payment> {
         userId: overrides.userId,
         amount: overrides.amount,
         currency: overrides.currency || 'USD',
-        status: overrides.status || PaymentStatus.SUCCEEDED,
+        status: overrides.status || PaymentStatus.COMPLETED,
         stripePaymentIntentId: overrides.stripePaymentIntentId || `pi_test_${faker.string.alphanumeric(24)}`,
+        idempotencyKey: `key_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         metadata: overrides.metadata || {},
         createdAt: new Date(),
       },
@@ -157,7 +161,7 @@ export class PaymentFactory extends BaseFactory<Payment> {
     return this.create({
       userId,
       amount,
-      status: PaymentStatus.SUCCEEDED,
+      status: PaymentStatus.COMPLETED,
     });
   }
 

@@ -35,8 +35,9 @@ export class CourseFactory extends BaseFactory<Course> {
         instructorId: overrides?.instructorId || faker.string.uuid(),
         price: overrides?.price ?? faker.number.int({ min: 0, max: 500 }),
         duration: overrides?.duration ?? faker.number.int({ min: 1, max: 100 }),
-        level: overrides?.level || this.pickRandom(['beginner', 'intermediate', 'advanced']),
-        isPublished: overrides?.isPublished ?? true,
+        level: overrides?.level || this.pickRandom(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
+        status: overrides?.isPublished === false ? 'DRAFT' : 'PUBLISHED',
+        category: 'General',
       },
     });
 
@@ -86,6 +87,7 @@ export class EnrollmentFactory extends BaseFactory<Enrollment> {
     const enrollment = await this.prisma.enrollment.create({
       data: {
         userId: overrides.userId,
+        studentId: overrides.userId, // Set studentId same as userId
         courseId: overrides.courseId,
         status: overrides.status || EnrollmentStatus.ACTIVE,
         progress: overrides.progress ?? 0,
@@ -128,7 +130,7 @@ export class EnrollmentFactory extends BaseFactory<Enrollment> {
     return this.create({
       userId,
       courseId,
-      status: EnrollmentStatus.CANCELLED,
+      status: EnrollmentStatus.DROPPED,
     });
   }
 }
@@ -143,13 +145,16 @@ export class AssessmentFactory extends BaseFactory<any> {
   async create(overrides?: any): Promise<any> {
     const assessment = await this.prisma.assessment.create({
       data: {
-        courseId: overrides?.courseId || faker.string.uuid(),
         userId: overrides?.userId || faker.string.uuid(),
+        type: overrides?.type || 'QUIZ',
         title: overrides?.title || faker.lorem.words(3),
+        questions: overrides?.questions || [],
+        answers: overrides?.answers || null,
         score: overrides?.score ?? faker.number.int({ min: 0, max: 100 }),
         maxScore: overrides?.maxScore ?? 100,
-        passed: overrides?.passed ?? true,
-        submittedAt: overrides?.submittedAt || new Date(),
+        status: overrides?.status || 'COMPLETED',
+        startedAt: overrides?.startedAt || new Date(),
+        completedAt: overrides?.completedAt || new Date(),
       },
     });
 
@@ -160,24 +165,22 @@ export class AssessmentFactory extends BaseFactory<any> {
   /**
    * Create passing assessment
    */
-  async createPassing(userId: string, courseId: string): Promise<any> {
+  async createPassing(userId: string, courseId?: string): Promise<any> {
     return this.create({
       userId,
-      courseId,
       score: faker.number.int({ min: 70, max: 100 }),
-      passed: true,
+      status: 'GRADED',
     });
   }
 
   /**
    * Create failing assessment
    */
-  async createFailing(userId: string, courseId: string): Promise<any> {
+  async createFailing(userId: string, courseId?: string): Promise<any> {
     return this.create({
       userId,
-      courseId,
       score: faker.number.int({ min: 0, max: 69 }),
-      passed: false,
+      status: 'GRADED',
     });
   }
 }
