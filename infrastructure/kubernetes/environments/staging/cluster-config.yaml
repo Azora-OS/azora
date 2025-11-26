@@ -1,0 +1,62 @@
+# Staging Kubernetes Cluster Configuration
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: azora-staging
+  labels:
+    environment: staging
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: azora-staging-auth
+  labels:
+    environment: staging
+    service-type: auth
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: azora-staging-education
+  labels:
+    environment: staging
+    service-type: education
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: azora-staging-payment
+  labels:
+    environment: staging
+    service-type: payment
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: azora-staging
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-internal
+  namespace: azora-staging
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          environment: staging
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: nginx-staging
+spec:
+  controller: k8s.io/ingress-nginx

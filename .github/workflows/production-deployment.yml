@@ -1,0 +1,50 @@
+name: Production Deployment (Tasks 22-24)
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_checks:
+        description: 'Skip pre-deployment checks'
+        required: false
+        default: 'false'
+
+jobs:
+  pre-deployment:
+    name: Task 22 - Pre-Deployment Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run deploy:pre-check
+        if: ${{ github.event.inputs.skip_checks != 'true' }}
+
+  deploy:
+    name: Task 23 - Production Deployment
+    needs: pre-deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: azure/setup-kubectl@v3
+      - uses: azure/setup-helm@v3
+      - run: bash scripts/production-deploy.sh
+        env:
+          DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          DB_USER: ${{ secrets.PROD_DB_USER }}
+          KUBECONFIG: ${{ secrets.PROD_KUBECONFIG }}
+
+  post-deployment:
+    name: Task 24 - Post-Deployment Validation
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run deploy:post-check
+        env:
+          PROD_URL: ${{ secrets.PROD_URL }}

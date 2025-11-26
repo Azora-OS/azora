@@ -32,5 +32,8 @@
             "real_time_sync",
             "account_theft_protection"
         ]
+    },
+    "devDependencies": {
+        "@vitejs/plugin-legacy": "^7.2.1"
     }
 }

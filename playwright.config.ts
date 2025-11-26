@@ -13,7 +13,8 @@ export default defineConfig({
   testIgnore: ['**/fixtures/**', '**/*.setup.ts'],
   
   /* Global setup and teardown */
-  globalSetup: require.resolve('./tests/e2e/playwright.setup.ts'),
+  globalSetup: require.resolve('./tests/e2e/setup.ts'),
+  globalTeardown: require.resolve('./tests/e2e/teardown.ts'),
   
   /* Run tests in files in parallel */
   fullyParallel: true,

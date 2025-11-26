@@ -1,0 +1,54 @@
+{{- range $service := list "apiGateway" "auth" "education" "pay" }}
+{{- $config := index $.Values.services $service }}
+{{- if $config.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $config.name }}
+  labels:
+    app: {{ $config.name }}
+spec:
+  replicas: {{ $config.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $config.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $config.name }}
+    spec:
+      containers:
+      - name: {{ $config.name }}
+        image: "{{ $.Values.image.registry }}/{{ $.Values.image.repository }}/{{ $config.name }}:{{ $.Values.image.tag }}"
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ $config.port }}
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "{{ $config.port }}"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ $.Values.secrets.existingSecret }}
+              key: database-url
+        - name: REDIS_URL
+          value: "redis://{{ $.Values.redis.host }}:{{ $.Values.redis.port }}"
+        resources:
+          {{- toYaml $config.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ $config.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ $config.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+{{- end }}
+{{- end }}

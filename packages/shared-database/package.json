@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "description": "Azora OS Shared Database Layer - Prisma, Redis, Repository Pattern",
   "type": "module",
-  "main": "./database/index.ts",
+  "main": "dist/database/index.js",
+  "types": "dist/database/index.d.ts",
   "exports": {
-    ".": "./database/index.ts",
-    "./prisma": "./database/prisma-client.ts",
-    "./redis": "./database/redis-client.ts",
-    "./repository": "./database/repository.ts",
-    "./migrations": "./database/migrations.ts"
+    ".": "./dist/database/index.js",
+    "./prisma": "./dist/database/prisma-client.js",
+    "./redis": "./dist/database/redis-client.js",
+    "./repository": "./dist/database/repository.js",
+    "./migrations": "./dist/database/migrations.js"
   },
   "scripts": {
+    "build": "npx tsc",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -19,10 +21,11 @@
     "redis": "^5.0.0"
   },
   "devDependencies": {
-    "prisma": "^5.20.0",
-    "typescript": "5.4.5",
+    "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0"
+    "@typescript-eslint/parser": "^7.0.0",
+    "prisma": "^5.20.0",
+    "typescript": "5.4.5"
   },
   "peerDependencies": {
     "@prisma/client": "^5.20.0"

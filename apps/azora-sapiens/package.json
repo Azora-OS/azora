@@ -9,7 +9,7 @@
     },
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "npx next build",
         "start": "next start",
         "lint": "next lint"
     },

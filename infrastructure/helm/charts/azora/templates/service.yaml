@@ -1,0 +1,21 @@
+{{- range $service := list "apiGateway" "auth" "education" "pay" }}
+{{- $config := index $.Values.services $service }}
+{{- if $config.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $config.name }}
+  labels:
+    app: {{ $config.name }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: {{ $config.port }}
+    protocol: TCP
+    name: http
+  selector:
+    app: {{ $config.name }}
+{{- end }}
+{{- end }}
