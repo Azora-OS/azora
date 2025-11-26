@@ -1,0 +1,97 @@
+replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: azora
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+services:
+  apiGateway:
+    enabled: true
+    name: azora-api-gateway
+    port: 3000
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  
+  auth:
+    enabled: true
+    name: azora-auth
+    port: 3001
+    replicas: 3
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  
+  education:
+    enabled: true
+    name: azora-education
+    port: 3002
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  
+  pay:
+    enabled: true
+    name: azora-pay
+    port: 3003
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: api.azora.world
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: azora-tls
+      hosts:
+        - api.azora.world
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+postgresql:
+  enabled: true
+  host: postgres
+  port: 5432
+  database: azora
+  username: azora
+
+redis:
+  enabled: true
+  host: redis
+  port: 6379
+
+secrets:
+  existingSecret: azora-secrets

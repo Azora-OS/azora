@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const compression = require('./src/middleware/compression');
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +10,7 @@ const PORT = process.env.PORT || 4004;
 
 // Ubuntu Middleware
 app.use(helmet());
+app.use(compression);
 app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
   credentials: true
@@ -50,39 +52,39 @@ app.get('/api/ubuntu/philosophy', (req, res) => {
 });
 
 // Service-specific routes
+const authRoutes = require('./src/routes/auth');
+const oauthRoutes = require('./src/routes/oauth');
+const tokenRoutes = require('./src/routes/token');
+const gdprRoutes = require('./src/routes/gdpr');
+const { authenticateToken } = require('./src/middleware/jwt');
+const { requireRole, requirePermission, ROLES } = require('./src/middleware/rbac');
+const { auditMiddleware } = require('./src/middleware/audit');
 
-// Auth Routes
-const jwt = require('jsonwebtoken');
+app.use(auditMiddleware);
+app.use('/api/auth', authRoutes);
+app.use('/api/oauth', oauthRoutes);
+app.use('/api/token', tokenRoutes);
+app.use('/api/gdpr', gdprRoutes);
 
-app.post('/api/login', (req, res) => {
-  const { email, password } = req.body;
-
-  // Mock authentication
-  if (email && password) {
-    const token = jwt.sign(
-      { userId: 1, email, name: 'Ubuntu User' },
-      'ubuntu-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      success: true,
-      token,
-      user: { id: 1, email, name: 'Ubuntu User' },
-      ubuntu: 'Ubuntu authentication successful'
-    });
-  } else {
-    res.status(401).json({
-      error: 'Invalid credentials',
-      ubuntu: 'Ubuntu security maintained'
-    });
-  }
+// Protected route examples
+app.get('/api/profile', authenticateToken, (req, res) => {
+  res.json({
+    user: req.user,
+    ubuntu: 'Ubuntu profile access'
+  });
 });
 
-app.get('/api/profile', (req, res) => {
+app.get('/api/admin/users', authenticateToken, requireRole(ROLES.ADMIN), (req, res) => {
   res.json({
-    user: { id: 1, name: 'Ubuntu User', email: 'user@azora.world' },
-    ubuntu: 'Ubuntu profile access'
+    message: 'Admin users endpoint',
+    ubuntu: 'Ubuntu admin access granted'
+  });
+});
+
+app.get('/api/courses', authenticateToken, requirePermission('courses:read'), (req, res) => {
+  res.json({
+    message: 'Courses endpoint',
+    ubuntu: 'Ubuntu course access granted'
   });
 });
 

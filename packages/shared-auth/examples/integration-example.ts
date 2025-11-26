@@ -7,10 +7,10 @@ Example of how to integrate @azora/shared-auth with Express/Next.js
 */
 
 import express, { Router } from 'express';
-import { authService } from '@azora/shared-auth/service';
-import { authenticateJWT, authenticateSession, requireRole } from '@azora/shared-auth/middleware';
+import { authService } from '../auth-service';
+import { authenticateJWT, authenticateSession, requireRole } from '../auth-middleware';
 import bcrypt from 'bcryptjs';
-import { prisma } from '@azora/shared-database/prisma';
+import { prisma } from '@azora/shared-database';
 
 const router = Router();
 

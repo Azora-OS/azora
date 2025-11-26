@@ -1,5 +1,5 @@
 {
-  "name": "@azora/constitutional-ai",
+  "name": "@azora/constitutional-ai-service",
   "version": "1.0.0",
   "description": "Constitutional AI Framework - Ubuntu Principles Validation for Azora OS",
   "main": "index.ts",

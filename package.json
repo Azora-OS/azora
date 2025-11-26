@@ -1,13 +1,33 @@
 {
-  "name": "azora-monorepo",
-  "version": "2.0.0",
-  "description": "Azora Ecosystem - Constitutional, Auditable, Antifragile, Ubuntu-driven",
+  "name": "azora",
+  "version": "1.0.0",
   "scripts": {
-    "start:all": "powershell -ExecutionPolicy Bypass -File ./scripts/launch-all-services.ps1",
-    "start:core": "concurrently \"npm --prefix services/azora-api-gateway start\" \"npm --prefix services/azora-auth start\" \"npm --prefix services/ai-orchestrator start\"",
-    "start:blockchain": "concurrently \"npm --prefix services/azora-mint start\" \"npm --prefix services/azora-ledger start\"",
-    "start:antifragile": "concurrently \"npm --prefix services/chaos-monkey start\" \"npm --prefix services/phoenix-server start\"",
-    "health:check": "node scripts/launch/01-health-check.js",
-    "service:audit": "node scripts/launch/10-service-audit.js"
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:full": "jest --coverage",
+    "test:watch": "jest --watch",
+    "load:test": "k6 run tests/performance/load-test.js",
+    "load:100": "k6 run --vus 100 --duration 5m tests/performance/load-test.js",
+    "load:1000": "k6 run --vus 1000 --duration 5m tests/performance/load-test.js",
+    "load:10000": "k6 run --vus 10000 --duration 5m tests/performance/load-test.js",
+    "validate:staging": "ts-node tests/performance/run-staging-validation.ts",
+    "validate:load": "k6 run tests/performance/load-tests-staging.ts",
+    "validate:monitoring": "ts-node tests/performance/monitoring-validation.ts",
+    "validate:autoscaling": "ts-node tests/performance/autoscaling-test.ts",
+    "validate:dr": "ts-node tests/performance/disaster-recovery-test.ts",
+    "deploy:pre-check": "ts-node scripts/pre-deployment-check.ts",
+    "deploy:production": "bash scripts/production-deploy.sh",
+    "deploy:post-check": "ts-node scripts/post-deployment-check.ts",
+    "optimize:production": "ts-node scripts/production-optimization.ts",
+    "improve:continuous": "ts-node scripts/continuous-improvement.ts"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "7.28.5",
+    "@babel/preset-typescript": "7.28.5",
+    "@types/jest": "30.0.0",
+    "babel-jest": "30.2.0",
+    "jest": "30.2.0",
+    "ts-jest": "29.4.5",
+    "typescript": "5.9.3"
   }
 }

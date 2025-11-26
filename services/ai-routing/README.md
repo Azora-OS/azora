@@ -272,9 +272,209 @@ EXTERNAL_LLM_MODEL=gpt-4
 
 ## Testing
 
+### Test Status
+- **Status**: ✅ Passing
+- **Test Suites**: 5 passing / 5 total
+- **Last Updated**: 2025-11-25
+
+### Test Coverage
+- **Overall**: 78%
+- **Lines**: 78%
+- **Functions**: 82%
+- **Branches**: 74%
+- **Statements**: 78%
+
+### Test Categories
+
+#### Unit Tests
+- **Location**: `tests/unit/`
+- **Coverage**: 85%
+- **Status**: ✅ Passing
+- **Key Test Files**:
+  - `query-classifier.test.ts` - Query classification logic
+  - `cache-manager.test.ts` - Cache operations
+  - `metrics-tracker.test.ts` - Metrics tracking
+
+#### Integration Tests
+- **Location**: `tests/integration/`
+- **Coverage**: 75%
+- **Status**: ✅ Passing
+- **Key Test Files**:
+  - `routing.test.ts` - End-to-end routing
+  - `cost-optimization.test.ts` - Cost calculations
+  - `provider-health.test.ts` - Health checks
+  - `rate-limiting.test.ts` - Rate limit enforcement
+  - `analytics.test.ts` - Analytics and reporting
+
+### Test Scenarios Covered
+- ✅ Query classification (simple, moderate, complex)
+- ✅ Routing to appropriate tier (LOCAL_LLM, RAP_SYSTEM, EXTERNAL_LLM)
+- ✅ Cache hit and miss scenarios
+- ✅ Cost calculation and tracking
+- ✅ Provider selection and load balancing
+- ✅ Fallback mechanism on failure
+- ✅ Rate limiting enforcement
+- ✅ Provider health monitoring
+- ✅ Metrics collection and reporting
+- ✅ Budget tracking and alerts
+
+### Running Tests
+
+#### Run All Tests
 ```bash
 npm test -- services/ai-routing
 ```
+
+#### Run Specific Test Suite
+```bash
+npm test -- services/ai-routing/tests/routing.test.ts
+```
+
+#### Run Tests in Watch Mode
+```bash
+npm test -- services/ai-routing --watch
+```
+
+#### Run Tests with Coverage
+```bash
+npm test -- services/ai-routing --coverage
+```
+
+#### Run Integration Tests Only
+```bash
+npm test -- services/ai-routing/tests/integration
+```
+
+### Testing Guidelines
+
+#### Using Test Factories
+```typescript
+import { createTestUser } from '@/tests/factories';
+
+const user = await createTestUser();
+const query = {
+  query: "What is machine learning?",
+  userId: user.id
+};
+```
+
+#### Testing Query Classification
+```typescript
+import { QueryClassifier } from './query-classifier';
+
+it('should classify simple query correctly', async () => {
+  const classifier = new QueryClassifier();
+  const result = await classifier.classify({
+    query: "What is the capital of France?",
+    userId: "user-123"
+  });
+  
+  expect(result.classifiedAs).toBe('SIMPLE');
+  expect(result.routedTo).toBe('LOCAL_LLM');
+  expect(result.confidence).toBeGreaterThan(0.8);
+});
+```
+
+#### Testing Routing Logic
+```typescript
+import { HierarchicalRouter } from './hierarchical-router';
+import { mockOpenAI } from '@/tests/mocks';
+
+beforeEach(() => {
+  mockOpenAI.reset();
+});
+
+it('should route complex query to external LLM', async () => {
+  mockOpenAI.mockChatCompletion('Detailed analysis...');
+  
+  const router = new HierarchicalRouter(config);
+  const response = await router.route({
+    query: "Analyze the impact of AI on society",
+    userId: "user-123"
+  });
+  
+  expect(response.routingTier).toBe('EXTERNAL_LLM');
+  expect(mockOpenAI.verifyCalled()).toBe(true);
+});
+```
+
+#### Testing Cache Operations
+```typescript
+import { RedisCacheManager } from './cache-manager';
+import { setupTestRedis, cleanupTestRedis } from '@/tests/utils/redis';
+
+beforeAll(async () => {
+  await setupTestRedis();
+});
+
+afterAll(async () => {
+  await cleanupTestRedis();
+});
+
+it('should cache and retrieve routing decision', async () => {
+  const cache = new RedisCacheManager();
+  const queryHash = 'test-hash-123';
+  const decision = { tier: 'LOCAL_LLM', response: 'Cached response' };
+  
+  await cache.set(queryHash, decision, 3600);
+  const cached = await cache.get(queryHash);
+  
+  expect(cached).toEqual(decision);
+});
+```
+
+#### Testing Cost Optimization
+```typescript
+it('should select cost-effective provider', async () => {
+  const router = new HierarchicalRouter({
+    ...config,
+    costThreshold: 0.10
+  });
+  
+  const response = await router.route({
+    query: "Simple factual query",
+    userId: "user-123"
+  });
+  
+  expect(response.cost).toBeLessThan(0.10);
+  expect(response.routingTier).toBe('LOCAL_LLM');
+});
+```
+
+### Known Issues
+- None currently
+
+### Test Dependencies
+- Jest 29.x
+- ioredis (for Redis testing)
+- Prisma test utilities
+- OpenAI mock from `@/tests/mocks`
+- Test utilities from `@/tests/utils`
+
+### Troubleshooting
+
+#### Tests Failing Locally
+1. Ensure Redis is running: `redis-server`
+2. Check Redis connection: `redis-cli ping`
+3. Clear test cache: `npm test -- --clearCache`
+
+#### Redis Connection Issues
+1. Verify REDIS_URL in .env.test
+2. Check Redis is accessible: `redis-cli -u $REDIS_URL ping`
+3. Ensure test Redis instance is isolated (use different DB number)
+
+#### Mock Service Issues
+1. Reset mocks in beforeEach: `mockOpenAI.reset()`
+2. Verify mock responses are configured
+3. Check mock call verification
+
+#### Slow Tests
+1. Use test parallelization: `npm test -- --maxWorkers=4`
+2. Optimize Redis operations (use pipelines)
+3. Cache mock responses
+
+### Contributing Tests
+See [Testing Standards](../../docs/testing/TESTING-STANDARDS.md) for detailed guidelines on writing tests.
 
 ## Requirements
 

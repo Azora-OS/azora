@@ -1,25 +1,32 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const { generateAccessToken, generateRefreshToken, authenticateToken } = require('../middleware/jwt');
+const { ROLES } = require('../middleware/rbac');
+const { logAuthAttempt } = require('../middleware/audit');
 
-// Ubuntu Authentication
+// Login endpoint
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     
-    // Mock user validation (replace with database)
-    const user = { id: 1, email, name: 'Ubuntu User' };
+    await logAuthAttempt(email, true, req.ip);
     
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'ubuntu-secret',
-      { expiresIn: '24h' }
-    );
+    // Mock user validation (replace with database)
+    const user = { 
+      userId: 1, 
+      email, 
+      name: 'Ubuntu User',
+      role: ROLES.STUDENT
+    };
+    
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken({ userId: user.userId });
     
     res.json({
       success: true,
-      token,
+      accessToken,
+      refreshToken,
       user,
       ubuntu: 'Ubuntu authentication successful'
     });
@@ -31,34 +38,43 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Register endpoint
+router.post('/register', async (req, res) => {
+  try {
+    const { email, password, name, role } = req.body;
+    
+    // Mock user creation (replace with database)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = { 
+      userId: Date.now(), 
+      email, 
+      name,
+      role: role || ROLES.STUDENT
+    };
+    
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken({ userId: user.userId });
+    
+    res.status(201).json({
+      success: true,
+      accessToken,
+      refreshToken,
+      user,
+      ubuntu: 'Ubuntu registration successful'
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Registration failed',
+      ubuntu: 'Ubuntu security maintained'
+    });
+  }
+});
+
 router.get('/profile', authenticateToken, (req, res) => {
   res.json({
     user: req.user,
     ubuntu: 'Ubuntu profile access granted'
   });
 });
-
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  
-  if (!token) {
-    return res.status(401).json({
-      error: 'Access token required',
-      ubuntu: 'Ubuntu security verification needed'
-    });
-  }
-  
-  jwt.verify(token, process.env.JWT_SECRET || 'ubuntu-secret', (err, user) => {
-    if (err) {
-      return res.status(403).json({
-        error: 'Invalid token',
-        ubuntu: 'Ubuntu security verification failed'
-      });
-    }
-    req.user = user;
-    next();
-  });
-}
 
 module.exports = router;

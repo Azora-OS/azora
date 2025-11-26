@@ -273,4 +273,116 @@ describe('Mint Service - Comprehensive Tests', () => {
       expect(res.body.error).toContain('minimum');
     });
   });
+
+  describe('Token Minting', () => {
+    it('should mint tokens for valid proof-of-knowledge', async () => {
+      const res = await request(API_URL)
+        .post('/api/mint/tokens')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+          proofType: 'course_completion',
+          proofData: {
+            courseId: 'course-123',
+            score: 95,
+          },
+        });
+      
+      expect(res.status).toBe(200);
+      expect(res.body.tokensMinted).toBeGreaterThan(0);
+      expect(res.body.transactionId).toBeDefined();
+    });
+
+    it('should reject minting without valid proof', async () => {
+      const res = await request(API_URL)
+        .post('/api/mint/tokens')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+          proofType: 'invalid_proof',
+        });
+      
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('proof');
+    });
+
+    it('should track total minted supply', async () => {
+      const res = await request(API_URL)
+        .get('/api/mint/supply');
+      
+      expect(res.status).toBe(200);
+      expect(res.body.totalMinted).toBeDefined();
+      expect(res.body.circulatingSupply).toBeDefined();
+    });
+  });
+
+  describe('Staking Mechanism', () => {
+    beforeEach(async () => {
+      await request(API_URL)
+        .post('/api/wallet/create')
+        .set('Authorization', `Bearer ${authToken}`);
+      
+      await request(API_URL)
+        .post('/api/mining/award')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ activityType: 'lesson_completion', amount: 500 });
+    });
+
+    it('should stake tokens', async () => {
+      const res = await request(API_URL)
+        .post('/api/staking/stake')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+          amount: 100,
+          duration: 30,
+        });
+      
+      expect(res.status).toBe(200);
+      expect(res.body.stakeId).toBeDefined();
+      expect(res.body.amount).toBe(100);
+      expect(res.body.status).toBe('active');
+    });
+
+    it('should calculate staking rewards', async () => {
+      await request(API_URL)
+        .post('/api/staking/stake')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ amount: 100, duration: 30 });
+      
+      const res = await request(API_URL)
+        .get('/api/staking/rewards')
+        .set('Authorization', `Bearer ${authToken}`);
+      
+      expect(res.status).toBe(200);
+      expect(res.body.pendingRewards).toBeDefined();
+    });
+
+    it('should unstake tokens after duration', async () => {
+      const stakeRes = await request(API_URL)
+        .post('/api/staking/stake')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ amount: 100, duration: 0 });
+      
+      const res = await request(API_URL)
+        .post('/api/staking/unstake')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ stakeId: stakeRes.body.stakeId });
+      
+      expect(res.status).toBe(200);
+      expect(res.body.amountReturned).toBe(100);
+    });
+
+    it('should reject unstaking before duration ends', async () => {
+      const stakeRes = await request(API_URL)
+        .post('/api/staking/stake')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ amount: 100, duration: 365 });
+      
+      const res = await request(API_URL)
+        .post('/api/staking/unstake')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ stakeId: stakeRes.body.stakeId });
+      
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('duration');
+    });
+  });
 });

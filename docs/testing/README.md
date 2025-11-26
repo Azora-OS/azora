@@ -1,37 +1,93 @@
 # Testing Documentation
 
-Welcome to the Azora OS testing documentation. This directory contains all the resources you need to write, maintain, and improve tests.
+Comprehensive testing documentation for the Azora ecosystem.
 
----
+## Quick Links
 
-## 📚 Documentation Index
+- 🚀 [Quick Reference](./SERVICE-TEST-QUICK-REFERENCE.md) - Fast access to commands and patterns
+- 📊 [Service Test Status](./SERVICE-TEST-STATUS.md) - Current status of all services
+- 📝 [Testing Standards](./TESTING-STANDARDS.md) - Comprehensive testing guidelines
+- 📖 [Test Writing Guide](./TEST-WRITING-GUIDE.md) - How to write effective tests
+- 🏭 [Factory Guide](./FACTORY-GUIDE.md) - Using test data factories
+- 🎭 [Mock Guide](./MOCK-GUIDE.md) - Working with mock services
+- 🔧 [Troubleshooting](./TROUBLESHOOTING.md) - Common issues and solutions
 
-### Getting Started
+## Documentation Structure
 
-- **[Testing Standards](./TESTING-STANDARDS.md)** - Core testing principles and conventions
-- **[Test Writing Guide](./TEST-WRITING-GUIDE.md)** - Step-by-step guide to writing tests
-- **[Testing Checklist](./TESTING-CHECKLIST.md)** - Comprehensive checklist for testing tasks
+### For Developers
 
-### Test Development
+#### Getting Started
+1. **New to Testing?** Start with [Test Writing Guide](./TEST-WRITING-GUIDE.md)
+2. **Need Quick Commands?** Check [Quick Reference](./SERVICE-TEST-QUICK-REFERENCE.md)
+3. **Working on a Service?** See [Service Test Status](./SERVICE-TEST-STATUS.md)
 
-- **[Factory Guide](./FACTORY-GUIDE.md)** - Using test data factories
-- **[Mock Guide](./MOCK-GUIDE.md)** - Mocking external services
-- **[Code Review Checklist](./CODE-REVIEW-CHECKLIST.md)** - Reviewing test code
+#### Writing Tests
+1. **Standards**: [Testing Standards](./TESTING-STANDARDS.md)
+2. **Factories**: [Factory Guide](./FACTORY-GUIDE.md)
+3. **Mocks**: [Mock Guide](./MOCK-GUIDE.md)
+4. **Templates**: [Test Templates](../../tests/templates/)
 
-### Advanced Topics
+#### Debugging
+1. **Common Issues**: [Troubleshooting](./TROUBLESHOOTING.md)
+2. **Service-Specific**: Check individual service READMEs
+3. **Performance**: [Test Optimization Guide](./TEST-OPTIMIZATION-GUIDE.md)
 
-- **[Test Optimization Guide](./TEST-OPTIMIZATION-GUIDE.md)** - Performance optimization
-- **[Test Execution Optimization](./TEST-EXECUTION-OPTIMIZATION.md)** - Parallel and selective testing
-- **[Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
+### For Project Managers
 
-### Reference
+#### Status Tracking
+- **Overall Status**: [Service Test Status](./SERVICE-TEST-STATUS.md)
+- **Coverage Metrics**: [Service Test Status - Statistics](./SERVICE-TEST-STATUS.md#overall-statistics)
+- **Priority Actions**: [Service Test Status - Priority Actions](./SERVICE-TEST-STATUS.md#priority-actions)
 
-- **[Minimum Coverage Requirements](./MINIMUM-COVERAGE-REQUIREMENTS.md)** - Coverage thresholds
-- **[Test Templates](../../tests/templates/)** - Starter templates for tests
+#### Planning
+- **Roadmap**: [Testing Roadmap](../TESTING-ROADMAP.md)
+- **Requirements**: [Minimum Coverage Requirements](./MINIMUM-COVERAGE-REQUIREMENTS.md)
+- **Checklist**: [Testing Checklist](./TESTING-CHECKLIST.md)
 
----
+### For QA Engineers
 
-## 🚀 Quick Start
+#### Quality Gates
+- **Coverage Requirements**: [Minimum Coverage Requirements](./MINIMUM-COVERAGE-REQUIREMENTS.md)
+- **Code Review**: [Code Review Checklist](./CODE-REVIEW-CHECKLIST.md)
+- **Standards**: [Testing Standards Implementation](./TESTING-STANDARDS-IMPLEMENTATION.md)
+
+#### Test Execution
+- **Optimization**: [Test Execution Optimization](./TEST-EXECUTION-OPTIMIZATION.md)
+- **Performance**: [Test Optimization Guide](./TEST-OPTIMIZATION-GUIDE.md)
+- **CI/CD**: [GitHub Actions Workflow](../../.github/workflows/test.yml)
+
+## Documentation Files
+
+### Core Documentation
+
+| File | Purpose | Audience |
+|------|---------|----------|
+| [SERVICE-TEST-QUICK-REFERENCE.md](./SERVICE-TEST-QUICK-REFERENCE.md) | Quick commands and patterns | All Developers |
+| [SERVICE-TEST-STATUS.md](./SERVICE-TEST-STATUS.md) | Current test status across all services | All Teams |
+| [SERVICE-TESTING-TEMPLATE.md](./SERVICE-TESTING-TEMPLATE.md) | Template for service READMEs | Service Owners |
+| [TESTING-STANDARDS.md](./TESTING-STANDARDS.md) | Comprehensive testing guidelines | All Developers |
+| [TEST-WRITING-GUIDE.md](./TEST-WRITING-GUIDE.md) | How to write effective tests | New Developers |
+
+### Specialized Guides
+
+| File | Purpose | Audience |
+|------|---------|----------|
+| [FACTORY-GUIDE.md](./FACTORY-GUIDE.md) | Using test data factories | Developers |
+| [MOCK-GUIDE.md](./MOCK-GUIDE.md) | Working with mock services | Developers |
+| [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) | Common issues and solutions | All Developers |
+| [TEST-OPTIMIZATION-GUIDE.md](./TEST-OPTIMIZATION-GUIDE.md) | Performance optimization | Advanced Developers |
+| [TEST-EXECUTION-OPTIMIZATION.md](./TEST-EXECUTION-OPTIMIZATION.md) | Execution strategies | DevOps/QA |
+
+### Process Documentation
+
+| File | Purpose | Audience |
+|------|---------|----------|
+| [TESTING-CHECKLIST.md](./TESTING-CHECKLIST.md) | Pre-deployment checklist | QA Engineers |
+| [CODE-REVIEW-CHECKLIST.md](./CODE-REVIEW-CHECKLIST.md) | Test review guidelines | Code Reviewers |
+| [MINIMUM-COVERAGE-REQUIREMENTS.md](./MINIMUM-COVERAGE-REQUIREMENTS.md) | Coverage thresholds | All Teams |
+| [TESTING-STANDARDS-IMPLEMENTATION.md](./TESTING-STANDARDS-IMPLEMENTATION.md) | Implementation status | Project Managers |
+
+## Quick Start
 
 ### Running Tests
 
@@ -39,285 +95,257 @@ Welcome to the Azora OS testing documentation. This directory contains all the r
 # Run all tests
 npm test
 
+# Run tests for specific service
+npm test -- services/azora-auth
+
 # Run with coverage
 npm test -- --coverage
 
-# Run specific test file
-npm test -- path/to/test.test.ts
-
 # Run in watch mode
 npm test -- --watch
-
-# Run only changed tests
-npm test -- --onlyChanged
 ```
 
 ### Writing Your First Test
 
-1. Choose the appropriate test type (unit/integration/e2e)
-2. Copy a template from `tests/templates/`
-3. Follow the AAA pattern: Arrange, Act, Assert
-4. Use factories for test data
-5. Mock external dependencies
-6. Run and verify your test
-
-Example:
 ```typescript
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { setupTestDatabase, cleanupTestDatabase } from '@/tests/utils/database';
 import { createTestUser } from '@/tests/factories';
 
-describe('UserService', () => {
-  it('should create a new user', async () => {
+describe('My Service', () => {
+  beforeAll(async () => {
+    await setupTestDatabase();
+  });
+
+  afterAll(async () => {
+    await cleanupTestDatabase();
+  });
+
+  it('should perform operation', async () => {
     // Arrange
-    const userData = { email: 'test@example.com', password: 'password123' };
+    const user = await createTestUser();
     
     // Act
-    const user = await createTestUser(userData);
+    const result = await myService.operation(user.id);
     
     // Assert
-    expect(user.email).toBe('test@example.com');
-    expect(user.id).toBeDefined();
+    expect(result).toBeDefined();
   });
 });
 ```
 
----
+See [Test Writing Guide](./TEST-WRITING-GUIDE.md) for more details.
 
-## 📊 Coverage Requirements
+## Testing Standards Summary
 
-| Service Type | Minimum | Target |
-|--------------|---------|--------|
-| Critical (auth, payment) | 80% | 90% |
-| High Priority (education, marketplace) | 70% | 85% |
-| Standard Services | 60% | 75% |
-| Support Services | 50% | 65% |
+### Coverage Requirements
+- **Critical Services**: 80% minimum
+- **High Priority Services**: 70% minimum
+- **Standard Services**: 60% minimum
+- **New Code**: 60% minimum
 
-See [Minimum Coverage Requirements](./MINIMUM-COVERAGE-REQUIREMENTS.md) for details.
+### Test Categories
+- **Unit Tests**: 60% of test suite
+- **Integration Tests**: 30% of test suite
+- **E2E Tests**: 10% of test suite
 
----
+### Quality Gates
+- All tests must pass before merge
+- Coverage must not decrease
+- No flaky tests allowed
+- Performance benchmarks must be met
 
-## 🎯 Test Types
+See [Testing Standards](./TESTING-STANDARDS.md) for complete details.
 
-### Unit Tests (60% of coverage)
-- **Purpose:** Test individual functions in isolation
-- **Speed:** Fast (<100ms)
-- **Location:** Same directory as source or `tests/unit/`
-- **Template:** [unit.test.template.ts](../../tests/templates/unit.test.template.ts)
+## Current Status
 
-### Integration Tests (30% of coverage)
-- **Purpose:** Test component interactions
-- **Speed:** Medium (100ms-1s)
-- **Location:** `tests/integration/`
-- **Template:** [integration.test.template.ts](../../tests/templates/integration.test.template.ts)
+### Overall Metrics
+- **Total Services**: 60
+- **Services with Tests**: 52 (87%)
+- **Average Coverage**: 48%
+- **Target Coverage**: 70%
+- **Services Passing**: 15 (25%)
 
-### E2E Tests (10% of coverage)
-- **Purpose:** Test complete user journeys
-- **Speed:** Slow (1s-10s)
-- **Location:** `tests/e2e/`
-- **Template:** [e2e.test.template.ts](../../tests/templates/e2e.test.template.ts)
+### Recent Improvements
+- ✅ Fixed 5 critical service test suites
+- ✅ Implemented test infrastructure
+- ✅ Created test data factory system
+- ✅ Set up CI/CD integration
+- ✅ Established testing standards
 
----
+See [Service Test Status](./SERVICE-TEST-STATUS.md) for detailed breakdown.
 
-## 🛠️ Tools and Utilities
+## Common Tasks
 
-### Test Infrastructure
-- **Jest** - Test runner and framework
-- **Playwright** - E2E testing
-- **Prisma** - Database testing
-- **Redis** - Cache testing
+### Adding Tests to a Service
 
-### Test Utilities
-- **Factories** - Generate test data (`tests/factories/`)
-- **Mocks** - Mock external services (`tests/mocks/`)
-- **Database Utils** - Database setup/cleanup (`tests/utils/database.ts`)
-- **Redis Utils** - Redis setup/cleanup (`tests/utils/redis.ts`)
+1. **Check Current Status**
+   ```bash
+   npm test -- services/your-service --coverage
+   ```
 
-### CI/CD Integration
-- **GitHub Actions** - Automated testing
-- **Coverage Gates** - Enforce coverage thresholds
-- **PR Comments** - Automated test reports
+2. **Review Service README**
+   - Check `services/your-service/README.md` for testing section
+   - Review existing tests
+   - Identify gaps
 
----
+3. **Write Tests**
+   - Use [Test Templates](../../tests/templates/)
+   - Follow [Testing Standards](./TESTING-STANDARDS.md)
+   - Use [Test Factories](./FACTORY-GUIDE.md)
 
-## 📋 Checklists
+4. **Run and Verify**
+   ```bash
+   npm test -- services/your-service
+   npm test -- services/your-service --coverage
+   ```
 
-### Before Writing Tests
-- [ ] Review existing tests for similar features
-- [ ] Identify critical paths to test
-- [ ] Choose appropriate test type
-- [ ] Review testing standards
+5. **Update Documentation**
+   - Update service README testing section
+   - Update [Service Test Status](./SERVICE-TEST-STATUS.md)
 
-### Writing Tests
-- [ ] Use descriptive test names
-- [ ] Follow AAA pattern
-- [ ] Use factories for test data
-- [ ] Mock external dependencies
-- [ ] Clean up after tests
-- [ ] Verify tests pass
+### Debugging Test Failures
 
-### Before Committing
-- [ ] Run tests locally
-- [ ] Check coverage
-- [ ] Fix failing tests
-- [ ] Update documentation
-- [ ] Run linter
+1. **Check Troubleshooting Guide**
+   - See [Troubleshooting](./TROUBLESHOOTING.md)
+   - Check service-specific README
 
-### Before PR
-- [ ] All tests pass in CI
-- [ ] Coverage meets requirements
-- [ ] Test documentation updated
-- [ ] PR checklist completed
+2. **Run with Verbose Output**
+   ```bash
+   npm test -- services/your-service --verbose
+   ```
 
----
+3. **Clear Cache**
+   ```bash
+   npm test -- --clearCache
+   ```
 
-## 🎓 Best Practices
+4. **Check Environment**
+   ```bash
+   cat .env.test
+   ```
 
-### Do's ✅
-- Write tests before or with code (TDD)
-- Test behavior, not implementation
-- Keep tests independent and isolated
-- Use meaningful assertions
-- Clean up test data
-- Write descriptive test names
-- Mock external dependencies
-- Test error scenarios
+5. **Verify Dependencies**
+   - Database running?
+   - Redis running?
+   - Environment variables set?
 
-### Don'ts ❌
-- Write tests without assertions
-- Share state between tests
-- Use production data
-- Ignore flaky tests
-- Test implementation details
-- Write slow tests
-- Skip error cases
-- Hardcode test data
+### Improving Test Performance
 
----
+1. **Identify Slow Tests**
+   ```bash
+   npm test -- --verbose
+   ```
 
-## 🔧 Troubleshooting
+2. **Use Parallelization**
+   ```bash
+   npm test -- --maxWorkers=4
+   ```
 
-### Common Issues
+3. **Optimize Database Operations**
+   - Use transactions for cleanup
+   - Minimize database queries
+   - Use proper indexes
 
-**Tests failing locally?**
-- Check database connection
-- Verify Redis is running
-- Review environment variables
-- Check test isolation
+4. **Cache Mock Responses**
+   - Reuse mock data
+   - Reset mocks efficiently
 
-**Coverage not updating?**
-- Clear coverage cache: `rm -rf coverage/`
-- Run with coverage flag: `npm test -- --coverage`
-- Check Jest configuration
+See [Test Optimization Guide](./TEST-OPTIMIZATION-GUIDE.md) for details.
 
-**Tests are slow?**
-- Use test parallelization
-- Optimize database operations
-- Review mock performance
-- Check for unnecessary waits
+## Contributing
 
-See [Troubleshooting Guide](./TROUBLESHOOTING.md) for more solutions.
+### Adding Documentation
 
----
+1. **Follow Templates**
+   - Use existing documentation as reference
+   - Follow markdown standards
+   - Include code examples
 
-## 📈 Monitoring
+2. **Update Index**
+   - Add new files to this README
+   - Update relevant sections
+   - Add to quick links if appropriate
 
-### Coverage Dashboard
-- **Local:** `open coverage/index.html`
-- **CI/CD:** GitHub Actions artifacts
-- **Trends:** Coverage history tracking
+3. **Submit PR**
+   - Include documentation label
+   - Request review from testing team
+   - Update changelog
 
-### Test Health
-- **Pass Rate:** Track test reliability
-- **Flaky Tests:** Identify intermittent failures
-- **Slow Tests:** Monitor performance
-- **Coverage Trends:** Track improvements
+### Improving Tests
 
----
+1. **Follow Standards**
+   - Review [Testing Standards](./TESTING-STANDARDS.md)
+   - Use [Code Review Checklist](./CODE-REVIEW-CHECKLIST.md)
+   - Follow [Test Writing Guide](./TEST-WRITING-GUIDE.md)
 
-## 🤝 Contributing
+2. **Update Documentation**
+   - Update service README
+   - Update test status
+   - Add examples if helpful
 
-### Adding Tests
-1. Choose appropriate test type
-2. Use test templates
-3. Follow naming conventions
-4. Add test documentation
-5. Ensure tests pass
-6. Update coverage metrics
+3. **Submit PR**
+   - Include testing label
+   - Show coverage improvement
+   - Document any new patterns
 
-### Improving Documentation
-1. Identify gaps or unclear sections
-2. Make improvements
-3. Add examples
-4. Update index
-5. Submit PR
+## Resources
 
----
+### Internal Resources
+- [Testing Roadmap](../TESTING-ROADMAP.md)
+- [Test Templates](../../tests/templates/)
+- [Test Utilities](../../tests/utils/)
+- [Test Factories](../../tests/factories/)
+- [Mock Services](../../tests/mocks/)
 
-## 📞 Getting Help
+### External Resources
+- [Jest Documentation](https://jestjs.io/docs/getting-started)
+- [Testing Library](https://testing-library.com/docs/)
+- [Supertest](https://github.com/visionmedia/supertest)
+- [Prisma Testing](https://www.prisma.io/docs/guides/testing)
 
-### Resources
-- Review documentation in this directory
-- Check test templates and examples
-- Consult troubleshooting guide
-- Review existing tests
+## Support
 
-### Support Channels
-- **Documentation:** This directory
-- **Examples:** `tests/templates/`
-- **Team Chat:** #testing channel
-- **Issues:** GitHub Issues
+### Getting Help
 
----
+1. **Documentation**: Check this directory first
+2. **Service README**: Check specific service documentation
+3. **Slack**: #testing channel
+4. **Issues**: Create issue with `testing` label
+5. **Team**: Reach out to testing team
 
-## 🎯 Goals
+### Reporting Issues
 
-### Current Status
-- Overall Coverage: ~50%
-- Passing Tests: 88/88 suites
-- Critical Path Coverage: ~80%
+1. **Documentation Issues**: Create issue with `documentation` label
+2. **Test Failures**: Create issue with `testing` label
+3. **Infrastructure Issues**: Create issue with `test-infrastructure` label
 
-### Short-term (3 months)
-- Overall Coverage: 60%
-- Critical Path Coverage: 90%
-- All critical services: 70%+
+### Suggesting Improvements
 
-### Long-term (6 months)
-- Overall Coverage: 70%
-- Critical Path Coverage: 95%
-- All services: 60%+
+1. **Documentation**: PR with improvements
+2. **Standards**: Discuss in #testing channel
+3. **Tools**: Create issue with `testing-tools` label
 
----
+## Changelog
 
-## 📝 Quick Reference
+### 2025-11-25
+- ✅ Created comprehensive testing documentation structure
+- ✅ Added SERVICE-TEST-QUICK-REFERENCE.md
+- ✅ Added SERVICE-TEST-STATUS.md
+- ✅ Added SERVICE-TESTING-TEMPLATE.md
+- ✅ Updated 7 service READMEs with testing sections
+- ✅ Created this README
 
-### Commands
-```bash
-npm test                      # Run all tests
-npm test -- --coverage        # Run with coverage
-npm test -- --watch           # Watch mode
-npm run test:reminder         # Show testing reminders
-npm run test:checklist        # Show full checklist
-npm run coverage:check        # Check coverage gates
-```
+### 2025-11-18
+- ✅ Fixed 5 critical service test suites
+- ✅ Implemented test infrastructure
+- ✅ Created test data factory system
+- ✅ Set up CI/CD integration
 
-### Files
-```
-docs/testing/                 # Testing documentation
-tests/templates/              # Test templates
-tests/factories/              # Test data factories
-tests/mocks/                  # Mock services
-tests/utils/                  # Test utilities
-.github/workflows/test.yml    # CI/CD workflow
-```
-
-### Coverage Thresholds
-- Critical: 80%+
-- High Priority: 70%+
-- Standard: 60%+
-- Support: 50%+
+See [Testing Roadmap](../TESTING-ROADMAP.md) for planned improvements.
 
 ---
 
-**Happy Testing! 🚀**
-
-For questions or improvements, please open an issue or contact the testing team.
+**Last Updated**: 2025-11-25
+**Maintained By**: Testing Team
+**Questions?** Ask in #testing Slack channel

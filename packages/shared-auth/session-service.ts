@@ -6,7 +6,7 @@ LAYER 3: AUTHENTICATION FOUNDATION - SESSION SERVICE
 Session management with Redis storage
 */
 
-import { getCacheService, CacheService } from '@azora/shared-database/redis';
+import { getCacheService, CacheService } from '@azora/shared-database';
 import { jwtService, JWTPayload } from './jwt-service';
 import crypto from 'crypto';
 
@@ -165,7 +165,7 @@ export class SessionService {
    */
   async updateLastActivity(sessionId: string): Promise<void> {
     const session = await this.getSession(sessionId);
-    if (!session) {return;}
+    if (!session) { return; }
 
     session.lastActivityAt = new Date();
     const cache = await this.getCache();

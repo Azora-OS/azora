@@ -1,9 +1,5 @@
 module.exports = {
   testEnvironment: 'node',
-  setupFilesAfterEnv: [
-    '<rootDir>/tests/setup.ts',
-    '<rootDir>/tests/utils/test-optimization.js'
-  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^@services/(.*)$': '<rootDir>/services/$1',
@@ -11,8 +7,7 @@ module.exports = {
     '^@tests/(.*)$': '<rootDir>/tests/$1',
   },
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   collectCoverageFrom: [
     'services/**/*.{js,ts}',
@@ -44,10 +39,16 @@ module.exports = {
     '/build/',
     '/.next/',
     '/.archive/',
+    '<rootDir>/.archive/',
+  ],
+  modulePathIgnorePatterns: [
+    '<rootDir>/.archive/',
+    '<rootDir>/dist/',
+    '<rootDir>/build/',
   ],
   testTimeout: 30000,
   verbose: true,
-  collectCoverage: false,
+  collectCoverage: true,
   coverageReporters: ['text', 'lcov', 'html'],
   coverageDirectory: '<rootDir>/tests/coverage',
   // Optimized parallelization settings
@@ -58,13 +59,5 @@ module.exports = {
   // Bail after first failure in CI to save time
   bail: process.env.CI ? 1 : 0,
   // Force exit after tests complete
-  forceExit: false,
-  // Global teardown for cleanup
-  globalTeardown: '<rootDir>/tests/utils/global-teardown.js',
-  preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-    }
-  }
+  forceExit: false
 };

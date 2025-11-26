@@ -1,0 +1,61 @@
+name: Staging Validation (Tasks 21-25)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  load-tests:
+    name: Task 21.1 - Load Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: grafana/k6-action@v0.3.0
+        with:
+          filename: tests/performance/load-tests-staging.ts
+          cloud: false
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL }}
+
+  monitoring-validation:
+    name: Task 21.2 - Monitoring Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npx ts-node tests/performance/monitoring-validation.ts
+        env:
+          PROMETHEUS_URL: ${{ secrets.PROMETHEUS_URL }}
+          ALERTMANAGER_URL: ${{ secrets.ALERTMANAGER_URL }}
+
+  autoscaling-test:
+    name: Task 21.3 - Autoscaling Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: azure/setup-kubectl@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npx ts-node tests/performance/autoscaling-test.ts
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+  disaster-recovery:
+    name: Task 21.4 - Disaster Recovery
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npx ts-node tests/performance/disaster-recovery-test.ts
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}

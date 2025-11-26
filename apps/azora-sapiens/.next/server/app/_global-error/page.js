@@ -1,0 +1,10 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/_global-error/page.js")
+R.c("server/chunks/ssr/node_modules_8bc17d92._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__d0935222._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_08570d7f._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__fa1ddbd5._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_174ae28d._.js")
+R.c("server/chunks/ssr/node_modules_5363a9de._.js")
+R.c("server/chunks/ssr/apps_azora-sapiens__next-internal_server_app__global-error_page_actions_5c6f7b3b.js")
+R.m(37823)
+module.exports=R.m(37823).exports

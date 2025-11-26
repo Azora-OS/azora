@@ -1,25 +1,88 @@
-name: Deploy Azora OS
+name: Deploy to Kubernetes
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
-  deploy:
+  deploy-staging:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
     runs-on: ubuntu-latest
+    environment: staging
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
-      - name: Run tests
-        run: npm test
+      - name: Install Playwright
+        run: npx playwright install --with-deps
       
-      - name: Deploy
-        run: ./deploy.sh
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
+      
+      - name: Deploy to Staging
+        run: |
+          chmod +x infrastructure/helm/scripts/deploy-staging.sh
+          ./infrastructure/helm/scripts/deploy-staging.sh
+      
+      - name: Run E2E Tests
+        run: npm run test:e2e:staging
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: |
+            playwright-report/
+            test-results/
+      
+      - name: Comment PR with test results
+        if: github.event_name == 'push' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ E2E tests failed in staging. Check the workflow logs for details.'
+            })
+
+  deploy-production:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
+      
+      - name: Deploy to Production
+        run: |
+          chmod +x infrastructure/helm/scripts/deploy-production.sh
+          ./infrastructure/helm/scripts/deploy-production.sh
+      
+      - name: Smoke Tests
+        run: npm run test:smoke:production

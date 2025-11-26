@@ -1,0 +1,14 @@
+apiVersion: v2
+name: azora
+description: Azora Platform - Constitutional AI, Blockchain-Powered Education & Development
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - education
+  - blockchain
+  - ai
+  - constitutional-ai
+maintainers:
+  - name: Azora Engineering
+    email: engineering@azora.world

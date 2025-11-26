@@ -20,7 +20,7 @@ export async function connectRedis(): Promise<RedisClientType> {
   }
 
   const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-  
+
   redisClient = createClient({
     url: redisUrl,
     socket: {
@@ -168,7 +168,8 @@ export class CacheService {
         }
         return 0;
       }
-      return await this.client.flushDb();
+      await this.client.flushDb();
+      return 0;
     } catch (error) {
       console.error('Cache clear error:', error);
       return 0;
