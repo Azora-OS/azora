@@ -12,6 +12,11 @@ release/
 *.exe
 *.dmg
 *.AppImage
+.next/
+out/
+azstudio/out/
+azstudio/extensions/
+apps/**/.next/
 
 # Environment files
 .env
