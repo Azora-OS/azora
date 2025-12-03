@@ -1,12 +1,15 @@
 import Redis from 'ioredis';
+import { EventSchema } from './schemas/events';
 
 export class EventBus {
     private publisher: Redis;
     private subscriber: Redis;
+    private dlq: Redis; // Dead Letter Queue
 
     constructor(redisUrl: string = 'redis://localhost:6379') {
         this.publisher = new Redis(redisUrl);
         this.subscriber = new Redis(redisUrl);
+        this.dlq = new Redis(redisUrl);
 
         // Handle connection errors (fallback to in-memory if Redis is missing for dev)
         this.publisher.on('error', (err) => console.warn('[EventBus] Publisher Redis Error:', err.message));
@@ -14,15 +17,24 @@ export class EventBus {
     }
 
     /**
-     * Publishes an event to a specific channel.
+     * Publishes an event to a specific channel with schema validation.
      * @param channel The event channel name.
      * @param payload The data to send.
      */
     async publish(channel: string, payload: any): Promise<void> {
         try {
+            // Validate payload against schema
+            const validation = EventSchema.safeParse(payload);
+
+            if (!validation.success) {
+                console.error(`[EventBus] Schema validation failed for ${channel}:`, validation.error.format());
+                await this.sendToDLQ(channel, payload, 'Schema Validation Failed');
+                return;
+            }
+
             const message = JSON.stringify(payload);
             await this.publisher.publish(channel, message);
-            console.log(`[EventBus] Published to ${channel}:`, payload);
+            console.log(`[EventBus] Published to ${channel}:`, payload.type);
         } catch (error) {
             console.error(`[EventBus] Failed to publish to ${channel}:`, error);
         }
@@ -50,5 +62,19 @@ export class EventBus {
         } catch (error) {
             console.error(`[EventBus] Failed to subscribe to ${channel}:`, error);
         }
+    }
+
+    /**
+     * Sends invalid events to the Dead Letter Queue.
+     */
+    private async sendToDLQ(channel: string, payload: any, reason: string): Promise<void> {
+        const dlqMessage = {
+            channel,
+            payload,
+            reason,
+            timestamp: new Date().toISOString()
+        };
+        await this.dlq.lpush('azora:dlq', JSON.stringify(dlqMessage));
+        console.warn(`[EventBus] Event sent to DLQ:`, dlqMessage);
     }
 }
