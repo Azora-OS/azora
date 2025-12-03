@@ -21,7 +21,7 @@
         "lucide-react": "^0.344.0",
         "clsx": "^2.1.0",
         "tailwind-merge": "^2.2.1",
-        "@azora/shared-design": "*",
+        "@azora/shared-design": "workspace:*",
         "@stripe/stripe-js": "8.5.2"
     },
     "devDependencies": {
@@ -36,3 +36,8 @@
         "eslint-config-next": "16.0.3"
     }
 }
+
+
+
+
+

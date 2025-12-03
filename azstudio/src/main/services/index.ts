@@ -73,7 +73,7 @@ export { DeploymentManager, EnvironmentConfig, DeploymentHistory, DeploymentStat
 export { VercelDeployment, VercelDeploymentOptions, VercelDeploymentResult } from './VercelDeployment';
 export { RailwayDeployment, RailwayDeploymentOptions, RailwayDeploymentResult } from './RailwayDeployment';
 export { DockerDeployment, DockerDeploymentOptions, DockerDeploymentResult, DockerfileTemplate } from './DockerDeployment';
-export { DeploymentMonitor, ServiceHealth, ServiceMetrics, MonitoringConfig } from './DeploymentMonitor';
+export { DeploymentMonitor, ServiceHealth, ServiceMetrics as DeploymentServiceMetrics, MonitoringConfig } from './DeploymentMonitor';
 
 // Monitoring & Analytics
 export { CodeInstrumentation, InstrumentationConfig, InstrumentationResult } from './CodeInstrumentation';

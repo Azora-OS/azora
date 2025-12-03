@@ -1,5 +1,5 @@
-import { chromium, Browser, Page } from '@playwright/test';
-import { injectAxe, getViolations, type Result } from '@axe-core/playwright';
+import { chromium, Browser } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 export type ViolationSeverity = 'critical' | 'serious' | 'moderate' | 'minor';
 
@@ -102,13 +102,12 @@ export class AccessibilityChecker {
         timeout: opts.timeout,
       });
 
-      // Inject axe-core
-      await injectAxe(page);
-
-      // Run axe-core analysis
-      const results = await getViolations(page, undefined, {
-        rules: this.buildRulesConfig(opts),
-      });
+      // Run axe-core analysis via AxeBuilder
+      const builder = new AxeBuilder({ page });
+      if (opts.rules && opts.rules.length) builder.withRules(opts.rules as any);
+      if (opts.excludeRules && opts.excludeRules.length) builder.disableRules(opts.excludeRules as any);
+      const analysisResults: any = await builder.analyze();
+      const results = analysisResults.violations || [];
 
       // Process results
       const report = await this.processResults(url, results, opts);
@@ -183,7 +182,7 @@ export class AccessibilityChecker {
    */
   private async processResults(
     url: string,
-    results: Result[],
+    results: any[],
     options: A11yCheckOptions
   ): Promise<A11yReport> {
     const violations: A11yViolation[] = [];
@@ -204,7 +203,7 @@ export class AccessibilityChecker {
       summary.total++;
 
       // Build violation nodes with fix suggestions
-      const nodes: A11yViolationNode[] = result.nodes.map(node => ({
+      const nodes: A11yViolationNode[] = result.nodes.map((node: any) => ({
         html: node.html,
         target: node.target,
         failureSummary: node.failureSummary || '',

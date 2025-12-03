@@ -22,7 +22,7 @@
     "mongoose": "^7.4.2",
     "redis": "^4.6.7",
     "winston": "^3.10.0",
-    "@azora/shared-services": "^1.0.0"
+    "@azora/shared-services": "workspace:*"
   },
   "devDependencies": {
     "jest": "^29.6.2",
@@ -39,3 +39,9 @@
   "author": "Azora Sapiens",
   "license": "MIT"
 }
+
+
+
+
+
+

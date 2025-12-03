@@ -44,15 +44,22 @@ npm audit --audit-level=high --silent || {
   exit 1
 }
 
-# Check for secrets
-echo "🔐 Checking for secrets..."
+# Check for secrets with Node script
+echo "🔐 Checking for secrets (regex scan)..."
+node ./scripts/prevent-secrets.js || {
+  echo "❌ Secrets detected in staged files. Remove them before committing."
+  exit 1
+}
+
+# Additional secret scan using trufflehog if available
+echo "🔐 Additional check using trufflehog (if installed)..."
 if command -v trufflehog >/dev/null 2>&1; then
   trufflehog git file://. --since-commit HEAD~1 --only-verified --fail || {
-    echo "❌ Secrets detected in commit. Please remove them."
+    echo "❌ Secrets detected by trufflehog. Please remove them."
     exit 1
   }
 else
-  echo "⚠️  TruffleHog not installed, skipping secret detection"
+  echo "⚠️  TruffleHog not installed, skipping trufflehog check"
 fi
 
 echo "✅ All pre-commit checks passed!"

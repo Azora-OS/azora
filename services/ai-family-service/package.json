@@ -16,7 +16,7 @@
     "health": "node healthcheck.js"
   },
   "dependencies": {
-    "@azora/shared-auth": "file:../../packages/shared-auth",
+    "@azora/shared-auth": "workspace:*",
     "@prisma/client": "^5.12.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -30,3 +30,8 @@
     "jest": "^29.7.0"
   }
 }
+
+
+
+
+

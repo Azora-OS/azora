@@ -200,7 +200,7 @@ export class GitService {
         status.staged.push(filepath);
       }
       // Added files
-      else if (head === 0 && workdir === 2 && stage === 2) {
+      else if (head === 0 && (workdir as any) === 2 && (stage as any) === 2) {
         status.added.push(filepath);
       }
     }

@@ -18,9 +18,15 @@
     "dotenv": "^16.3.1",
     "crypto": "^1.0.1",
     "uuid": "^9.0.1",
-    "@azora/shared-services": "file:../../packages/shared-services"
+    "@azora/shared-services": "workspace:*"
   },
   "devDependencies": {
     "jest": "^29.7.0"
   }
 }
+
+
+
+
+
+

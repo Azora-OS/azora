@@ -1,62 +1,28 @@
-/**
- * RemoteCursor
- * 
- * Component to display remote user cursors in the Monaco editor
- */
-
 import React from 'react';
 
-export interface RemoteCursorProps {
-  userId: string;
-  userName: string;
-  color: string;
-  position: { line: number; column: number };
-  selection?: {
-    start: { line: number; column: number };
-    end: { line: number; column: number };
-  };
+interface RemoteCursorProps {
+    userId: string;
+    position: { lineNumber: number; column: number };
+    color: string;
+    label?: string;
 }
 
-export const RemoteCursor: React.FC<RemoteCursorProps> = ({
-  userId,
-  userName,
-  color,
-  position,
-  selection
-}) => {
+const RemoteCursor: React.FC<RemoteCursorProps> = ({ userId, position, color, label }) => {
   return (
-    <>
-      {/* Cursor */}
-      <div
-        className="remote-cursor"
-        style={{
-          backgroundColor: color,
-          left: `${position.column * 7.2}px`, // Approximate character width
-          top: `${position.line * 19}px` // Approximate line height
-        }}
-      >
-        <div
-          className="remote-cursor-label"
-          style={{ backgroundColor: color }}
-        >
-          {userName}
-        </div>
-      </div>
-
-      {/* Selection */}
-      {selection && (
-        <div
-          className="remote-selection"
-          style={{
-            backgroundColor: color,
-            left: `${selection.start.column * 7.2}px`,
-            top: `${selection.start.line * 19}px`,
-            width: `${(selection.end.column - selection.start.column) * 7.2}px`,
-            height: `${(selection.end.line - selection.start.line + 1) * 19}px`
-          }}
-        />
-      )}
-    </>
+    <div
+      className="remote-cursor"
+      style={{
+        position: 'absolute',
+        top: `${(position.lineNumber - 1) * 19}px`, // Approx line height
+        left: `${(position.column - 1) * 8}px`, // Approx char width
+        borderLeft: `2px solid ${color}`,
+        height: '19px',
+        pointerEvents: 'none'
+      }}
+      title={`User: ${userId}`}
+    >
+        {label && <span style={{ backgroundColor: color, fontSize: '10px' }}>{label}</span>}
+    </div>
   );
 };
 

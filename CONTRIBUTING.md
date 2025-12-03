@@ -75,6 +75,21 @@ cp .env.example .env
 # - STRIPE_SECRET_KEY (for payment services)
 ```
 
+### Hooks and local checks
+
+Run the following to install Husky hooks and enable local secret scanning and other pre-commit checks:
+
+```bash
+# Install Husky hooks (if not set up automatically)
+npm run hooks:install
+
+# Optional: scan staged files for secrets before you commit
+npm run precommit:scan
+
+# Optional: generate TODO report
+npm run scan:todos
+```
+
 ### Database Setup
 
 ```bash

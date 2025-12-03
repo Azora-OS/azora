@@ -356,7 +356,7 @@ Be part of building the future of education, development, and economic opportuni
 **Azora ES (Pty) Ltd** | Building the Future of Learning & Work
 
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-Philosophy-orange.svg)](#)
-[![Constitutional](https://img.shields.io/badge/Constitutional-AI-blue.svg)](#)
+[![Constitutional](https://img.shields.io/badge/Constitutional-AI-blue.svg)](CONSTITUTION.md)
 [![Blockchain](https://img.shields.io/badge/Blockchain-Powered-green.svg)](#)
 
 **Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.**

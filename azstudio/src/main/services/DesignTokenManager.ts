@@ -647,7 +647,7 @@ export type Theme = typeof theme;
    * Parse CSS variables
    */
   private parseCSSVariables(content: string): Partial<DesignTokens> {
-    const tokens: Partial<DesignTokens> = {
+    const tokens: any = {
       colors: {} as any,
       spacing: {} as any,
       typography: {

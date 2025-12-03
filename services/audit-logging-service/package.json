@@ -16,9 +16,15 @@
     "cors": "^2.8.5",
     "compression": "^1.7.4",
     "dotenv": "^16.3.1",
-    "@azora/shared-services": "file:../../packages/shared-services"
+    "@azora/shared-services": "workspace:*"
   },
   "devDependencies": {
     "jest": "^29.7.0"
   }
 }
+
+
+
+
+
+
