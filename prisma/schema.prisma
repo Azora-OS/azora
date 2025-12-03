@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -45,7 +44,11 @@ model User {
   burnTransactions BurnTransaction[] @relation("BurnTransactions")
   proofOfKnowledge ProofOfKnowledge[] @relation("ProofOfKnowledge")
   queryClassifications QueryClassification[] @relation("QueryClassifications")
+  scholarships Scholarship[]
+  proofsOfValue ProofOfValue[]
 
+  @@index([role])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -180,6 +183,8 @@ model Enrollment {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
+  @@index([status])
+  @@index([enrolledAt])
   @@map("enrollments")
 }
 
@@ -508,6 +513,7 @@ model Transaction {
   wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
 
   @@index([walletId])
+  @@index([status, createdAt])
   @@map("transactions")
 }
 
@@ -758,6 +764,7 @@ model ChatMessage {
   session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
+  @@index([createdAt])
   @@map("chat_messages")
 }
 
@@ -1337,4 +1344,286 @@ enum RoutingTier {
   LOCAL_LLM
   RAP_SYSTEM
   EXTERNAL_LLM
+}
+
+// ============================================
+// AGENT / TASKS / KNOWLEDGE
+// ============================================
+
+model Task {
+  id         String   @id @default(cuid())
+  title      String?
+  description String?
+  payload    Json     @default("{}")
+  status     String   @default("pending")
+  agentId    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  executions AgentExecution[]
+  @@index([status])
+  @@index([agentId])
+  @@map("tasks")
+}
+
+model Agent {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  type      String
+  status    String
+  heartbeat DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  executions AgentExecution[]
+
+  @@map("agents")
+}
+
+model AgentExecution {
+  id        String   @id @default(cuid())
+  taskId    String
+  agentId   String
+  status    String
+  logs      Json?
+  result    Json?
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([agentId])
+  @@map("agent_executions")
+}
+
+model KnowledgeNode {
+  id        String   @id @default(cuid())
+  path      String
+  type      String
+  title     String?
+  content   String
+  // embedding: will use Postgres `vector` type via pgvector; Prisma doesn't support it natively.
+  // Use Unsupported("vector")? so Prisma will accept the DB type while allowing raw SQL operations.
+  embedding Unsupported("vector")?
+  embeddingJson Json? @map("embedding_json")
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([path])
+  @@map("knowledge_nodes")
+}
+
+// ============================================
+// CITADEL FUND SERVICES
+// ============================================
+
+model CitadelFund {
+  id                String   @id @default(cuid())
+  totalCollected    Decimal  @default(0) @db.Decimal(20, 8)
+  totalDistributed  Decimal  @default(0) @db.Decimal(20, 8)
+  currentBalance    Decimal  @default(0) @db.Decimal(20, 8)
+  updatedAt         DateTime @updatedAt
+  
+  @@map("citadel_funds")
+}
+
+model CitadelTransaction {
+  id              String   @id @default(cuid())
+  type            CitadelTransactionType
+  amount          Decimal  @db.Decimal(20, 8)
+  source          String?
+  recipient       String?
+  purpose         String?
+  description     String?
+  transactionId   String?
+  createdAt       DateTime @default(now())
+  
+  @@map("citadel_transactions")
+}
+
+enum CitadelTransactionType {
+  COLLECTION
+  SCHOLARSHIP
+  GRANT
+  PUBLIC_GOOD
+}
+
+model Scholarship {
+  id          String   @id @default(cuid())
+  studentId   String
+  amount      Decimal  @db.Decimal(20, 8)
+  reason      String
+  courseType  String?
+  status      ApprovalStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@map("scholarships")
+}
+
+model Grant {
+  id          String   @id @default(cuid())
+  recipientId String?
+  recipientName String?
+  amount      Decimal  @db.Decimal(20, 8)
+  purpose     String
+  projectType String?
+  status      ApprovalStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("grants")
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DISBURSED
+}
+
+// ============================================
+// PROOF OF VALUE SERVICES
+// ============================================
+
+model ProofOfValue {
+  id            String   @id @default(cuid())
+  userId        String
+  contentHash   String   @unique
+  valueScore    Float
+  proofType     MiningType
+  status        MiningStatus @default(PENDING)
+  verifiedAt    DateTime?
+  verifierId    String?
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("proof_of_values")
+}
+
+// ============================================
+// ADMIN & SECRETS MANAGEMENT
+// ============================================
+
+model Secret {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   // AES-256-CBC encrypted
+  iv          String   // Initialization vector for encryption
+  category    String   @default("general")
+  description String?
+  lastUpdated DateTime @default(now()) @updatedAt
+  updatedBy   String   @default("system")
+  
+  @@index([category])
+  @@map("secrets")
+}
+
+model BlockchainTransaction {
+  id              String   @id @default(cuid())
+  transactionHash String   @unique
+  from            String
+  to              String
+  amount          Float
+  contractAddress String?
+  contractMethod  String?
+  gasUsed         String?
+  gasPrice        String?
+  status          String   @default("pending")
+  blockNumber     Int?
+  timestamp       DateTime @default(now())
+  
+  @@index([from])
+  @@index([to])
+  @@index([status])
+  @@map("blockchain_transactions")
+}
+
+model BlockchainEvent {
+  id              String   @id @default(cuid())
+  eventType       String
+  contractAddress String
+  transactionHash String?
+  blockNumber     Int?
+  data            Json     // Flexible storage for event data
+  amount          Float?
+  from            String?
+  to              String?
+  timestamp       DateTime @default(now())
+  
+  @@index([eventType])
+  @@index([contractAddress])
+  @@map("blockchain_events")
+}
+
+model Certificate {
+  id            String   @id @default(cuid())
+  tokenId       String   @unique
+  recipient     String
+  courseId      String?
+  achievementId String?
+  ipfsHash      String?
+  metadata      Json?
+  issuedAt      DateTime @default(now())
+  
+  @@index([recipient])
+  @@map("certificates")
+}
+
+model StakingTransaction {
+  id              String   @id @default(cuid())
+  userId          String
+  transactionHash String
+  amount          Float
+  action          String   // stake, unstake, claim
+  stakingPeriod   Int?     // in days
+  rewardRate      Float?
+  timestamp       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@map("staking_transactions")
+}
+
+model ValueCreationRecord {
+  id               String   @id @default(cuid())
+  userId           String
+  activityType     String
+  activityId       String?
+  valueScore       Float
+  rewardAmount     Float?
+  rewardTxHash     String?
+  status           String   @default("pending")
+  antiGamingChecks Json?    // Store validation results
+  processedAt      DateTime?
+  createdAt        DateTime @default(now())
+  
+  @@index([userId])
+  @@index([activityType])
+  @@index([status])
+  @@map("value_creation_records")
+}
+
+model CitadelFundAllocation {
+  id              String   @id @default(cuid())
+  transactionId   String
+  sourceType      String   // payment, subscription, etc
+  sourceId        String
+  amount          Float
+  currency        String   @default("ZAR")
+  percentage      Float    @default(10)
+  allocatedAt     DateTime @default(now())
+  reversed        Boolean  @default(false)
+  reversedAt      DateTime?
+  
+  @@index([sourceType])
+  @@index([transactionId])
+  @@map("citadel_fund_allocations")
 }
