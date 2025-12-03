@@ -18,7 +18,7 @@ export interface Secret {
 /**
  * Encrypted secret data structure
  */
-interface EncryptedSecret {
+export interface EncryptedSecret {
   iv: string;
   encryptedData: string;
   authTag: string;

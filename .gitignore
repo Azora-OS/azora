@@ -100,3 +100,7 @@ docs/STATUS-DASHBOARD-INTERNAL.md
 # Service implementation details
 services/*/INTERNAL-*.md
 services/*/*-IMPLEMENTATION.md
+
+# Archive
+archive/
+

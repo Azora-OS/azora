@@ -19,7 +19,7 @@
         "@monaco-editor/react": "^4.6.0",
         "reactflow": "^11.11.0",
         "socket.io-client": "^4.7.0",
-        "@azora/shared-design": "*"
+        "@azora/shared-design": "workspace:*"
     },
     "devDependencies": {
         "typescript": "^5",
@@ -32,3 +32,8 @@
         "eslint-config-next": "14.2.3"
     }
 }
+
+
+
+
+

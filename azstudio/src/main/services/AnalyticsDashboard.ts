@@ -260,8 +260,8 @@ export class AnalyticsDashboard {
       journeys = journeys.filter(j => filter.completed ? j.conversions.length > 0 : j.conversions.length === 0);
     }
 
-    if (filter?.minDuration) {
-      journeys = journeys.filter(j => (j.duration || 0) >= filter.minDuration);
+    if (filter?.minDuration !== undefined) {
+      journeys = journeys.filter(j => (j.duration || 0) >= (filter.minDuration ?? 0));
     }
 
     if (filter?.timeRange) {

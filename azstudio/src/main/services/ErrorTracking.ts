@@ -157,8 +157,9 @@ export class ErrorTracking {
       );
     }
 
-    if (filter?.since) {
-      groups = groups.filter(g => g.lastSeen >= filter.since);
+    const since = filter?.since;
+    if (since) {
+      groups = groups.filter(g => g.lastSeen >= since);
     }
 
     // Sort by last seen (most recent first)

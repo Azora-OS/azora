@@ -234,24 +234,26 @@ export class PreviewGenerator {
     const changes: string[] = [];
 
     // Check class transformations
-    for (const className of component.classNames) {
-      for (const [oldClass, newClass] of Object.entries(filter.classTransforms)) {
-        if (className.includes(oldClass)) {
-          changes.push(`Class: ${oldClass} → ${newClass}`);
+    if (filter.classTransforms) {
+      for (const className of component.classNames) {
+        for (const [oldClass, newClass] of Object.entries(filter.classTransforms)) {
+          if (className.includes(oldClass)) {
+            changes.push(`Class: ${oldClass} → ${newClass}`);
+          }
         }
       }
     }
 
     // Check token updates
-    if (filter.tokens.colors) {
+    if (filter.tokens && filter.tokens.colors) {
       changes.push('Colors: Updated to new palette');
     }
 
-    if (filter.tokens.borderRadius) {
+    if (filter.tokens && filter.tokens.borderRadius) {
       changes.push('Border Radius: Updated to new scale');
     }
 
-    if (filter.tokens.shadows) {
+    if (filter.tokens && filter.tokens.shadows) {
       changes.push('Shadows: Updated to new elevation');
     }
 

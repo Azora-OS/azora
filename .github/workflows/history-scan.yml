@@ -1,0 +1,28 @@
+name: History Secret Scan
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # Weekly on Monday
+  workflow_dispatch:
+
+jobs:
+  scan-history:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install TruffleHog (if needed)
+        run: |
+          python -m pip install --upgrade pip
+          pip install trufflehog
+      - name: Run trufflehog full history scan
+        run: |
+          set -o pipefail
+          trufflehog git file://$GITHUB_WORKSPACE --only-verified || true
+      - name: Upload trufflehog report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: history-secret-scan
+          path: trufflehog_output.json

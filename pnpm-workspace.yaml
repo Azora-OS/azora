@@ -1,0 +1,10 @@
+packages:
+  - 'apps/*'
+  - 'services/*'
+  - 'packages/*'
+  - 'azstudio'
+  - 'apps/web'
+  - 'infrastructure'
+  - '!**/test/**'
+  - '!**/tests/**'
+  - '!azstudio/build/**'

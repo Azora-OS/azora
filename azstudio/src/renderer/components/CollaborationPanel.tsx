@@ -71,7 +71,7 @@ export const CollaborationPanel: React.FC<CollaborationPanelProps> = ({
       
       switch (message.type) {
         case 'workspace-state':
-          setUsers(message.data.users.filter((u: CollaborationUser) => u.userId !== currentUserId));
+          setUsers(message.data.users.filter((u: CollaborationUser) => u.id !== currentUserId));
           break;
 
         case 'join':

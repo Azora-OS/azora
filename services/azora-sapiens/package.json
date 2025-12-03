@@ -22,7 +22,7 @@
   "author": "Azora ES (Pty) Ltd",
   "license": "Proprietary",
   "dependencies": {
-    "@azora/shared-auth": "file:../../packages/shared-auth",
+    "@azora/shared-auth": "workspace:*",
     "@pinecone-database/pinecone": "^2.0.0",
     "axios": "^1.6.0",
     "compression": "^1.7.4",
@@ -60,3 +60,8 @@
     "@typescript-eslint/parser": "^7.0.0"
   }
 }
+
+
+
+
+

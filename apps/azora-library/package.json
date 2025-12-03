@@ -23,10 +23,16 @@
                          "tailwind-merge":  "^2.2.1",
                          "react":  "19.2.0",
                          "clsx":  "^2.1.0",
-                         "@azora/shared-design":  "*",
+                         "@azora/shared-design": "workspace:*",
                          "react-dom":  "19.2.0",
                          "framer-motion":  "^11.0.8",
                          "next":  "16.0.3"
                      },
     "private":  true
 }
+
+
+
+
+
+

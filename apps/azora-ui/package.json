@@ -14,7 +14,7 @@
     "next": "16.0.3",
     "framer-motion": "^11.0.0",
     "clsx": "^2.0.0",
-    "@azora/master-ui": "file:../../packages/@azora/master-ui",
+    "@azora/master-ui": "workspace:*",
     "lucide-react": "^0.344.0"
   },
   "devDependencies": {
@@ -29,3 +29,8 @@
     "eslint-config-next": "16.0.3"
   }
 }
+
+
+
+
+

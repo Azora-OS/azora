@@ -41,14 +41,15 @@ export const CommentingIntegration: React.FC<CommentingIntegrationProps> = ({
 
   // Initialize glyph decorations for Monaco editor
   useEffect(() => {
+    let decorations: CommentGlyphDecoration | null = null;
     if (editor && !glyphDecorations) {
-      const decorations = new CommentGlyphDecoration(editor);
+      decorations = new CommentGlyphDecoration(editor);
       setGlyphDecorations(decorations);
-
-      return () => {
-        decorations.clearGlyphs();
-      };
     }
+
+    return () => {
+      if (decorations) decorations.clearGlyphs();
+    };
   }, [editor, glyphDecorations]);
 
   // Update glyph decorations when threads change
@@ -65,7 +66,9 @@ export const CommentingIntegration: React.FC<CommentingIntegrationProps> = ({
 
   // Handle glyph margin clicks to show comment widgets
   useEffect(() => {
-    if (!editor) return;
+    if (!editor) {
+      return () => {};
+    }
 
     const disposable = editor.onMouseDown((e: any) => {
       if (e.target.type === 2) { // GUTTER_GLYPH_MARGIN
@@ -100,12 +103,12 @@ export const CommentingIntegration: React.FC<CommentingIntegrationProps> = ({
     const widget = new InlineCommentWidget(editor, lineNumber, {
       thread,
       currentUserId,
-      onReply: (content) => handleReply(thread.id, content),
-      onEdit: (commentId, content) => handleEdit(thread.id, commentId, content),
-      onDelete: (commentId) => handleDelete(thread.id, commentId),
+      onReply: (content: string) => handleReply(thread.id, content),
+      onEdit: (commentId: string, content: string) => handleEdit(thread.id, commentId, content),
+      onDelete: (commentId: string) => handleDelete(thread.id, commentId),
       onResolve: () => handleResolve(thread.id),
       onReopen: () => handleReopen(thread.id),
-      onReact: (commentId, emoji) => handleReact(thread.id, commentId, emoji),
+      onReact: (commentId: string, emoji: string) => handleReact(thread.id, commentId, emoji),
       onClose: () => closeCommentWidget(thread.id)
     });
 

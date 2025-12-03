@@ -15,7 +15,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@azora/shared-services": "file:../shared-services"
+    "@azora/shared-services": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -33,3 +33,8 @@
   "author": "Azora ES (Pty) Ltd",
   "license": "PROPRIETARY"
 }
+
+
+
+
+
