@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model KnowledgeNode {
+  id              String   @id @default(cuid())
+  path            String
+  nodeType        String
+  title           String?
+  content         String
+  metadata        Json?
+  embedding       Json?
+  embeddingVector Unsupported("vector(1536)")?
+  version         Int      @default(1)
+  previousVersion String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  edges           KnowledgeEdge[] @relation("FromNode")
+  incomingEdges   KnowledgeEdge[] @relation("ToNode")
+
+  @@map("knowledge_nodes")
+  @@index([nodeType])
+  @@index([path])
+}
+
+model KnowledgeEdge {
+  id        String   @id @default(cuid())
+  fromId    String
+  toId      String
+  edgeType  String
+  weight    Float    @default(1.0)
+  createdAt DateTime @default(now())
+
+  from      KnowledgeNode @relation("FromNode", fields: [fromId], references: [id])
+  to        KnowledgeNode @relation("ToNode", fields: [toId], references: [id])
+
+  @@map("knowledge_edges")
+  @@index([fromId])
+  @@index([toId])
+  @@index([edgeType])
+}

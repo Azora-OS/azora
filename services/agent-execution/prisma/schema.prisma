@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id        String   @id @default(cuid())
+  name      String?
+  status    String   @default("idle")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks     Task[]   @relation("AgentTasks")
+
+  @@map("agents")
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  status    String
+  payload   Json?
+  agentId   String? 
+  agent     Agent?   @relation("AgentTasks", fields: [agentId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  executions Execution[]
+
+  @@map("tasks")
+}
+
+model Execution {
+  id        String   @id @default(cuid())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id])
+  status    String
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  logs      Json?
+  result    Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("executions")
+}
+
+model KnowledgeNode {
+  id        String   @id @default(cuid())
+  nodeType  String?
+  metadata  Json?
+  content   String?
+  embedding Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("knowledge_nodes")
+}

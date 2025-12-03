@@ -1,0 +1,115 @@
+# Azora Phase 1 - Local Development
+# Simplified docker-compose for local deployment without Swarm features
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:16-alpine
+    container_name: azora-database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=azora
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-azoradev123}
+      - POSTGRES_DB=azora_os
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/database/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U azora -d azora_os" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: azora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./services/azora-api-gateway
+      dockerfile: Dockerfile
+    container_name: azora-api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - AUTH_URL=http://auth-service:4001
+      - EDUCATION_URL=http://education-service:3007
+    depends_on:
+      - database
+      - redis
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./services/azora-auth
+      dockerfile: Dockerfile
+    container_name: azora-auth-service
+    ports:
+      - "4001:4001"
+    environment:
+      - NODE_ENV=development
+      - PORT=4001
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_auth
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-in-production}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - database
+      - redis
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  # Education Service
+  education-service:
+    build:
+      context: ./services/azora-education
+      dockerfile: Dockerfile
+    container_name: azora-education-service
+    ports:
+      - "3007:3007"
+    environment:
+      - NODE_ENV=development
+      - PORT=3007
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_education
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - database
+      - redis
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  azora-network:
+    external: true

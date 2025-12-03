@@ -1,0 +1,102 @@
+groups:
+  - name: ubuntu_tokenomics_alerts
+    rules:
+      - alert: UbuntuScoreTooLow
+        expr: ubuntu_community_score < 50
+        for: 5m
+        labels:
+          severity: warning
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Community Ubuntu score is below threshold"
+          description: "Community Ubuntu score of {{ $value }} is below the minimum threshold of 50"
+
+      - alert: TokenDistributionFailure
+        expr: rate(token_distribution_errors_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "High rate of token distribution failures"
+          description: "Token distribution error rate is {{ $value }} errors per second"
+
+      - alert: StakingAPYTooLow
+        expr: ubuntu_staking_apy < 0.03
+        for: 10m
+        labels:
+          severity: warning
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Staking APY is below minimum"
+          description: "Current staking APY of {{ $value }} is below the minimum of 3%"
+
+      - alert: CommunityHealthDegraded
+        expr: ubuntu_community_health < 0.7
+        for: 15m
+        labels:
+          severity: warning
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Community health is degraded"
+          description: "Community health score of {{ $value }} is below 70%"
+
+      - alert: HighGasFees
+        expr: ubuntu_gas_fee_gwei > 100
+        for: 5m
+        labels:
+          severity: warning
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "High gas fees detected"
+          description: "Gas fees of {{ $value }} gwei are affecting transaction costs"
+
+      - alert: TokenSupplyAnomaly
+        expr: ubuntu_token_supply_change_rate > 0.1 or ubuntu_token_supply_change_rate < -0.1
+        for: 1m
+        labels:
+          severity: critical
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Unusual token supply change detected"
+          description: "Token supply changing at rate of {{ $value }} per hour"
+
+      - alert: LowActiveContributors
+        expr: ubuntu_active_contributors < 100
+        for: 30m
+        labels:
+          severity: warning
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Low number of active contributors"
+          description: "Only {{ $value }} active contributors in the last hour"
+
+      - alert: CitadelFundBalanceLow
+        expr: ubuntu_citadel_fund_balance < 1000000
+        for: 1h
+        labels:
+          severity: warning
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Citadel Fund balance is low"
+          description: "Citadel Fund balance of {{ $value }} UBT is below 1 million"
+
+      - alert: CommunityPoolDepleted
+        expr: ubuntu_community_pool_balance < 500000
+        for: 30m
+        labels:
+          severity: critical
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "Community pool is depleted"
+          description: "Community pool balance of {{ $value }} UBT is critically low"
+
+      - alert: HighTransactionFailureRate
+        expr: rate(ubuntu_transaction_failures_total[5m]) / rate(ubuntu_transactions_total[5m]) > 0.05
+        for: 3m
+        labels:
+          severity: critical
+          service: ubuntu-tokenomics
+        annotations:
+          summary: "High transaction failure rate"
+          description: "Transaction failure rate is {{ $value | humanizePercentage }}"

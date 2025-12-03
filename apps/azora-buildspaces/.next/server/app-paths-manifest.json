@@ -1,0 +1,17 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/ai-lab/page": "app/ai-lab/page.js",
+  "/collaborate/page": "app/collaborate/page.js",
+  "/citadel-ai-agents/page": "app/citadel-ai-agents/page.js",
+  "/code-chamber/page": "app/code-chamber/page.js",
+  "/data-forge/page": "app/data-forge/page.js",
+  "/deploy/page": "app/deploy/page.js",
+  "/design-studio/page": "app/design-studio/page.js",
+  "/marketplace/page": "app/marketplace/page.js",
+  "/dream-reality-workshop/page": "app/dream-reality-workshop/page.js",
+  "/ubuntu-projects/page": "app/ubuntu-projects/page.js",
+  "/page": "app/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/ideas-board/page": "app/ideas-board/page.js",
+  "/ubuntu-workspace/page": "app/ubuntu-workspace/page.js"
+}

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # 🧠 Constitutional AI
+  ai-orchestrator:
+    build: ./services/ai-orchestrator
+    ports:
+      - "3014:3014"
+    environment:
+      - PORT=3014
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  # 🔐 Authentication
+  azora-auth:
+    build: ./services/azora-auth
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  # ⛓️ Blockchain & Tokenomics
+  azora-mint:
+    build: ./services/azora-mint
+    ports:
+      - "3011:3011"
+    environment:
+      - PORT=3011
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  # 💰 Payments
+  azora-pay:
+    build: ./services/azora-pay
+    ports:
+      - "3010:3010"
+    environment:
+      - PORT=3010
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  # 🐵 Antifragile Infrastructure
+  chaos-monkey:
+    build: ./services/chaos-monkey
+    ports:
+      - "3050:3050"
+    environment:
+      - PORT=3050
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+  phoenix-server:
+    build: ./services/phoenix-server
+    ports:
+      - "3051:3051"
+    environment:
+      - PORT=3051
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - azora-net
+
+networks:
+  azora-net:
+    driver: bridge

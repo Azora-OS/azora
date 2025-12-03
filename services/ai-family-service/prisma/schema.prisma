@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FamilyMember {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  role         String
+  traits       String[]
+  background   String
+  relationships Json
+  temperature  Float    @default(0.8)
+  avatar       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  conversations Conversation[]
+  messages      Message[]
+
+  @@map("family_members")
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  memberId  String
+  userId    String
+  context   Json?
+  startedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  member   FamilyMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([memberId])
+  @@index([userId])
+  @@index([updatedAt])
+  @@map("conversations")
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  memberId       String
+  userId         String
+  role           String
+  content        String
+  mood           String   @default("neutral")
+  metadata       Json?
+  timestamp      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  member       FamilyMember @relation(fields: [memberId], references: [id])
+
+  @@index([conversationId])
+  @@index([userId])
+  @@index([timestamp])
+  @@map("messages")
+}
+
+model FamilyInteraction {
+  id          String   @id @default(uuid())
+  userId      String
+  memberName  String
+  interaction String
+  sentiment   String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([memberName])
+  @@map("family_interactions")
+}

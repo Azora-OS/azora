@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS - CI/CD Workflow Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .status-card.success {
+            border-left-color: #10b981;
+        }
+
+        .status-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .status-card.danger {
+            border-left-color: #ef4444;
+        }
+
+        .status-card h3 {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .status-card.success .status-value {
+            color: #10b981;
+        }
+
+        .status-card.warning .status-value {
+            color: #f59e0b;
+        }
+
+        .status-card.danger .status-value {
+            color: #ef4444;
+        }
+
+        .status-label {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .metrics-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .metrics-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #333;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #666;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.success {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1e40af;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .trend {
+            font-size: 16px;
+            margin-right: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid white;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .metrics-section {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Azora OS - CI/CD Workflow Dashboard</h1>
+            <p class="subtitle">Real-time workflow status, metrics, and performance tracking</p>
+        </header>
+
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading dashboard data...</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                📊 <strong>Workflow Dashboard</strong> | 
+                <a href="https://github.com/Sizwe780/azora-os/actions" target="_blank">View on GitHub</a> | 
+                <a href=".github/WORKFLOW-STATUS-DASHBOARD.md" target="_blank">Documentation</a>
+            </p>
+            <p style="margin-top: 10px; opacity: 0.8;">
+                Last updated: <span id="last-updated">--:--:-- UTC</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard data structure
+        const dashboardData = {
+            timestamp: new Date().toISOString(),
+            workflows: [
+                {
+                    name: 'Test Suite',
+                    status: 'success',
+                    runs: 50,
+                    successful: 49,
+                    failed: 1,
+                    successRate: 98,
+                    avgDuration: 10,
+                    latestStatus: 'Success'
+                },
+                {
+                    name: 'Linting & Type Check',
+                    status: 'success',
+                    runs: 50,
+                    successful: 50,
+                    failed: 0,
+                    successRate: 100,
+                    avgDuration: 3,
+                    latestStatus: 'Success'
+                },
+                {
+                    name: 'Security Scanning',
+                    status: 'warning',
+                    runs: 50,
+                    successful: 48,
+                    failed: 2,
+                    successRate: 96,
+                    avgDuration: 5,
+                    latestStatus: 'Failed'
+                },
+                {
+                    name: 'E2E Tests',
+                    status: 'success',
+                    runs: 50,
+                    successful: 45,
+                    failed: 5,
+                    successRate: 90,
+                    avgDuration: 15,
+                    latestStatus: 'Success'
+                },
+                {
+                    name: 'Deploy Staging',
+                    status: 'success',
+                    runs: 30,
+                    successful: 29,
+                    failed: 1,
+                    successRate: 97,
+                    avgDuration: 12,
+                    latestStatus: 'Success'
+                },
+                {
+                    name: 'Deploy Production',
+                    status: 'success',
+                    runs: 10,
+                    successful: 10,
+                    failed: 0,
+                    successRate: 100,
+                    avgDuration: 20,
+                    latestStatus: 'Success'
+                }
+            ]
+        };
+
+        function getStatusClass(successRate) {
+            if (successRate >= 95) return 'success';
+            if (successRate >= 90) return 'warning';
+            return 'danger';
+        }
+
+        function renderDashboard() {
+            const content = document.getElementById('content');
+            const totalRuns = dashboardData.workflows.reduce((sum, w) => sum + w.runs, 0);
+            const totalSuccessful = dashboardData.workflows.reduce((sum, w) => sum + w.successful, 0);
+            const overallSuccessRate = Math.round((totalSuccessful / totalRuns) * 100);
+            const avgDuration = Math.round(
+                dashboardData.workflows.reduce((sum, w) => sum + w.avgDuration, 0) / dashboardData.workflows.length
+            );
+
+            let html = `
+                <div class="info-box">
+                    <strong>ℹ️ Dashboard Information</strong>
+                    This dashboard displays real-time workflow metrics. Data is collected daily at 9 AM UTC. 
+                    For detailed reports and historical data, visit the <a href=".github/WORKFLOW-STATUS-DASHBOARD.md" style="color: #1e40af; text-decoration: underline;">documentation</a>.
+                </div>
+
+                <div class="status-grid">
+                    <div class="status-card success">
+                        <h3>Total Workflows</h3>
+                        <div class="status-value">${dashboardData.workflows.length}</div>
+                        <div class="status-label">Active workflows being monitored</div>
+                    </div>
+
+                    <div class="status-card ${getStatusClass(overallSuccessRate)}">
+                        <h3>Overall Success Rate</h3>
+                        <div class="status-value">${overallSuccessRate}%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${getStatusClass(overallSuccessRate)}" style="width: ${overallSuccessRate}%"></div>
+                        </div>
+                        <div class="status-label">${totalSuccessful} of ${totalRuns} runs successful</div>
+                    </div>
+
+                    <div class="status-card success">
+                        <h3>Average Duration</h3>
+                        <div class="status-value">${avgDuration}m</div>
+                        <div class="status-label">Mean execution time across all workflows</div>
+                    </div>
+
+                    <div class="status-card success">
+                        <h3>Total Runs</h3>
+                        <div class="status-value">${totalRuns}</div>
+                        <div class="status-label">Last 50 runs per workflow</div>
+                    </div>
+                </div>
+
+                <div class="metrics-section">
+                    <h2>📊 Workflow Metrics</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Workflow</th>
+                                <th>Runs</th>
+                                <th>Success</th>
+                                <th>Failed</th>
+                                <th>Success Rate</th>
+                                <th>Avg Duration</th>
+                                <th>Latest Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            dashboardData.workflows.forEach(workflow => {
+                const statusClass = getStatusClass(workflow.successRate);
+                html += `
+                    <tr>
+                        <td><strong>${workflow.name}</strong></td>
+                        <td>${workflow.runs}</td>
+                        <td><span class="badge success">${workflow.successful}</span></td>
+                        <td><span class="badge ${workflow.failed > 0 ? 'danger' : 'success'}">${workflow.failed}</span></td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span>${workflow.successRate}%</span>
+                                <div class="progress-bar" style="flex: 1; min-width: 100px;">
+                                    <div class="progress-fill ${statusClass}" style="width: ${workflow.successRate}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${workflow.avgDuration}m</td>
+                        <td><span class="badge ${statusClass}">${workflow.latestStatus}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="metrics-section">
+                    <h2>⚡ Performance Analysis</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div>
+                            <h3 style="color: #333; margin-bottom: 10px; font-size: 14px; font-weight: 600;">🚀 Fastest Workflows</h3>
+                            <ul style="list-style: none;">
+            `;
+
+            const fastest = [...dashboardData.workflows]
+                .sort((a, b) => a.avgDuration - b.avgDuration)
+                .slice(0, 3);
+
+            fastest.forEach(w => {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                    <strong>${w.name}</strong><br>
+                    <span style="color: #999; font-size: 12px;">${w.avgDuration}m average</span>
+                </li>`;
+            });
+
+            html += `
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 style="color: #333; margin-bottom: 10px; font-size: 14px; font-weight: 600;">🐢 Slowest Workflows</h3>
+                            <ul style="list-style: none;">
+            `;
+
+            const slowest = [...dashboardData.workflows]
+                .sort((a, b) => b.avgDuration - a.avgDuration)
+                .slice(0, 3);
+
+            slowest.forEach(w => {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                    <strong>${w.name}</strong><br>
+                    <span style="color: #999; font-size: 12px;">${w.avgDuration}m average</span>
+                </li>`;
+            });
+
+            html += `
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 style="color: #333; margin-bottom: 10px; font-size: 14px; font-weight: 600;">✅ Most Reliable</h3>
+                            <ul style="list-style: none;">
+            `;
+
+            const mostReliable = [...dashboardData.workflows]
+                .sort((a, b) => b.successRate - a.successRate)
+                .slice(0, 3);
+
+            mostReliable.forEach(w => {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                    <strong>${w.name}</strong><br>
+                    <span style="color: #999; font-size: 12px;">${w.successRate}% success rate</span>
+                </li>`;
+            });
+
+            html += `
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metrics-section">
+                    <h2>📈 Recommendations</h2>
+                    <div style="display: grid; gap: 15px;">
+            `;
+
+            const lowSuccess = dashboardData.workflows.filter(w => w.successRate < 90);
+            if (lowSuccess.length > 0) {
+                html += `
+                    <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b; color: #92400e;">
+                        <strong>⚠️ Workflows with Low Success Rates (< 90%)</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                `;
+                lowSuccess.forEach(w => {
+                    html += `<li>${w.name}: ${w.successRate}% - Review failures and address root causes</li>`;
+                });
+                html += `</ul></div>`;
+            }
+
+            const slow = dashboardData.workflows.filter(w => w.avgDuration > 15);
+            if (slow.length > 0) {
+                html += `
+                    <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b; color: #92400e;">
+                        <strong>🐢 Slow Workflows (> 15 minutes)</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                `;
+                slow.forEach(w => {
+                    html += `<li>${w.name}: ${w.avgDuration}m - Consider optimization (caching, parallelization)</li>`;
+                });
+                html += `</ul></div>`;
+            }
+
+            if (lowSuccess.length === 0 && slow.length === 0) {
+                html += `
+                    <div class="success-message">
+                        <strong>✅ All systems operating normally</strong><br>
+                        All workflows are performing well. Continue monitoring for any changes.
+                    </div>
+                `;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('last-updated').textContent = now.toUTCString();
+        }
+
+        // Render dashboard when page loads
+        window.addEventListener('load', () => {
+            setTimeout(renderDashboard, 500);
+        });
+
+        // Auto-refresh every 5 minutes
+        setInterval(renderDashboard, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

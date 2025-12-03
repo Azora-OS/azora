@@ -1,0 +1,101 @@
+# node_modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+release/
+*.tsbuildinfo
+*.exe
+*.dmg
+*.AppImage
+# Next.js build output
+.next/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+# Gradle cache
+.gradle/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Prisma
+prisma/.env
+prisma/migrations/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Secrets
+*.pem
+*.key
+*.cert
+secrets/
+
+# ============================================
+# PROPRIETARY DOCUMENTATION & IP PROTECTION
+# ============================================
+
+# Private development documentation
+.dev/
+.internal/
+INTERNAL-*.md
+*-PROPRIETARY.md
+*-ALGORITHMS.md
+*-IMPLEMENTATION.md
+*-FORMULAS.md
+*-STRATEGIES.md
+
+# Sensitive business logic
+BUSINESS-LOGIC.md
+VALUATION-*.md
+TOKENOMICS-*.md
+
+# Detailed architecture (keep high-level public)
+docs/ARCHITECTURE-INTERNAL.md
+docs/STATUS-DASHBOARD-INTERNAL.md
+
+# Service implementation details
+services/*/INTERNAL-*.md
+services/*/*-IMPLEMENTATION.md
+
+# ============================================
+# AZORA CLOUD (PROTECTED)
+# ============================================
+services/azora-cloud/
+

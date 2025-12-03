@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Check if we're in a merge commit
+if git rev-parse -q --verify MERGE_HEAD; then
+  echo "⚠️  Merge commit detected, skipping pre-commit hooks"
+  exit 0
+fi
+
+# Run linting
+echo "📝 Running ESLint..."
+npm run lint --silent || {
+  echo "❌ Linting failed. Please fix the errors above."
+  exit 1
+}
+
+# Run type checking
+echo "🔍 Running TypeScript type check..."
+npm run typecheck --silent || {
+  echo "❌ Type checking failed. Please fix the errors above."
+  exit 1
+}
+
+# Check test coverage requirements
+echo "📊 Checking test coverage requirements..."
+node scripts/pre-commit-coverage-check.js || {
+  echo "❌ Coverage requirements not met. Please add tests."
+  exit 1
+}
+
+# Run affected tests
+echo "🧪 Running affected tests..."
+npm run test:affected --silent || {
+  echo "❌ Tests failed. Please fix the failing tests."
+  exit 1
+}
+
+# Security checks
+echo "🔒 Running security audit..."
+npm audit --audit-level=high --silent || {
+  echo "⚠️  Security vulnerabilities detected. Please review and fix."
+  exit 1
+}
+
+# Check for secrets
+echo "🔐 Checking for secrets..."
+if command -v trufflehog >/dev/null 2>&1; then
+  trufflehog git file://. --since-commit HEAD~1 --only-verified --fail || {
+    echo "❌ Secrets detected in commit. Please remove them."
+    exit 1
+  }
+else
+  echo "⚠️  TruffleHog not installed, skipping secret detection"
+fi
+
+echo "✅ All pre-commit checks passed!"

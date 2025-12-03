@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  azora-nexus:
+    build: ./azora-nexus
+    ports: ["3300:3300"]
+    environment:
+      - PORT=3300
+      - SERVICE_NAME=azora-nexus
+    restart: unless-stopped
+    networks: [azora-network]
+
+  azora-aegis:
+    build: ./azora-aegis
+    ports: ["3301:3301"]
+    environment:
+      - PORT=3301
+      - SERVICE_NAME=azora-aegis
+    restart: unless-stopped
+    networks: [azora-network]
+
+  health-monitor:
+    build: ./health-monitor
+    ports: ["3302:3302"]
+    environment:
+      - PORT=3302
+      - SERVICE_NAME=health-monitor
+    restart: unless-stopped
+    networks: [azora-network]
+
+  load-balancer:
+    build: ./load-balancer
+    ports: ["3303:3303"]
+    environment:
+      - PORT=3303
+      - SERVICE_NAME=load-balancer
+    restart: unless-stopped
+    networks: [azora-network]
+
+  session-service:
+    build: ./session-service
+    ports: ["3304:3304"]
+    environment:
+      - PORT=3304
+      - SERVICE_NAME=session-service
+    restart: unless-stopped
+    networks: [azora-network]
+
+  audit-logging-service:
+    build: ./audit-logging-service
+    ports: ["3305:3305"]
+    environment:
+      - PORT=3305
+      - SERVICE_NAME=audit-logging-service
+    restart: unless-stopped
+    networks: [azora-network]
+
+  user-service:
+    build: ./user-service
+    ports: ["3306:3306"]
+    environment:
+      - PORT=3306
+      - SERVICE_NAME=user-service
+    restart: unless-stopped
+    networks: [azora-network]
+
+  analytics-dashboard:
+    build: ./analytics-dashboard
+    ports: ["3307:3307"]
+    environment:
+      - PORT=3307
+      - SERVICE_NAME=analytics-dashboard
+    restart: unless-stopped
+    networks: [azora-network]
+
+  compliance-dashboard:
+    build: ./compliance-dashboard
+    ports: ["3308:3308"]
+    environment:
+      - PORT=3308
+      - SERVICE_NAME=compliance-dashboard
+    restart: unless-stopped
+    networks: [azora-network]
+
+  master-orchestrator:
+    build: ./master-orchestrator
+    ports: ["3309:3309"]
+    environment:
+      - PORT=3309
+      - SERVICE_NAME=master-orchestrator
+    restart: unless-stopped
+    networks: [azora-network]
+
+  ai-system-monitor:
+    build: ./ai-system-monitor
+    ports: ["3310:3310"]
+    environment:
+      - PORT=3310
+      - SERVICE_NAME=ai-system-monitor
+    restart: unless-stopped
+    networks: [azora-network]
+
+  performance-monitor:
+    build: ./performance-monitor
+    ports: ["3311:3311"]
+    environment:
+      - PORT=3311
+      - SERVICE_NAME=performance-monitor
+    restart: unless-stopped
+    networks: [azora-network]
+
+  swarm-coordination:
+    build: ./swarm-coordination
+    ports: ["3312:3312"]
+    environment:
+      - PORT=3312
+      - SERVICE_NAME=swarm-coordination
+    restart: unless-stopped
+    networks: [azora-network]
+
+  self-healing-orchestrator:
+    build: ./self-healing-orchestrator
+    ports: ["3313:3313"]
+    environment:
+      - PORT=3313
+      - SERVICE_NAME=self-healing-orchestrator
+    restart: unless-stopped
+    networks: [azora-network]
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-network

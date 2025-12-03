@@ -1,0 +1,17 @@
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "production"
+
+# Project Configuration
+project_name = "azora-cloud"
+vpc_cidr     = "10.0.0.0/16"
+
+# ElastiCache Configuration
+redis_node_type  = "cache.t3.micro"  # Upgrade to cache.r6g.large for production
+redis_auth_token = "CHANGE_ME_STRONG_PASSWORD_HERE"
+
+# SSL Certificate
+acm_certificate_arn = "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERTIFICATE_ID"
+
+# Security
+allowed_cidr_blocks = ["0.0.0.0/0"]  # Restrict this in production

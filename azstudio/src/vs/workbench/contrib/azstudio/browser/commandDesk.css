@@ -1,0 +1,480 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Azora Technologies. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* Command Desk Main Container */
+.commanddesk {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--vscode-editor-background);
+	color: var(--vscode-editor-foreground);
+	font-family: var(--vscode-font-family);
+}
+
+/* Header with Tabs */
+.commanddesk-header {
+	border-bottom: 1px solid var(--vscode-panel-border);
+	padding: 8px 12px;
+	background-color: var(--vscode-editor-background);
+}
+
+.commanddesk-tabs {
+	display: flex;
+	gap: 4px;
+}
+
+.commanddesk-tab {
+	padding: 6px 12px;
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	background-color: var(--vscode-editor-background);
+	color: var(--vscode-editor-foreground);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.commanddesk-tab:hover {
+	background-color: var(--vscode-list-hoverBackground);
+	border-color: var(--vscode-focusBorder);
+}
+
+.commanddesk-tab.active {
+	background-color: var(--vscode-tab-activeBackground);
+	color: var(--vscode-tab-activeForeground);
+	border-color: var(--vscode-tab-activeBorder);
+}
+
+/* Content Area */
+.commanddesk-content {
+	flex: 1;
+	overflow: hidden;
+	padding: 12px;
+}
+
+/* Chat Messages */
+.commanddesk-messages {
+	height: 100%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.commanddesk-message {
+	max-width: 80%;
+	padding: 8px 12px;
+	border-radius: 8px;
+	border: 1px solid var(--vscode-panel-border);
+}
+
+.commanddesk-message.user {
+	align-self: flex-end;
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+}
+
+.commanddesk-message.assistant {
+	align-self: flex-start;
+	background-color: var(--vscode-editor-background);
+	border-color: var(--vscode-focusBorder);
+}
+
+.commanddesk-message.system {
+	align-self: center;
+	background-color: var(--vscode-notifications-background);
+	color: var(--vscode-notifications-foreground);
+	border-color: var(--vscode-notifications-border);
+	font-style: italic;
+	font-size: 11px;
+}
+
+.commanddesk-message-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 4px;
+	font-size: 10px;
+	opacity: 0.7;
+}
+
+.commanddesk-message-sender {
+	font-weight: 600;
+}
+
+.commanddesk-message-time {
+	color: var(--vscode-descriptionForeground);
+}
+
+.commanddesk-message-content {
+	line-height: 1.4;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+/* Agent Tasks View */
+.commanddesk-agent-tasks,
+.commanddesk-knowledge,
+.commanddesk-builds {
+	height: 100%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.commanddesk-section-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--vscode-editor-foreground);
+	margin-bottom: 8px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+/* Agent Selection */
+.commanddesk-agents-container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.commanddesk-agent-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px;
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	background-color: var(--vscode-editor-background);
+}
+
+.commanddesk-agent-info {
+	flex: 1;
+}
+
+.commanddesk-agent-name {
+	font-weight: 500;
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-agent-status {
+	font-size: 11px;
+	padding: 2px 6px;
+	border-radius: 2px;
+	text-transform: uppercase;
+}
+
+.commanddesk-agent-status.active {
+	background-color: var(--vscode-testing-iconPassed);
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-agent-status.idle {
+	background-color: var(--vscode-descriptionForeground);
+	color: var(--vscode-editor-background);
+}
+
+.commanddesk-agent-status.thinking {
+	background-color: var(--vscode-testing-iconRunning);
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-agent-status.error {
+	background-color: var(--vscode-testing-iconFailed);
+	color: var(--vscode-editor-foreground);
+}
+
+/* Task Definition */
+.commanddesk-task-definition textarea {
+	width: 100%;
+	height: 100px;
+	resize: vertical;
+	border: 1px solid var(--vscode-input-border);
+	background-color: var(--vscode-input-background);
+	color: var(--vscode-input-foreground);
+	padding: 8px;
+	border-radius: 4px;
+	font-family: var(--vscode-font-family);
+	font-size: 13px;
+}
+
+.commanddesk-execute-button {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 4px;
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	cursor: pointer;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+}
+
+.commanddesk-execute-button:hover {
+	background-color: var(--vscode-button-hoverBackground);
+}
+
+.commanddesk-execute-button.primary {
+	background-color: var(--vscode-focusBorder);
+	color: var(--vscode-editor-foreground);
+}
+
+/* Knowledge Search */
+.commanddesk-search {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.commanddesk-search input {
+	padding: 8px;
+	border: 1px solid var(--vscode-input-border);
+	background-color: var(--vscode-input-background);
+	color: var(--vscode-input-foreground);
+	border-radius: 4px;
+	font-family: var(--vscode-font-family);
+	font-size: 13px;
+}
+
+.commanddesk-search-button {
+	align-self: flex-start;
+	padding: 8px 16px;
+	border: none;
+	border-radius: 4px;
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	cursor: pointer;
+	font-weight: 500;
+}
+
+.commanddesk-search-button:hover {
+	background-color: var(--vscode-button-hoverBackground);
+}
+
+/* Build Spaces */
+.commanddesk-spaces-list,
+.commanddesk-recent-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.commanddesk-space-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px;
+	border: 1px solid var(--vscode-panel-border);
+	border-radius: 4px;
+	background-color: var(--vscode-editor-background);
+}
+
+.commanddesk-space-name {
+	font-weight: 500;
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-space-status {
+	font-size: 11px;
+	padding: 2px 6px;
+	border-radius: 2px;
+	text-transform: uppercase;
+	margin-right: 8px;
+}
+
+.commanddesk-space-status.active {
+	background-color: var(--vscode-testing-iconPassed);
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-space-status.building {
+	background-color: var(--vscode-testing-iconRunning);
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-space-status.deployed {
+	background-color: var(--vscode-terminal-ansiGreen);
+	color: var(--vscode-terminal-background);
+}
+
+.commanddesk-space-status.failed {
+	background-color: var(--vscode-testing-iconFailed);
+	color: var(--vscode-editor-foreground);
+}
+
+.commanddesk-build-button {
+	padding: 4px 8px;
+	border: 1px solid var(--vscode-button-background);
+	background-color: transparent;
+	color: var(--vscode-button-background);
+	border-radius: 2px;
+	cursor: pointer;
+	font-size: 11px;
+}
+
+.commanddesk-build-button:hover {
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+}
+
+/* Input Area */
+.commanddesk-input {
+	border-top: 1px solid var(--vscode-panel-border);
+	padding: 12px;
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+	background-color: var(--vscode-editor-background);
+}
+
+.commanddesk-input .input-box {
+	flex: 1;
+}
+
+.commanddesk-input .input-box input {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid var(--vscode-input-border);
+	background-color: var(--vscode-input-background);
+	color: var(--vscode-input-foreground);
+	border-radius: 4px;
+	font-family: var(--vscode-font-family);
+	font-size: 13px;
+}
+
+.commanddesk-input .button {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 4px;
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	cursor: pointer;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.commanddesk-input .button:hover {
+	background-color: var(--vscode-button-hoverBackground);
+}
+
+.commanddesk-input .button.primary {
+	background-color: var(--vscode-focusBorder);
+	color: var(--vscode-editor-foreground);
+}
+
+/* Action Bar */
+.commanddesk-actions {
+	border-top: 1px solid var(--vscode-panel-border);
+	padding: 8px 12px;
+	background-color: var(--vscode-editor-background);
+}
+
+.commanddesk-actions .monaco-action-bar {
+	display: flex;
+	gap: 4px;
+}
+
+.commanddesk-actions .action-label {
+	padding: 4px 8px;
+	border: 1px solid var(--vscode-button-background);
+	border-radius: 2px;
+	background-color: transparent;
+	color: var(--vscode-button-background);
+	font-size: 11px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.commanddesk-actions .action-label:hover {
+	background-color: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+	.commanddesk-message {
+		max-width: 95%;
+	}
+	
+	.commanddesk-agent-item,
+	.commanddesk-space-item {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 4px;
+	}
+	
+	.commanddesk-input {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	
+	.commanddesk-actions .monaco-action-bar {
+		flex-wrap: wrap;
+	}
+}
+
+/* Scrollbar Styling */
+.commanddesk-messages::-webkit-scrollbar,
+.commanddesk-agent-tasks::-webkit-scrollbar,
+.commanddesk-knowledge::-webkit-scrollbar,
+.commanddesk-builds::-webkit-scrollbar {
+	width: 8px;
+}
+
+.commanddesk-messages::-webkit-scrollbar-track,
+.commanddesk-agent-tasks::-webkit-scrollbar-track,
+.commanddesk-knowledge::-webkit-scrollbar-track,
+.commanddesk-builds::-webkit-scrollbar-track {
+	background: var(--vscode-scrollbarSlider-background);
+}
+
+.commanddesk-messages::-webkit-scrollbar-thumb,
+.commanddesk-agent-tasks::-webkit-scrollbar-thumb,
+.commanddesk-knowledge::-webkit-scrollbar-thumb,
+.commanddesk-builds::-webkit-scrollbar-thumb {
+	background: var(--vscode-scrollbarSlider-background);
+	border-radius: 4px;
+}
+
+.commanddesk-messages::-webkit-scrollbar-thumb:hover,
+.commanddesk-agent-tasks::-webkit-scrollbar-thumb:hover,
+.commanddesk-knowledge::-webkit-scrollbar-thumb:hover,
+.commanddesk-builds::-webkit-scrollbar-thumb:hover {
+	background: var(--vscode-scrollbarSlider-hoverBackground);
+}
+
+/* Focus States */
+.commanddesk-tab:focus,
+.commanddesk-agent-item:focus,
+.commanddesk-space-item:focus,
+.commanddesk-search input:focus,
+.commanddesk-task-definition textarea:focus,
+.commanddesk-input .input-box input:focus {
+	outline: 1px solid var(--vscode-focusBorder);
+	outline-offset: 2px;
+}
+
+/* Loading States */
+.commanddesk-message.thinking::after {
+	content: '...';
+	animation: thinking 1.5s infinite;
+}
+
+@keyframes thinking {
+	0%, 60%, 100% { opacity: 1; }
+	30% { opacity: 0.3; }
+}
+
+/* Error States */
+.commanddesk-message.error {
+	border-color: var(--vscode-errorForeground);
+	background-color: var(--vscode-errorBackground);
+}
+
+/* Success States */
+.commanddesk-message.success {
+	border-color: var(--vscode-testing-iconPassed);
+	background-color: var(--vscode-testing-runPassedBackground);
+}

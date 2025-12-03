@@ -1,0 +1,162 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: azora-postgres
+    environment:
+      POSTGRES_DB: azora_mint
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-azora_secure_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: azora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Azora Mint Service
+  azora-mint:
+    build:
+      context: ./azora-mint
+      dockerfile: Dockerfile
+    container_name: azora-mint
+    ports:
+      - "3005:3005"
+    environment:
+      PORT: 3005
+      DATABASE_URL: postgresql://azora:${DB_PASSWORD:-azora_secure_pass}@postgres:5432/azora_mint
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Azora Pay Service
+  azora-pay:
+    build:
+      context: ./azora-pay-service
+      dockerfile: Dockerfile
+    container_name: azora-pay
+    ports:
+      - "3003:3003"
+    environment:
+      PAYMENT_PORT: 3003
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
+      GOOGLE_PAY_MERCHANT_ID: ${GOOGLE_PAY_MERCHANT_ID}
+      APPLE_PAY_MERCHANT_ID: ${APPLE_PAY_MERCHANT_ID}
+      NODE_ENV: production
+    restart: unless-stopped
+
+  # Virtual Card Service
+  virtual-cards:
+    build:
+      context: ./virtual-card-service
+      dockerfile: Dockerfile
+    container_name: azora-virtual-cards
+    ports:
+      - "3007:3007"
+    environment:
+      VIRTUAL_CARD_PORT: 3007
+      NODE_ENV: production
+    restart: unless-stopped
+
+  # Exchange Rate Service
+  exchange-rates:
+    build:
+      context: ./exchange-rate-service
+      dockerfile: Dockerfile
+    container_name: azora-exchange-rates
+    ports:
+      - "3008:3008"
+    environment:
+      EXCHANGE_RATE_PORT: 3008
+      NODE_ENV: production
+    restart: unless-stopped
+
+  # Billing Service
+  billing:
+    build:
+      context: ./billing-service
+      dockerfile: Dockerfile
+    container_name: azora-billing
+    ports:
+      - "3009:3009"
+    environment:
+      BILLING_PORT: 3009
+      NODE_ENV: production
+    restart: unless-stopped
+
+  # Lending Service
+  lending:
+    build:
+      context: ./lending-service
+      dockerfile: Dockerfile
+    container_name: azora-lending
+    ports:
+      - "3010:3010"
+    environment:
+      LENDING_PORT: 3010
+      NODE_ENV: production
+    restart: unless-stopped
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: azora-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: azora-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  default:
+    name: azora-financial-network

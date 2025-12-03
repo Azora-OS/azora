@@ -1,0 +1,76 @@
+groups:
+  - name: ubuntu_performance
+    rules:
+      - alert: UbuntuServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          ubuntu: "service_disruption"
+        annotations:
+          summary: "Ubuntu service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} has been down for more than 1 minute. Ubuntu principle: We serve because we prosper together."
+          
+      - alert: UbuntuHighResponseTime
+        expr: http_request_duration_seconds{quantile="0.95"} > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          ubuntu: "performance_degradation"
+        annotations:
+          summary: "Ubuntu service {{ $labels.job }} high response time"
+          description: "95th percentile response time is {{ $value }}s for {{ $labels.job }}. Ubuntu optimization needed."
+          
+      - alert: UbuntuHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.01
+        for: 1m
+        labels:
+          severity: critical
+          ubuntu: "error_spike"
+        annotations:
+          summary: "Ubuntu service {{ $labels.job }} high error rate"
+          description: "Error rate is {{ $value }} for {{ $labels.job }}. Ubuntu stability compromised."
+
+  - name: ubuntu_resources
+    rules:
+      - alert: UbuntuHighCPU
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+          ubuntu: "resource_pressure"
+        annotations:
+          summary: "Ubuntu server {{ $labels.instance }} high CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}. Ubuntu resource optimization needed."
+          
+      - alert: UbuntuHighMemory
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+          ubuntu: "memory_pressure"
+        annotations:
+          summary: "Ubuntu server {{ $labels.instance }} high memory usage"
+          description: "Memory usage is {{ $value }}% on {{ $labels.instance }}. Ubuntu memory optimization needed."
+
+  - name: ubuntu_business
+    rules:
+      - alert: UbuntuLowUserEngagement
+        expr: rate(user_actions_total[1h]) < 10
+        for: 5m
+        labels:
+          severity: warning
+          ubuntu: "engagement_drop"
+        annotations:
+          summary: "Ubuntu user engagement dropping"
+          description: "User actions per hour: {{ $value }}. Ubuntu community engagement needs attention."
+          
+      - alert: UbuntuMiningStalled
+        expr: rate(azr_tokens_mined_total[10m]) == 0
+        for: 5m
+        labels:
+          severity: critical
+          ubuntu: "mining_stalled"
+        annotations:
+          summary: "Ubuntu AZR mining has stalled"
+          description: "No AZR tokens mined in 10 minutes. Ubuntu prosperity engine needs attention."

@@ -1,0 +1,162 @@
+// This is your Prisma schema file for Azora Pay Service
+// Constitutional AI Operating System - No Mock Protocol Compliance
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Wallet
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  balance   Float    @default(0)
+  currency  String   @default("AZR")
+  staked    Float    @default(0)
+  available Float    @default(0)
+  status    String   @default("active") // active, frozen, suspended
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("wallets")
+  @@index([userId])
+}
+
+// Financial Transactions
+model Transaction {
+  id               String   @id @default(uuid())
+  fromUserId       String?
+  toUserId         String?
+  amount           Float
+  currency         String   @default("AZR")
+  type             String   // transfer, wallet_funding, wallet_withdrawal, staking, unstaking, payment, refund
+  status           String   @default("pending") // pending, completed, failed, refunded
+  description      String?
+  source           String?  // external, internal, stripe, etc.
+  blockchainTxHash String?
+  metadata         Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  @@map("transactions")
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// Payment Methods
+model PaymentMethod {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // card, bank_account, crypto_wallet
+  provider  String?  // stripe, paypal, etc
+  details   Json     // Encrypted details or tokenized reference
+  isDefault Boolean  @default(false)
+  status    String   @default("active")
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("payment_methods")
+  @@index([userId])
+}
+
+// Subscriptions
+model Subscription {
+  id             String   @id @default(uuid())
+  userId         String
+  planId         String
+  amount         Float
+  currency       String   @default("AZR")
+  interval       String   // monthly, yearly
+  status         String   @default("active") // active, cancelled, past_due
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean @default(false)
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("subscriptions")
+  @@index([userId])
+  @@index([status])
+}
+
+// Staking Pools
+model StakingPool {
+  id           String   @id @default(uuid())
+  name         String
+  description  String
+  apr          Float
+  totalStaked  Float    @default(0)
+  participants Int      @default(0)
+  minAmount    Float
+  maxAmount    Float
+  duration     Json     // Array of durations [30, 90, 365]
+  status       String   @default("active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  stakingRecords StakingRecord[]
+
+  @@map("staking_pools")
+}
+
+// Staking Records
+model StakingRecord {
+  id               String   @id @default(uuid())
+  userId           String
+  poolId           String
+  amount           Float
+  duration         Int      // days
+  apr              Float    // APR at time of staking
+  status           String   @default("active") // active, completed, unstaked
+  startedAt        DateTime @default(now())
+  endsAt           DateTime
+  rewards          Float    @default(0)
+  blockchainTxHash String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  pool StakingPool @relation(fields: [poolId], references: [id])
+
+  @@map("staking_records")
+  @@index([userId])
+  @@index([poolId])
+  @@index([status])
+}
+
+// Refunds
+model Refund {
+  id            String   @id @default(uuid())
+  transactionId String
+  amount        Float
+  reason        String?
+  status        String   @default("pending") // pending, completed, failed
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("refunds")
+  @@index([transactionId])
+}
+
+// Constitutional Compliance Audit
+model ConstitutionalAudit {
+  id                String   @id @default(uuid())
+  auditType         String   // NO_MOCK_PROTOCOL, UBUNTU_ALIGNMENT, TRANSPARENCY
+  complianceScore   Float    // 0-100
+  violations        Json?    // Array of violations found
+  recommendations   Json?    // Array of recommendations
+  auditedAt         DateTime @default(now())
+  auditedBy         String   @default("constitutional-ai")
+  
+  @@map("constitutional_audits")
+  @@index([auditType])
+  @@index([auditedAt])
+}

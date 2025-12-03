@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  # Elasticsearch - Log storage and search
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: education-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - monitoring
+
+  # Kibana - Log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.0
+    container_name: education-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: education-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - monitoring
+
+  # Grafana - Metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: education-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+  # Sentry - Error tracking
+  sentry:
+    image: sentry:latest
+    container_name: education-sentry
+    ports:
+      - "9000:9000"
+    environment:
+      - SENTRY_SECRET_KEY=your-secret-key-here
+      - SENTRY_POSTGRES_HOST=sentry-postgres
+      - SENTRY_POSTGRES_PORT=5432
+      - SENTRY_POSTGRES_USER=sentry
+      - SENTRY_POSTGRES_PASSWORD=sentry
+      - SENTRY_REDIS_HOST=sentry-redis
+      - SENTRY_REDIS_PORT=6379
+    depends_on:
+      - sentry-postgres
+      - sentry-redis
+    networks:
+      - monitoring
+
+  # PostgreSQL for Sentry
+  sentry-postgres:
+    image: postgres:15
+    container_name: education-sentry-postgres
+    environment:
+      - POSTGRES_USER=sentry
+      - POSTGRES_PASSWORD=sentry
+      - POSTGRES_DB=sentry
+    volumes:
+      - sentry_postgres_data:/var/lib/postgresql/data
+    networks:
+      - monitoring
+
+  # Redis for Sentry
+  sentry-redis:
+    image: redis:7
+    container_name: education-sentry-redis
+    networks:
+      - monitoring
+
+volumes:
+  elasticsearch_data:
+  prometheus_data:
+  grafana_data:
+  sentry_postgres_data:
+
+networks:
+  monitoring:
+    driver: bridge

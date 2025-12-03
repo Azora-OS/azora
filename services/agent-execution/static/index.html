@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Agent Dashboard</title>
+    <style>
+      body { font-family: system-ui, Arial; margin: 20px; }
+      .task { padding: 8px; border: 1px solid #ddd; margin: 4px; }
+      .busy { background: #ffe8e8; }
+    </style>
+  </head>
+  <body>
+    <h1>Agent Dashboard</h1>
+    <div>
+      <h2>Tasks</h2>
+      <div id="tasks"></div>
+    </div>
+    <script>
+      async function loadTasks() {
+        const r = await fetch('/tasks');
+        const { tasks } = await r.json();
+        const container = document.getElementById('tasks');
+        container.innerHTML = tasks.map(t => `<div class="task"><b>${t.id}</b> <i>${t.status}</i> <pre>${JSON.stringify(t.payload)}</pre><button onclick="cancel('${t.id}')">Cancel</button><button onclick="pause('${t.id}')">Pause</button><button onclick="resume('${t.id}')">Resume</button></div>`).join('');
+      }
+      async function cancel(id){ await fetch(`/task/${id}/cancel`, { method: 'POST' }); loadTasks(); }
+      async function pause(id){ await fetch(`/task/${id}/pause`, { method: 'POST' }); loadTasks(); }
+      async function resume(id){ await fetch(`/task/${id}/resume`, { method: 'POST' }); loadTasks(); }
+      loadTasks();
+      setInterval(loadTasks, 3000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// User model (minimal, for relations)
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobApplications JobApplication[]
+  skills          UserSkill[]
+
+  @@map("users")
+}
+
+// Job model
+model Job {
+  id           String     @id @default(cuid())
+  title        String
+  description  String
+  company      String
+  location     String?
+  remote       Boolean    @default(false)
+  salary       String?
+  currency     String     @default("ZAR")
+  status       String     @default("ACTIVE")
+  requirements String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  expiresAt    DateTime?
+
+  applications JobApplication[]
+  skills       JobSkill[]
+
+  @@index([status])
+  @@map("jobs")
+}
+
+// Job Application model
+model JobApplication {
+  id          String              @id @default(cuid())
+  userId      String
+  jobId       String
+  status      String              @default("PENDING")
+  coverLetter String?
+  resume      String?
+  matchScore  Float?
+  appliedAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@map("job_applications")
+}
+
+// Skill model
+model Skill {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+
+  userSkills UserSkill[]
+  jobSkills  JobSkill[]
+
+  @@map("skills")
+}
+
+// User Skill model
+model UserSkill {
+  id          String      @id @default(cuid())
+  userId      String
+  skillId     String
+  level       String
+  verified    Boolean     @default(false)
+  endorsements Int        @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@map("user_skills")
+}
+
+// Job Skill model
+model JobSkill {
+  id       String     @id @default(cuid())
+  jobId    String
+  skillId  String
+  required Boolean    @default(true)
+  level    String
+
+  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, skillId])
+  @@map("job_skills")
+}
+
+// Note: SQLite doesn't support enums, using String instead
+// Valid values:
+// JobStatus: ACTIVE, FILLED, CLOSED, EXPIRED
+// ApplicationStatus: PENDING, REVIEWING, SHORTLISTED, INTERVIEWED, OFFERED, ACCEPTED, REJECTED
+// SkillLevel: BEGINNER, INTERMEDIATE, ADVANCED, EXPERT

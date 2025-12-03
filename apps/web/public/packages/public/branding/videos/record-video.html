@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Azora OS Video - Ready to Record</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: white;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        iframe {
+            width: 100%;
+            max-width: 1920px;
+            height: 1080px;
+            border: 2px solid #8b5cf6;
+            border-radius: 10px;
+        }
+        
+        .instructions {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .instructions h2 {
+            color: #8b5cf6;
+            margin-bottom: 20px;
+        }
+        
+        .instructions ol {
+            line-height: 2;
+            font-size: 18px;
+        }
+        
+        .instructions li {
+            margin-bottom: 15px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .button:hover {
+            transform: scale(1.05);
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .status {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎬 Azora OS Video - Ready to Record</h1>
+        <p style="font-size: 24px; color: rgba(255,255,255,0.7);">
+            Complete 60-second animated video following your script
+        </p>
+    </div>
+    
+    <div class="instructions">
+        <h2>📋 Quick Recording Guide (5 Minutes)</h2>
+        <ol>
+            <li><strong>Press F11</strong> to go fullscreen (or click Fullscreen button below)</li>
+            <li><strong>Open OBS Studio</strong> (free at obsproject.com) or use browser recording</li>
+            <li><strong>Add Browser Source</strong> in OBS → Select this page</li>
+            <li><strong>Click "Start Recording"</strong> in OBS</li>
+            <li><strong>Click "Start Video"</strong> button below</li>
+            <li><strong>Wait 60 seconds</strong> for video to play</li>
+            <li><strong>Stop recording</strong> in OBS</li>
+            <li><strong>Export MP4</strong> → You're done! ✅</li>
+        </ol>
+    </div>
+    
+    <div class="controls">
+        <button class="button" onclick="startVideo()">▶️ Start Video</button>
+        <button class="button" onclick="resetVideo()">🔄 Reset</button>
+        <button class="button" onclick="toggleFullscreen()">🖥️ Fullscreen</button>
+    </div>
+    
+    <div class="status" id="status">
+        Ready to record. Click "Start Video" when ready.
+    </div>
+    
+    <div class="video-container">
+        <iframe 
+            id="videoFrame" 
+            src="what-is-azora-os-video.html" 
+            allowfullscreen
+            style="display: none;"
+        ></iframe>
+        
+        <div id="placeholder" style="padding: 40px; text-align: center; font-size: 24px;">
+            <p>Click "Start Video" to begin recording</p>
+            <p style="font-size: 18px; color: rgba(255,255,255,0.5); margin-top: 20px;">
+                Video will appear here and auto-play for 60 seconds
+            </p>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>💡 Pro Tips</h2>
+        <ul style="line-height: 2;">
+            <li><strong>Record in 1920x1080</strong> for YouTube</li>
+            <li><strong>Record in 1080x1920</strong> for Instagram/TikTok (rotate HTML)</li>
+            <li><strong>Close other tabs</strong> for clean recording</li>
+            <li><strong>Disable notifications</strong> before recording</li>
+            <li><strong>Add music</strong> in video editor after recording</li>
+            <li><strong>Add subtitles</strong> for accessibility</li>
+        </ul>
+    </div>
+    
+    <div class="instructions">
+        <h2>📱 Export Formats</h2>
+        <ul>
+            <li><strong>YouTube:</strong> 1920x1080, MP4, H.264, 10-12 Mbps</li>
+            <li><strong>Instagram Reels:</strong> 1080x1920, MP4, H.264, 8-10 Mbps</li>
+            <li><strong>TikTok:</strong> 1080x1920, MP4, H.264, 8-10 Mbps</li>
+            <li><strong>Twitter:</strong> 1280x720, MP4, H.264, 5-8 Mbps</li>
+        </ul>
+    </div>
+    
+    <script>
+        let videoStarted = false;
+        
+        function startVideo() {
+            if (videoStarted) return;
+            
+            document.getElementById('status').textContent = '🎬 Recording... Video playing (60 seconds)';
+            document.getElementById('status').style.background = 'rgba(236, 72, 153, 0.1)';
+            document.getElementById('status').style.borderColor = '#ec4899';
+            
+            document.getElementById('videoFrame').style.display = 'block';
+            document.getElementById('placeholder').style.display = 'none';
+            
+            // Reload iframe to restart animation
+            const iframe = document.getElementById('videoFrame');
+            iframe.src = iframe.src;
+            
+            videoStarted = true;
+            
+            // Reset after 65 seconds
+            setTimeout(() => {
+                document.getElementById('status').textContent = '✅ Video complete! Stop recording in OBS.';
+                document.getElementById('status').style.background = 'rgba(16, 185, 129, 0.1)';
+                document.getElementById('status').style.borderColor = '#10b981';
+                videoStarted = false;
+            }, 65000);
+        }
+        
+        function resetVideo() {
+            videoStarted = false;
+            document.getElementById('status').textContent = 'Ready to record. Click "Start Video" when ready.';
+            document.getElementById('status').style.background = 'rgba(16, 185, 129, 0.1)';
+            document.getElementById('status').style.borderColor = '#10b981';
+            document.getElementById('videoFrame').style.display = 'none';
+            document.getElementById('placeholder').style.display = 'block';
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Auto-start on spacebar
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && !videoStarted) {
+                e.preventDefault();
+                startVideo();
+            }
+        });
+    </script>
+</body>
+</html>
+
+

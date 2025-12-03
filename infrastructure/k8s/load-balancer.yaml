@@ -1,0 +1,366 @@
+# Azora OS Load Balancer Configuration
+# Ubuntu Philosophy: "My security ensures our freedom"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azora-api-gateway-lb
+  namespace: azora
+  labels:
+    app: azora-api-gateway
+    component: load-balancer
+    ubuntu: "security-through-community"
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+spec:
+  type: LoadBalancer
+  selector:
+    app: azora-api-gateway
+  ports:
+  - name: http
+    port: 80
+    targetPort: 4000
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 4000
+    protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azora-auth-lb
+  namespace: azora
+  labels:
+    app: azora-auth
+    component: load-balancer
+    ubuntu: "security-through-community"
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: azora-auth
+  ports:
+  - name: http
+    port: 80
+    targetPort: 4001
+    protocol: TCP
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: azora-api-gateway-hpa
+  namespace: azora
+  labels:
+    app: azora-api-gateway
+    component: autoscaling
+    ubuntu: "collective-scaling"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: azora-api-gateway
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "100"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      selectPolicy: Max
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: azora-auth-hpa
+  namespace: azora
+  labels:
+    app: azora-auth
+    component: autoscaling
+    ubuntu: "collective-scaling"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: azora-auth
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 75
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 30
+        periodSeconds: 60
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: azora-pay-hpa
+  namespace: azora
+  labels:
+    app: azora-pay
+    component: autoscaling
+    ubuntu: "collective-scaling"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: azora-pay
+  minReplicas: 2
+  maxReplicas: 15
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 65
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 40
+        periodSeconds: 60
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: azora-api-gateway-pdb
+  namespace: azora
+  labels:
+    app: azora-api-gateway
+    component: availability
+    ubuntu: "continuous-service"
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: azora-api-gateway
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: azora-auth-pdb
+  namespace: azora
+  labels:
+    app: azora-auth
+    component: availability
+    ubuntu: "continuous-service"
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: azora-auth
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: azora-ingress
+  namespace: azora
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://azora.world,https://api.azora.world"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length,Content-Range"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Ubuntu-Philosophy: My security ensures our freedom";
+      more_set_headers "X-Community-Trust: I can because we can";
+spec:
+  tls:
+  - hosts:
+    - azora.world
+    - api.azora.world
+    secretName: azora-tls
+  rules:
+  - host: azora.world
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: azora-web
+            port:
+              number: 3000
+  - host: api.azora.world .world
+++.++
+    .
+        pathType: Prefix
+        backend:
+          service:
+            name: azora-api-gateway
+            port:
+              number: 4000
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-lb-config
+  namespace: azora
+  labels:
+    component: load-balancer
+    ubuntu: "security-through-community"
+data:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+    
+    http {
+        # Rate limiting
+        limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+        limit_req_zone $binary_remote_addr zone=auth:10m rate=5r/s;
+        
+        # Upstream servers
+        upstream api_gateway {
+            least_conn;
+            server azora-api-gateway:4000 max_fails=3 fail_timeout=30s;
+            keepalive 32;
+        }
+        
+        upstream auth_service {
+            least_conn;
+            server azora-auth:4001 max_fails=3 fail_timeout=30s;
+            keepalive 16;
+        }
+        
+        # Security headers
+        add_header X-Ubuntu-Philosophy "My security ensures our freedom" always;
+        add_header X-Community-Trust "I can because we can" always;
+        add_header X-Frame-Options DENY always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        
+        server {
+            listen 80;
+            server_name api.azora.world;
+            
+            # Redirect to HTTPS
+            return 301 https://$server_name$request_uri;
+        }
+        
+        server {
+            listen 443 ssl http2;
+            server_name api.azora.world;
+            
+            ssl_certificate /etc/ssl/certs/azora.world.crt;
+            ssl_certificate_key /etc/ssl/private/azora.world.key;
+            ssl_protocols TLSv1.2 TLSv1.3;
+            ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
+            ssl_prefer_server_ciphers off;
+            ssl_session_cache shared:SSL:10m;
+            ssl_session_timeout 10m;
+            
+            # API Gateway
+            location / {
+                limit_req zone=api burst=20 nodelay;
+                proxy_pass http://api_gateway;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_connect_timeout 5s;
+                proxy_send_timeout 10s;
+                proxy_read_timeout 10s;
+            }
+            
+            # Auth service with stricter limits
+            location /api/auth/ {
+                limit_req zone=auth burst=10 nodelay;
+                proxy_pass http://auth_service;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_connect_timeout 5s;
+                proxy_send_timeout 10s;
+                proxy_read_timeout 10s;
+            }
+        }
+    }

@@ -1,0 +1,86 @@
+name: CI - AzStudio
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0'
+
+      - name: Cache npm (root)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies (root)
+        run: |
+          if [ "${{ matrix.os }}" = "windows-2022" ]; then npm ci; else npm ci --ignore-scripts; fi
+
+      - name: Run AzStudio CI environment check
+        run: npm run azstudio:ci-check-env
+
+      - name: Cache npm (azstudio)
+        uses: actions/cache@v4
+        with:
+          path: azstudio/node_modules
+          key: azstudio-${{ runner.os }}-node-${{ hashFiles('azstudio/package-lock.json') }}
+          restore-keys: |
+            azstudio-${{ runner.os }}-node-
+
+      - name: Install AzStudio packages (inside azstudio)
+        run: |
+          cd azstudio
+          if [ "${{ matrix.os }}" = "windows-2022" ]; then npm ci; else npm ci --ignore-scripts; fi
+      - name: Compile AzStudio
+        run: |
+          cd azstudio
+          npm run compile
+
+      - name: Run local unit tests
+        run: |
+          cd azstudio
+          npm run local-unit-tests
+
+      - name: Run AI esbuild test (bundled)
+        run: |
+          cd azstudio
+          npm run ai-esbuild-test
+
+      - name: Run Node tests (Mocha)
+        continue-on-error: false
+        run: |
+          cd azstudio
+          mkdir -p test-results || exit 0
+          npm run test-node -- --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results/node-results.xml
+
+      - name: Upload compiled artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azstudio-compiled-out
+          path: azstudio/out
+
+      - name: Upload Node test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azstudio-node-test-results
+          path: azstudio/test-results

@@ -1,0 +1,20 @@
+{
+  "agent": "agent-05",
+  "task": "API Gateway - Harden routing & circuit breaker tests",
+  "status": "In Progress",
+  "startTime": "2025-12-03T10:26:00Z",
+  "notes": [
+    "Opened docs/agents/agent-05.tasks.md",
+    "Will identify gateway's configured services and add health aggregation endpoints and circuit breaker tests."
+  ],
+  "verificationLogs": []
+  ,
+  "actionsTaken": [
+    "Validated HealthAggregator in services/azora-api-gateway/src/health-aggregator.ts",
+    "Added circuit-breaker unit test (services/azora-api-gateway/__tests__/circuit-breaker.test.ts)"
+  ]
+  ,
+  "moreActions": [
+    "Added health aggregator test services/azora-api-gateway/__tests__/health.test.ts"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@azora/event-bus",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "dependencies": {
+    "ioredis": "^5.3.2"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  }
+}

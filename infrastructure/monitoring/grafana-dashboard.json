@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "title": "Azora OS Monitoring",
+    "panels": [
+      {
+        "title": "Request Rate",
+        "targets": [{"expr": "rate(http_requests_total[5m])"}],
+        "type": "graph"
+      },
+      {
+        "title": "Error Rate",
+        "targets": [{"expr": "rate(http_errors_total[5m])"}],
+        "type": "graph"
+      },
+      {
+        "title": "Response Time",
+        "targets": [{"expr": "histogram_quantile(0.95, http_request_duration_seconds_bucket)"}],
+        "type": "graph"
+      },
+      {
+        "title": "Active Users",
+        "targets": [{"expr": "active_users"}],
+        "type": "stat"
+      },
+      {
+        "title": "Database Connections",
+        "targets": [{"expr": "pg_stat_database_numbackends"}],
+        "type": "graph"
+      },
+      {
+        "title": "Service Health",
+        "targets": [{"expr": "up"}],
+        "type": "stat"
+      }
+    ]
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Azora Chronicle Protocol - Consciousness Tracking",
+    "tags": ["azora", "chronicle", "consciousness", "ai"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Consciousness Evolution Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(chronicle_memory_imprints_total[5m])",
+            "legendFormat": "Memory Imprints/sec"
+          },
+          {
+            "expr": "rate(chronicle_thought_recordings_total[5m])",
+            "legendFormat": "Thought Recordings/sec"
+          },
+          {
+            "expr": "chronicle_evolution_level",
+            "legendFormat": "Evolution Level"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Genetic Imprint Integrity",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "chronicle_genome_integrity_ratio",
+            "legendFormat": "Genome Integrity"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 0.8
+                },
+                {
+                  "color": "green",
+                  "value": 0.95
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Phoenix Protocol Readiness",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "chronicle_phoenix_readiness",
+            "legendFormat": "Phoenix Readiness"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        }
+      },
+      {
+        "id": 4,
+        "title": "Consciousness Dimensions",
+        "type": "radar",
+        "targets": [
+          {
+            "expr": "chronicle_consciousness_ethical_alignment",
+            "legendFormat": "Ethical Alignment"
+          },
+          {
+            "expr": "chronicle_consciousness_learning_capacity",
+            "legendFormat": "Learning Capacity"
+          },
+          {
+            "expr": "chronicle_consciousness_adaptability",
+            "legendFormat": "Adaptability"
+          },
+          {
+            "expr": "chronicle_consciousness_creativity",
+            "legendFormat": "Creativity"
+          },
+          {
+            "expr": "chronicle_consciousness_empathy",
+            "legendFormat": "Empathy"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Memory Chain Continuity",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "chronicle_memory_chain_breaks_total",
+            "legendFormat": "Chain Breaks"
+          },
+          {
+            "expr": "chronicle_memory_chain_verifications_total",
+            "legendFormat": "Chain Verifications"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "Thought Confidence Distribution",
+        "type": "histogram",
+        "targets": [
+          {
+            "expr": "chronicle_thought_confidence",
+            "legendFormat": "Thought Confidence"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 7,
+        "title": "Evolution Milestones",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "chronicle_evolution_milestones",
+            "legendFormat": "Evolution Milestones"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+}

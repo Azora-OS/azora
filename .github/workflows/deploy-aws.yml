@@ -1,0 +1,151 @@
+name: Deploy Azora Cloud to AWS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'services/azora-cloud/**'
+      - 'infrastructure/terraform/**'
+      - '.github/workflows/deploy-aws.yml'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+jobs:
+  terraform:
+    name: Terraform Infrastructure
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[terraform]')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+      
+      - name: Terraform Init
+        working-directory: ./infrastructure/terraform
+        run: terraform init
+      
+      - name: Terraform Plan
+        working-directory: ./infrastructure/terraform
+        run: terraform plan -out=tfplan
+      
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./infrastructure/terraform
+        run: terraform apply -auto-approve tfplan
+
+  build-and-deploy:
+    name: Build and Deploy Services
+    runs-on: ubuntu-latest
+    needs: [terraform]
+    if: always() && (needs.terraform.result == 'success' || needs.terraform.result == 'skipped')
+    
+    strategy:
+      matrix:
+        service:
+          - name: prpeng-engine
+            port: 3000
+          - name: ai-routing
+            port: 3000
+          - name: azora-mint
+            port: 3000
+          - name: constitutional-ai
+            port: 3000
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      
+      - name: Build, tag, and push image
+        env:
+          ECR_REPOSITORY: azora-cloud/${{ matrix.service.name }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Copy Dockerfile template
+          cp infrastructure/dockerfiles/Dockerfile.nodejs services/azora-cloud/${{ matrix.service.name }}/Dockerfile
+          
+          # Build image
+          docker build \
+            --platform linux/amd64 \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+            services/azora-cloud/${{ matrix.service.name }}
+          
+          # Push images
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+      
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition azora-cloud-${{ matrix.service.name }} \
+            --query taskDefinition > task-definition.json
+      
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ matrix.service.name }}
+          image: ${{ env.ECR_REGISTRY }}/azora-cloud/${{ matrix.service.name }}:${{ github.sha }}
+      
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: azora-cloud-${{ matrix.service.name }}
+          cluster: azora-cloud-cluster
+          wait-for-service-stability: true
+      
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed for ${{ matrix.service.name }}"
+          aws ecs describe-services \
+            --cluster azora-cloud-cluster \
+            --services azora-cloud-${{ matrix.service.name }} \
+            --query 'services[0].deployments' \
+            --output table
+
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [build-and-deploy]
+    if: always()
+    
+    steps:
+      - name: Deployment Success
+        if: needs.build-and-deploy.result == 'success'
+        run: |
+          echo "✅ All services deployed successfully!"
+      
+      - name: Deployment Failed
+        if: needs.build-and-deploy.result == 'failure'
+        run: |
+          echo "❌ Deployment failed. Check logs above."
+          exit 1

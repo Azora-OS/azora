@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  ubuntu-tokenomics:
+    build: .
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+      - REDIS_HOST=redis
+      - MONGODB_URI=mongodb://mongo:27017/ubuntu-tokenomics
+      - BLOCKCHAIN_RPC_URL=https://polygon-rpc.com
+    depends_on:
+      - redis
+      - mongo
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=ubuntu-tokenomics
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9093:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+volumes:
+  redis-data:
+  mongo-data:
+  prometheus-data:
+
+networks:
+  azora-network:
+    driver: bridge

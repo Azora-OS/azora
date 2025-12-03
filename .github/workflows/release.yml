@@ -1,0 +1,166 @@
+name: Release Automation
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 3.1.0)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  determine-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Determine version from conventional commits
+        id: version
+        run: |
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_TAG#v}
+          
+          # Parse version components
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_VERSION"
+          MAJOR=${MAJOR:-0}
+          MINOR=${MINOR:-0}
+          PATCH=${PATCH:-0}
+          
+          # Get commits since last tag
+          COMMITS=$(git log ${LATEST_TAG}..HEAD --oneline --format="%B" 2>/dev/null || git log --oneline --format="%B")
+          
+          # Determine version bump based on conventional commits
+          if echo "$COMMITS" | grep -q "^BREAKING CHANGE:"; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif echo "$COMMITS" | grep -q "^feat"; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif echo "$COMMITS" | grep -q "^fix"; then
+            PATCH=$((PATCH + 1))
+          else
+            PATCH=$((PATCH + 1))
+          fi
+          
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "version=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Version determined: v$NEW_VERSION"
+      
+      - name: Generate changelog from conventional commits
+        id: changelog
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          if [ -z "$LATEST_TAG" ]; then
+            CHANGELOG=$(git log --oneline --format="- %s (%h)" | head -50)
+          else
+            CHANGELOG=$(git log ${LATEST_TAG}..HEAD --oneline --format="- %s (%h)")
+          fi
+          
+          # Format changelog with sections
+          FORMATTED_CHANGELOG="## Features
+          $(echo "$CHANGELOG" | grep "^- feat" || echo "No new features")
+          
+          ## Bug Fixes
+          $(echo "$CHANGELOG" | grep "^- fix" || echo "No bug fixes")
+          
+          ## Other Changes
+          $(echo "$CHANGELOG" | grep -v "^- feat" | grep -v "^- fix" || echo "No other changes")"
+          
+          # Save to output
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$FORMATTED_CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  create-release:
+    needs: determine-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Update package.json version
+        run: |
+          VERSION="${{ needs.determine-version.outputs.version }}"
+          VERSION_NUMBER=${VERSION#v}
+          npm version $VERSION_NUMBER --no-git-tag-version
+      
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+      
+      - name: Run tests
+        run: npm run test:coverage
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.determine-version.outputs.version }}
+          body: ${{ needs.determine-version.outputs.changelog }}
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+          files: |
+            dist/**/*
+            LICENSE
+            README.md
+      
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Commit version update
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to ${{ needs.determine-version.outputs.version }}" || true
+          git push || true
+      
+      - name: Notify team via GitHub
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀 Release ${{ needs.determine-version.outputs.version }} has been published!\n\n${{ needs.determine-version.outputs.changelog }}'
+            })
+      
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            🚀 Release ${{ needs.determine-version.outputs.version }} published
+            Status: ${{ job.status }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          fields: repo,message,commit,author

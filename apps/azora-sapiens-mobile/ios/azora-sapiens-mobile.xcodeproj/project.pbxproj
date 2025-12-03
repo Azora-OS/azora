@@ -1,0 +1,622 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00E356ED1AD99517003787E2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356EB1AD99517003787E2 /* AppDelegate.m */; };
+		13B07FB61A080FB600B10B1F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A080FB600B10B1F /* LaunchScreen.xib */; };
+		13B07FB71A080FB600B10B1F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A080FB600B10B1F /* main.m */; };
+		2D02E4BC1E0B4A8000457C78 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A080FB600B10B1F /* AppDelegate.m */; };
+		2D02E4BD1E0B4A8400457C78 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB21A080FB600B10B1F /* main.m */; };
+		2D02E4BF1E0B4AB300457C78 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A080FB600B10B1F /* LaunchScreen.xib */; };
+		81AB9BB82411601600610FBD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600610FBD /* AppDelegate.swift */; };
+		81AB9BB92411601600610FBD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81AB9BB62411601600610FBD /* SceneDelegate.swift */; };
+		ED29716211906B000011726F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED29716111906B000011726F /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00E356EB1AD99517003787E2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		00E356F11AD99517003787E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		13B07FB01A080FB600B10B1F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = azora-sapiens-mobile/AppDelegate.m; sourceTree = "<group>"; };
+		13B07FB11A080FB600B10B1F /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = azora-sapiens-mobile/LaunchScreen.xib; sourceTree = "<group>"; };
+		13B07FB21A080FB600B10B1F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = azora-sapiens-mobile/main.m; sourceTree = "<group>"; };
+		13B07FBF1A68108700A75B9A /* azora-sapiens-mobile.xcodeproj */ = {isa = PBXFileReference; explicitFileType = "com.apple.package-type-wrapper"; includeInIndex = 0; path = "azora-sapiens-mobile.xcodeproj"; sourceTree = "<group>"; };
+		13B07FC11A68108700A75B9A /* azora-sapiens-mobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "azora-sapiens-mobile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D00457C78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2D02E4C01E0B4A8000457C78 /* azora-sapiens-mobile-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "azora-sapiens-mobile-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		81AB9BB62411601600610FBD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		81AB9BB72411601600610FBD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		ED29716111906B000011726F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00E356EB1AD99517003787E2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07FBC1A68108700A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D02E4C11E0B4A8000457C78 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		13B07FAE1A68108700A75B9A = {
+			isa = PBXGroup;
+			children = (
+				13B07FAF1A68108700A75B9A /* Products */,
+				2D16F6881FA4F8E400B85C8A /* Frameworks */,
+				00E356ED1AD99517003787E2 /* azora-sapiens-mobile */,
+				13B07FC31A68108700A75B9A /* Products */,
+				832341AE1FA6A32200A99536 /* Pods */,
+				2D16F6891FA4F8E400B85C8A /* azora-sapiens-mobile-tvOS */,
+				2D16F68A1FA4F8E400B85C8A /* azora-sapiens-mobile-tvOSTests */,
+			);
+			sourceTree = "<group>";
+		};
+		13B07FAF1A68108700A75B9A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FC11A68108700A75B9A /* azora-sapiens-mobile.app */,
+				2D02E4C01E0B4A8000457C78 /* azora-sapiens-mobile-tvOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		13B07FC31A68108700A75B9A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FC11A68108700A75B9A /* azora-sapiens-mobile.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2D16F6881FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2D16F6891FA4F8E400B85C8A /* azora-sapiens-mobile-tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				2D16F68A1FA4F8E400B85C8A /* azora-sapiens-mobile-tvOSTests */,
+			);
+			name = "azora-sapiens-mobile-tvOS";
+			sourceTree = "<group>";
+		};
+		2D16F68A1FA4F8E400B85C8A /* azora-sapiens-mobile-tvOSTests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = azora-sapiens-mobile-tvOSTests;
+			sourceTree = "<group>";
+		};
+		832341AE1FA6A32200A99536 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		00E356ED1AD99517003787E2 /* azora-sapiens-mobile */ = {
+			isa = PBXGroup;
+			children = (
+				00E356EE1AD99517003787E2 /* Supporting Files */,
+				13B07FB51A080FB600B10B1F /* LaunchScreen.xib */,
+				13B07FB01A080FB600B10B1F /* AppDelegate.m */,
+				13B07FB21A080FB600B10B1F /* main.m */,
+				81AB9BB62411601600610FBD /* SceneDelegate.swift */,
+				81AB9BB72411601600610FBD /* AppDelegate.swift */,
+				ED29716111906B000011726F /* LaunchScreen.storyboard */,
+			);
+			name = "azora-sapiens-mobile";
+			path = "azora-sapiens-mobile";
+			sourceTree = "<group>";
+		};
+		00E356EE1AD99517003787E2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F11AD99517003787E2 /* Info.plist */,
+				13B07FB61A080FB600B10B1F /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00E356ED1AD99517003787E2 /* azora-sapiens-mobile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00E357021AD99517003787E2 /* Build configuration list for PBXNativeTarget "azora-sapiens-mobile" */;
+			buildPhases = (
+				00E356EA1AD99517003787E2 /* Sources */,
+				00E356EB1AD99517003787E2 /* Frameworks */,
+				00E356EC1AD99517003787E2 /* Resources */,
+				00DFFB421AD99517003787E2 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "azora-sapiens-mobile";
+			productName = "azora-sapiens-mobile";
+			productReference = 13B07FC11A68108700A75B9A /* azora-sapiens-mobile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2D02E47A1E0B4A5D00457C78 /* azora-sapiens-mobile-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2D02E4BA1E0B4A5D00457C78 /* Build configuration list for PBXNativeTarget "azora-sapiens-mobile-tvOS" */;
+			buildPhases = (
+				2D02E4771E0B4A5D00457C78 /* Sources */,
+				2D02E4781E0B4A5D00457C78 /* Frameworks */,
+				2D02E4791E0B4A5D00457C78 /* Resources */,
+				2D02E47B1E0B4A5D00457C78 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "azora-sapiens-mobile-tvOS";
+			productName = "azora-sapiens-mobile-tvOS";
+			productReference = 2D02E4C01E0B4A8000457C78 /* azora-sapiens-mobile-tvOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601A1E00A918B5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					00E356ED1AD99517003787E2 = {
+						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 1230;
+					};
+					2D02E47A1E0B4A5D00457C78 = {
+						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 1230;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601A1E00A918B5 /* Build configuration list for PBXProject "azora-sapiens-mobile" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				es,
+				"zh-Hans",
+				"zh-Hant",
+				fr,
+				de,
+				it,
+				ja,
+				ko,
+				pt,
+				ru,
+			);
+			mainGroup = 13B07FAE1A68108700A75B9A;
+			productRefGroup = 13B07FAF1A68108700A75B9A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				00E356ED1AD99517003787E2 /* azora-sapiens-mobile */,
+				2D02E47A1E0B4A5D00457C78 /* azora-sapiens-mobile-tvOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00E356EC1AD99517003787E2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13B07FBF1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				13B07FB61A080FB600B10B1F /* main.m in Sources */,
+				ED29716211906B000011726F /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D02E4791E0B4A5D00457C78 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D02E4BF1E0B4AB300457C78 /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00DFFB421AD99517003787E2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\nexport NODE_PATH=node_modules/.bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		2D02E47B1E0B4A5D00457C78 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\nexport NODE_PATH=node_modules/.bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00E356EA1AD99517003787E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00E356ED1AD99517003787E2 /* AppDelegate.m in Sources */,
+				13B07FB71A080FB600B10B1F /* main.m in Sources */,
+				81AB9BB82411601600610FBD /* AppDelegate.swift in Sources */,
+				81AB9BB92411601600610FBD /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D02E4771E0B4A5D00457C78 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D02E4BC1E0B4A8000457C78 /* AppDelegate.m in Sources */,
+				2D02E4BD1E0B4A8400457C78 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		00E356F01AD99517003787E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "azora-sapiens-mobile/Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Azora Sapiens needs camera access for profile photos and community features";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Azora Sapiens needs location access for Ubuntu community events";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Azora Sapiens needs photo library access for sharing community moments";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.azora.sapiens.mobile";
+				PRODUCT_NAME = "azora-sapiens-mobile";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1,2;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		00E356F11AD99517003787E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "azora-sapiens-mobile/Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Azora Sapiens needs camera access for profile photos and community features";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Azora Sapiens needs location access for Ubuntu community events";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Azora Sapiens needs photo library access for sharing community moments";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.azora.sapiens.mobile";
+				PRODUCT_NAME = "azora-sapiens-mobile";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1,2;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "azora-sapiens-mobile/azora-sapiens-mobile.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "azora-sapiens-mobile/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.azora.sapiens.mobile";
+				PRODUCT_NAME = "azora-sapiens-mobile";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1,2;
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "azora-sapiens-mobile/azora-sapiens-mobile.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "azora-sapiens-mobile/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.azora.sapiens.mobile";
+				PRODUCT_NAME = "azora-sapiens-mobile";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-Swift.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1,2;
+			};
+			name = Release;
+		};
+		2D02E47A1E0B4A5D00457C78 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "azora-sapiens-mobile-tvOS/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.azora.sapiens.mobile.tvos";
+				PRODUCT_NAME = "azora-sapiens-mobile-tvOS";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-tvOS-Swift.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-tvOS-Swift.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		2D02E47B1E0B4A5D00457C78 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "azora-sapiens-mobile-tvOS/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.azora.sapiens.mobile.tvos";
+				PRODUCT_NAME = "azora-sapiens-mobile-tvOS";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-tvOS-Swift.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "azora-sapiens-mobile-tvOS-Swift.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		83CBAA1E1A601A1E00A918B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		83CBAA1F1A601A1E00A918B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00E357021AD99517003787E2 /* Build configuration list for PBXNativeTarget "azora-sapiens-mobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00E356F01AD99517003787E2 /* Debug */,
+				00E356F11AD99517003787E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2D02E4BA1E0B4A5D00457C78 /* Build configuration list for PBXNativeTarget "azora-sapiens-mobile-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2D02E47A1E0B4A5D00457C78 /* Debug */,
+				2D02E47B1E0B4A5D00457C78 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601A1E00A918B5 /* Build configuration list for PBXProject "azora-sapiens-mobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBAA1E1A601A1E00A918B5 /* Debug */,
+				83CBAA1F1A601A1E00A918B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601A1E00A918B5 /* Project object */;
+}

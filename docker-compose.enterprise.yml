@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Azora ERP Service
+  azora-erp:
+    build:
+      context: ./services/azora-erp
+      dockerfile: Dockerfile
+    container_name: azora-erp
+    ports:
+      - "3022:3022"
+    environment:
+      - NODE_ENV=development
+      - PORT=3022
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_erp
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Enterprise Service
+  enterprise:
+    build:
+      context: ./services/enterprise
+      dockerfile: Dockerfile
+    container_name: azora-enterprise
+    ports:
+      - "3023:3023"
+    environment:
+      - NODE_ENV=development
+      - PORT=3023
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_enterprise
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:3023/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Governance Service
+  governance-service:
+    build:
+      context: ./services/governance-service
+      dockerfile: Dockerfile
+    container_name: azora-governance
+    ports:
+      - "3024:3024"
+    environment:
+      - NODE_ENV=development
+      - PORT=3024
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_governance
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  azora-network:
+    external: true

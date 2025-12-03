@@ -1,0 +1,23 @@
+name: AzStudio Architecture CI
+
+on:
+  push:
+    branches: [feat/azstudio-*, main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Type check
+        run: npx tsc --noEmit --project ./src/tsconfig.json
+      - name: Lint
+        run: npm run eslint --if-present
+      - name: Unit tests
+        run: npm test --if-present

@@ -1,0 +1,47 @@
+{
+  "dashboard": {
+    "title": "Database Performance",
+    "panels": [
+      {
+        "title": "Active Connections",
+        "targets": [
+          {
+            "expr": "pg_stat_activity_connections{state='active'}"
+          }
+        ]
+      },
+      {
+        "title": "Slow Queries (>100ms)",
+        "targets": [
+          {
+            "expr": "pg_slow_queries"
+          }
+        ]
+      },
+      {
+        "title": "Database Size",
+        "targets": [
+          {
+            "expr": "pg_database_size"
+          }
+        ]
+      },
+      {
+        "title": "Redis Cache Hit Rate",
+        "targets": [
+          {
+            "expr": "rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))"
+          }
+        ]
+      },
+      {
+        "title": "Redis Memory Usage",
+        "targets": [
+          {
+            "expr": "redis_memory_used_bytes"
+          }
+        ]
+      }
+    ]
+  }
+}

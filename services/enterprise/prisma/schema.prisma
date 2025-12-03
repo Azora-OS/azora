@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model EnterpriseAccount {
+  id            String   @id @default(uuid())
+  name          String
+  domain        String?
+  contactEmail  String
+  status        String   // ACTIVE, SUSPENDED
+  createdAt     DateTime @default(now())
+  
+  licenses      License[]
+  departments   Department[]
+  
+  @@map("enterprise_accounts")
+}
+
+model License {
+  id            String   @id @default(uuid())
+  accountId     String
+  type          String   // SEAT_BASED, USAGE_BASED
+  maxSeats      Int?
+  usedSeats     Int      @default(0)
+  expiresAt     DateTime
+  isActive      Boolean  @default(true)
+  
+  account       EnterpriseAccount @relation(fields: [accountId], references: [id])
+  
+  @@map("licenses")
+  @@index([accountId])
+}
+
+model Department {
+  id            String   @id @default(uuid())
+  accountId     String
+  name          String
+  budget        Decimal?
+  
+  account       EnterpriseAccount @relation(fields: [accountId], references: [id])
+  employees     Employee[]
+  
+  @@map("departments")
+}
+
+model Employee {
+  id            String   @id @default(uuid())
+  departmentId  String
+  userId        String
+  role          String
+  joinedAt      DateTime @default(now())
+  
+  department    Department @relation(fields: [departmentId], references: [id])
+  
+  @@map("employees")
+  @@index([departmentId])
+  @@index([userId])
+}

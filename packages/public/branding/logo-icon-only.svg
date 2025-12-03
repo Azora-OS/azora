@@ -1,0 +1,64 @@
+<!-- Azora OS Icon Only - Hyper Premium -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" fill="none">
+  <defs>
+    <!-- Premium Gradients -->
+    <linearGradient id="premiumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="33%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="66%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Premium Glow Effect -->
+    <filter id="premiumGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Depth Shadow -->
+    <filter id="depth">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Professional Icon with Depth - Centered -->
+  <g transform="translate(60, 60)" filter="url(#depth)">
+    <!-- Outer ring with premium feel -->
+    <circle cx="100" cy="100" r="96" fill="none" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.3"/>
+    
+    <!-- Background subtle glow -->
+    <circle cx="100" cy="100" r="90" fill="url(#premiumGrad)" opacity="0.08"/>
+    
+    <!-- Main A letterform - Clean, professional -->
+    <g filter="url(#premiumGlow)">
+      <!-- Left leg -->
+      <path d="M 65 155 L 90 60 C 90 60 92 55 95 55 L 105 55 C 108 55 110 57 110 60 L 85 155 C 84 158 82 160 80 160 L 70 160 C 67 160 65 158 65 155 Z" 
+            fill="url(#premiumGrad)"/>
+      
+      <!-- Right leg -->
+      <path d="M 110 60 C 110 57 112 55 115 55 L 125 55 C 128 55 130 57 130 60 L 135 155 C 135 158 133 160 130 160 L 120 160 C 118 160 116 158 115 155 Z" 
+            fill="url(#premiumGrad)"/>
+      
+      <!-- Crossbar - Premium accent -->
+      <rect x="75" y="105" width="50" height="10" rx="5" fill="url(#accentGrad)"/>
+    </g>
+    
+    <!-- Subtle connection nodes - Tech aesthetic -->
+    <circle cx="100" cy="45" r="6" fill="url(#accentGrad)" opacity="0.8"/>
+    <circle cx="70" cy="150" r="4.5" fill="url(#premiumGrad)" opacity="0.7"/>
+    <circle cx="130" cy="150" r="4.5" fill="url(#premiumGrad)" opacity="0.7"/>
+    
+    <!-- Fine connection lines -->
+    <line x1="100" y1="45" x2="97" y2="55" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+    <line x1="100" y1="45" x2="103" y2="55" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+  </g>
+</svg>

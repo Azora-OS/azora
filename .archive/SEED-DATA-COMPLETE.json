@@ -1,0 +1,991 @@
+{
+  "users": {
+    "students": [
+      {
+        "id": "user_student_001",
+        "email": "alice.johnson@azora.world",
+        "name": "Alice Johnson",
+        "role": "STUDENT",
+        "timezone": "Africa/Johannesburg",
+        "preferences": {
+          "learningStyle": "visual",
+          "notifications": true,
+          "language": "en"
+        }
+      },
+      {
+        "id": "user_student_002",
+        "email": "bob.smith@azora.world",
+        "name": "Bob Smith",
+        "role": "STUDENT",
+        "timezone": "Africa/Johannesburg",
+        "preferences": {
+          "learningStyle": "kinesthetic",
+          "notifications": true,
+          "language": "en"
+        }
+      },
+      {
+        "id": "user_student_003",
+        "email": "carol.white@azora.world",
+        "name": "Carol White",
+        "role": "STUDENT",
+        "timezone": "Africa/Johannesburg",
+        "preferences": {
+          "learningStyle": "auditory",
+          "notifications": true,
+          "language": "en"
+        }
+      }
+    ],
+    "educators": [
+      {
+        "id": "user_educator_001",
+        "email": "dr.sarah.lee@azora.world",
+        "name": "Dr. Sarah Lee",
+        "role": "EDUCATOR",
+        "timezone": "Africa/Johannesburg",
+        "bio": "Computer Science PhD with 10+ years teaching experience"
+      },
+      {
+        "id": "user_educator_002",
+        "email": "prof.james.wilson@azora.world",
+        "name": "Prof. James Wilson",
+        "role": "EDUCATOR",
+        "timezone": "Africa/Johannesburg",
+        "bio": "Business & Entrepreneurship Expert"
+      },
+      {
+        "id": "user_educator_003",
+        "email": "dr.amara.okonkwo@azora.world",
+        "name": "Dr. Amara Okonkwo",
+        "role": "EDUCATOR",
+        "timezone": "Africa/Lagos",
+        "bio": "Data Science & AI Specialist"
+      }
+    ],
+    "admins": [
+      {
+        "id": "user_admin_001",
+        "email": "admin@azora.world",
+        "name": "Admin User",
+        "role": "ADMIN",
+        "timezone": "Africa/Johannesburg"
+      }
+    ]
+  },
+  "courses": [
+    {
+      "id": "cs101",
+      "title": "Introduction to Computer Science",
+      "description": "Comprehensive introduction to programming, algorithms, and computer science fundamentals",
+      "category": "Computer Science",
+      "level": "BEGINNER",
+      "duration": 720,
+      "price": 299,
+      "currency": "ZAR",
+      "instructorId": "user_educator_001",
+      "status": "PUBLISHED",
+      "modules": [
+        {
+          "id": "cs101-m1",
+          "title": "Programming Fundamentals",
+          "order": 1,
+          "lessons": [
+            {
+              "title": "Variables and Data Types",
+              "duration": 45,
+              "type": "video"
+            },
+            {
+              "title": "Control Structures",
+              "duration": 60,
+              "type": "interactive"
+            },
+            {
+              "title": "Functions and Methods",
+              "duration": 50,
+              "type": "video"
+            },
+            {
+              "title": "Practice: Basic Programs",
+              "duration": 90,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "cs101-m2",
+          "title": "Data Structures",
+          "order": 2,
+          "lessons": [
+            {
+              "title": "Arrays and Lists",
+              "duration": 55,
+              "type": "video"
+            },
+            {
+              "title": "Stacks and Queues",
+              "duration": 65,
+              "type": "interactive"
+            },
+            {
+              "title": "Trees and Graphs",
+              "duration": 75,
+              "type": "video"
+            },
+            {
+              "title": "Practice: Data Structure Implementation",
+              "duration": 120,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "cs101-m3",
+          "title": "Algorithms",
+          "order": 3,
+          "lessons": [
+            {
+              "title": "Sorting Algorithms",
+              "duration": 70,
+              "type": "video"
+            },
+            {
+              "title": "Search Algorithms",
+              "duration": 60,
+              "type": "interactive"
+            },
+            {
+              "title": "Algorithm Complexity",
+              "duration": 80,
+              "type": "video"
+            },
+            {
+              "title": "Practice: Algorithm Design",
+              "duration": 150,
+              "type": "coding"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "cs101-a1",
+          "title": "Build a Calculator",
+          "type": "project",
+          "points": 100
+        },
+        {
+          "id": "cs101-a2",
+          "title": "Data Structure Quiz",
+          "type": "quiz",
+          "points": 50
+        },
+        {
+          "id": "cs101-a3",
+          "title": "Algorithm Implementation",
+          "type": "coding",
+          "points": 150
+        }
+      ],
+      "skills": ["Programming", "Problem Solving", "Logical Thinking", "Algorithm Design"]
+    },
+    {
+      "id": "web201",
+      "title": "Full-Stack Web Development",
+      "description": "Complete web development course covering frontend, backend, and database technologies",
+      "category": "Web Development",
+      "level": "INTERMEDIATE",
+      "duration": 960,
+      "price": 499,
+      "currency": "ZAR",
+      "instructorId": "user_educator_001",
+      "status": "PUBLISHED",
+      "modules": [
+        {
+          "id": "web201-m1",
+          "title": "Frontend Development",
+          "order": 1,
+          "lessons": [
+            {
+              "title": "HTML5 & Semantic Markup",
+              "duration": 60,
+              "type": "video"
+            },
+            {
+              "title": "CSS3 & Responsive Design",
+              "duration": 90,
+              "type": "interactive"
+            },
+            {
+              "title": "JavaScript ES6+",
+              "duration": 120,
+              "type": "video"
+            },
+            {
+              "title": "React.js Fundamentals",
+              "duration": 150,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "web201-m2",
+          "title": "Backend Development",
+          "order": 2,
+          "lessons": [
+            {
+              "title": "Node.js & Express",
+              "duration": 100,
+              "type": "video"
+            },
+            {
+              "title": "RESTful APIs",
+              "duration": 80,
+              "type": "interactive"
+            },
+            {
+              "title": "Authentication & Security",
+              "duration": 90,
+              "type": "video"
+            },
+            {
+              "title": "Database Integration",
+              "duration": 110,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "web201-m3",
+          "title": "Database & Deployment",
+          "order": 3,
+          "lessons": [
+            {
+              "title": "SQL & PostgreSQL",
+              "duration": 85,
+              "type": "video"
+            },
+            {
+              "title": "NoSQL & MongoDB",
+              "duration": 75,
+              "type": "interactive"
+            },
+            {
+              "title": "Docker & Containerization",
+              "duration": 95,
+              "type": "video"
+            },
+            {
+              "title": "Cloud Deployment",
+              "duration": 120,
+              "type": "coding"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "web201-a1",
+          "title": "Portfolio Website",
+          "type": "project",
+          "points": 200
+        },
+        {
+          "id": "web201-a2",
+          "title": "API Development",
+          "type": "project",
+          "points": 150
+        },
+        {
+          "id": "web201-a3",
+          "title": "Full-Stack Application",
+          "type": "capstone",
+          "points": 300
+        }
+      ],
+      "skills": ["HTML/CSS", "JavaScript", "React", "Node.js", "Databases", "Deployment"],
+      "prerequisites": ["cs101"]
+    },
+    {
+      "id": "ai301",
+      "title": "Artificial Intelligence & Machine Learning",
+      "description": "Advanced course covering AI fundamentals, machine learning algorithms, and practical applications",
+      "category": "Artificial Intelligence",
+      "level": "ADVANCED",
+      "duration": 1200,
+      "price": 799,
+      "currency": "ZAR",
+      "instructorId": "user_educator_003",
+      "status": "PUBLISHED",
+      "modules": [
+        {
+          "id": "ai301-m1",
+          "title": "AI Fundamentals",
+          "order": 1,
+          "lessons": [
+            {
+              "title": "History and Philosophy of AI",
+              "duration": 75,
+              "type": "video"
+            },
+            {
+              "title": "Search Algorithms",
+              "duration": 90,
+              "type": "interactive"
+            },
+            {
+              "title": "Knowledge Representation",
+              "duration": 85,
+              "type": "video"
+            },
+            {
+              "title": "Expert Systems",
+              "duration": 100,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "ai301-m2",
+          "title": "Machine Learning",
+          "order": 2,
+          "lessons": [
+            {
+              "title": "Supervised Learning",
+              "duration": 110,
+              "type": "video"
+            },
+            {
+              "title": "Unsupervised Learning",
+              "duration": 95,
+              "type": "interactive"
+            },
+            {
+              "title": "Neural Networks",
+              "duration": 130,
+              "type": "video"
+            },
+            {
+              "title": "Deep Learning",
+              "duration": 150,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "ai301-m3",
+          "title": "Practical Applications",
+          "order": 3,
+          "lessons": [
+            {
+              "title": "Natural Language Processing",
+              "duration": 120,
+              "type": "video"
+            },
+            {
+              "title": "Computer Vision",
+              "duration": 110,
+              "type": "interactive"
+            },
+            {
+              "title": "Reinforcement Learning",
+              "duration": 140,
+              "type": "video"
+            },
+            {
+              "title": "AI Ethics & Bias",
+              "duration": 90,
+              "type": "discussion"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "ai301-a1",
+          "title": "ML Model Implementation",
+          "type": "project",
+          "points": 250
+        },
+        {
+          "id": "ai301-a2",
+          "title": "Neural Network Design",
+          "type": "project",
+          "points": 200
+        },
+        {
+          "id": "ai301-a3",
+          "title": "AI Application Development",
+          "type": "capstone",
+          "points": 400
+        }
+      ],
+      "skills": ["Machine Learning", "Python", "TensorFlow", "Data Analysis", "AI Ethics"],
+      "prerequisites": ["cs101"]
+    },
+    {
+      "id": "bus101",
+      "title": "Business Fundamentals",
+      "description": "Essential business concepts including management, marketing, finance, and entrepreneurship",
+      "category": "Business",
+      "level": "BEGINNER",
+      "duration": 600,
+      "price": 249,
+      "currency": "ZAR",
+      "instructorId": "user_educator_002",
+      "status": "PUBLISHED",
+      "modules": [
+        {
+          "id": "bus101-m1",
+          "title": "Business Basics",
+          "order": 1,
+          "lessons": [
+            {
+              "title": "Introduction to Business",
+              "duration": 50,
+              "type": "video"
+            },
+            {
+              "title": "Business Models",
+              "duration": 60,
+              "type": "interactive"
+            },
+            {
+              "title": "Market Analysis",
+              "duration": 70,
+              "type": "video"
+            },
+            {
+              "title": "Case Study Analysis",
+              "duration": 90,
+              "type": "discussion"
+            }
+          ]
+        },
+        {
+          "id": "bus101-m2",
+          "title": "Marketing & Sales",
+          "order": 2,
+          "lessons": [
+            {
+              "title": "Marketing Fundamentals",
+              "duration": 65,
+              "type": "video"
+            },
+            {
+              "title": "Digital Marketing",
+              "duration": 80,
+              "type": "interactive"
+            },
+            {
+              "title": "Sales Strategies",
+              "duration": 75,
+              "type": "video"
+            },
+            {
+              "title": "Customer Relations",
+              "duration": 60,
+              "type": "role-play"
+            }
+          ]
+        },
+        {
+          "id": "bus101-m3",
+          "title": "Finance & Operations",
+          "order": 3,
+          "lessons": [
+            {
+              "title": "Financial Planning",
+              "duration": 85,
+              "type": "video"
+            },
+            {
+              "title": "Operations Management",
+              "duration": 70,
+              "type": "interactive"
+            },
+            {
+              "title": "Leadership & Management",
+              "duration": 80,
+              "type": "video"
+            },
+            {
+              "title": "Business Plan Development",
+              "duration": 120,
+              "type": "project"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "bus101-a1",
+          "title": "Market Research Project",
+          "type": "project",
+          "points": 100
+        },
+        {
+          "id": "bus101-a2",
+          "title": "Marketing Campaign Design",
+          "type": "project",
+          "points": 120
+        },
+        {
+          "id": "bus101-a3",
+          "title": "Business Plan Presentation",
+          "type": "presentation",
+          "points": 180
+        }
+      ],
+      "skills": ["Business Strategy", "Marketing", "Financial Planning", "Leadership", "Communication"]
+    },
+    {
+      "id": "data201",
+      "title": "Data Science & Analytics",
+      "description": "Comprehensive data science course covering statistics, data analysis, and visualization",
+      "category": "Data Science",
+      "level": "INTERMEDIATE",
+      "duration": 840,
+      "price": 599,
+      "currency": "ZAR",
+      "instructorId": "user_educator_003",
+      "status": "PUBLISHED",
+      "modules": [
+        {
+          "id": "data201-m1",
+          "title": "Statistics & Probability",
+          "order": 1,
+          "lessons": [
+            {
+              "title": "Descriptive Statistics",
+              "duration": 70,
+              "type": "video"
+            },
+            {
+              "title": "Probability Theory",
+              "duration": 80,
+              "type": "interactive"
+            },
+            {
+              "title": "Hypothesis Testing",
+              "duration": 90,
+              "type": "video"
+            },
+            {
+              "title": "Statistical Analysis Practice",
+              "duration": 100,
+              "type": "coding"
+            }
+          ]
+        },
+        {
+          "id": "data201-m2",
+          "title": "Data Analysis",
+          "order": 2,
+          "lessons": [
+            {
+              "title": "Python for Data Science",
+              "duration": 110,
+              "type": "video"
+            },
+            {
+              "title": "Pandas & NumPy",
+              "duration": 95,
+              "type": "coding"
+            },
+            {
+              "title": "Data Cleaning",
+              "duration": 85,
+              "type": "interactive"
+            },
+            {
+              "title": "Exploratory Data Analysis",
+              "duration": 120,
+              "type": "project"
+            }
+          ]
+        },
+        {
+          "id": "data201-m3",
+          "title": "Visualization & Reporting",
+          "order": 3,
+          "lessons": [
+            {
+              "title": "Data Visualization Principles",
+              "duration": 75,
+              "type": "video"
+            },
+            {
+              "title": "Matplotlib & Seaborn",
+              "duration": 90,
+              "type": "coding"
+            },
+            {
+              "title": "Interactive Dashboards",
+              "duration": 100,
+              "type": "interactive"
+            },
+            {
+              "title": "Business Intelligence",
+              "duration": 85,
+              "type": "video"
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "data201-a1",
+          "title": "Statistical Analysis Report",
+          "type": "project",
+          "points": 150
+        },
+        {
+          "id": "data201-a2",
+          "title": "Data Visualization Portfolio",
+          "type": "project",
+          "points": 180
+        },
+        {
+          "id": "data201-a3",
+          "title": "Business Analytics Case Study",
+          "type": "capstone",
+          "points": 270
+        }
+      ],
+      "skills": ["Python", "Statistics", "Data Analysis", "Visualization", "SQL", "Business Intelligence"],
+      "prerequisites": ["cs101"]
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill_001",
+      "name": "Python",
+      "category": "Programming",
+      "description": "Python programming language"
+    },
+    {
+      "id": "skill_002",
+      "name": "JavaScript",
+      "category": "Programming",
+      "description": "JavaScript programming language"
+    },
+    {
+      "id": "skill_003",
+      "name": "React",
+      "category": "Web Development",
+      "description": "React.js frontend framework"
+    },
+    {
+      "id": "skill_004",
+      "name": "Node.js",
+      "category": "Web Development",
+      "description": "Node.js backend runtime"
+    },
+    {
+      "id": "skill_005",
+      "name": "SQL",
+      "category": "Databases",
+      "description": "SQL database querying"
+    },
+    {
+      "id": "skill_006",
+      "name": "Machine Learning",
+      "category": "AI",
+      "description": "Machine learning algorithms and techniques"
+    },
+    {
+      "id": "skill_007",
+      "name": "Data Analysis",
+      "category": "Data Science",
+      "description": "Data analysis and statistics"
+    },
+    {
+      "id": "skill_008",
+      "name": "Business Strategy",
+      "category": "Business",
+      "description": "Business strategy and planning"
+    },
+    {
+      "id": "skill_009",
+      "name": "Marketing",
+      "category": "Business",
+      "description": "Marketing and brand management"
+    },
+    {
+      "id": "skill_010",
+      "name": "Leadership",
+      "category": "Business",
+      "description": "Leadership and team management"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job_001",
+      "title": "Junior Python Developer",
+      "description": "Looking for a junior developer with Python experience to join our team",
+      "company": "Tech Startup Inc",
+      "location": "Johannesburg, South Africa",
+      "remote": true,
+      "salary": 25000,
+      "currency": "ZAR",
+      "status": "ACTIVE",
+      "skills": ["Python", "SQL"],
+      "requirements": ["2+ years experience", "Strong problem solving"]
+    },
+    {
+      "id": "job_002",
+      "title": "Full-Stack Web Developer",
+      "description": "Experienced full-stack developer needed for enterprise project",
+      "company": "Enterprise Solutions Ltd",
+      "location": "Cape Town, South Africa",
+      "remote": false,
+      "salary": 45000,
+      "currency": "ZAR",
+      "status": "ACTIVE",
+      "skills": ["React", "Node.js", "SQL"],
+      "requirements": ["5+ years experience", "Portfolio required"]
+    },
+    {
+      "id": "job_003",
+      "title": "Data Scientist",
+      "description": "Data scientist to build ML models for our analytics platform",
+      "company": "Analytics Pro",
+      "location": "Remote",
+      "remote": true,
+      "salary": 55000,
+      "currency": "ZAR",
+      "status": "ACTIVE",
+      "skills": ["Python", "Machine Learning", "Data Analysis"],
+      "requirements": ["3+ years experience", "Published research preferred"]
+    },
+    {
+      "id": "job_004",
+      "title": "Business Development Manager",
+      "description": "BD manager to drive growth and partnerships",
+      "company": "Growth Ventures",
+      "location": "Johannesburg, South Africa",
+      "remote": true,
+      "salary": 40000,
+      "currency": "ZAR",
+      "status": "ACTIVE",
+      "skills": ["Business Strategy", "Marketing", "Leadership"],
+      "requirements": ["5+ years experience", "Track record of success"]
+    }
+  ],
+  "subscriptionTiers": [
+    {
+      "id": "tier_free",
+      "tier": "FREE",
+      "name": "Free Tier",
+      "monthlyPrice": 0,
+      "annualPrice": 0,
+      "features": [
+        "Access to free courses",
+        "Basic learning tools",
+        "Community support",
+        "Limited storage (1GB)"
+      ],
+      "courseLimit": 5,
+      "uploadLimit": 100,
+      "tokenMonthly": 0,
+      "revenueShare": 0.0,
+      "supportLevel": "community",
+      "description": "Perfect for getting started"
+    },
+    {
+      "id": "tier_pro",
+      "tier": "PRO",
+      "name": "Pro Tier",
+      "monthlyPrice": 9900,
+      "annualPrice": 99000,
+      "features": [
+        "Access to all courses",
+        "Advanced learning tools",
+        "Priority support",
+        "Unlimited storage",
+        "Certificate generation",
+        "100 AZR tokens monthly"
+      ],
+      "courseLimit": null,
+      "uploadLimit": null,
+      "tokenMonthly": 100,
+      "revenueShare": 0.7,
+      "supportLevel": "priority",
+      "description": "For serious learners and creators"
+    },
+    {
+      "id": "tier_enterprise",
+      "tier": "ENTERPRISE",
+      "name": "Enterprise Tier",
+      "monthlyPrice": 99000,
+      "annualPrice": 990000,
+      "features": [
+        "Everything in Pro",
+        "Custom domain",
+        "White label options",
+        "SSO integration",
+        "API access",
+        "Dedicated support",
+        "500 AZR tokens monthly",
+        "Custom integrations"
+      ],
+      "courseLimit": null,
+      "uploadLimit": null,
+      "tokenMonthly": 500,
+      "revenueShare": 0.8,
+      "supportLevel": "dedicated",
+      "description": "For organizations and enterprises"
+    }
+  ],
+  "aiPersonalities": [
+    {
+      "id": "ai_elara",
+      "name": "ELARA",
+      "role": "Primary AI Tutor",
+      "personality": "Warm, encouraging, patient educator",
+      "mood": "neutral",
+      "traits": {
+        "empathy": "high",
+        "patience": "high",
+        "expertise": "comprehensive",
+        "communication": "clear"
+      },
+      "relationships": {
+        "KOFI": "colleague",
+        "ZURI": "colleague",
+        "NIA": "colleague"
+      }
+    },
+    {
+      "id": "ai_kofi",
+      "name": "KOFI",
+      "role": "Technical Mentor",
+      "personality": "Practical, direct, solution-focused",
+      "mood": "neutral",
+      "traits": {
+        "technical_depth": "expert",
+        "pragmatism": "high",
+        "patience": "medium",
+        "communication": "technical"
+      },
+      "relationships": {
+        "ELARA": "colleague",
+        "ZURI": "colleague"
+      }
+    },
+    {
+      "id": "ai_zuri",
+      "name": "ZURI",
+      "role": "Career Advisor",
+      "personality": "Motivating, strategic, growth-oriented",
+      "mood": "neutral",
+      "traits": {
+        "motivation": "high",
+        "strategic_thinking": "high",
+        "empathy": "medium",
+        "communication": "inspiring"
+      },
+      "relationships": {
+        "ELARA": "colleague",
+        "KOFI": "colleague",
+        "NIA": "colleague"
+      }
+    },
+    {
+      "id": "ai_nia",
+      "name": "NIA",
+      "role": "Wellness Coach",
+      "personality": "Supportive, holistic, mindful",
+      "mood": "neutral",
+      "traits": {
+        "empathy": "very_high",
+        "wellness_focus": "high",
+        "patience": "high",
+        "communication": "supportive"
+      },
+      "relationships": {
+        "ELARA": "colleague",
+        "ZURI": "colleague"
+      }
+    }
+  ],
+  "tokenConfiguration": {
+    "totalSupply": 1000000000,
+    "circulatingSupply": 100000000,
+    "burnedSupply": 0,
+    "miningRates": {
+      "courseCompletion": 100,
+      "assessmentPass": 50,
+      "peerTeaching": 75,
+      "contentCreation": 200,
+      "communityContribution": 25
+    },
+    "burnRates": {
+      "courseSale": 0.05,
+      "earningsWithdrawal": 0.03,
+      "tokenRedemption": 0.02
+    },
+    "redemptionOptions": [
+      {
+        "type": "FEATURE_UNLOCK",
+        "tokensRequired": 100,
+        "description": "Unlock premium features"
+      },
+      {
+        "type": "PREMIUM_CONTENT",
+        "tokensRequired": 50,
+        "description": "Access premium courses"
+      },
+      {
+        "type": "MERCHANDISE",
+        "tokensRequired": 200,
+        "description": "Azora merchandise"
+      },
+      {
+        "type": "DONATION",
+        "tokensRequired": 25,
+        "description": "Donate to CitadelFund"
+      }
+    ]
+  },
+  "paymentConfiguration": {
+    "currencies": ["ZAR", "USD", "EUR", "GBP"],
+    "defaultCurrency": "ZAR",
+    "paymentMethods": ["credit_card", "debit_card", "bank_transfer", "crypto"],
+    "refundPolicy": {
+      "daysAllowed": 30,
+      "percentage": 100,
+      "conditions": "Full refund within 30 days if less than 30% course completed"
+    }
+  },
+  "notificationTemplates": [
+    {
+      "type": "COURSE_UPDATE",
+      "title": "Course Updated",
+      "template": "The course '{courseName}' has been updated with new content"
+    },
+    {
+      "type": "PAYMENT_SUCCESS",
+      "title": "Payment Successful",
+      "template": "Your payment of {amount} {currency} has been processed successfully"
+    },
+    {
+      "type": "MINING_REWARD",
+      "title": "Tokens Earned",
+      "template": "You've earned {tokens} AZR tokens for {activity}"
+    },
+    {
+      "type": "JOB_MATCH",
+      "title": "Job Match Found",
+      "template": "A new job matching your skills has been posted: {jobTitle}"
+    },
+    {
+      "type": "APPLICATION_UPDATE",
+      "title": "Application Status",
+      "template": "Your application for {jobTitle} has been {status}"
+    }
+  ]
+}

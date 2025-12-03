@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model LoanProduct {
+  id            String   @id @default(uuid())
+  name          String
+  interestRate  Decimal
+  termMonths    Int
+  minAmount     Decimal
+  maxAmount     Decimal
+  isActive      Boolean  @default(true)
+  
+  loans         Loan[]
+  
+  @@map("loan_products")
+}
+
+model Loan {
+  id            String   @id @default(uuid())
+  userId        String
+  productId     String
+  amount        Decimal
+  remainingBalance Decimal
+  status        String   // PENDING, ACTIVE, PAID, DEFAULTED
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime @default(now())
+  
+  product       LoanProduct @relation(fields: [productId], references: [id])
+  repayments    Repayment[]
+  collateral    Collateral?
+  
+  @@map("loans")
+  @@index([userId])
+  @@index([status])
+}
+
+model Repayment {
+  id            String   @id @default(uuid())
+  loanId        String
+  amount        Decimal
+  status        String   // SCHEDULED, PAID, FAILED
+  dueDate       DateTime
+  paidAt        DateTime?
+  
+  loan          Loan @relation(fields: [loanId], references: [id])
+  
+  @@map("repayments")
+  @@index([loanId])
+}
+
+model Collateral {
+  id            String   @id @default(uuid())
+  loanId        String   @unique
+  type          String   // ASSET, CRYPTO, STAKE
+  value         Decimal
+  description   String?
+  status        String   // HELD, RELEASED, LIQUIDATED
+  
+  loan          Loan @relation(fields: [loanId], references: [id])
+  
+  @@map("collateral")
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@azora/assets",
+  "version": "1.0.0",
+  "description": "Ubuntu-powered assets package",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5",
+    "jest": "^29.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
+  }
+}

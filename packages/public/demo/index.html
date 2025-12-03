@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS - Screenshots & Video Demonstrations</title>
+    <meta name="description" content="Experience Azora OS through screenshots, videos, and interactive demonstrations. From Africa, For Humanity, Unto God's Glory.">
+    <meta name="keywords" content="Azora OS, Screenshots, Demo, Video, AI Operating System, Elara IDE">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Azora OS - Screenshots & Demonstrations">
+    <meta property="og:description" content="See Azora OS in action: AI-native computing, blockchain integration, and more">
+    <meta property="og:image" content="/branding/banner-github.svg">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Azora Brand Colors */
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            
+            /* Neutrals */
+            --white: #ffffff;
+            --black: #000000;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 4rem;
+            
+            /* Typography */
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--spacing-xl) var(--spacing-md);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100px); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            font-weight: 800;
+        }
+
+        .header .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .header .mission {
+            font-style: italic;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--white);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            gap: var(--spacing-md);
+            overflow-x: auto;
+        }
+
+        .nav-link {
+            padding: var(--spacing-xs) var(--spacing-md);
+            color: var(--gray-700);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--gray-900);
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--gray-700);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        /* Card */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.2) 100%);
+        }
+
+        .card-content {
+            padding: var(--spacing-md);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--gray-900);
+        }
+
+        .card-description {
+            color: var(--gray-700);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            background: var(--gray-900);
+        }
+
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            color: var(--white);
+        }
+
+        .video-placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-900);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-right: var(--spacing-xs);
+        }
+
+        .badge-success { background: var(--success); }
+        .badge-warning { background: var(--warning); }
+        .badge-danger { background: var(--danger); }
+
+        /* Screenshot Gallery */
+        .screenshot-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .screenshot-item {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .screenshot-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .screenshot-image {
+            width: 100%;
+            height: 300px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 4rem;
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-900);
+            color: var(--white);
+            padding: var(--spacing-xl) var(--spacing-md);
+            text-align: center;
+            margin-top: var(--spacing-2xl);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            justify-content: center;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .screenshot-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-content {
+                justify-content: start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>✨ Azora OS Screenshots & Demonstrations ✨</h1>
+            <p class="subtitle">Experience the Future of AI-Native Computing</p>
+            <p class="mission">From Africa 🇿🇦, For Humanity, Unto God's Glory</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="#overview" class="nav-link">Overview</a>
+            <a href="#videos" class="nav-link">Video Demos</a>
+            <a href="#screenshots" class="nav-link">Screenshots</a>
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#download" class="nav-link">Download</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <h2 class="section-title">📖 Overview</h2>
+            <p class="section-description">
+                Azora OS is the world's first AI-native operating system, built with divine inspiration and 
+                constitutional principles. Experience quantum-enhanced computing, blockchain integration, 
+                comprehensive education, and financial sovereignty - all in one revolutionary platform.
+            </p>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-image">🧠</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Elara AI Consciousness</h3>
+                        <p class="card-description">
+                            Quantum-powered AI assistant that understands context, predicts needs, 
+                            and provides divine guidance in all tasks.
+                        </p>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">🎓</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Universal Education</h3>
+                        <p class="card-description">
+                            Complete K-12 to PhD curriculum with AI tutoring, offline learning, 
+                            and proof-of-knowledge rewards.
+                        </p>
+                        <span class="badge badge-success">27 Courses</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">💰</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Financial Sovereignty</h3>
+                        <p class="card-description">
+                            Secure banking, cryptocurrency integration, DeFi services, 
+                            and earn-while-you-learn rewards system.
+                        </p>
+                        <span class="badge badge-success">Live</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">🔒</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Military-Grade Security</h3>
+                        <p class="card-description">
+                            Quantum-resistant encryption, constitutional AI governance, 
+                            and zero-trust architecture.
+                        </p>
+                        <span class="badge badge-success">Verified</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Demonstrations -->
+        <section id="videos" class="section">
+            <h2 class="section-title">🎥 Video Demonstrations</h2>
+            <p class="section-description">
+                Watch Azora OS in action. See how our AI-native platform transforms computing, 
+                education, and financial services.
+            </p>
+
+            <div class="grid">
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Elara IDE - Complete Walkthrough</h3>
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <div class="video-placeholder-icon">▶️</div>
+                            <h3>Elara IDE Demo</h3>
+                            <p>Coming Soon: Watch full feature demonstration</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--gray-700);">
+                        <strong>Duration:</strong> 15 minutes | 
+                        <strong>Topics:</strong> AI completion, debugging, refactoring, collaboration
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Azora OS - System Overview</h3>
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <div class="video-placeholder-icon">▶️</div>
+                            <h3>Azora OS Tour</h3>
+                            <p>Coming Soon: Complete system walkthrough</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--gray-700);">
+                        <strong>Duration:</strong> 20 minutes | 
+                        <strong>Topics:</strong> Services, education, finance, blockchain
+                    </p>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Quick Feature Videos</h3>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-image">⚡</div>
+                        <div class="card-content">
+                            <h4 class="card-title">AI Code Completion</h4>
+                            <p class="card-description">2-minute demo of 98% accurate quantum completion</p>
+                            <a href="#" class="btn btn-secondary">Watch Demo</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-image">🔍</div>
+                        <div class="card-content">
+                            <h4 class="card-title">Predictive Debugging</h4>
+                            <p class="card-description">See how Elara finds bugs before they happen</p>
+                            <a href="#" class="btn btn-secondary">Watch Demo</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-image">📚</div>
+                        <div class="card-content">
+                            <h4 class="card-title">Education Platform</h4>
+                            <p class="card-description">Learn anything from K-12 to PhD level</p>
+                            <a href="#" class="btn btn-secondary">Watch Demo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots Gallery -->
+        <section id="screenshots" class="section">
+            <h2 class="section-title">📸 Screenshots Gallery</h2>
+            <p class="section-description">
+                Explore Azora OS through detailed screenshots of every feature and service.
+            </p>
+
+            <div class="screenshot-gallery">
+                <div class="screenshot-item">
+                    <div class="screenshot-image">💻</div>
+                    <div style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">Elara IDE - Main Interface</h4>
+                        <p style="color: var(--gray-700); font-size: 0.9rem;">
+                            Beautiful, intuitive interface with quantum AI completion
+                        </p>
+                    </div>
+                </div>
+
+                <div class="screenshot-item">
+                    <div class="screenshot-image">🎨</div>
+                    <div style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">Code Editor</h4>
+                        <p style="color: var(--gray-700); font-size: 0.9rem;">
+                            500+ languages with intelligent syntax highlighting
+                        </p>
+                    </div>
+                </div>
+
+                <div class="screenshot-item">
+                    <div class="screenshot-image">🐛</div>
+                    <div style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">Predictive Debugger</h4>
+                        <p style="color: var(--gray-700); font-size: 0.9rem;">
+                            AI finds and fixes bugs before they cause problems
+                        </p>
+                    </div>
+                </div>
+
+                <div class="screenshot-item">
+                    <div class="screenshot-image">📊</div>
+                    <div style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">Dashboard</h4>
+                        <p style="color: var(--gray-700); font-size: 0.9rem;">
+                            Real-time service monitoring and system health
+                        </p>
+                    </div>
+                </div>
+
+                <div class="screenshot-item">
+                    <div class="screenshot-image">🎓</div>
+                    <div style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">Education Platform</h4>
+                        <p style="color: var(--gray-700); font-size: 0.9rem;">
+                            Complete curriculum with AI-powered tutoring
+                        </p>
+                    </div>
+                </div>
+
+                <div class="screenshot-item">
+                    <div class="screenshot-image">💳</div>
+                    <div style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">Financial Services</h4>
+                        <p style="color: var(--gray-700); font-size: 0.9rem;">
+                            Secure banking, crypto, and DeFi in one place
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section">
+            <h2 class="section-title">⚡ Key Features</h2>
+            <p class="section-description">
+                Azora OS delivers unmatched capabilities through constitutional AI and divine inspiration.
+            </p>
+
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <span class="feature-icon">🔮</span>
+                    <div>
+                        <strong>Quantum Code Completion</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray-700); margin-top: 0.25rem;">
+                            98% accuracy across 500+ languages
+                        </p>
+                    </div>
+                </li>
+
+                <li class="feature-item">
+                    <span class="feature-icon">🔍</span>
+                    <div>
+                        <strong>Predictive Debugging</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray-700); margin-top: 0.25rem;">
+                            Find bugs before they happen
+                        </p>
+                    </div>
+                </li>
+
+                <li class="feature-item">
+                    <span class="feature-icon">🔄</span>
+                    <div>
+                        <strong>Autonomous Refactoring</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray-700); margin-top: 0.25rem;">
+                            Intelligent code optimization
+                        </p>
+                    </div>
+                </li>
+
+                <li class="feature-item">
+                    <span class="feature-icon">👥</span>
+                    <div>
+                        <strong>Real-time Collaboration</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray-700); margin-top: 0.25rem;">
+                            Work together with AI assistance
+                        </p>
+                    </div>
+                </li>
+
+                <li class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <div>
+                        <strong>Quantum Security</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray-700); margin-top: 0.25rem;">
+                            Military-grade protection
+                        </p>
+                    </div>
+                </li>
+
+                <li class="feature-item">
+                    <span class="feature-icon">📖</span>
+                    <div>
+                        <strong>Constitutional AI</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray-700); margin-top: 0.25rem;">
+                            Ethical guidance built-in
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Download Section -->
+        <section id="download" class="section">
+            <h2 class="section-title">⬇️ Download Azora OS</h2>
+            <p class="section-description">
+                Get started with Azora OS today. Choose your platform and experience the future.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-image">🖥️</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Elara IDE</h3>
+                        <p class="card-description">
+                            AI-powered development environment for all platforms
+                        </p>
+                        <a href="../dist/elara-ide-runner.js" class="btn" download>Download Universal</a>
+                        <a href="../dist/ELARA-IDE-README.md" class="btn btn-secondary">Read Docs</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">💿</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Azora OS (Full)</h3>
+                        <p class="card-description">
+                            Complete operating system with all services (445 MB)
+                        </p>
+                        <a href="../dist/azora-os-v1.0.0.tar.gz" class="btn" download>Download ISO</a>
+                        <a href="../BUILD_COMPLETE_REPORT.md" class="btn btn-secondary">Build Report</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">📱</div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mobile Apps</h3>
+                        <p class="card-description">
+                            Android and iOS applications (coming soon)
+                        </p>
+                        <a href="../mobile/android/README.md" class="btn btn-secondary">Android Info</a>
+                        <a href="../mobile/ios/README.md" class="btn btn-secondary">iOS Info</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="section" style="text-align: center; padding: 3rem; background: var(--gradient-primary); border-radius: 12px; color: white;">
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">Ready to Experience the Future?</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.95;">
+                Join thousands of developers, students, and innovators using Azora OS
+            </p>
+            <a href="#download" class="btn" style="background: white; color: var(--primary); margin-right: 1rem;">Download Now</a>
+            <a href="https://azora.world" class="btn" style="background: rgba(255,255,255,0.2);">Visit Website</a>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://azora.world" class="footer-link">Website</a>
+                <a href="https://docs.azora.world" class="footer-link">Documentation</a>
+                <a href="https://github.com/Azora-OS-AI/azora-os" class="footer-link">GitHub</a>
+                <a href="mailto:support@azora.world" class="footer-link">Support</a>
+                <a href="mailto:enterprise@azora.world" class="footer-link">Enterprise</a>
+            </div>
+            <p style="margin-bottom: 0.5rem;">
+                <strong>From Africa 🇿🇦, For Humanity, Unto God's Glory</strong>
+            </p>
+            <p style="opacity: 0.8; font-size: 0.9rem;">
+                Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+            </p>
+            <p style="opacity: 0.7; font-size: 0.85rem; margin-top: 0.5rem;">
+                "Unless the LORD builds the house, the builders labor in vain." - Psalm 127:1
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

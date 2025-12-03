@@ -1,0 +1,56 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(uuid())
+  name        String
+  price       Decimal
+  interval    String   // MONTHLY, YEARLY
+  features    Json
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  subscriptions Subscription[]
+  
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id            String   @id @default(uuid())
+  userId        String
+  planId        String
+  status        String   // ACTIVE, CANCELLED, PAST_DUE
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  plan          SubscriptionPlan @relation(fields: [planId], references: [id])
+  invoices      Invoice[]
+  
+  @@map("subscriptions")
+  @@index([userId])
+  @@index([status])
+}
+
+model Invoice {
+  id            String   @id @default(uuid())
+  subscriptionId String
+  amount        Decimal
+  status        String   // PAID, OPEN, VOID, UNCOLLECTIBLE
+  pdfUrl        String?
+  paidAt        DateTime?
+  createdAt     DateTime @default(now())
+  
+  subscription  Subscription @relation(fields: [subscriptionId], references: [id])
+  
+  @@map("invoices")
+  @@index([subscriptionId])
+}

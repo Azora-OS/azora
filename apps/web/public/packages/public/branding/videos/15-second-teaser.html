@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS - 15 Second Teaser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #ffffff;
+            overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+        }
+        
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease-in-out;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+        
+        .scene.active { opacity: 1; }
+        
+        /* Scene 1: Logo Impact (0-3s) */
+        .logo-massive {
+            font-size: 400px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: explode 1.5s ease-out;
+        }
+        
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.3); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .brand-text {
+            font-size: 120px;
+            font-weight: 900;
+            margin-top: 40px;
+            letter-spacing: -3px;
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+        
+        /* Scene 2: Tagline (3-7s) */
+        .tagline-big {
+            font-size: 100px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.2;
+            background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: zoomIn 1s ease-out;
+        }
+        
+        @keyframes zoomIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Scene 3: Services Flash (7-12s) */
+        .services-flash {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 60px;
+            width: 80%;
+        }
+        
+        .flash-item {
+            font-size: 80px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 3px solid rgba(139, 92, 246, 0.5);
+            border-radius: 30px;
+            animation: popIn 0.4s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .flash-item:nth-child(1) { animation-delay: 0s; }
+        .flash-item:nth-child(2) { animation-delay: 0.3s; }
+        .flash-item:nth-child(3) { animation-delay: 0.6s; }
+        .flash-item:nth-child(4) { animation-delay: 0.9s; }
+        
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Scene 4: CTA (12-15s) */
+        .cta-final {
+            text-align: center;
+        }
+        
+        .cta-logo {
+            font-size: 450px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: finalPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes finalPulse {
+            0%, 100% { filter: drop-shadow(0 0 80px rgba(139, 92, 246, 0.8)); }
+            50% { filter: drop-shadow(0 0 140px rgba(236, 72, 153, 1)); }
+        }
+        
+        .cta-url {
+            font-size: 90px;
+            font-weight: 700;
+            color: #06b6d4;
+            margin-top: 50px;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scene 1: Logo Impact (0-3s) -->
+    <div class="scene scene1 active" id="scene1">
+        <div class="logo-massive">A</div>
+        <div class="brand-text">AZORA OS</div>
+    </div>
+    
+    <!-- Scene 2: Tagline (3-7s) -->
+    <div class="scene scene2" id="scene2">
+        <div class="tagline-big">
+            Universal<br/>Human<br/>Infrastructure
+        </div>
+    </div>
+    
+    <!-- Scene 3: Services Flash (7-12s) -->
+    <div class="scene scene3" id="scene3">
+        <div class="services-flash">
+            <div class="flash-item">🎓 Education</div>
+            <div class="flash-item">💰 Finance</div>
+            <div class="flash-item">🛡️ Security</div>
+            <div class="flash-item">🧠 AI</div>
+        </div>
+    </div>
+    
+    <!-- Scene 4: CTA (12-15s) -->
+    <div class="scene scene4" id="scene4">
+        <div class="cta-final">
+            <div class="cta-logo">A</div>
+            <div class="cta-url">azora.world</div>
+        </div>
+    </div>
+    
+    <script>
+        const scenes = [
+            { id: 'scene1', start: 0, duration: 3000 },
+            { id: 'scene2', start: 3000, duration: 4000 },
+            { id: 'scene3', start: 7000, duration: 5000 },
+            { id: 'scene4', start: 12000, duration: 3000 },
+        ];
+        
+        let currentScene = 0;
+        let startTime = null;
+        
+        function animateScenes(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            
+            if (currentScene < scenes.length) {
+                document.getElementById(scenes[currentScene].id)?.classList.add('active');
+            }
+            
+            if (currentScene < scenes.length - 1 && 
+                elapsed >= scenes[currentScene].start + scenes[currentScene].duration) {
+                currentScene++;
+            }
+            
+            if (elapsed < 15000) {
+                requestAnimationFrame(animateScenes);
+            } else {
+                document.getElementById('scene4').classList.add('active');
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'r') {
+                startTime = null;
+                currentScene = 0;
+                requestAnimationFrame(animateScenes);
+            }
+        });
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => requestAnimationFrame(animateScenes), 300);
+        });
+    </script>
+</body>
+</html>

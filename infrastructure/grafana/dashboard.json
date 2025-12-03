@@ -1,0 +1,39 @@
+{
+  "dashboard": {
+    "title": "Azora OS Performance Dashboard",
+    "panels": [
+      {
+        "title": "API Response Time",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_ms_bucket[5m]))"
+          }
+        ]
+      },
+      {
+        "title": "Database Query Time",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(db_query_duration_ms_bucket[5m]))"
+          }
+        ]
+      },
+      {
+        "title": "Error Rate",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status_code=~\"5..\"}[5m])"
+          }
+        ]
+      },
+      {
+        "title": "Request Throughput",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[5m])"
+          }
+        ]
+      }
+    ]
+  }
+}

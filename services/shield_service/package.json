@@ -1,0 +1,25 @@
+{
+  "name": "shield-service",
+  "version": "1.0.0",
+  "description": "Security Shield Service for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "health": "node healthcheck.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.1",
+    "@azora/shared-services": "file:../../packages/shared-services"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

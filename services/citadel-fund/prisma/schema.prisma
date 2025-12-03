@@ -1,0 +1,105 @@
+// This is your Prisma schema file for CitadelFund Service
+// Constitutional AI Operating System - No Mock Protocol Compliance
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// CitadelFund Balance - Main fund tracking
+model CitadelBalance {
+  id                String   @id @default(uuid())
+  totalBalance      Float    @default(0)
+  totalDistributed  Float    @default(0)
+  totalScholarships Float    @default(0)
+  lastUpdated       DateTime @updatedAt
+  createdAt         DateTime @default(now())
+
+  @@map("citadel_balances")
+}
+
+// Revenue Distribution - 10% of all platform revenue
+model RevenueDistribution {
+  id              String   @id @default(uuid())
+  sourceService   String   // e.g., "azora-pay", "azora-mint", "azora-education"
+  sourceReference String?  // Transaction ID or reference
+  amount          Float
+  percentage      Float    @default(10) // Always 10% per constitution
+  distributedAt   DateTime @default(now())
+  metadata        Json?    // Additional context
+
+  @@map("revenue_distributions")
+  @@index([sourceService])
+  @@index([distributedAt])
+}
+
+// Scholarship Awards - Student financial aid
+model Scholarship {
+  id            String   @id @default(uuid())
+  studentId     String
+  studentName   String?
+  studentEmail  String?
+  amount        Float
+  reason        String   // e.g., "Academic Excellence", "Financial Need", "Ubuntu Contribution"
+  status        String   @default("PENDING") // PENDING, APPROVED, DISBURSED, REJECTED
+  awardedAt     DateTime @default(now())
+  disbursedAt   DateTime?
+  approvedBy    String?  // Admin user ID
+  metadata      Json?    // Additional scholarship details
+
+  @@map("scholarships")
+  @@index([studentId])
+  @@index([status])
+  @@index([awardedAt])
+}
+
+// Allocation History - Track all fund movements
+model AllocationHistory {
+  id              String   @id @default(uuid())
+  allocationType  String   // "SCHOLARSHIP", "COMMUNITY_FUND", "EMERGENCY_RELIEF", "INFRASTRUCTURE"
+  amount          Float
+  recipient       String?  // Student ID, community ID, or project ID
+  description     String
+  allocatedAt     DateTime @default(now())
+  allocatedBy     String?  // Admin user ID
+  transactionHash String?  // Blockchain transaction hash if applicable
+  metadata        Json?
+
+  @@map("allocation_history")
+  @@index([allocationType])
+  @@index([allocatedAt])
+}
+
+// Community Impact Metrics - Ubuntu philosophy tracking
+model CommunityImpact {
+  id                  String   @id @default(uuid())
+  period              String   // e.g., "2025-Q1", "2025-12"
+  studentsSupported   Int      @default(0)
+  totalDisbursed      Float    @default(0)
+  averageScholarship  Float    @default(0)
+  ubuntuScore         Float    @default(0) // 0-100 alignment with Ubuntu principles
+  collectiveImpact    Float    @default(0) // Measured collective benefit
+  calculatedAt        DateTime @default(now())
+
+  @@map("community_impact")
+  @@index([period])
+}
+
+// Constitutional Compliance Audit
+model ConstitutionalAudit {
+  id                String   @id @default(uuid())
+  auditType         String   // "NO_MOCK_PROTOCOL", "UBUNTU_ALIGNMENT", "TRANSPARENCY"
+  complianceScore   Float    // 0-100
+  violations        Json?    // Array of violations found
+  recommendations   Json?    // Array of recommendations
+  auditedAt         DateTime @default(now())
+  auditedBy         String   @default("constitutional-ai")
+
+  @@map("constitutional_audits")
+  @@index([auditType])
+  @@index([auditedAt])
+}

@@ -1,0 +1,23 @@
+{
+  "name": "health-monitor",
+  "version": "1.0.0",
+  "description": "Service health checks, performance monitoring",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "build": "echo 'No build needed for JS'",
+    "start": "node dist/index.js",
+    "test": "echo 'No tests yet'",
+    "test:watch": "echo 'No tests yet'",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "health": "node healthcheck.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1"
+  }
+}

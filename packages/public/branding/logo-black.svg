@@ -1,0 +1,35 @@
+<!-- Azora OS Logo - Black Version (for light backgrounds) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" fill="none">
+  <!-- Icon -->
+  <g transform="translate(50, 50)">
+    <!-- Background glow -->
+    <circle cx="100" cy="100" r="95" fill="black" opacity="0.05"/>
+    
+    <!-- Main "A" -->
+    <path d="M 60 160 L 90 60 L 110 60 L 80 160 Z" fill="black" opacity="0.9"/>
+    <path d="M 110 60 L 140 160 L 120 160 L 90 60 Z" fill="black" opacity="0.9"/>
+    <rect x="75" y="110" width="50" height="12" rx="6" fill="black" opacity="0.85"/>
+    
+    <!-- Neural nodes -->
+    <circle cx="100" cy="45" r="8" fill="black" opacity="0.8"/>
+    <circle cx="70" cy="155" r="6" fill="black" opacity="0.75"/>
+    <circle cx="130" cy="155" r="6" fill="black" opacity="0.75"/>
+    
+    <!-- Connection lines -->
+    <line x1="100" y1="45" x2="95" y2="60" stroke="black" stroke-width="2" opacity="0.2"/>
+    <line x1="100" y1="45" x2="105" y2="60" stroke="black" stroke-width="2" opacity="0.2"/>
+    
+    <!-- Orbit ring -->
+    <circle cx="100" cy="100" r="85" stroke="black" stroke-width="2" fill="none" opacity="0.15"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="280" y="130" font-family="'Inter', 'Segoe UI', sans-serif" font-size="80" font-weight="800" fill="black">
+    <tspan font-weight="800">A</tspan><tspan font-weight="500" opacity="0.75">zora</tspan>
+  </text>
+  <text x="280" y="185" font-family="'Inter', 'Segoe UI', sans-serif" font-size="42" font-weight="400" fill="black" opacity="0.6">OS</text>
+  
+  <!-- Tagline -->
+  <text x="285" y="220" font-family="'Inter', sans-serif" font-size="20" font-weight="400" fill="black" opacity="0.6">Universal Human Infrastructure</text>
+</svg>
+

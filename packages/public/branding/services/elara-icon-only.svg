@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="mindGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="mindAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="mindGlow">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Icon: Brain/Mind with African wisdom patterns - Centered -->
+  <g transform="translate(120, 120)">
+    <!-- Consciousness glow -->
+    <circle cx="0" cy="0" r="100" fill="url(#mindGlow)"/>
+    
+    <!-- Brain hemispheres -->
+    <!-- Left hemisphere -->
+    <path d="M -10,-50 Q -50,-60 -70,-30 Q -75,0 -60,30 Q -40,50 -10,40 L -10,-50" 
+          fill="url(#mindGrad)" 
+          opacity="0.3"/>
+    <path d="M -10,-50 Q -50,-60 -70,-30 Q -75,0 -60,30 Q -40,50 -10,40" 
+          stroke="url(#mindGrad)" 
+          stroke-width="3" 
+          fill="none"/>
+    
+    <!-- Right hemisphere -->
+    <path d="M 10,-50 Q 50,-60 70,-30 Q 75,0 60,30 Q 40,50 10,40 L 10,-50" 
+          fill="url(#mindGrad)" 
+          opacity="0.3"/>
+    <path d="M 10,-50 Q 50,-60 70,-30 Q 75,0 60,30 Q 40,50 10,40" 
+          stroke="url(#mindGrad)" 
+          stroke-width="3" 
+          fill="none"/>
+    
+    <!-- Corpus callosum (connection) -->
+    <ellipse cx="0" cy="0" rx="15" ry="50" fill="url(#mindAccent)" opacity="0.4"/>
+    
+    <!-- Neural pathways (African pattern) -->
+    <g opacity="0.6" stroke="url(#mindAccent)" stroke-width="2" fill="none">
+      <path d="M -50,-30 Q -40,-20 -30,-30"/>
+      <path d="M -55,-10 Q -45,0 -35,-10"/>
+      <path d="M -50,10 Q -40,20 -30,10"/>
+      <path d="M -45,30 Q -35,35 -25,30"/>
+      
+      <path d="M 50,-30 Q 40,-20 30,-30"/>
+      <path d="M 55,-10 Q 45,0 35,-10"/>
+      <path d="M 50,10 Q 40,20 30,10"/>
+      <path d="M 45,30 Q 35,35 25,30"/>
+    </g>
+    
+    <!-- Thought nodes (synapses firing) -->
+    <g>
+      <circle cx="-50" cy="-30" r="5" fill="#a855f7">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-55" cy="0" r="6" fill="#8b5cf6">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.7s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-40" cy="30" r="5" fill="#6366f1">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.9s" repeatCount="indefinite"/>
+      </circle>
+      
+      <circle cx="50" cy="-30" r="5" fill="#ec4899">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="55" cy="0" r="6" fill="#f43f5e">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="40" cy="30" r="5" fill="#ec4899">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <!-- Central consciousness core -->
+    <circle cx="0" cy="0" r="18" fill="url(#mindAccent)">
+      <animate attributeName="r" values="18;20;18" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="10" fill="#1e293b"/>
+    <circle cx="-3" cy="-3" r="4" fill="#ec4899" opacity="0.9"/>
+    
+    <!-- African wisdom symbols (Adinkra Nyansapo - wisdom knot) -->
+    <g transform="translate(0, -75)" opacity="0.5">
+      <circle cx="0" cy="0" r="10" stroke="url(#mindAccent)" stroke-width="2" fill="none"/>
+      <circle cx="-8" cy="0" r="3" fill="#ec4899"/>
+      <circle cx="8" cy="0" r="3" fill="#8b5cf6"/>
+      <circle cx="0" cy="-6" r="3" fill="#a855f7"/>
+      <circle cx="0" cy="6" r="3" fill="#6366f1"/>
+    </g>
+    
+    <!-- Thought waves emanating -->
+    <g opacity="0.3">
+      <circle cx="0" cy="0" r="85" stroke="url(#mindGrad)" stroke-width="2" fill="none">
+        <animate attributeName="r" values="85;95;85" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="0" cy="0" r="95" stroke="url(#mindAccent)" stroke-width="1.5" fill="none" stroke-dasharray="5,5">
+        <animate attributeName="r" values="95;105;95" dur="3.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+</svg>

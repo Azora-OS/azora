@@ -1,0 +1,170 @@
+# Load Balancer Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: azora-system
+data:
+  nginx.conf: |
+    upstream api_backend {
+        least_conn;
+        server api-gateway:4000 max_fails=3 fail_timeout=30s;
+        server api-gateway-2:4000 max_fails=3 fail_timeout=30s backup;
+    }
+    
+    upstream auth_backend {
+        ip_hash;
+        server auth-service:4001 max_fails=2 fail_timeout=15s;
+        server auth-service-2:4001 max_fails=2 fail_timeout=15s;
+    }
+    
+    upstream education_backend {
+        least_conn;
+        server azora-education:4002 max_fails=3 fail_timeout=30s;
+        server azora-education-2:4002 max_fails=3 fail_timeout=30s;
+    }
+    
+    server {
+        listen 80;
+        listen 443 ssl http2;
+        server_name api.azora.world;
+        
+        ssl_certificate /etc/ssl/certs/azora.crt;
+        ssl_certificate_key /etc/ssl/private/azora.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
+        
+        # Health check endpoint
+        location /health {
+            access_log off;
+            return 200 "healthy\n";
+            add_header Content-Type text/plain;
+        }
+        
+        # API Gateway routes
+        location /api/ {
+            proxy_pass http://api_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Timeouts
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            # Rate limiting
+            limit_req zone=api burst=20 nodelay;
+        }
+        
+        # Auth service routes
+        location /auth/ {
+            proxy_pass http://auth_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Session affinity for auth
+            proxy_cookie_path / "/; HTTPOnly; Secure";
+        }
+        
+        # Education service routes
+        location /education/ {
+            proxy_pass http://education_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+    
+    # Rate limiting zones
+    http {
+        limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+        limit_req_zone $binary_remote_addr zone=auth:10m rate=5r/s;
+        
+        # Gzip compression
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_types text/plain application/json application/javascript text/css;
+        
+        # Security headers
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-lb
+  namespace: azora-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-lb
+  template:
+    metadata:
+      labels:
+        app: nginx-lb
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21-alpine
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs
+        - name: ssl-keys
+          mountPath: /etc/ssl/private
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+      - name: ssl-certs
+        secret:
+          secretName: azora-tls-cert
+      - name: ssl-keys
+        secret:
+          secretName: azora-tls-key
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-lb-service
+  namespace: azora-system
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+  selector:
+    app: nginx-lb

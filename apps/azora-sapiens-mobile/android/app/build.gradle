@@ -1,0 +1,216 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+
+/**
+ * Azora Student Portal - Android Build Configuration
+ */
+
+react {
+    /* Folders */
+    root = rootProject.file("../..")
+    reactNativeDir = rootProject.file("../../node_modules/react-native")
+    codegenDir = rootProject.file("../../node_modules/@react-native/codegen")
+    cliFile = rootProject.file("../../node_modules/react-native/cli.js")
+    
+    /* Hermes */
+    hermesEnabled = true
+    
+    /* Compose */
+    composeEnabled = false
+}
+
+def enableProguardInReleaseBuilds = true
+def jscFlavor = 'org.webkit:android-jsc:+'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    compileSdk rootProject.ext.compileSdkVersion
+    namespace "world.azora.student"
+
+    defaultConfig {
+        applicationId "world.azora.student"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0.0"
+        
+        // Enable multidex
+        multiDexEnabled true
+        
+        // Vector drawables support
+        vectorDrawables.useSupportLibrary = true
+        
+        // Build config fields
+        buildConfigField "String", "APP_NAME", "\"Azora Student Portal\""
+        buildConfigField "String", "API_URL", "\"https://api.azora.world\""
+        buildConfigField "boolean", "ENABLE_MINING", "true"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            debuggable true
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            
+            // Optimization
+            crunchPngs true
+            zipAlignEnabled true
+        }
+    }
+
+    // Build variants
+    flavorDimensions "version"
+    productFlavors {
+        production {
+            dimension "version"
+            applicationIdSuffix ""
+            versionNameSuffix ""
+        }
+        staging {
+            dimension "version"
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+            buildConfigField "String", "API_URL", "\"https://staging-api.azora.world\""
+        }
+        development {
+            dimension "version"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            buildConfigField "String", "API_URL", "\"http://localhost:3000\""
+        }
+    }
+
+    // Java version
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    // Packaging options
+    packagingOptions {
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    // Splits - Generate separate APKs per architecture
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk true
+        }
+    }
+
+    // Lint options
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    // React Native
+    implementation("com.facebook.react:react-android")
+    implementation("com.facebook.react:hermes-android")
+
+    // Kotlin
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
+
+    // AndroidX
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.multidex:multidex:2.0.1")
+    
+    // Material Design
+    implementation("com.google.android.material:material:1.11.0")
+
+    // Networking
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // Image loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Crypto & Security
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // WebRTC (for video calls)
+    implementation("org.webrtc:google-webrtc:1.0.32006")
+
+    // Blockchain & Web3
+    implementation("org.web3j:core:4.10.3")
+
+    // Mining (if applicable)
+    // implementation("com.example:mining-library:1.0.0")
+
+    // Analytics
+    implementation("com.google.firebase:firebase-analytics:21.5.0")
+    implementation("com.google.firebase:firebase-crashlytics:18.6.0")
+
+    // Push notifications
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
+
+    // Testing
+    debugImplementation("com.facebook.flipper:flipper:0.201.0")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:0.201.0")
+    debugImplementation("com.facebook.soloader:soloader:0.10.5")
+    
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+
+// Apply Google services (Firebase)
+apply plugin: 'com.google.gms.google-services'
+
+// Output APK file names
+android.applicationVariants.all { variant ->
+    variant.outputs.all { output ->
+        def versionCode = variant.versionCode
+        def versionName = variant.versionName
+        def flavor = variant.flavorName
+        def buildType = variant.buildType.name
+        def abi = output.getFilter(com.android.build.OutputFile.ABI) ?: "universal"
+        
+        outputFileName = "azora-student-portal-${flavor}-${buildType}-v${versionName}-${abi}.apk"
+    }
+}

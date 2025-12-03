@@ -1,0 +1,8 @@
+{
+  "name": "@azora/shared-api",
+  "version": "1.0.0",
+  "main": "client.js",
+  "description": "Unified API client for Azora OS",
+  "keywords": ["azora", "api", "client"],
+  "dependencies": {}
+}

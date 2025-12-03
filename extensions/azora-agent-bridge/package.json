@@ -1,0 +1,57 @@
+{
+  "name": "azora-agent-bridge",
+  "displayName": "Azora Agent Bridge",
+  "description": "Bridge VS Code to Azora Agent Execution Framework",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "azora.executeTask",
+        "title": "Azora: Execute Task"
+      },
+      {
+        "command": "azora.showAgentStatus",
+        "title": "Azora: Show Agent Status"
+      },
+      {
+        "command": "azora.indexWorkspace",
+        "title": "Azora: Index Workspace"
+      }
+    ],
+    "configuration": {
+      "title": "Azora Agent Bridge",
+      "properties": {
+        "azora.agentExecutionUrl": {
+          "type": "string",
+          "default": "http://localhost:4002",
+          "description": "Agent Execution service URL"
+        },
+        "azora.knowledgeOceanUrl": {
+          "type": "string",
+          "default": "http://localhost:4003",
+          "description": "Knowledge Ocean service URL"
+        },
+        "azora.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for Azora services"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}

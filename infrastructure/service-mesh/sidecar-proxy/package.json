@@ -1,0 +1,21 @@
+{
+    "name": "@azora/sidecar-proxy",
+    "version": "1.0.0",
+    "description": "Azora Service Mesh Sidecar Proxy",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "node dist/index.js",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "http-proxy": "^1.18.1",
+        "uuid": "^9.0.0",
+        "winston": "^3.10.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "@types/node": "^20.0.0",
+        "@types/http-proxy": "^1.17.11",
+        "@types/uuid": "^9.0.0"
+    }
+}

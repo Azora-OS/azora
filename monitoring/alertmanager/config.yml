@@ -1,0 +1,35 @@
+global:
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alerts@azora.world'
+  smtp_auth_username: 'ubuntu@azora.world'
+  smtp_auth_password: 'ubuntu_password'
+
+route:
+  group_by: ['alertname', 'ubuntu']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'ubuntu-alerts'
+
+receivers:
+  - name: 'ubuntu-alerts'
+    email_configs:
+      - to: 'team@azora.world'
+        subject: 'Ubuntu Alert: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        body: |
+          Ubuntu Philosophy: "We respond because we care together"
+          
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Ubuntu Impact: {{ .Labels.ubuntu }}
+          {{ end }}
+          
+          Ubuntu Response Team - Azora OS
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'ubuntu']

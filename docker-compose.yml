@@ -1,0 +1,417 @@
+# 🚀 AZORA OS - COMPLETE DOCKER COMPOSE
+# Full-stack deployment with all microservices
+
+version: '3.8'
+
+services:
+  # API Gateway - Service Orchestration
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: azora-api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - AUTH_URL=http://auth-service:3001
+      - MINT_URL=http://mint-service:3002
+      - LMS_URL=http://lms-service:3003
+      - FORGE_URL=http://forge-service:3004
+      - NEXUS_URL=http://nexus-service:3005
+      - EDUCATION_URL=http://education-service:3007
+      - PAYMENTS_URL=http://payments-service:3008
+    depends_on:
+      - auth-service
+      - mint-service
+      - lms-service
+      - forge-service
+      - nexus-service
+      - education-service
+      - payments-service
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  # Auth Service - Authentication & User Management
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: azora-auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_auth
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=3001
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.8'
+          memory: 800M
+        reservations:
+          cpus: '0.3'
+          memory: 400M
+
+  # Mint Service - NFT Creation & Management
+  mint-service:
+    build:
+      context: ./services/azora-mint
+      dockerfile: Dockerfile
+    container_name: azora-mint-service
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_mint
+      - PORT=3002
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # LMS Service - Learning Management System
+  lms-service:
+    build:
+      context: ./services/azora-classroom
+      dockerfile: Dockerfile
+    container_name: azora-lms-service
+    ports:
+      - "3003:3003"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_lms
+      - PORT=3003
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Forge Service - AI Content Generation
+  forge-service:
+    build:
+      context: ./services/azora-forge
+      dockerfile: Dockerfile
+    container_name: azora-forge-service
+    ports:
+      - "3004:3004"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_forge
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORT=3004
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nexus Service - AI Agent Orchestration
+  nexus-service:
+    build:
+      context: ./services/ai-orchestrator
+      dockerfile: Dockerfile
+    container_name: azora-nexus-service
+    ports:
+      - "3005:3005"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_nexus
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORT=3005
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Education Service - Curriculum & Assessment
+  education-service:
+    build:
+      context: ./services/azora-education
+      dockerfile: Dockerfile
+    container_name: azora-education-service
+    ports:
+      - "3007:3007"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_education
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORT=3007
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3007/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Payments Service - Payment Processing
+  payments-service:
+    build:
+      context: ./services/payment
+      dockerfile: Dockerfile
+    container_name: azora-payments-service
+    ports:
+      - "3008:3008"
+    environment:
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD}@database:5432/azora_payments
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - PORT=3008
+    depends_on:
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3008/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend - Next.js Application
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: azora-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - CONSTITUTIONAL_AI=enabled
+      - BIBLE_INTEGRATION=active
+    depends_on:
+      - api-gateway
+      - database
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  database:
+    image: postgres:16-alpine
+    container_name: azora-database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=azora
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=azora_os
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: azora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: azora-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - api-gateway
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  # Monitoring Stack
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: azora-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: azora-grafana
+    ports:
+      - "3030:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - azora-network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: azora-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/config.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: azora-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: azora-cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+networks:
+  azora-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

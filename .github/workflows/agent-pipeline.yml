@@ -1,0 +1,52 @@
+name: Agent Services CI
+
+on:
+  push:
+    paths:
+      - 'services/agent-execution/**'
+      - 'services/knowledge-ocean/**'
+      - 'services/copilot-integration/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'services/agent-execution/**'
+      - 'services/knowledge-ocean/**'
+      - 'services/copilot-integration/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Install root dependencies
+        run: npm ci
+      - name: Run tests for agent-execution
+        working-directory: ./services/agent-execution
+        run: |
+          npm ci
+          npm test
+      - name: Run tests for knowledge-ocean
+        working-directory: ./services/knowledge-ocean
+        run: |
+          npm ci
+          npm test
+      - name: Run tests for copilot-integration
+        working-directory: ./services/copilot-integration
+        run: |
+          npm ci
+          npm test
+      - name: Run tests for ai-provider-router
+        working-directory: ./services/ai-provider-router
+        run: |
+          npm ci
+          npm test

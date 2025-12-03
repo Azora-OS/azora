@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" fill="none">
+  <defs>
+    <linearGradient id="emailBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="emailAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="600" height="200" fill="url(#emailBg)"/>
+  
+  <!-- Decorative pattern -->
+  <g opacity="0.1">
+    <circle cx="50" cy="50" r="30" fill="#8b5cf6"/>
+    <circle cx="550" cy="150" r="35" fill="#06b6d4"/>
+    <circle cx="500" cy="60" r="25" fill="#ec4899"/>
+  </g>
+  
+  <!-- Logo and text -->
+  <g transform="translate(80, 100)">
+    <path d="M -25,42 L -12,-42 L 5,-42 L -8,42 Z" fill="url(#emailAccent)"/>
+    <path d="M 12,-42 L 25,42 L 8,42 L -5,-42 Z" fill="url(#emailAccent)"/>
+    <rect x="-15" y="5" width="30" height="8" rx="4" fill="#06b6d4"/>
+    <circle cx="0" cy="-48" r="5" fill="#ec4899"/>
+    <circle cx="0" cy="0" r="68" stroke="#06b6d4" stroke-width="2" fill="none" opacity="0.3"/>
+  </g>
+  
+  <g transform="translate(180, 95)">
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="42" font-weight="700" fill="white">
+      <tspan font-weight="700">A</tspan><tspan font-weight="500" opacity="0.8">zora </tspan><tspan font-weight="400" opacity="0.6" font-size="32">OS</tspan>
+    </text>
+    <text x="0" y="30" font-family="'Inter', sans-serif" font-size="16" font-weight="500" fill="url(#emailAccent)">
+      Universal Human Infrastructure
+    </text>
+  </g>
+</svg>
+

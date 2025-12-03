@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS - Universal Human Infrastructure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #ffffff;
+            overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+        }
+        
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .scene.active {
+            opacity: 1;
+        }
+        
+        /* Neural network background */
+        .neural-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            overflow: hidden;
+        }
+        
+        .neural-node {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #8b5cf6;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+        
+        /* Scene 1: Brand Intro (0-5s) */
+        .scene1 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .logo-reveal {
+            font-size: 280px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoZoom 3s ease-out;
+            text-shadow: 0 0 100px rgba(139, 92, 246, 0.5);
+        }
+        
+        @keyframes logoZoom {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.3) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        .brand-name {
+            font-size: 100px;
+            font-weight: 800;
+            margin-top: 40px;
+            color: #ffffff;
+            letter-spacing: -2px;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scene 2: Vision Statement (5-10s) */
+        .scene2 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .vision-text {
+            font-size: 80px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            max-width: 1400px;
+            padding: 0 60px;
+            animation: slideIn 1.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .vision-highlight {
+            background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .vision-subtitle {
+            font-size: 48px;
+            color: #94a3b8;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+        
+        /* Scene 3: Problem Statement (10-18s) */
+        .scene3 {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            width: 90%;
+            max-width: 1600px;
+        }
+        
+        .problem-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            animation: fadeInScale 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .problem-card:nth-child(1) { animation-delay: 0.2s; }
+        .problem-card:nth-child(2) { animation-delay: 0.4s; }
+        .problem-card:nth-child(3) { animation-delay: 0.6s; }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .problem-icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+            filter: grayscale(0.3);
+        }
+        
+        .problem-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        
+        .problem-desc {
+            font-size: 28px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        
+        /* Scene 4: Solution Reveal (18-22s) */
+        .scene4 {
+            background: #0f172a;
+        }
+        
+        .solution-container {
+            text-align: center;
+        }
+        
+        .solution-logo {
+            font-size: 200px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 100px rgba(236, 72, 153, 1));
+            }
+        }
+        
+        .solution-text {
+            font-size: 100px;
+            font-weight: 900;
+            margin-top: 50px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+        
+        /* Scene 5: Services (22-38s) */
+        .scene5 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .services-header {
+            font-size: 64px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 70px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            width: 90%;
+            max-width: 1700px;
+        }
+        
+        .service-card {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            animation: slideInFromBottom 0.7s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .service-icon {
+            font-size: 80px;
+            margin-bottom: 25px;
+        }
+        
+        .service-name {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        
+        .service-desc {
+            font-size: 20px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        
+        /* Scene 6: Benefits (38-50s) */
+        .scene6 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .benefits-header {
+            font-size: 72px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #ffffff;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            width: 80%;
+            max-width: 1400px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 40px;
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 5px solid #8b5cf6;
+            border-radius: 20px;
+            animation: slideInLeft 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .benefit-item:nth-child(1) { animation-delay: 0.1s; }
+        .benefit-item:nth-child(2) { animation-delay: 0.2s; }
+        .benefit-item:nth-child(3) { animation-delay: 0.3s; }
+        .benefit-item:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .benefit-icon {
+            font-size: 60px;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .benefit-text {
+            font-size: 40px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        /* Scene 7: CTA (50-60s) */
+        .scene7 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        
+        .cta-container {
+            text-align: center;
+        }
+        
+        .cta-logo {
+            font-size: 320px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: finalGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes finalGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 60px rgba(139, 92, 246, 0.8));
+            }
+            50% {
+                filter: drop-shadow(0 0 120px rgba(236, 72, 153, 1));
+            }
+        }
+        
+        .cta-title {
+            font-size: 110px;
+            font-weight: 900;
+            margin-top: 40px;
+            color: #ffffff;
+            letter-spacing: -3px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        .cta-tagline {
+            font-size: 56px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-top: 30px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        
+        .cta-url {
+            font-size: 64px;
+            font-weight: 700;
+            color: #06b6d4;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 30px 80px;
+            margin-top: 50px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            border-radius: 20px;
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            animation: fadeInUp 1s ease-out 1.2s both;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.6);
+        }
+        
+        .header-text {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 56px;
+            font-weight: 700;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scene 1: Brand Intro (0-5s) -->
+    <div class="scene scene1 active" id="scene1">
+        <div class="neural-bg">
+            <div class="neural-node" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+            <div class="neural-node" style="left: 30%; top: 40%; animation-delay: 0.5s;"></div>
+            <div class="neural-node" style="left: 50%; top: 60%; animation-delay: 1s;"></div>
+            <div class="neural-node" style="left: 70%; top: 30%; animation-delay: 1.5s;"></div>
+            <div class="neural-node" style="left: 90%; top: 50%; animation-delay: 2s;"></div>
+        </div>
+        <div class="logo-reveal">A</div>
+        <div class="brand-name">AZORA OS</div>
+    </div>
+    
+    <!-- Scene 2: Vision Statement (5-10s) -->
+    <div class="scene scene2" id="scene2">
+        <div class="neural-bg"></div>
+        <div class="vision-text">
+            <span class="vision-highlight">Be Everywhere.</span><br/>
+            <span class="vision-highlight">Help Everyone.</span><br/>
+            <span class="vision-highlight">Solve Everything.</span>
+        </div>
+        <div class="vision-subtitle">Universal Human Infrastructure</div>
+    </div>
+    
+    <!-- Scene 3: Problem Statement (10-18s) -->
+    <div class="scene scene3" id="scene3">
+        <div class="header-text">The Challenge</div>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">🚧</div>
+                <div class="problem-title">Fragmented</div>
+                <div class="problem-desc">Disconnected systems, incompatible platforms</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">💸</div>
+                <div class="problem-title">Expensive</div>
+                <div class="problem-desc">High costs, limited access, barriers to entry</div>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">🔒</div>
+                <div class="problem-title">Insecure</div>
+                <div class="problem-desc">Vulnerable systems, data breaches, privacy concerns</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 4: Solution Reveal (18-22s) -->
+    <div class="scene scene4" id="scene4">
+        <div class="neural-bg"></div>
+        <div class="solution-container">
+            <div class="solution-logo">A</div>
+            <div class="solution-text">The Solution</div>
+        </div>
+    </div>
+    
+    <!-- Scene 5: Services (22-38s) -->
+    <div class="scene scene5" id="scene5">
+        <div class="neural-bg"></div>
+        <div class="services-header">Comprehensive Ecosystem</div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🎓</div>
+                <div class="service-name">Education</div>
+                <div class="service-desc">AI-powered learning, K-12 to PhD</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">💰</div>
+                <div class="service-name">Finance</div>
+                <div class="service-desc">Secure transactions, economic sovereignty</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🛡️</div>
+                <div class="service-name">Security</div>
+                <div class="service-desc">Quantum-secure, military-grade protection</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🧠</div>
+                <div class="service-name">AI</div>
+                <div class="service-desc">Elara - Your intelligent assistant</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 6: Benefits (38-50s) -->
+    <div class="scene scene6" id="scene6">
+        <div class="neural-bg"></div>
+        <div class="benefits-header">Why Azora OS?</div>
+        <div class="benefits-grid">
+            <div class="benefit-item">
+                <div class="benefit-icon">✨</div>
+                <div class="benefit-text">AI-Powered Intelligence</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🔓</div>
+                <div class="benefit-text">Free & Open Source</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🛡️</div>
+                <div class="benefit-text">Quantum-Secure</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">⚖️</div>
+                <div class="benefit-text">Constitutional AI</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 7: CTA (50-60s) -->
+    <div class="scene scene7" id="scene7">
+        <div class="neural-bg"></div>
+        <div class="cta-container">
+            <div class="cta-logo">A</div>
+            <div class="cta-title">Azora OS</div>
+            <div class="cta-tagline">Universal Human Infrastructure</div>
+            <div class="cta-url">azora.world</div>
+            <div class="cta-button">Start Free Today</div>
+        </div>
+    </div>
+    
+    <script>
+        const scenes = [
+            { id: 'scene1', start: 0, duration: 5000 },      // 0-5s
+            { id: 'scene2', start: 5000, duration: 5000 },   // 5-10s
+            { id: 'scene3', start: 10000, duration: 8000 },  // 10-18s
+            { id: 'scene4', start: 18000, duration: 4000 },  // 18-22s
+            { id: 'scene5', start: 22000, duration: 16000 }, // 22-38s
+            { id: 'scene6', start: 38000, duration: 12000 }, // 38-50s
+            { id: 'scene7', start: 50000, duration: 10000 }, // 50-60s
+        ];
+        
+        let currentScene = 0;
+        let startTime = null;
+        
+        function animateScenes(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active');
+            });
+            
+            if (currentScene < scenes.length) {
+                const scene = document.getElementById(scenes[currentScene].id);
+                if (scene) scene.classList.add('active');
+            }
+            
+            if (currentScene < scenes.length - 1 && 
+                elapsed >= scenes[currentScene].start + scenes[currentScene].duration) {
+                currentScene++;
+            }
+            
+            if (elapsed < 60000) {
+                requestAnimationFrame(animateScenes);
+            } else {
+                document.getElementById('scene7').classList.add('active');
+            }
+        }
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'r') {
+                startTime = null;
+                currentScene = 0;
+                requestAnimationFrame(animateScenes);
+            }
+        });
+        
+        // Auto-start
+        window.addEventListener('load', () => {
+            setTimeout(() => requestAnimationFrame(animateScenes), 500);
+        });
+    </script>
+</body>
+</html>

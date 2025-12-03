@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  redis-master:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --replica-announce-ip redis-master
+    volumes:
+      - redis_master_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-replica-1:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --replicaof redis-master 6379
+    volumes:
+      - redis_replica1_data:/data
+    ports:
+      - "6380:6379"
+    depends_on:
+      - redis-master
+    restart: unless-stopped
+
+  redis-replica-2:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --replicaof redis-master 6379
+    volumes:
+      - redis_replica2_data:/data
+    ports:
+      - "6381:6379"
+    depends_on:
+      - redis-master
+    restart: unless-stopped
+
+volumes:
+  redis_master_data:
+  redis_replica1_data:
+  redis_replica2_data:

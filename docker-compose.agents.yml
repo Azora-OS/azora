@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  agent-execution:
+    build: ./services/agent-execution
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+      - DATABASE_URL=postgresql://azora:azora@postgres:5432/azora_agents
+      - USE_REDIS=true
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+
+  knowledge-ocean:
+    build: ./services/knowledge-ocean
+    ports:
+      - "4003:4003"
+    environment:
+      - PORT=4003
+      - DATABASE_URL=postgresql://azora:azora@postgres:5432/azora_knowledge
+      - USE_PGVECTOR=true
+    depends_on:
+      - postgres
+
+  copilot-integration:
+    build: ./services/copilot-integration
+    ports:
+      - "4004:4004"
+    environment:
+      - PORT=4004
+
+  command-desk:
+    build: ./services/command-desk
+    ports:
+      - "4005:4005"
+    environment:
+      - PORT=4005
+
+  buildspaces-api:
+    build: ./services/buildspaces-api
+    ports:
+      - "4006:4006"
+    environment:
+      - PORT=4006
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      - POSTGRES_USER=azora
+      - POSTGRES_PASSWORD=azora
+      - POSTGRES_DB=azora_agents
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

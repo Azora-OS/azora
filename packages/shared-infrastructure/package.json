@@ -1,0 +1,35 @@
+{
+  "name": "@azora/shared-infrastructure",
+  "version": "1.0.0",
+  "description": "Azora OS Infrastructure Layer - Branches across Africa, Roots by rivers, Mycelium networks",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./africa-cdn": "./africa-cdn.ts",
+    "./river-flows": "./river-flows.ts",
+    "./mycelium-network": "./mycelium-network.ts",
+    "./tree-architecture": "./tree-architecture.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@azora/shared-services": "file:../shared-services"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "5.4.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
+  },
+  "keywords": [
+    "azora",
+    "infrastructure",
+    "africa",
+    "cdn",
+    "networking"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@azora/shared-services",
+  "version": "1.0.0",
+  "description": "Azora OS Shared Services Layer - Service Registry, Master Integrator, Health Checks, Event Bus, API Layer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./registry": "./dist/service-registry.js",
+    "./integrator": "./dist/master-integrator.js",
+    "./health": "./dist/health-check.js",
+    "./api": "./dist/unified-api-router.js",
+    "./docs": "./dist/api-documentation.js",
+    "./validation": "./dist/validation.js",
+    "./logging": "./dist/logging.js",
+    "./monitoring": "./dist/monitoring.js",
+    "./api-client-generator": "./dist/api-client-generator.js",
+    "./api-endpoint-integration": "./dist/api-endpoint-integration.js",
+    "./service-registry": "./dist/service-registry.js"
+  },
+  "scripts": {
+    "build": "npx tsc -p tsconfig.json",
+    "type-check": "tsc --noEmit",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@azora/shared-database": "file:../shared-database",
+    "@azora/shared-auth": "file:../shared-auth",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "5.4.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
+  },
+  "keywords": [
+    "azora",
+    "services",
+    "registry",
+    "health-check",
+    "api",
+    "validation"
+  ],
+  "author": "Azora ES (Pty) Ltd",
+  "license": "PROPRIETARY"
+}

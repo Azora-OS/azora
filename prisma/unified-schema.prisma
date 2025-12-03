@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Auth & Users
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  role      String   @default("student")
+  avatar    String?
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Education
+model Student {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  grade     Int
+  school    String?
+  parent    String?
+  createdAt DateTime @default(now())
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  instructor  String
+  level       String
+  price       Float    @default(0)
+  enrolled    Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  courseId  String
+  studentId String
+  progress  Int      @default(0)
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  
+  @@unique([courseId, studentId])
+}
+
+// Marketplace
+model Job {
+  id        String   @id @default(uuid())
+  title     String
+  company   String
+  location  String
+  type      String
+  salary    Json
+  skills    String[]
+  status    String   @default("active")
+  postedAt  DateTime @default(now())
+}
+
+model Application {
+  id        String   @id @default(uuid())
+  jobId     String
+  userId    String
+  status    String   @default("pending")
+  appliedAt DateTime @default(now())
+  
+  @@unique([jobId, userId])
+}
+
+// Finance
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  address   String   @unique
+  balance   Float    @default(0)
+  staked    Float    @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  from      String
+  to        String
+  amount    Float
+  type      String
+  status    String   @default("completed")
+  timestamp DateTime @default(now())
+}
+
+// Assessment
+model Assessment {
+  id           String   @id @default(uuid())
+  title        String
+  subject      String
+  type         String
+  questions    Json
+  passingScore Int      @default(70)
+  createdAt    DateTime @default(now())
+}
+
+model Submission {
+  id           String   @id @default(uuid())
+  assessmentId String
+  studentId    String
+  score        Float
+  passed       Boolean
+  submittedAt  DateTime @default(now())
+}

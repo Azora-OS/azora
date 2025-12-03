@@ -1,0 +1,163 @@
+// This is your Prisma schema file for Azora Mint Service
+// Constitutional AI Operating System - No Mock Protocol Compliance
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Digital Assets (NFTs)
+model DigitalAsset {
+  id              String   @id @default(uuid())
+  tokenId         String   @unique
+  name            String
+  description     String
+  imageUrl        String?
+  imageHash       String?
+  metadataUri     String
+  metadataHash    String
+  owner           String
+  creator         String
+  collectionId    String?
+  royalty         Float    @default(0)
+  supply          Int      @default(1)
+  mintedAt        DateTime @default(now())
+  blockchainTxHash String?
+  status          String   @default("minted") // minted, transferred, burned
+  attributes      Json?    // NFT attributes
+  
+  collection      Collection? @relation(fields: [collectionId], references: [id])
+  
+  @@map("digital_assets")
+  @@index([owner])
+  @@index([creator])
+  @@index([collectionId])
+  @@index([mintedAt])
+}
+
+// Educational Certificates (NFTs)
+model Certificate {
+  id                String   @id @default(uuid())
+  tokenId           String   @unique
+  recipientName     String
+  recipientEmail    String?
+  courseName        String
+  institution       String
+  issueDate         String
+  expiryDate        String?
+  grade             String?
+  instructor        String?
+  certificateType   String   @default("completion") // completion, achievement, participation
+  documentUrl       String?
+  documentHash      String?
+  metadataUri       String
+  metadataHash      String
+  verificationCode  String   @unique
+  issuedBy          String
+  issuedAt          DateTime @default(now())
+  blockchainTxHash  String?
+  status            String   @default("issued") // issued, revoked, expired
+  
+  @@map("certificates")
+  @@index([recipientEmail])
+  @@index([verificationCode])
+  @@index([issuedBy])
+  @@index([issuedAt])
+}
+
+// NFT Collections
+model Collection {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  category      String   @default("art") // art, music, photography, education, etc.
+  isPublic      Boolean  @default(true)
+  creator       String
+  createdAt     DateTime @default(now())
+  assetCount    Int      @default(0)
+  totalVolume   Float    @default(0)
+  coverImageUrl String?
+  
+  assets        DigitalAsset[]
+  
+  @@map("collections")
+  @@index([creator])
+  @@index([category])
+  @@index([isPublic])
+}
+
+// Minting Queue (for async processing)
+model MintingQueue {
+  id              String   @id @default(uuid())
+  userId          String
+  assetType       String   // nft, certificate
+  metadata        Json
+  status          String   @default("pending") // pending, processing, completed, failed
+  priority        Int      @default(0)
+  createdAt       DateTime @default(now())
+  processedAt     DateTime?
+  completedAt     DateTime?
+  errorMessage    String?
+  resultTokenId   String?
+  resultTxHash    String?
+  
+  @@map("minting_queue")
+  @@index([userId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+}
+
+// Blockchain Transactions (audit trail)
+model BlockchainTransaction {
+  id              String   @id @default(uuid())
+  transactionHash String   @unique
+  fromAddress     String
+  toAddress       String
+  tokenId         String?
+  amount          String?
+  gasUsed         String?
+  gasPrice        String?
+  blockNumber     Int?
+  timestamp       DateTime @default(now())
+  status          String   @default("pending") // pending, confirmed, failed
+  eventType       String   // mint, transfer, burn
+  metadata        Json?
+  
+  @@map("blockchain_transactions")
+  @@index([transactionHash])
+  @@index([fromAddress])
+  @@index([toAddress])
+  @@index([tokenId])
+  @@index([timestamp])
+}
+
+// AZR Token Balances (cache from blockchain)
+model TokenBalance {
+  id              String   @id @default(uuid())
+  address         String   @unique
+  balance         String   @default("0") // Stored as string to handle large numbers
+  lastUpdated     DateTime @updatedAt
+  
+  @@map("token_balances")
+  @@index([address])
+}
+
+// Constitutional Compliance Audit
+model ConstitutionalAudit {
+  id                String   @id @default(uuid())
+  auditType         String   // NO_MOCK_PROTOCOL, UBUNTU_ALIGNMENT, TRANSPARENCY
+  complianceScore   Float    // 0-100
+  violations        Json?    // Array of violations found
+  recommendations   Json?    // Array of recommendations
+  auditedAt         DateTime @default(now())
+  auditedBy         String   @default("constitutional-ai")
+  
+  @@map("constitutional_audits")
+  @@index([auditType])
+  @@index([auditedAt])
+}

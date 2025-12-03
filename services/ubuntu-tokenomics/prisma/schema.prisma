@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Token {
+  id            String   @id @default(uuid())
+  symbol        String   @unique
+  name          String
+  totalSupply   Decimal
+  circulating   Decimal
+  createdAt     DateTime @default(now())
+  
+  transactions  Transaction[]
+  wallets       Wallet[]
+  
+  @@map("tokens")
+}
+
+model Wallet {
+  id            String   @id @default(uuid())
+  userId        String
+  tokenId       String
+  balance       Decimal  @default(0)
+  updatedAt     DateTime @updatedAt
+  
+  token         Token    @relation(fields: [tokenId], references: [id])
+  
+  @@map("wallets")
+  @@unique([userId, tokenId])
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  tokenId       String
+  fromWalletId  String?
+  toWalletId    String?
+  amount        Decimal
+  type          String   // MINT, BURN, TRANSFER, REWARD
+  status        String   // PENDING, COMPLETED, FAILED
+  timestamp     DateTime @default(now())
+  
+  token         Token    @relation(fields: [tokenId], references: [id])
+  
+  @@map("transactions")
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "schedule": ["before 3am on Monday"],
+  "timezone": "Africa/Johannesburg",
+  "labels": ["dependencies", "renovate"],
+  "assignees": ["Sizwe780"],
+  "reviewers": ["Sizwe780"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "semanticCommits": true,
+  "commitMessagePrefix": "chore(deps):",
+  "groupName": "dependency updates",
+  "groupSlug": "dependency-updates",
+  "packageRules": [
+    {
+      "description": "Auto-merge minor and patch updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": "all",
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Require manual review for major updates",
+      "matchUpdateTypes": ["major"],
+      "labels": ["major-update", "requires-review"],
+      "assignees": ["Sizwe780"],
+      "reviewers": ["Sizwe780"]
+    },
+    {
+      "description": "Group type definitions",
+      "matchPackagePatterns": ["^@types/"],
+      "automerge": "all",
+      "groupName": "type definitions"
+    },
+    {
+      "description": "Group linting tools",
+      "matchPackagePatterns": ["eslint", "prettier", "@typescript-eslint"],
+      "groupName": "linting tools",
+      "automerge": "all"
+    },
+    {
+      "description": "Group testing frameworks",
+      "matchPackagePatterns": ["jest", "playwright", "@testing-library", "vitest"],
+      "groupName": "testing frameworks",
+      "automerge": "all"
+    },
+    {
+      "description": "Group Node.js runtime",
+      "matchPackagePatterns": ["node"],
+      "labels": ["node-update"]
+    },
+    {
+      "description": "Group database drivers",
+      "matchPackagePatterns": ["prisma", "pg", "mysql", "mongodb"],
+      "groupName": "database drivers"
+    },
+    {
+      "description": "Group security-related packages",
+      "matchPackagePatterns": ["helmet", "bcrypt", "jsonwebtoken", "passport"],
+      "groupName": "security packages",
+      "labels": ["security"]
+    },
+    {
+      "description": "Group framework updates",
+      "matchPackagePatterns": ["react", "vue", "angular", "express", "fastify"],
+      "groupName": "framework updates",
+      "labels": ["framework-update"]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security", "vulnerability"],
+    "assignees": ["Sizwe780"],
+    "reviewers": ["Sizwe780"]
+  },
+  "postUpdateOptions": ["npmDedupe", "yarnDedupeHighest"],
+  "ignoreDeps": [],
+  "rangeStrategy": "auto",
+  "lockFileMaintenance": {
+    "schedule": ["before 3am on Monday"]
+  }
+}

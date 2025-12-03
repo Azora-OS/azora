@@ -1,0 +1,341 @@
+version: '3.8'
+
+# 🌍 UBUNTU AZORA ECOSYSTEM - PRODUCTION DOCKER COMPOSE
+# "I am because we are" - Containerized Ubuntu Services
+
+services:
+  # 🔗 API Gateway - Main Entry Point
+  api-gateway:
+    build: ./services/azora-api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - UBUNTU_ENV=production
+      - NODE_ENV=production
+      - PORT=4000
+    depends_on:
+      - citadel-fund
+      - proof-of-value
+      - constitutional-ai
+      - governance
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 💰 Citadel Fund - 10% Revenue Sharing
+  citadel-fund:
+    build: ./services/citadel-fund
+    ports:
+      - "4010:4010"
+    environment:
+      - UBUNTU_ENV=production
+      - PORT=4010
+      - CITADEL_FUND_WALLET=${CITADEL_FUND_WALLET}
+    volumes:
+      - citadel-data:/app/data
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4010/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ⭐ Proof of Value - Knowledge Mining
+  proof-of-value:
+    build: ./services/proof-of-value
+    ports:
+      - "4011:4011"
+    environment:
+      - UBUNTU_ENV=production
+      - PORT=4011
+    volumes:
+      - pov-data:/app/data
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🤖 Constitutional AI - Ethical Validation
+  constitutional-ai:
+    build: ./services/constitutional-ai
+    ports:
+      - "4012:4012"
+    environment:
+      - UBUNTU_ENV=production
+      - PORT=4012
+      - AI_MODEL_PATH=/app/models
+    volumes:
+      - ai-models:/app/models
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4012/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🏆 NFT Minting - Ubuntu Certificates
+  nft-minting:
+    build: ./services/azora-nft-minting
+    ports:
+      - "4017:4017"
+    environment:
+      - UBUNTU_ENV=production
+      - PORT=4017
+      - BLOCKCHAIN_RPC_URL=${BLOCKCHAIN_RPC_URL}
+    volumes:
+      - nft-data:/app/data
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4017/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🗳️ Governance - Democratic Ubuntu
+  governance:
+    build: ./services/azora-governance
+    ports:
+      - "4018:4018"
+    environment:
+      - UBUNTU_ENV=production
+      - PORT=4018
+    volumes:
+      - governance-data:/app/data
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4018/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 📨 Event Bus - Ubuntu Communication
+  event-bus:
+    build: ./services/azora-events
+    ports:
+      - "4019:4019"
+    environment:
+      - UBUNTU_ENV=production
+      - PORT=4019
+    volumes:
+      - event-data:/app/data
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4019/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🎓 Azora Sapiens - Main Education Platform
+  azora-sapiens:
+    build: ./apps/azora-sapiens
+    ports:
+      - "3000:3000"
+    environment:
+      - UBUNTU_ENV=production
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 💳 Azora Pay - Payment Processing
+  azora-pay:
+    build: ./apps/azora-pay
+    ports:
+      - "3005:3005"
+    environment:
+      - UBUNTU_ENV=production
+      - NODE_ENV=production
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # 🏪 Azora Marketplace - Ubuntu Commerce
+  azora-marketplace:
+    build: ./apps/azora-marketplace
+    ports:
+      - "3006:3006"
+    environment:
+      - UBUNTU_ENV=production
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - api-gateway
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # 🗄️ Ubuntu Database - PostgreSQL
+  ubuntu-database:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=azora_ubuntu
+      - POSTGRES_USER=ubuntu
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ubuntu"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🧠 Ubuntu Cache - Redis
+  ubuntu-cache:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 📊 Ubuntu Monitoring - Prometheus
+  ubuntu-monitoring:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+  # 📈 Ubuntu Visualization - Grafana
+  ubuntu-visualization:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+    depends_on:
+      - ubuntu-monitoring
+
+  # 🌐 Ubuntu Reverse Proxy - Nginx
+  ubuntu-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - api-gateway
+      - azora-sapiens
+    networks:
+      - ubuntu-network
+    restart: unless-stopped
+
+# 🌍 Ubuntu Network
+networks:
+  ubuntu-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# 💾 Ubuntu Volumes
+volumes:
+  citadel-data:
+    driver: local
+  pov-data:
+    driver: local
+  ai-models:
+    driver: local
+  nft-data:
+    driver: local
+  governance-data:
+    driver: local
+  event-data:
+    driver: local
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+# 🌍 Ubuntu Deployment Configuration
+x-ubuntu-deployment: &ubuntu-deployment
+  deploy:
+    replicas: 1
+    resources:
+      limits:
+        memory: 512M
+        cpus: '0.5'
+      reservations:
+        memory: 256M
+        cpus: '0.25'
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3
+      window: 120s
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"

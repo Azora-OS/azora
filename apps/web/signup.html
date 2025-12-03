@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Free Trial - AZORA Education</title>
+    <link rel="icon" href="/packages/public/branding/icons/app-icon-512.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="pricing-config.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+
+<body class="text-white">
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="max-w-2xl w-full">
+            <!-- Logo & Header -->
+            <div class="text-center mb-8">
+                <img src="/packages/public/branding/azora-premium.png" alt="AZORA" class="h-12 mx-auto mb-4">
+                <h1 class="text-4xl font-bold mb-2">Start Your <span class="gradient-text">Free Trial</span></h1>
+                <p class="text-xl text-blue-200">2 weeks free. No credit card required.</p>
+                <div class="mt-4 inline-block bg-green-500/20 border border-green-500 rounded-lg px-4 py-2">
+                    <p class="text-sm text-green-300 font-semibold">🎁 Mine crypto while learning to extend your trial
+                        FREE!</p>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="glass rounded-2xl p-8">
+                <form id="signupForm" class="space-y-6">
+                    <!-- User Type Selection -->
+                    <div>
+                        <label class="block text-sm font-medium mb-3">I am a...</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="userType" value="student" checked class="peer hidden">
+                                <div
+                                    class="glass hover:bg-white/20 peer-checked:bg-purple-600 peer-checked:border-purple-400 border-2 border-white/20 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-3xl mb-2">🎓</div>
+                                    <div class="text-sm font-semibold">Student</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="userType" value="educator" class="peer hidden">
+                                <div
+                                    class="glass hover:bg-white/20 peer-checked:bg-purple-600 peer-checked:border-purple-400 border-2 border-white/20 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-3xl mb-2">👨‍🏫</div>
+                                    <div class="text-sm font-semibold">Educator</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="userType" value="parent" class="peer hidden">
+                                <div
+                                    class="glass hover:bg-white/20 peer-checked:bg-purple-600 peer-checked:border-purple-400 border-2 border-white/20 rounded-lg p-4 text-center transition-all">
+                                    <div class="text-3xl mb-2">👨‍👩‍👧</div>
+                                    <div class="text-sm font-semibold">Parent</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Name Fields -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium mb-2">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required
+                                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                placeholder="John">
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium mb-2">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required
+                                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                placeholder="Doe">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium mb-2">Email Address</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="you@example.com">
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="password" name="password" required minlength="8"
+                            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="••••••••">
+                        <p class="mt-1 text-xs text-gray-400">At least 8 characters</p>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="flex items-start">
+                        <input type="checkbox" id="terms" name="terms" required
+                            class="mt-1 w-4 h-4 bg-white/10 border-white/20 rounded text-purple-600 focus:ring-purple-500">
+                        <label for="terms" class="ml-2 text-sm text-gray-300">
+                            I agree to the <a href="#" class="text-purple-400 hover:text-purple-300">Terms of
+                                Service</a> and <a href="#" class="text-purple-400 hover:text-purple-300">Privacy
+                                Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="errorMessage" class="hidden bg-red-500/20 border border-red-500 rounded-lg p-3">
+                        <p class="text-sm text-red-300" id="errorText"></p>
+                    </div>
+
+                    <!-- Sign Up Button -->
+                    <button type="submit" id="signupButton"
+                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition-all transform hover:scale-105">
+                        🚀 Start Free Trial
+                    </button>
+
+                    <!-- What You Get -->
+                    <div class="bg-purple-500/20 border border-purple-500 rounded-lg p-4">
+                        <p class="text-sm font-semibold mb-2">What you get with your free trial:</p>
+                        <ul class="text-xs space-y-1 text-gray-300">
+                            <li>✓ Full access to ALL courses & AI tutoring</li>
+                            <li>✓ Interactive simulations & live code execution</li>
+                            <li>✓ Mine crypto while learning (1x rate)</li>
+                            <li>✓ Extend trial FREE by mining (100 AZR = +1 day)</li>
+                            <li>✓ Create 1 revenue project (keep 50%)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-white/20"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-transparent text-gray-400">Or sign up with</span>
+                        </div>
+                    </div>
+
+                    <!-- Google Sign Up -->
+                    <button type="button" id="googleSignUp"
+                        class="w-full glass hover:bg-white/20 text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="currentColor"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="currentColor"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="currentColor"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        Continue with Google
+                    </button>
+                </form>
+
+                <!-- Sign In Link -->
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-400">
+                        Already have an account?
+                        <a href="login.html" class="text-purple-400 hover:text-purple-300 font-semibold">Sign in</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-sm text-blue-300 hover:text-blue-200">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        const signupButton = document.getElementById('signupButton');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const googleSignUp = document.getElementById('googleSignUp');
+
+        // Handle form submission
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                userType: document.querySelector('input[name="userType"]:checked').value,
+                tier: 'FREE_TRIAL',
+                trialStartDate: new Date().toISOString(),
+                trialEndDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14 days
+            };
+
+            // Show loading state
+            signupButton.textContent = 'Creating your account...';
+            signupButton.disabled = true;
+            errorMessage.classList.add('hidden');
+
+            try {
+                // Call auth service
+                const response = await fetch('http://localhost:4000/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token and user info
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('userEmail', formData.email);
+                    localStorage.setItem('userName', `${formData.firstName} ${formData.lastName}`);
+                    localStorage.setItem('userType', formData.userType);
+                    localStorage.setItem('userTier', 'FREE_TRIAL');
+                    localStorage.setItem('trialStartDate', formData.trialStartDate);
+                    localStorage.setItem('trialEndDate', formData.trialEndDate);
+                    localStorage.setItem('minedTokens', '0');
+
+                    // Redirect to onboarding
+                    window.location.href = 'onboarding.html';
+                } else {
+                    throw new Error(data.message || 'Signup failed');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                errorText.textContent = error.message || 'Failed to create account. Please try again.';
+                errorMessage.classList.remove('hidden');
+                signupButton.textContent = '🚀 Start Free Trial';
+                signupButton.disabled = false;
+            }
+        });
+
+        // Handle Google Sign Up
+        googleSignUp.addEventListener('click', async () => {
+            try {
+                window.location.href = 'http://localhost:4000/api/auth/google';
+            } catch (error) {
+                console.error('Google sign up error:', error);
+                errorText.textContent = 'Google sign up is temporarily unavailable.';
+                errorMessage.classList.remove('hidden');
+            }
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('authToken')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azorahub API Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-on-secondary-container: #1D192B;
+            --md-sys-color-tertiary: #7D5260;
+            --md-sys-color-on-tertiary: #FFFFFF;
+            --md-sys-color-tertiary-container: #FFD8E4;
+            --md-sys-color-on-tertiary-container: #31111D;
+            --md-sys-color-surface: #FFFBFE;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-color-shadow: #000000;
+            --md-sys-color-scrim: #000000;
+            --md-sys-color-inverse-surface: #313033;
+            --md-sys-color-inverse-on-surface: #F4EFF4;
+            --md-sys-color-inverse-primary: #D0BCFF;
+            --md-sys-color-surface-dim: #DDD8DD;
+            --md-sys-color-surface-bright: #FFFBFE;
+            --md-sys-color-surface-container-lowest: #FFFFFF;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container: #F1ECF4;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+            
+            --md-sys-shape-corner-none: 0px;
+            --md-sys-shape-corner-extra-small: 4px;
+            --md-sys-shape-corner-small: 8px;
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-shape-corner-large: 16px;
+            --md-sys-shape-corner-extra-large: 28px;
+            
+            --md-sys-typescale-display-large-font: 'Roboto';
+            --md-sys-typescale-display-large-weight: 400;
+            --md-sys-typescale-display-large-size: 57px;
+            --md-sys-typescale-display-large-line-height: 64px;
+            --md-sys-typescale-display-large-letter-spacing: -0.25px;
+            
+            --md-sys-typescale-headline-large-font: 'Roboto';
+            --md-sys-typescale-headline-large-weight: 400;
+            --md-sys-typescale-headline-large-size: 32px;
+            --md-sys-typescale-headline-large-line-height: 40px;
+            --md-sys-typescale-headline-large-letter-spacing: 0px;
+            
+            --md-sys-typescale-headline-medium-font: 'Roboto';
+            --md-sys-typescale-headline-medium-weight: 400;
+            --md-sys-typescale-headline-medium-size: 28px;
+            --md-sys-typescale-headline-medium-line-height: 36px;
+            --md-sys-typescale-headline-medium-letter-spacing: 0px;
+            
+            --md-sys-typescale-body-large-font: 'Roboto';
+            --md-sys-typescale-body-large-weight: 400;
+            --md-sys-typescale-body-large-size: 16px;
+            --md-sys-typescale-body-large-line-height: 24px;
+            --md-sys-typescale-body-large-letter-spacing: 0.5px;
+            
+            --md-sys-typescale-body-medium-font: 'Roboto';
+            --md-sys-typescale-body-medium-weight: 400;
+            --md-sys-typescale-body-medium-size: 14px;
+            --md-sys-typescale-body-medium-line-height: 20px;
+            --md-sys-typescale-body-medium-letter-spacing: 0.25px;
+            
+            --md-sys-elevation-level0: 0px 0px 0px rgba(0, 0, 0, 0.12);
+            --md-sys-elevation-level1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level3: 0px 1px 3px rgba(0, 0, 0, 0.3), 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level4: 0px 2px 3px rgba(0, 0, 0, 0.3), 0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level5: 0px 4px 4px rgba(0, 0, 0, 0.3), 0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-letter-spacing);
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            min-height: 100vh;
+        }
+
+        /* Material Design 3 Components */
+        .md3-card {
+            background-color: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level1);
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .md3-card:hover {
+            box-shadow: var(--md-sys-elevation-level2);
+        }
+
+        .md3-elevated-card {
+            background-color: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level2);
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .md3-elevated-card:hover {
+            box-shadow: var(--md-sys-elevation-level3);
+        }
+
+        .md3-button {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 10px 24px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
+            text-transform: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: var(--md-sys-elevation-level0);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-button:hover {
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+
+        .md3-outlined-button {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 10px 24px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
+            text-transform: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: var(--md-sys-elevation-level0);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-outlined-button:hover {
+            box-shadow: var(--md-sys-elevation-level1);
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .md3-text-button {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+            border: none;
+            border-radius: var(--md-sys-shape-corner-small);
+            padding: 10px 12px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
+            text-transform: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-text-button:hover {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .md3-chip {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+            border-radius: var(--md-sys-shape-corner-small);
+            padding: 6px 16px;
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            letter-spacing: var(--md-sys-typescale-label-medium-letter-spacing);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-chip.primary {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .md3-chip.secondary {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        .md3-fab {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border: none;
+            border-radius: var(--md-sys-shape-corner-large);
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: var(--md-sys-elevation-level3);
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+
+        .md3-fab:hover {
+            box-shadow: var(--md-sys-elevation-level4);
+        }
+
+        /* Layout */
+        .app-bar {
+            background-color: var(--md-sys-color-surface-container);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background-color: rgba(255, 251, 254, 0.8);
+        }
+
+        .app-bar-title {
+            font-family: var(--md-sys-typescale-headline-medium-font);
+            font-size: var(--md-sys-typescale-headline-medium-size);
+            font-weight: var(--md-sys-typescale-headline-medium-weight);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);
+            border-radius: var(--md-sys-shape-corner-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-sys-color-on-primary);
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 768px) {
+            .grid-cols-2 { grid-template-columns: 1fr; }
+            .grid-cols-3 { grid-template-columns: 1fr; }
+            .grid-cols-4 { grid-template-columns: 1fr; }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
+            .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Typography */
+        .display-large {
+            font-family: var(--md-sys-typescale-display-large-font);
+            font-size: var(--md-sys-typescale-display-large-size);
+            font-weight: var(--md-sys-typescale-display-large-weight);
+            line-height: var(--md-sys-typescale-display-large-line-height);
+            letter-spacing: var(--md-sys-typescale-display-large-letter-spacing);
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 16px;
+        }
+
+        .headline-large {
+            font-family: var(--md-sys-typescale-headline-large-font);
+            font-size: var(--md-sys-typescale-headline-large-size);
+            font-weight: var(--md-sys-typescale-headline-large-weight);
+            line-height: var(--md-sys-typescale-headline-large-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-large-letter-spacing);
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 16px;
+        }
+
+        .headline-medium {
+            font-family: var(--md-sys-typescale-headline-medium-font);
+            font-size: var(--md-sys-typescale-headline-medium-size);
+            font-weight: var(--md-sys-typescale-headline-medium-weight);
+            line-height: var(--md-sys-typescale-headline-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-medium-letter-spacing);
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 12px;
+        }
+
+        .body-medium {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-letter-spacing);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* API Documentation Styles */
+        .endpoint-card {
+            background-color: var(--md-sys-color-surface-container-lowest);
+            border-left: 4px solid var(--md-sys-color-primary);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .endpoint-card:hover {
+            box-shadow: var(--md-sys-elevation-level2);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--md-sys-shape-corner-small);
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-right: 12px;
+        }
+
+        .endpoint-method.get {
+            background-color: #E8F5E8;
+            color: #1B5E20;
+        }
+
+        .endpoint-method.post {
+            background-color: #E3F2FD;
+            color: #0D47A1;
+        }
+
+        .endpoint-method.put {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .endpoint-method.delete {
+            background-color: #FFEBEE;
+            color: #B71C1C;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: var(--md-sys-color-primary);
+            font-weight: 500;
+        }
+
+        .endpoint-description {
+            margin-top: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .code-block {
+            background-color: var(--md-sys-color-surface-container-highest);
+            border-radius: var(--md-sys-shape-corner-medium);
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--md-sys-shape-corner-large);
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: 500;
+        }
+
+        .status-indicator.online {
+            background-color: #E8F5E8;
+            color: #1B5E20;
+        }
+
+        .status-indicator.degraded {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .status-indicator.offline {
+            background-color: #FFEBEE;
+            color: #B71C1C;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--md-sys-color-on-surface);
+            background-color: var(--md-sys-color-surface-variant);
+        }
+
+        .nav-tab.active {
+            color: var(--md-sys-color-primary);
+            border-bottom-color: var(--md-sys-color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-bar {
+                padding: 12px 16px;
+            }
+            
+            .container {
+                padding: 16px;
+            }
+            
+            .display-large {
+                font-size: 36px;
+                line-height: 44px;
+            }
+            
+            .headline-large {
+                font-size: 28px;
+                line-height: 36px;
+            }
+            
+            .headline-medium {
+                font-size: 24px;
+                line-height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- App Bar -->
+    <header class="app-bar">
+        <div class="app-bar-title">
+            <div class="logo">A</div>
+            <span>Azorahub API Documentation</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="status-indicator online">
+                <span class="status-dot"></span>
+                <span>All Systems Operational</span>
+            </div>
+            <button class="md3-outlined-button">
+                <span class="material-icons">api</span>
+                API Keys
+            </button>
+            <button class="md3-button">
+                <span class="material-icons">play_arrow</span>
+                Try API
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section style="text-align: center; padding: 48px 0;">
+            <h1 class="display-large">Azorahub REST API</h1>
+            <p class="body-medium" style="font-size: 18px; max-width: 600px; margin: 0 auto 32px; color: var(--md-sys-color-on-surface-variant);">
+                Build powerful applications with our comprehensive REST API. Access all Azorahub features with simple, intuitive endpoints.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <button class="md3-button">
+                    <span class="material-icons">code</span>
+                    View OpenAPI Spec
+                </button>
+                <button class="md3-outlined-button">
+                    <span class="material-icons">download</span>
+                    Download SDK
+                </button>
+                <button class="md3-text-button">
+                    <span class="material-icons">help_outline</span>
+                    API Guide
+                </button>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section style="margin-bottom: 48px;">
+            <div class="grid grid-cols-4">
+                <div class="md3-card" style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: var(--md-sys-color-primary); margin-bottom: 8px;">5,000</div>
+                    <div class="body-medium">Requests/Hour</div>
+                </div>
+                <div class="md3-card" style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: var(--md-sys-color-primary); margin-bottom: 8px;">99.9%</div>
+                    <div class="body-medium">Uptime</div>
+                </div>
+                <div class="md3-card" style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: var(--md-sys-color-primary); margin-bottom: 8px;">< 100ms</div>
+                    <div class="body-medium">Avg Response</div>
+                </div>
+                <div class="md3-card" style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: var(--md-sys-color-primary); margin-bottom: 8px;">v1.0</div>
+                    <div class="body-medium">Latest Version</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('endpoints')">Endpoints</button>
+            <button class="nav-tab" onclick="switchTab('authentication')">Authentication</button>
+            <button class="nav-tab" onclick="switchTab('examples')">Examples</button>
+            <button class="nav-tab" onclick="switchTab('sdks')">SDKs</button>
+            <button class="nav-tab" onclick="switchTab('changelog')">Changelog</button>
+        </nav>
+
+        <!-- Tab Contents -->
+        <div id="endpoints" class="tab-content active">
+            <h2 class="headline-large">API Endpoints</h2>
+            
+            <!-- Repository Endpoints -->
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">Repositories</h3>
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method get">GET</span>
+                        <span class="endpoint-path">/v1/repositories</span>
+                    </div>
+                    <div class="endpoint-description">List all repositories accessible to the authenticated user</div>
+                    <div class="code-block">
+curl -X GET "https://api.azorahub.com/v1/repositories" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method post">POST</span>
+                        <span class="endpoint-path">/v1/repositories</span>
+                    </div>
+                    <div class="endpoint-description">Create a new repository</div>
+                    <div class="code-block">
+curl -X POST "https://api.azorahub.com/v1/repositories" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-new-repo",
+    "description": "A new repository",
+    "private": false
+  }'
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method get">GET</span>
+                        <span class="endpoint-path">/v1/repositories/{id}</span>
+                    </div>
+                    <div class="endpoint-description">Get a specific repository by ID</div>
+                    <div class="code-block">
+curl -X GET "https://api.azorahub.com/v1/repositories/123" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Issues Endpoints -->
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">Issues & Pull Requests</h3>
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method get">GET</span>
+                        <span class="endpoint-path">/v1/repositories/{id}/issues</span>
+                    </div>
+                    <div class="endpoint-description">List issues and pull requests for a repository</div>
+                    <div class="code-block">
+curl -X GET "https://api.azorahub.com/v1/repositories/123/issues" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method post">POST</span>
+                        <span class="endpoint-path">/v1/repositories/{id}/issues</span>
+                    </div>
+                    <div class="endpoint-description">Create a new issue or pull request</div>
+                    <div class="code-block">
+curl -X POST "https://api.azorahub.com/v1/repositories/123/issues" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Bug: Authentication fails",
+    "body": "Detailed description of the issue",
+    "labels": ["bug", "authentication"]
+  }'
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Services Endpoints -->
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">AI Services</h3>
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method post">POST</span>
+                        <span class="endpoint-path">/v1/ai/code-completion</span>
+                    </div>
+                    <div class="endpoint-description">Get AI-powered code completion suggestions</div>
+                    <div class="code-block">
+curl -X POST "https://api.azorahub.com/v1/ai/code-completion" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "function calculateSum(a, b) {",
+    "language": "javascript",
+    "context": "math-functions"
+  }'
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method post">POST</span>
+                        <span class="endpoint-path">/v1/ai/code-review</span>
+                    </div>
+                    <div class="endpoint-description">Get AI-powered code review and suggestions</div>
+                    <div class="code-block">
+curl -X POST "https://api.azorahub.com/v1/ai/code-review" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "const result = calculateSum(1, 2);",
+    "language": "javascript",
+    "check_types": ["security", "performance", "style"]
+  }'
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="authentication" class="tab-content">
+            <h2 class="headline-large">Authentication</h2>
+            
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">Personal Access Tokens</h3>
+                <p class="body-medium" style="margin-bottom: 20px;">
+                    Use Personal Access Tokens (PATs) to authenticate your API requests. PATs are the recommended method for most use cases.
+                </p>
+                
+                <div class="code-block">
+# Generate a new token
+curl -X POST "https://api.azorahub.com/v1/tokens" \
+  -H "Authorization: Bearer YOUR_MASTER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My App Token",
+    "scopes": ["repo", "read:org", "user"],
+    "expires_at": "2024-12-31T23:59:59Z"
+  }'
+
+# Use the token in API requests
+curl -X GET "https://api.azorahub.com/v1/user" \
+  -H "Authorization: Bearer YOUR_PAT"
+                </div>
+            </div>
+
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">OAuth 2.0</h3>
+                <p class="body-medium" style="margin-bottom: 20px;">
+                    For web applications, use OAuth 2.0 to authenticate users on their behalf.
+                </p>
+                
+                <div class="code-block">
+# Authorization URL
+https://api.azorahub.com/oauth/authorize?
+  client_id=YOUR_CLIENT_ID&
+  redirect_uri=YOUR_REDIRECT_URI&
+  scope=repo%20read:org&
+  response_type=code
+
+# Exchange code for token
+curl -X POST "https://api.azorahub.com/oauth/token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "YOUR_CLIENT_ID",
+    "client_secret": "YOUR_CLIENT_SECRET",
+    "code": "AUTHORIZATION_CODE",
+    "redirect_uri": "YOUR_REDIRECT_URI"
+  }'
+                </div>
+            </div>
+        </div>
+
+        <div id="examples" class="tab-content">
+            <h2 class="headline-large">Code Examples</h2>
+            
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">JavaScript/Node.js</h3>
+                <div class="code-block">
+const { AzorahubAPI } = require('@azorahub/api-client');
+
+const client = new AzorahubAPI({
+  token: 'your-token-here'
+});
+
+// List repositories
+const repos = await client.repositories.list();
+console.log(repos);
+
+// Create an issue
+const issue = await client.issues.create('repo-id', {
+  title: 'New feature request',
+  body: 'Please add this amazing feature',
+  labels: ['enhancement']
+});
+                </div>
+            </div>
+
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">Python</h3>
+                <div class="code-block">
+import azorahub
+
+client = azorahub.AzorahubAPI(token='your-token-here')
+
+# List repositories
+repos = client.repositories.list()
+print(repos)
+
+# Create an issue
+issue = client.issues.create('repo-id', {
+    'title': 'New feature request',
+    'body': 'Please add this amazing feature',
+    'labels': ['enhancement']
+})
+print(issue)
+                </div>
+            </div>
+
+            <div class="md3-elevated-card">
+                <h3 class="headline-medium">Go</h3>
+                <div class="code-block">
+package main
+
+import (
+    "context"
+    "fmt"
+    "github.com/azorahub/go-azorahub"
+)
+
+func main() {
+    client := azorahub.NewClient("your-token-here")
+    
+    // List repositories
+    repos, err := client.Repositories.List(context.Background())
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(repos)
+    
+    // Create an issue
+    issue, err := client.Issues.Create(context.Background(), "repo-id", &azorahub.IssueRequest{
+        Title: "New feature request",
+        Body:  "Please add this amazing feature",
+        Labels: []string{"enhancement"},
+    })
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(issue)
+}
+                </div>
+            </div>
+        </div>
+
+        <div id="sdks" class="tab-content">
+            <h2 class="headline-large">Official SDKs</h2>
+            
+            <div class="grid grid-cols-2">
+                <div class="md3-elevated-card">
+                    <h3 class="headline-medium">JavaScript/TypeScript</h3>
+                    <p class="body-medium" style="margin-bottom: 16px;">
+                        Official SDK for Node.js and browser environments
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="md3-button">
+                            <span class="material-icons">download</span>
+                            npm install
+                        </button>
+                        <button class="md3-outlined-button">
+                            <span class="material-icons">code</span>
+                            GitHub
+                        </button>
+                    </div>
+                    <div class="code-block" style="margin-top: 16px;">
+npm install @azorahub/api-client
+                    </div>
+                </div>
+
+                <div class="md3-elevated-card">
+                    <h3 class="headline-medium">Python</h3>
+                    <p class="body-medium" style="margin-bottom: 16px;">
+                        Official SDK for Python 3.8+
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="md3-button">
+                            <span class="material-icons">download</span>
+                            pip install
+                        </button>
+                        <button class="md3-outlined-button">
+                            <span class="material-icons">code</span>
+                            GitHub
+                        </button>
+                    </div>
+                    <div class="code-block" style="margin-top: 16px;">
+pip install azorahub-api-client
+                    </div>
+                </div>
+
+                <div class="md3-elevated-card">
+                    <h3 class="headline-medium">Go</h3>
+                    <p class="body-medium" style="margin-bottom: 16px;">
+                        Official SDK for Go 1.19+
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="md3-button">
+                            <span class="material-icons">download</span>
+                            go get
+                        </button>
+                        <button class="md3-outlined-button">
+                            <span class="material-icons">code</span>
+                            GitHub
+                        </button>
+                    </div>
+                    <div class="code-block" style="margin-top: 16px;">
+go get github.com/azorahub/go-azorahub
+                    </div>
+                </div>
+
+                <div class="md3-elevated-card">
+                    <h3 class="headline-medium">Java</h3>
+                    <p class="body-medium" style="margin-bottom: 16px;">
+                        Official SDK for Java 11+
+                    </p>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="md3-button">
+                            <span class="material-icons">download</span>
+                            Maven
+                        </button>
+                        <button class="md3-outlined-button">
+                            <span class="material-icons">code</span>
+                            GitHub
+                        </button>
+                    </div>
+                    <div class="code-block" style="margin-top: 16px;">
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azorahub&lt;/groupId&gt;
+    &lt;artifactId&gt;azorahub-java-sdk&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="changelog" class="tab-content">
+            <h2 class="headline-large">API Changelog</h2>
+            
+            <div class="md3-elevated-card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <span class="md3-chip primary">v1.0.0</span>
+                    <span class="body-medium">2024-01-15</span>
+                </div>
+                <h3 class="headline-medium">Major Release</h3>
+                <ul style="color: var(--md-sys-color-on-surface-variant); line-height: 1.6; padding-left: 20px;">
+                    <li>🎉 Initial public release of Azorahub API v1.0</li>
+                    <li>✨ Added comprehensive repository management endpoints</li>
+                    <li>✨ Introduced AI services for code completion and review</li>
+                    <li>✨ Implemented real-time webhook system</li>
+                    <li>🔒 Enhanced security with OAuth 2.0 and PAT support</li>
+                    <li>📊 Added analytics and monitoring endpoints</li>
+                </ul>
+            </div>
+
+            <div class="md3-elevated-card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <span class="md3-chip secondary">v0.9.0</span>
+                    <span class="body-medium">2024-01-01</span>
+                </div>
+                <h3 class="headline-medium">Beta Release</h3>
+                <ul style="color: var(--md-sys-color-on-surface-variant); line-height: 1.6; padding-left: 20px;">
+                    <li>🧪 Beta testing phase with limited access</li>
+                    <li>🔧 Core API functionality implemented</li>
+                    <li>🧪 Comprehensive testing suite added</li>
+                    <li>📚 Initial documentation created</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="md3-fab" onclick="window.open('https://api.azorahub.com/v1/openapi.yaml', '_blank')">
+        <span class="material-icons">api</span>
+    </button>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Add some interactive features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.md3-card, .md3-elevated-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // Add copy to clipboard functionality
+            document.querySelectorAll('.code-block').forEach(block => {
+                block.style.position = 'relative';
+                const copyBtn = document.createElement('button');
+                copyBtn.innerHTML = '<span class="material-icons" style="font-size: 16px;">content_copy</span>';
+                copyBtn.className = 'md3-text-button';
+                copyBtn.style.position = 'absolute';
+                copyBtn.style.top = '8px';
+                copyBtn.style.right = '8px';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(block.textContent);
+                    copyBtn.innerHTML = '<span class="material-icons" style="font-size: 16px;">check</span>';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<span class="material-icons" style="font-size: 16px;">content_copy</span>';
+                    }, 2000);
+                };
+                block.appendChild(copyBtn);
+            });
+        });
+    </script>
+</body>
+</html>

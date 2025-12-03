@@ -1,0 +1,150 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  name              String
+  passwordHash      String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  businesses        Business[]
+  payments          Payment[]
+  signedDocuments   LegalDocument[]
+}
+
+model Business {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName      String
+  businessType      String
+  templateId        String?
+  status            String    @default("draft") // draft, in_progress, launched, active
+  userOwnership     Decimal   @default(90.00)
+  citadelFundShare  Decimal   @default(10.00)
+  currentWizardStep Int       @default(0)
+  createdAt         DateTime  @default(now())
+  launchedAt        DateTime?
+  updatedAt         DateTime  @updatedAt
+  
+  revenueTransactions RevenueTransaction[]
+  payments            Payment[]
+  legalDocuments      LegalDocument[]
+  
+  @@index([userId])
+}
+
+model RevenueTransaction {
+  id          String    @id @default(uuid())
+  businessId  String
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  amount      Decimal
+  currency    String    @default("USD")
+  source      String
+  receivedAt  DateTime
+  status      String    @default("pending") // pending, completed, failed
+  createdAt   DateTime  @default(now())
+  
+  allocation  RevenueAllocation?
+  
+  @@index([businessId])
+}
+
+model RevenueAllocation {
+  id                    String    @id @default(uuid())
+  transactionId         String    @unique
+  transaction           RevenueTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  businessOwnerAmount   Decimal
+  citadelFundAmount     Decimal
+  allocatedAt           DateTime  @default(now())
+  
+  @@index([transactionId])
+}
+
+model Payment {
+  id              String    @id @default(uuid())
+  businessId      String
+  business        Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount          Decimal
+  type            String    // revenue, refund, fund_distribution
+  status          String    @default("pending") // pending, processing, completed, failed
+  paymentMethod   String?
+  transactionId   String?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  updatedAt       DateTime  @updatedAt
+  
+  auditEntries    AuditLog[]
+  
+  @@index([businessId])
+  @@index([userId])
+}
+
+model LegalTemplate {
+  id        String    @id @default(uuid())
+  name      String
+  type      String    // registration, operating, revenue_share, ip, compliance
+  content   String    @db.Text
+  version   Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  documents LegalDocument[]
+}
+
+model LegalDocument {
+  id              String    @id @default(uuid())
+  businessId      String
+  business        Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  templateId      String
+  template        LegalTemplate @relation(fields: [templateId], references: [id])
+  templateVersion Int
+  content         String    @db.Text
+  status          String    @default("draft") // draft, signed, archived
+  signedAt        DateTime?
+  signerId        String?
+  signer          User?     @relation(fields: [signerId], references: [id])
+  signatureHash   String?
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([businessId])
+  @@index([templateId])
+  @@index([signerId])
+}
+
+model CitadelFund {
+  id                    String    @id @default(uuid())
+  balance               Decimal   @default(0)
+  totalContributions    Decimal   @default(0)
+  totalDistributions    Decimal   @default(0)
+  lastDistributionDate  DateTime?
+  nextDistributionDate  DateTime?
+  updatedAt             DateTime  @updatedAt
+}
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  paymentId   String?
+  payment     Payment?  @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  action      String
+  details     String    @db.Text
+  userId      String?
+  ipAddress   String?
+  createdAt   DateTime  @default(now())
+  
+  @@index([paymentId])
+}

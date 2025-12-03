@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Confirmed - AZORA</title>
+    <link rel="icon" href="/packages/public/branding/icons/app-icon-512.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .success-icon {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="p-4">
+
+    <div class="glass max-w-lg w-full rounded-2xl p-8 relative overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+        <div class="absolute -top-20 -right-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl"></div>
+
+        <div class="text-center mb-8">
+            <div
+                class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 success-icon">
+                <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold mb-2">Withdrawal Confirmed</h1>
+            <p class="text-gray-400 text-sm">Your funds are on their way to your wallet.</p>
+        </div>
+
+        <!-- Receipt Details -->
+        <div class="bg-black/30 rounded-xl p-6 mb-8 border border-white/5 space-y-4">
+            <div class="flex justify-between items-center pb-4 border-b border-white/5">
+                <span class="text-gray-400 text-sm">Amount</span>
+                <span class="text-2xl font-bold text-white">R 5,000.00</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Source</span>
+                <span class="text-white text-sm">AZR Mining Balance</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Destination</span>
+                <span class="text-white text-sm flex items-center gap-2">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
+                        class="w-4 h-4">
+                    Google Wallet
+                </span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Transaction ID</span>
+                <span class="text-white text-xs font-mono bg-white/5 px-2 py-1 rounded">0x8f...3a21</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Date</span>
+                <span class="text-white text-sm" id="date"></span>
+            </div>
+        </div>
+
+        <!-- Blockchain Verification -->
+        <div class="flex items-center gap-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-8">
+            <div class="text-blue-400">⛓️</div>
+            <div class="text-xs text-blue-300">
+                <strong>Blockchain Verified:</strong> This transaction has been permanently recorded on the Azora
+                Ledger.
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="space-y-3">
+            <button onclick="window.location.href='dashboard.html'"
+                class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                Return to Dashboard
+            </button>
+            <button
+                class="w-full bg-transparent border border-white/10 text-white font-medium py-3 rounded-lg hover:bg-white/5 transition-colors">
+                Download Receipt
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('date').textContent = new Date().toLocaleString();
+    </script>
+
+</body>
+
+</html>

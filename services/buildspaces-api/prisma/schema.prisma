@@ -1,0 +1,285 @@
+// Prisma Schema for BuildSpaces
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// PROJECTS & IDEAS
+// ============================================================================
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(GENESIS)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Genesis Station data
+  vision      Json?    // { title, description, goals, successCriteria }
+  requirements Json?   // { functional: [], nonFunctional: [], constraints: [] }
+  designChoices Json?  // { architecture, techStack, patterns, reasoning }
+  
+  // Relations
+  ideas       Idea[]
+  tasks       AgentTask[]
+  files       ProjectFile[]
+  deployments Deployment[]
+  
+  @@index([createdBy])
+  @@index([status])
+}
+
+enum ProjectStatus {
+  GENESIS      // Idea phase
+  ACTIVE       // In development
+  DEPLOYED     // Live in production
+  ARCHIVED     // Completed or abandoned
+}
+
+model Idea {
+  id          String   @id @default(uuid())
+  projectId   String?
+  title       String
+  description String
+  authorId    String
+  status      IdeaStatus @default(GENESIS)
+  votes       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // AI Analysis
+  aiAnalysis  Json?    // { score, feasibility, summary, estimatedTime, requiredAgents, techStack }
+  
+  // Relations
+  project     Project? @relation(fields: [projectId], references: [id])
+  comments    IdeaComment[]
+  tags        IdeaTag[]
+  
+  @@index([authorId])
+  @@index([status])
+  @@index([projectId])
+}
+
+enum IdeaStatus {
+  GENESIS      // Just created
+  VALIDATING   // AI is analyzing
+  APPROVED     // Ready to implement
+  ARCHIVED     // Rejected or completed
+}
+
+model IdeaComment {
+  id        String   @id @default(uuid())
+  ideaId    String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+  
+  idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  
+  @@index([ideaId])
+}
+
+model IdeaTag {
+  id     String @id @default(uuid())
+  ideaId String
+  tag    String
+  
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  
+  @@index([ideaId])
+  @@index([tag])
+}
+
+// ============================================================================
+// AGENT TASKS & EXECUTION
+// ============================================================================
+
+model AgentTask {
+  id          String   @id @default(uuid())
+  projectId   String
+  agentName   String   // 'Elara', 'Zola', 'Jabari', etc.
+  taskType    String   // 'code_generation', 'security_audit', 'optimization', etc.
+  title       String
+  description String?
+  status      TaskStatus @default(PENDING)
+  priority    Int      @default(5)
+  
+  // Task data
+  input       Json?    // Task-specific input data
+  output      Json?    // Task result
+  error       String?  // Error message if failed
+  
+  // Dependencies
+  dependsOn   String[] // Array of task IDs
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+  
+  // Relations
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  activities  AgentActivity[]
+  
+  @@index([projectId])
+  @@index([agentName])
+  @@index([status])
+}
+
+enum TaskStatus {
+  PENDING      // Not started
+  PROCESSING   // Agent is working
+  COMPLETED    // Successfully finished
+  FAILED       // Error occurred
+  BLOCKED      // Waiting for dependencies
+}
+
+model AgentActivity {
+  id        String   @id @default(uuid())
+  taskId    String
+  agentName String
+  action    String   // 'file_created', 'file_modified', 'test_run', 'commit', 'comment'
+  details   String
+  file      String?  // File path if applicable
+  timestamp DateTime @default(now())
+  
+  task      AgentTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  @@index([taskId])
+  @@index([agentName])
+  @@index([timestamp])
+}
+
+// ============================================================================
+// PROJECT FILES & CODE
+// ============================================================================
+
+model ProjectFile {
+  id             String   @id @default(uuid())
+  projectId      String
+  path           String   // Relative path from project root
+  content        String   @db.Text
+  language       String?  // 'typescript', 'javascript', 'python', etc.
+  lastModifiedBy String   // Agent name or 'user'
+  updatedAt      DateTime @updatedAt
+  
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, path])
+  @@index([projectId])
+}
+
+// ============================================================================
+// AGENT CONFIGURATION
+// ============================================================================
+
+model AgentBehavior {
+  id          String   @id @default(uuid())
+  projectId   String
+  agentName   String
+  
+  // Code style preferences
+  codeStyle   Json?    // { language, conventions, formatting }
+  
+  // Priorities (1-10)
+  priorities  Json?    // { performance, readability, security, testCoverage }
+  
+  // Constraints
+  constraints String[] // e.g., "Never use 'any' type"
+  
+  // Library preferences
+  libraries   Json?    // { preferred: [], forbidden: [] }
+  
+  // Custom instructions
+  customInstructions String? @db.Text
+  
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([projectId, agentName])
+  @@index([projectId])
+}
+
+// ============================================================================
+// DEPLOYMENTS
+// ============================================================================
+
+model Deployment {
+  id          String   @id @default(uuid())
+  projectId   String
+  platform    String   // 'vercel', 'railway', 'aws', etc.
+  environment String   // 'dev', 'staging', 'production'
+  status      DeploymentStatus @default(BUILDING)
+  url         String?
+  
+  // Deployment metadata
+  metadata    Json?    // Platform-specific data
+  
+  // Cost estimation
+  estimatedCost Float?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  deployedAt  DateTime?
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+  @@index([status])
+}
+
+enum DeploymentStatus {
+  BUILDING     // Deployment in progress
+  READY        // Successfully deployed
+  FAILED       // Deployment failed
+  CANCELLED    // User cancelled
+}
+
+// ============================================================================
+// GENESIS STATION LOG
+// ============================================================================
+
+model GenesisLog {
+  id          String   @id @default(uuid())
+  projectId   String
+  agentName   String
+  decision    String   // What decision was made
+  impact      String   // What was affected
+  reasoning   String?  // Why this decision
+  timestamp   DateTime @default(now())
+  
+  @@index([projectId])
+  @@index([timestamp])
+}
+
+// ============================================================================
+// USER INSTRUCTIONS
+// ============================================================================
+
+model UserInstruction {
+  id          String   @id @default(uuid())
+  projectId   String
+  userId      String
+  type        InstructionType
+  target      String?  // Specific agent or task ID
+  instruction String   @db.Text
+  status      String   @default("pending") // 'pending', 'acknowledged', 'completed'
+  createdAt   DateTime @default(now())
+  
+  @@index([projectId])
+  @@index([status])
+}
+
+enum InstructionType {
+  TASK_GUIDANCE      // Guidance for a specific task
+  AGENT_BEHAVIOR     // How an agent should work
+  PRIORITY_CHANGE    // Change task priority
+  GENERAL            // General instruction to Elara
+}

@@ -1,0 +1,22 @@
+{
+  "agent": "agent-04",
+  "task": "Constitutional AI - Review and implement bias detection, self-critique and audits",
+  "status": "In Progress",
+  "startTime": "2025-12-03T10:25:00Z",
+  "notes": [
+    "Opened docs/agents/agent-04.tasks.md",
+    "Will inspect services/constitutional-ai and ai-ethics-monitor for mock implementations and add tests later."
+  ],
+  "verificationLogs": []
+  ,
+  "actionsTaken": [
+    "Added simple bias heuristics in services/constitutional-ai/src/bias.ts",
+    "Added services/constitutional-ai/src/audit-controller.ts for audit create/get endpoints",
+    "Prepared test plans to add bias detection unit tests and self-critique audit logging"
+  ]
+  ,
+  "moreActions": [
+    "Added ConstitutionalEngine.selfCritique method to perform critique and log audits",
+    "Added /api/critique endpoint and unit test in services/constitutional-ai/__tests__/critique.test.ts"
+  ]
+}

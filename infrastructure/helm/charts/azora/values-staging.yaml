@@ -1,0 +1,66 @@
+replicaCount: 2
+
+image:
+  tag: "staging"
+
+services:
+  apiGateway:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  
+  auth:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+  
+  education:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  
+  pay:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+ingress:
+  hosts:
+    - host: api-staging.azora.world
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: azora-staging-tls
+      hosts:
+        - api-staging.azora.world
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 6
+
+postgresql:
+  host: postgres-staging
+
+redis:
+  host: redis-staging

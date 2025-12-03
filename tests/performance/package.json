@@ -1,0 +1,14 @@
+{
+  "name": "azora-load-tests",
+  "version": "1.0.0",
+  "description": "Load testing suite for Azora OS",
+  "scripts": {
+    "test:load": "artillery run load-test.yml",
+    "test:load:report": "artillery run --output report.json load-test.yml && artillery report report.json",
+    "test:stress": "artillery run --config stress-config.yml load-test.yml",
+    "test:spike": "artillery run --config spike-config.yml load-test.yml"
+  },
+  "devDependencies": {
+    "artillery": "^2.0.8"
+  }
+}

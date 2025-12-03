@@ -1,0 +1,81 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Proposal {
+  id           String   @id @default(uuid())
+  title        String
+  description  String
+  proposerId   String
+  type         String   @default("POLICY") // POLICY, CONSTITUTIONAL, BUDGET, TECHNICAL
+  status       String   @default("ACTIVE") // ACTIVE, PASSED, REJECTED, WITHDRAWN
+  votesFor     Int      @default(0)
+  votesAgainst Int      @default(0)
+  quorum       Int      @default(100) // Minimum votes required
+  passThreshold Float   @default(0.66) // 66% required to pass
+  createdAt    DateTime @default(now())
+  votingEndsAt DateTime?
+  executedAt   DateTime?
+  
+  votes        Vote[]
+  
+  @@map("proposals")
+  @@index([status])
+  @@index([type])
+  @@index([proposerId])
+}
+
+model Vote {
+  id          String   @id @default(uuid())
+  proposalId  String
+  userId      String
+  vote        String   // FOR, AGAINST, ABSTAIN
+  weight      Int      @default(1) // Vote weight (could be based on stake)
+  reason      String?
+  timestamp   DateTime @default(now())
+  
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  
+  @@map("votes")
+  @@unique([proposalId, userId]) // One vote per user per proposal
+  @@index([proposalId])
+  @@index([userId])
+}
+
+model Policy {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  category    String   // CONSTITUTIONAL, OPERATIONAL, FINANCIAL
+  content     Json     // Policy details
+  proposalId  String?  // Link to proposal that created it
+  status      String   @default("ACTIVE") // ACTIVE, SUPERSEDED, REPEALED
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+  
+  @@map("policies")
+  @@index([status])
+  @@index([category])
+}
+
+model GovernanceAudit {
+  id         String   @id @default(uuid())
+  action     String   // PROPOSAL_CREATED, VOTE_CAST, POLICY_ENACTED, etc.
+  entityType String   // PROPOSAL, VOTE, POLICY
+  entityId   String
+  userId     String
+  details    Json
+  timestamp  DateTime @default(now())
+  
+  @@map("governance_audits")
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([timestamp])
+}

@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  firstName String
+  lastName String
+  userType String // 'student', 'teacher', 'researcher', etc.
+  tier String @default("free") // 'free', 'premium', 'pro'
+  language String @default("en")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  enrollments Enrollment[]
+  courses Course[]
+  conversions ConversionEvent[]
+  payments Payment[]
+  certificates Certificate[]
+  conversionOffers ConversionOffer[]
+}
+
+model Course {
+  id String @id @default(cuid())
+  title String
+  description String
+  instructorId String
+  instructor User @relation(fields: [instructorId], references: [id])
+  tier String // 'free', 'premium', 'pro'
+  modules Module[]
+  assessments Assessment[]
+  prerequisites String[] @default([])
+  language String @default("en")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  enrollments Enrollment[]
+  outcomes LearningOutcome[]
+  payments Payment[]
+}
+
+model Enrollment {
+  id String @id @default(cuid())
+  studentId String
+  student User @relation(fields: [studentId], references: [id])
+  courseId String
+  course Course @relation(fields: [courseId], references: [id])
+  tier String
+  status String @default("active") // 'active', 'completed', 'dropped'
+  progress Int @default(0)
+  startDate DateTime @default(now())
+  completionDate DateTime?
+  
+  outcomes LearningOutcome[]
+  certificate Certificate?
+}
+
+model Module {
+  id String @id @default(cuid())
+  courseId String
+  course Course @relation(fields: [courseId], references: [id])
+  title String
+  content String
+  order Int
+  estimatedTime Int // minutes
+  
+  assessments Assessment[]
+  outcomes LearningOutcome[]
+}
+
+model Assessment {
+  id String @id @default(cuid())
+  courseId String
+  course Course @relation(fields: [courseId], references: [id])
+  moduleId String
+  module Module @relation(fields: [moduleId], references: [id])
+  title String
+  questions String[] // JSON array
+  passingScore Int @default(70)
+}
+
+model LearningOutcome {
+  id String @id @default(cuid())
+  enrollmentId String
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  courseId String
+  course Course @relation(fields: [courseId], references: [id])
+  moduleId String
+  module Module @relation(fields: [moduleId], references: [id])
+  assessmentId String?
+  assessmentScore Int
+  timeSpent Int // seconds
+  conceptMastery Int @default(0)
+  completedAt DateTime @default(now())
+}
+
+model Certificate {
+  id String @id @default(cuid())
+  enrollmentId String @unique
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  courseId String
+  studentId String
+  student User @relation(fields: [studentId], references: [id])
+  studentName String
+  issuedDate DateTime @default(now())
+  verificationUrl String @unique
+  skills String[] @default([])
+}
+
+model ConversionEvent {
+  id String @id @default(cuid())
+  studentId String
+  student User @relation(fields: [studentId], references: [id])
+  eventType String // 'module_completion', 'assessment_pass', etc.
+  triggerValue Int
+  timestamp DateTime @default(now())
+  
+  offer ConversionOffer?
+}
+
+model ConversionOffer {
+  id String @id @default(cuid())
+  eventId String @unique
+  event ConversionEvent @relation(fields: [eventId], references: [id])
+  studentId String
+  student User @relation(fields: [studentId], references: [id])
+  offerType String
+  discount Int
+  expiresAt DateTime
+  accepted Boolean @default(false)
+  acceptedAt DateTime?
+}
+
+model Payment {
+  id String @id @default(cuid())
+  studentId String
+  student User @relation(fields: [studentId], references: [id])
+  courseId String
+  course Course @relation(fields: [courseId], references: [id])
+  amount Decimal
+  tier String
+  period String
+  status String @default("pending") // 'pending', 'completed', 'refunded'
+  stripePaymentId String?
+  createdAt DateTime @default(now())
+}
+
+model PricingTier {
+  id String @id @default(cuid())
+  name String @unique // 'free', 'premium', 'pro'
+  monthlyPrice Decimal @default(0)
+  studentDiscount Int @default(0) // percentage
+  features String[] @default([])
+  coursesPerMonth Int
+  aiQueriesPerMonth Int
+  storageGB Int
+  supportLevel String // 'community', 'priority', 'dedicated'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  countryPricing CountryPricing[]
+}
+
+model CountryPricing {
+  id String @id @default(cuid())
+  pricingTierId String
+  pricingTier PricingTier @relation(fields: [pricingTierId], references: [id], onDelete: Cascade)
+  countryCode String // ISO 3166-1 alpha-2 (e.g., 'US', 'GB', 'IN', 'ZA')
+  currency String // ISO 4217 (e.g., 'USD', 'GBP', 'INR', 'ZAR')
+  monthlyPrice Decimal
+  studentDiscount Int @default(0) // percentage
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([pricingTierId, countryCode])
+}

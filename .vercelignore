@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+
+# Environment
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Development
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Design system tools (not needed in production)
+tools/design-system/
+
+# Documentation (not needed in production)
+docs/
+*.md
+!README.md
+
+# Infrastructure
+infrastructure/
+deployment/
+monitoring/
+
+# Services (backend - deploy separately)
+services/
+
+# Tools
+tools/
+!tools/design-system/dist
+
+# CI/CD
+.github/
+
+# OS
+.DS_Store
+Thumbs.db

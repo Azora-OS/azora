@@ -1,0 +1,106 @@
+{
+  "name": "@azorahub/mcp-server",
+  "version": "1.0.0",
+  "description": "Azorahub MCP Server - Model Context Protocol server for Azorahub ecosystem",
+  "main": "dist/index.js",
+  "bin": {
+    "azorahub-mcp-server": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:e2e": "jest --config jest.e2e.config.js",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.ts",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "docker:build": "docker build -t azorahub/mcp-server .",
+    "docker:run": "docker run -p 3000:3000 azorahub/mcp-server",
+    "release": "semantic-release",
+    "docs:generate": "typedoc src/index.ts",
+    "benchmark": "node dist/benchmark.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "azorahub",
+    "ai",
+    "assistant",
+    "github",
+    "repository",
+    "development",
+    "automation"
+  ],
+  "author": "Azorahub Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azorahub/mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/azorahub/mcp-server/issues"
+  },
+  "homepage": "https://docs.azorahub.com/mcp-server",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@azorahub/api-client": "^1.0.0",
+    "axios": "^1.6.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.0",
+    "winston": "^3.11.0",
+    "node-cache": "^5.1.2",
+    "rate-limiter-flexible": "^4.0.0",
+    "joi": "^17.11.0",
+    "semver": "^7.5.4",
+    "yaml": "^2.3.4",
+    "glob": "^10.3.0",
+    "chokidar": "^3.5.3",
+    "ws": "^8.14.0",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/jest": "^29.5.0",
+    "@types/semver": "^7.5.0",
+    "@types/ws": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "semantic-release": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typedoc": "^0.25.0",
+    "typescript": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": ["main"],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  }
+}

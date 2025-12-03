@@ -1,0 +1,37 @@
+{
+    "name": "@azora/premium-ui",
+    "version": "1.0.0",
+    "description": "Premium UI component library for Azora OS applications",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup src/index.ts --format cjs,esm --dts",
+        "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+        "lint": "eslint src --ext .ts,.tsx",
+        "type-check": "tsc --noEmit"
+    },
+    "keywords": [
+        "azora",
+        "ui",
+        "components",
+        "react",
+        "typescript"
+    ],
+    "author": "Azora OS",
+    "license": "PROPRIETARY",
+    "peerDependencies": {
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "dependencies": {
+        "clsx": "^2.0.0",
+        "framer-motion": "^10.16.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.0",
+        "@types/react-dom": "^18.2.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.3.0"
+    }
+}

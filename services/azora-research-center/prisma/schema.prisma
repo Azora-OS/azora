@@ -1,0 +1,260 @@
+// Azora OS - azora-research-center Database Schema
+// Ubuntu: "My data strengthens our foundation"
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ResearchProject {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  abstract    String?
+  keywords    String[]
+  status      ProjectStatus @default(PROPOSED)
+  startDate   DateTime?
+  endDate     DateTime?
+  funding     Decimal? @db.Decimal(12, 2)
+  fundingSource String?
+  leadResearcherId String
+  collaborators Json?
+  tags        String[]
+  visibility  Visibility @default(PUBLIC)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([title])
+  @@index([leadResearcherId])
+  @@index([status])
+  @@index([keywords])
+  @@map("research_projects")
+}
+
+model ResearchTeam {
+  id          String   @id @default(uuid())
+  projectId   String
+  userId      String
+  role        TeamRole
+  joinedAt    DateTime @default(now())
+  leftAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+  @@map("research_teams")
+}
+
+model ResearchDocument {
+  id          String   @id @default(uuid())
+  projectId   String
+  title       String
+  description String?
+  fileType    String
+  fileSize    Int?
+  url         String
+  version     String   @default("1.0")
+  status      DocumentStatus @default(DRAFT)
+  authors     Json?
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+  @@index([title])
+  @@index([status])
+  @@map("research_documents")
+}
+
+model ResearchPublication {
+  id          String   @id @default(uuid())
+  projectId   String?
+  title       String
+  abstract    String?
+  authors     Json
+  journal     String?
+  volume      String?
+  issue       String?
+  pages       String?
+  publicationDate DateTime?
+  doi         String?  @unique
+  url         String?
+  status      PublicationStatus @default(DRAFT)
+  keywords    String[]
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     ResearchProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  
+  @@index([title])
+  @@index([doi])
+  @@index([status])
+  @@index([publicationDate])
+  @@map("research_publications")
+}
+
+model ResearchData {
+  id          String   @id @default(uuid())
+  projectId   String
+  name        String
+  description String?
+  dataType    String
+  fileSize    Int?
+  url         String
+  version     String   @default("1.0")
+  license     String?
+  accessLevel AccessLevel @default(PUBLIC)
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+  @@index([name])
+  @@index([accessLevel])
+  @@map("research_data")
+}
+
+model ResearchMilestone {
+  id          String   @id @default(uuid())
+  projectId   String
+  title       String
+  description String?
+  dueDate     DateTime?
+  completedAt DateTime?
+  status      MilestoneStatus @default(PENDING)
+  priority    Priority @default(MEDIUM)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("research_milestones")
+}
+
+model ResearchCollaboration {
+  id          String   @id @default(uuid())
+  projectId   String
+  collaboratorId String
+  institution String?
+  role        String?
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  status      CollaborationStatus @default(ACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, collaboratorId])
+  @@index([projectId])
+  @@index([collaboratorId])
+  @@index([status])
+  @@map("research_collaborations")
+}
+
+enum ProjectStatus {
+  PROPOSED
+  APPROVED
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TeamRole {
+  PRINCIPAL_INVESTIGATOR
+  CO_INVESTIGATOR
+  RESEARCH_ASSISTANT
+  PHD_STUDENT
+  MSC_STUDENT
+  UNDERGRADUATE
+  COLLABORATOR
+  EXTERNAL_ADVISOR
+}
+
+enum DocumentStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PublicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  ACCEPTED
+  PUBLISHED
+  REJECTED
+}
+
+enum AccessLevel {
+  PUBLIC
+  INTERNAL
+  RESTRICTED
+  CONFIDENTIAL
+}
+
+enum Visibility {
+  PUBLIC
+  INTERNAL
+  PRIVATE
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum CollaborationStatus {
+  ACTIVE
+  INACTIVE
+  ENDED
+  TERMINATED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+  SUSPENDED
+}
+
+// Constitutional Compliance
+model ConstitutionalLog {
+  id        String   @id @default(uuid())
+  action    String
+  userId    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("constitutional_logs")
+}

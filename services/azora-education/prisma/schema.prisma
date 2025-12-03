@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  firstName     String
+  lastName      String
+  email         String   @unique
+  dateOfBirth   DateTime?
+  grade         String?
+  country       String   @default("ZA")
+  
+  enrollments   Enrollment[]
+  assessments   AssessmentSubmission[]
+  progress      LearningProgress[]
+  wallet        Wallet?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
+  @@index([userId])
+  @@map("students")
+}
+
+model Course {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  instructorId  String
+  price         Float    @default(0)
+  currency      String   @default("AZR")
+  duration      Int      // in hours
+  level         String   // beginner, intermediate, advanced
+  category      String
+  
+  modules       Module[]
+  enrollments   Enrollment[]
+  
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+  @@map("courses")
+}
+
+model Module {
+  id            String   @id @default(cuid())
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  order         Int
+  content       String     // lessons, videos, materials
+  
+  progress      LearningProgress[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([courseId])
+  @@map("modules")
+}
+
+model Enrollment {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  status        String   @default("active") // active, completed, dropped
+  progress      Float    @default(0) // 0-100
+  
+  enrolledAt    DateTime @default(now())
+  completedAt   DateTime?
+  
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+model LearningProgress {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  moduleId      String
+  module        Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  completed     Boolean  @default(false)
+  timeSpent     Int      @default(0) // in minutes
+  score         Float?   // 0-100
+  
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+
+  @@unique([studentId, moduleId])
+  @@index([studentId])
+  @@map("learning_progress")
+}
+
+model AssessmentSubmission {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assessmentId  String
+  
+  answers       String
+  score         Float
+  passed        Boolean
+  feedback      String?
+  
+  submittedAt   DateTime @default(now())
+
+  @@index([studentId])
+  @@index([assessmentId])
+  @@map("assessment_submissions")
+}
+
+model Wallet {
+  id            String   @id @default(cuid())
+  studentId     String   @unique
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  balance       Float    @default(0)
+  currency      String   @default("AZR")
+  
+  transactions  Transaction[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  walletId      String
+  wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  
+  type          String   // payment, earning, refund
+  amount        Float
+  currency      String   @default("AZR")
+  description   String
+  reference     String?  // courseId, jobId, etc
+  
+  status        String   @default("completed")
+  
+  createdAt     DateTime @default(now())
+
+  @@index([walletId])
+  @@index([type])
+  @@map("transactions")
+}

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  education-db:
+    image: postgres:15
+    container_name: azora-education-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_education
+    ports:
+      - "5438:5432"
+    volumes:
+      - education_db_data:/var/lib/postgresql/data
+    networks:
+      - education-network
+
+  education-service:
+    build: .
+    container_name: azora-education-service
+    ports:
+      - "3010:3010"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@education-db:5432/azora_education
+      - PORT=3010
+      - NODE_ENV=development
+    depends_on:
+      - education-db
+    networks:
+      - education-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  education_db_data:
+
+networks:
+  education-network:
+    driver: bridge

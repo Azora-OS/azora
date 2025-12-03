@@ -1,0 +1,43 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model EthicalAudit {
+  id              String   @id @default(uuid())
+  action          String
+  context         String
+  isEthical       Boolean
+  score           Int
+  ubuntuAlignment Int
+  reasoning       String
+  timestamp       DateTime @default(now())
+  
+  @@map("ethical_audits")
+}
+
+model VetoLog {
+  id            String   @id @default(uuid())
+  action        String
+  reason        String
+  violations    String[]
+  timestamp     DateTime @default(now())
+  
+  @@map("veto_logs")
+}
+
+model BiasReport {
+  id            String   @id @default(uuid())
+  content       String
+  hasBias       Boolean
+  biasType      String?
+  confidence    Int
+  severity      String
+  timestamp     DateTime @default(now())
+  
+  @@map("bias_reports")
+}

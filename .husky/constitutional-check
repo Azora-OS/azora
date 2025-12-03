@@ -1,0 +1,18 @@
+#!/bin/sh
+# Constitutional Compliance Pre-Commit Hook
+# Ensures all commits comply with Azora Constitution
+
+echo "🛡️ Running Constitutional Compliance Check..."
+
+# Run constitutional enforcement
+npx ts-node infrastructure/constitutional-enforcement-engine.ts
+
+# Check exit code
+if [ $? -ne 0 ]; then
+  echo "❌ Constitutional violations detected!"
+  echo "Please fix violations before committing."
+  exit 1
+fi
+
+echo "✅ Constitutional compliance verified"
+exit 0

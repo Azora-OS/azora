@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+build
+.next
+out
+coverage
+tmp
+temp-*
+
+# Archives and backups
+.archive
+docs/reports/archive-2025-11
+
+# Logs and locks
+*.log
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Assets
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+
+# Environment files
+.env.local
+.env*.local
+
+# Tooling and VCS metadata
+.git
+.github
+.vscode
+.idea
+
+# Generated files
+*.min.js
+*.min.css
+
+# Documentation intentionally skipped
+CHANGELOG.md

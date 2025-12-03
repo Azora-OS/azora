@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Azora Pay Service
+  azora-pay:
+    build:
+      context: ./services/azora-pay
+      dockerfile: Dockerfile
+    container_name: azora-pay
+    ports:
+      - "3018:3018"
+    environment:
+      - NODE_ENV=development
+      - PORT=3018
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_pay
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_placeholder}
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Azora Mint Service
+  azora-mint:
+    build:
+      context: ./services/azora-mint
+      dockerfile: Dockerfile
+    container_name: azora-mint
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=development
+      - PORT=3010
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_mint
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Azora Ledger Service
+  azora-ledger:
+    build:
+      context: ./services/azora-ledger
+      dockerfile: Dockerfile
+    container_name: azora-ledger
+    ports:
+      - "3012:3012"
+    environment:
+      - NODE_ENV=development
+      - PORT=3012
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_ledger
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Azora Treasury Service
+  azora-treasury:
+    build:
+      context: ./services/azora-treasury
+      dockerfile: Dockerfile
+    container_name: azora-treasury
+    ports:
+      - "3028:3028"
+    environment:
+      - NODE_ENV=development
+      - PORT=3028
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_treasury
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  azora-network:
+    external: true

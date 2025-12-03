@@ -1,0 +1,7 @@
+{
+  "maxReviewers": 2,
+  "requiredOrgs": ["azora-technologies"],
+  "skipAlreadyAssignedPR": true,
+  "skipAlreadyMentionedPR": true,
+  "skipCollaboratorPR": true
+}

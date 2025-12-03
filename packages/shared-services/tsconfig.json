@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@azora/shared-services/*": ["./*"],
+      "@azora/shared-database/*": ["../../packages/shared-database/dist/*"],
+      "@azora/shared-database/prisma": ["../../packages/shared-database/dist/prisma-client.js"],
+      "@azora/shared-database/redis": ["../../packages/shared-database/dist/redis-client.js"],
+      "@azora/shared-auth/*": ["../../packages/shared-auth/dist/*"],
+      "@azora/shared-auth/middleware": ["../../packages/shared-auth/dist/auth-middleware.js"]
+    },
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "tests", "__tests__"]
+}

@@ -1,0 +1,7 @@
+Azora Proprietary License
+
+Copyright (c) 2025 Azora Technologies. All rights reserved.
+
+This codebase includes proprietary components owned by Azora Technologies. Unless explicitly listed otherwise in this repository (for example, in `ThirdPartyNotices.txt`), the Azora-owned code in this repository may not be copied, redistributed, or used in derivative works without express written permission from Azora Technologies.
+
+Please consult `OWNERSHIP.md` for a breakdown of which files are proprietary to Azora and which are third-party/OSS licensed.

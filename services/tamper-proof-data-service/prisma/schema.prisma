@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model TamperProofData {
+  id          String   @id @default(uuid())
+  userId      String
+  dataType    String   // CREDENTIAL, CERTIFICATE, DOCUMENT, etc.
+  data        Json     // Encrypted data
+  dataHash    String   // SHA-256 hash of data
+  signature   String   // Digital signature
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  auditTrail  DataAuditTrail[]
+  
+  @@map("tamper_proof_data")
+  @@index([userId])
+  @@index([dataType])
+  @@index([dataHash])
+}
+
+model DataAuditTrail {
+  id        String   @id @default(uuid())
+  dataId    String
+  action    String   // CREATE, READ, UPDATE, DELETE, VERIFY
+  userId    String
+  dataType  String
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime @default(now())
+  
+  data      TamperProofData @relation(fields: [dataId], references: [id], onDelete: Cascade)
+  
+  @@map("data_audit_trail")
+  @@index([dataId])
+  @@index([userId])
+  @@index([timestamp])
+}
+
+model IntegrityCheck {
+  id            String   @id @default(uuid())
+  dataId        String
+  expectedHash  String
+  actualHash    String
+  isValid       Boolean
+  checkedAt     DateTime @default(now())
+  checkedBy     String?
+  
+  @@map("integrity_checks")
+  @@index([dataId])
+  @@index([isValid])
+}

@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  title: Azora Agent Execution API
+  version: 0.1.0
+  description: Constitutional AI-powered agent execution framework
+servers:
+  - url: http://localhost:4002
+paths:
+  /execute:
+    post:
+      summary: Execute a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agentId:
+                  type: string
+                payload:
+                  type: object
+      responses:
+        '200':
+          description: Task execution result
+  /task/{id}:
+    get:
+      summary: Get task details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task details
+  /agents:
+    get:
+      summary: List all agents
+      responses:
+        '200':
+          description: List of agents
+  /agents/{id}/handoff:
+    post:
+      summary: Hand off task to another agent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                toAgentId:
+                  type: string
+                taskId:
+                  type: string
+                context:
+                  type: object
+      responses:
+        '200':
+          description: Handoff successful
+  /analytics/report:
+    get:
+      summary: Get analytics report
+      parameters:
+        - name: timeRange
+          in: query
+          schema:
+            type: integer
+            default: 86400000
+      responses:
+        '200':
+          description: Analytics report
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Service healthy
+        '503':
+          description: Service unhealthy

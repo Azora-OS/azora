@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" fill="none">
+  <defs>
+    <linearGradient id="storyBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="storyAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="storyGlow">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <rect width="1080" height="1920" fill="url(#storyBg)"/>
+  
+  <!-- Central glow -->
+  <ellipse cx="540" cy="960" rx="500" ry="800" fill="url(#storyGlow)"/>
+  
+  <!-- Large central icon -->
+  <g transform="translate(540, 800)">
+    <path d="M -140,240 L -70,-240 L 20,-240 L -50,240 Z" fill="url(#storyAccent)"/>
+    <path d="M 70,-240 L 140,240 L 50,240 L -20,-240 Z" fill="url(#storyAccent)"/>
+    <rect x="-85" y="30" width="170" height="45" rx="22" fill="#06b6d4"/>
+    <circle cx="0" cy="-270" r="25" fill="#ec4899"/>
+    <circle cx="0" cy="0" r="380" stroke="#06b6d4" stroke-width="5" fill="none" opacity="0.3"/>
+    
+    <!-- Decorative nodes -->
+    <circle cx="-300" cy="0" r="15" fill="#8b5cf6" opacity="0.6"/>
+    <circle cx="300" cy="0" r="15" fill="#06b6d4" opacity="0.6"/>
+  </g>
+  
+  <!-- Text -->
+  <g transform="translate(540, 1360)">
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="120" font-weight="900" fill="white" text-anchor="middle">
+      <tspan font-weight="900">A</tspan><tspan font-weight="700" opacity="0.85">zora</tspan>
+    </text>
+    <text x="0" y="100" font-family="'Inter', sans-serif" font-size="90" font-weight="600" fill="white" text-anchor="middle" opacity="0.7">
+      OS
+    </text>
+    <text x="0" y="190" font-family="'Inter', sans-serif" font-size="42" font-weight="600" fill="url(#storyAccent)" text-anchor="middle">
+      Universal Human
+    </text>
+    <text x="0" y="250" font-family="'Inter', sans-serif" font-size="42" font-weight="600" fill="url(#storyAccent)" text-anchor="middle">
+      Infrastructure
+    </text>
+    
+    <!-- Features -->
+    <g transform="translate(0, 350)">
+      <text x="0" y="0" font-family="'Inter', sans-serif" font-size="32" font-weight="500" fill="#94a3b8" text-anchor="middle">
+        ✓ Open Source
+      </text>
+      <text x="0" y="60" font-family="'Inter', sans-serif" font-size="32" font-weight="500" fill="#94a3b8" text-anchor="middle">
+        ✓ Constitutional AI
+      </text>
+      <text x="0" y="120" font-family="'Inter', sans-serif" font-size="32" font-weight="500" fill="#94a3b8" text-anchor="middle">
+        ✓ Quantum Secure
+      </text>
+    </g>
+  </g>
+  
+  <!-- Swipe up indicator -->
+  <g transform="translate(540, 1850)">
+    <text x="0" y="0" font-family="'Inter', sans-serif" font-size="24" font-weight="600" fill="white" text-anchor="middle" opacity="0.6">
+      Swipe up to learn more
+    </text>
+  </g>
+</svg>
+

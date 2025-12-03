@@ -1,0 +1,368 @@
+name: Status Checks & PR Integration
+
+on:
+  pull_request:
+    branches: [main, develop]
+  workflow_run:
+    workflows:
+      - "CI - Linting & Type Checking"
+      - "Test Suite"
+      - "Security Scanning"
+      - "E2E Tests"
+    types: [completed]
+
+concurrency:
+  group: status-checks-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  aggregate-status:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      checks: read
+      statuses: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get workflow run status
+        id: workflow-status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pullRequest.head.sha,
+            });
+            
+            const requiredChecks = [
+              'CI - Linting & Type Checking',
+              'Test Suite',
+              'Security Scanning'
+            ];
+            
+            const optionalChecks = [
+              'E2E Tests'
+            ];
+            
+            let requiredStatus = {};
+            let optionalStatus = {};
+            
+            checkRuns.check_runs.forEach(run => {
+              if (requiredChecks.includes(run.name)) {
+                requiredStatus[run.name] = {
+                  status: run.status,
+                  conclusion: run.conclusion,
+                  url: run.html_url
+                };
+              } else if (optionalChecks.includes(run.name)) {
+                optionalStatus[run.name] = {
+                  status: run.status,
+                  conclusion: run.conclusion,
+                  url: run.html_url
+                };
+              }
+            });
+            
+            core.setOutput('required-checks', JSON.stringify(requiredStatus));
+            core.setOutput('optional-checks', JSON.stringify(optionalStatus));
+            
+            // Determine overall status
+            const allRequiredPassed = Object.values(requiredStatus).every(
+              check => check.conclusion === 'success' || check.conclusion === null
+            );
+            
+            core.setOutput('all-required-passed', allRequiredPassed);
+      
+      - name: Comment PR with status summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const requiredChecks = JSON.parse('${{ steps.workflow-status.outputs.required-checks }}');
+            const optionalChecks = JSON.parse('${{ steps.workflow-status.outputs.optional-checks }}');
+            
+            let comment = '## ✅ Status Checks Summary\n\n';
+            
+            // Required checks section
+            comment += '### 🔴 Required Checks\n\n';
+            comment += '| Check | Status |\n';
+            comment += '|-------|--------|\n';
+            
+            Object.entries(requiredChecks).forEach(([name, check]) => {
+              let icon = '⏳';
+              if (check.conclusion === 'success') {
+                icon = '✅';
+              } else if (check.conclusion === 'failure') {
+                icon = '❌';
+              } else if (check.conclusion === 'skipped') {
+                icon = '⊘';
+              }
+              
+              const statusText = check.conclusion || check.status;
+              comment += `| ${name} | ${icon} ${statusText} |\n`;
+            });
+            
+            comment += '\n';
+            
+            // Optional checks section
+            if (Object.keys(optionalChecks).length > 0) {
+              comment += '### 🟡 Optional Checks (Recommended)\n\n';
+              comment += '| Check | Status |\n';
+              comment += '|-------|--------|\n';
+              
+              Object.entries(optionalChecks).forEach(([name, check]) => {
+                let icon = '⏳';
+                if (check.conclusion === 'success') {
+                  icon = '✅';
+                } else if (check.conclusion === 'failure') {
+                  icon = '❌';
+                } else if (check.conclusion === 'skipped') {
+                  icon = '⊘';
+                }
+                
+                const statusText = check.conclusion || check.status;
+                comment += `| ${name} | ${icon} ${statusText} |\n`;
+              });
+              
+              comment += '\n';
+            }
+            
+            // Merge readiness
+            const allRequiredPassed = '${{ steps.workflow-status.outputs.all-required-passed }}' === 'true';
+            
+            if (allRequiredPassed) {
+              comment += '### 🎉 Merge Ready\n';
+              comment += 'All required checks have passed. This PR is ready to merge.\n';
+            } else {
+              comment += '### ⚠️ Merge Blocked\n';
+              comment += 'Some required checks have not passed. Please review the failures above and fix any issues.\n';
+            }
+            
+            comment += '\n---\n';
+            comment += '**Need help?** Check the [CI/CD Documentation](.github/workflows/README.md) for troubleshooting.\n';
+            
+            // Find existing status comment and update or create new
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(c => 
+              c.user.type === 'Bot' && c.body.includes('Status Checks Summary')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+  check-required-status:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      checks: read
+      statuses: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Verify required checks passed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pullRequest.head.sha,
+            });
+            
+            const requiredChecks = [
+              'CI - Linting & Type Checking',
+              'Test Suite',
+              'Security Scanning'
+            ];
+            
+            const failedChecks = [];
+            const incompleteChecks = [];
+            
+            requiredChecks.forEach(requiredCheck => {
+              const checkRun = checkRuns.check_runs.find(run => run.name === requiredCheck);
+              
+              if (!checkRun) {
+                incompleteChecks.push(requiredCheck);
+              } else if (checkRun.conclusion === 'failure') {
+                failedChecks.push(requiredCheck);
+              } else if (checkRun.status !== 'completed' && checkRun.conclusion !== 'success') {
+                incompleteChecks.push(requiredCheck);
+              }
+            });
+            
+            if (failedChecks.length > 0) {
+              core.setFailed(`Required checks failed: ${failedChecks.join(', ')}`);
+            }
+            
+            if (incompleteChecks.length > 0) {
+              console.log(`⏳ Waiting for checks to complete: ${incompleteChecks.join(', ')}`);
+            }
+            
+            if (failedChecks.length === 0 && incompleteChecks.length === 0) {
+              console.log('✅ All required checks passed');
+            }
+
+  pr-failure-guidance:
+    runs-on: ubuntu-latest
+    if: failure() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Comment with failure guidance
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const failureGuidance = `## 🔧 Troubleshooting Guide
+
+One or more required checks have failed. Here's how to fix them:
+
+### ❌ Linting & Type Checking Failed
+**What to do:**
+1. Run locally: \`npm run lint\` and \`npm run typecheck\`
+2. Fix errors shown in the output
+3. Use \`npm run lint:fix\` to auto-fix style issues
+4. Commit and push your changes
+
+**Common issues:**
+- Unused imports or variables
+- Type mismatches
+- Style violations (spacing, semicolons, etc.)
+
+### ❌ Tests Failed
+**What to do:**
+1. Run locally: \`npm run test:unit\` and \`npm run test:integration\`
+2. Review the test output for failures
+3. Fix the failing tests or the code they test
+4. Ensure coverage is above 80%
+
+**Common issues:**
+- Logic errors in code
+- Missing test setup
+- Database/service connectivity issues
+
+### ❌ Security Scan Failed
+**What to do:**
+1. Run locally: \`npm audit\`
+2. Review the vulnerabilities found
+3. Update packages: \`npm audit fix\`
+4. For manual fixes, update package.json versions
+5. Run \`npm ci\` to update lock file
+
+**Common issues:**
+- Outdated dependencies with known vulnerabilities
+- Hardcoded secrets or credentials
+- Unsafe code patterns
+
+### ❌ E2E Tests Failed (Optional)
+**What to do:**
+1. Check the test artifacts for screenshots/videos
+2. Review the test failure details
+3. Fix the application code or test
+4. E2E failures don't block merging but should be addressed
+
+---
+
+**Need more help?** 
+- Check the [CI/CD Documentation](.github/workflows/README.md)
+- Review the [Testing Guidelines](docs/TESTING-GUIDELINES.md)
+- Ask in #dev-help on Slack`;
+            
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingGuidance = comments.find(c => 
+              c.user.type === 'Bot' && c.body.includes('Troubleshooting Guide')
+            );
+            
+            if (!existingGuidance) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: failureGuidance
+              });
+            }
+
+  status-badge-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Verify README has status badges
+        run: |
+          if grep -q "github.com.*workflows.*badge.svg" README.md; then
+            echo "✅ Status badges found in README"
+          else
+            echo "⚠️ Status badges not found in README"
+            echo "Consider adding status badges to README.md"
+          fi
+        continue-on-error: true
+
+  workflow-summary:
+    runs-on: ubuntu-latest
+    if: always() && github.event_name == 'pull_request'
+    needs: [aggregate-status, check-required-status]
+    steps:
+      - name: Generate workflow summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          # CI/CD Status Check Summary
+          
+          ## Required Checks
+          - ✅ Linting & Type Checking
+          - ✅ Test Suite (Unit & Integration)
+          - ✅ Security Scanning
+          
+          ## Optional Checks
+          - 🟡 E2E Tests (Recommended)
+          
+          ## Merge Requirements
+          All required checks must pass before merging to main or develop branches.
+          
+          ## Artifacts Available
+          - Test coverage reports
+          - Security scan results
+          - E2E test reports (if run)
+          - Linting and type checking reports
+          
+          For detailed information, check the individual workflow runs.
+          EOF

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora Education Platform - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        select,
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            min-height: 120px;
+        }
+
+        .course-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .course-body {
+            padding: 20px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .course-description {
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .price {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .price.free {
+            color: #10b981;
+        }
+
+        .enroll-btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .enroll-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .badge.beginner {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge.intermediate {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge.advanced {
+            background: #ef4444;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Azora Education Platform</h1>
+            <p class="subtitle">Ubuntu: "I am because we are" - Learn together, grow together</p>
+        </header>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCourses">-</div>
+                <div class="stat-label">Total Courses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalEnrolled">-</div>
+                <div class="stat-label">Students Enrolled</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="freeCourses">-</div>
+                <div class="stat-label">Free Courses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgRating">-</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <select id="levelFilter">
+                <option value="">All Levels</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+            </select>
+
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+            </select>
+
+            <label>
+                <input type="checkbox" id="freeFilter"> Free Only
+            </label>
+
+            <button onclick="loadCourses()">Apply Filters</button>
+            <button onclick="resetFilters()">Reset</button>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="loading" class="loading">Loading courses...</div>
+        <div class="courses-grid" id="coursesGrid"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3007/api';
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/stats`);
+                const data = await response.json();
+
+                document.getElementById('totalCourses').textContent = data.totalCourses;
+                document.getElementById('totalEnrolled').textContent = data.totalEnrolled.toLocaleString();
+                document.getElementById('freeCourses').textContent = data.freeCourses;
+                document.getElementById('avgRating').textContent = data.averageRating + '/5.0';
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_URL}/categories`);
+                const data = await response.json();
+
+                const select = document.getElementById('categoryFilter');
+                data.categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.name;
+                    option.textContent = `${cat.name} (${cat.count})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+            }
+        }
+
+        async function loadCourses() {
+            const loading = document.getElementById('loading');
+            const grid = document.getElementById('coursesGrid');
+            const errorDiv = document.getElementById('error');
+
+            loading.style.display = 'block';
+            grid.innerHTML = '';
+            errorDiv.style.display = 'none';
+
+            try {
+                const level = document.getElementById('levelFilter').value;
+                const category = document.getElementById('categoryFilter').value;
+                const free = document.getElementById('freeFilter').checked;
+
+                const params = new URLSearchParams();
+                if (level) params.append('level', level);
+                if (category) params.append('category', category);
+                if (free) params.append('free', 'true');
+
+                const response = await fetch(`${API_URL}/courses?${params}`);
+                const data = await response.json();
+
+                loading.style.display = 'none';
+
+                if (data.courses.length === 0) {
+                    grid.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No courses found matching your filters.</p>';
+                    return;
+                }
+
+                data.courses.forEach(course => {
+                    const card = createCourseCard(course);
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                loading.style.display = 'none';
+                errorDiv.textContent = `Failed to load courses: ${error.message}. Make sure the backend is running on ${API_URL}`;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'course-card';
+
+            const price = course.price === 0 ? 'FREE' : `$${(course.price / 100).toFixed(2)}`;
+            const priceClass = course.price === 0 ? 'price free' : 'price';
+
+            card.innerHTML = `
+                <div class="course-header">
+                    <div class="course-title">${course.title}</div>
+                    <span class="badge ${course.level}">${course.level}</span>
+                </div>
+                <div class="course-body">
+                    <div class="course-meta">
+                        <span>📚 ${course.lessons} lessons</span>
+                        <span>⏱️ ${course.duration}</span>
+                        <span>⭐ ${course.rating}/5.0</span>
+                    </div>
+                    <div class="course-description">${course.description}</div>
+                    <div style="color: #666; margin-bottom: 10px;">
+                        👨‍🏫 ${course.instructor}<br>
+                        📂 ${course.category}<br>
+                        👥 ${course.enrolled.toLocaleString()} enrolled
+                    </div>
+                    <div class="course-footer">
+                        <div class="${priceClass}">${price}</div>
+                        <button class="enroll-btn" onclick="enrollCourse(${course.id}, '${course.title}')">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function enrollCourse(courseId, courseName) {
+            alert(`Enrollment feature coming soon!\\n\\nCourse: ${courseName}\\nCourse ID: ${courseId}\\n\\nThis will integrate with the auth service for user authentication and the payment service for paid courses.`);
+        }
+
+        function resetFilters() {
+            document.getElementById('levelFilter').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('freeFilter').checked = false;
+            loadCourses();
+        }
+
+        // Initialize
+        loadStats();
+        loadCategories();
+        loadCourses();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azorahub MCP Server Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-on-secondary-container: #1D192B;
+            --md-sys-color-tertiary: #7D5260;
+            --md-sys-color-on-tertiary: #FFFFFF;
+            --md-sys-color-tertiary-container: #FFD8E4;
+            --md-sys-color-on-tertiary-container: #31111D;
+            --md-sys-color-surface: #FFFBFE;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-color-shadow: #000000;
+            --md-sys-color-scrim: #000000;
+            --md-sys-color-inverse-surface: #313033;
+            --md-sys-color-inverse-on-surface: #F4EFF4;
+            --md-sys-color-inverse-primary: #D0BCFF;
+            --md-sys-color-surface-dim: #DDD8DD;
+            --md-sys-color-surface-bright: #FFFBFE;
+            --md-sys-color-surface-container-lowest: #FFFFFF;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container: #F1ECF4;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+            
+            --md-sys-shape-corner-none: 0px;
+            --md-sys-shape-corner-extra-small: 4px;
+            --md-sys-shape-corner-small: 8px;
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-shape-corner-large: 16px;
+            --md-sys-shape-corner-extra-large: 28px;
+            
+            --md-sys-typescale-display-large-font: 'Roboto';
+            --md-sys-typescale-display-large-weight: 400;
+            --md-sys-typescale-display-large-size: 57px;
+            --md-sys-typescale-display-large-line-height: 64px;
+            --md-sys-typescale-display-large-letter-spacing: -0.25px;
+            
+            --md-sys-typescale-headline-large-font: 'Roboto';
+            --md-sys-typescale-headline-large-weight: 400;
+            --md-sys-typescale-headline-large-size: 32px;
+            --md-sys-typescale-headline-large-line-height: 40px;
+            --md-sys-typescale-headline-large-letter-spacing: 0px;
+            
+            --md-sys-typescale-headline-medium-font: 'Roboto';
+            --md-sys-typescale-headline-medium-weight: 400;
+            --md-sys-typescale-headline-medium-size: 28px;
+            --md-sys-typescale-headline-medium-line-height: 36px;
+            --md-sys-typescale-headline-medium-letter-spacing: 0px;
+            
+            --md-sys-typescale-body-large-font: 'Roboto';
+            --md-sys-typescale-body-large-weight: 400;
+            --md-sys-typescale-body-large-size: 16px;
+            --md-sys-typescale-body-large-line-height: 24px;
+            --md-sys-typescale-body-large-letter-spacing: 0.5px;
+            
+            --md-sys-typescale-body-medium-font: 'Roboto';
+            --md-sys-typescale-body-medium-weight: 400;
+            --md-sys-typescale-body-medium-size: 14px;
+            --md-sys-typescale-body-medium-line-height: 20px;
+            --md-sys-typescale-body-medium-letter-spacing: 0.25px;
+            
+            --md-sys-elevation-level0: 0px 0px 0px rgba(0, 0, 0, 0.12);
+            --md-sys-elevation-level1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level3: 0px 1px 3px rgba(0, 0, 0, 0.3), 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level4: 0px 2px 3px rgba(0, 0, 0, 0.3), 0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+            --md-sys-elevation-level5: 0px 4px 4px rgba(0, 0, 0, 0.3), 0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-letter-spacing);
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            min-height: 100vh;
+        }
+
+        /* Material Design 3 Components */
+        .md3-card {
+            background-color: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level1);
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .md3-card:hover {
+            box-shadow: var(--md-sys-elevation-level2);
+        }
+
+        .md3-elevated-card {
+            background-color: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level2);
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .md3-elevated-card:hover {
+            box-shadow: var(--md-sys-elevation-level3);
+        }
+
+        .md3-filled-card {
+            background-color: var(--md-sys-color-surface-container-highest);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level0);
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .md3-filled-card:hover {
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+
+        .md3-button {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 10px 24px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
+            text-transform: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: var(--md-sys-elevation-level0);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-button:hover {
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+
+        .md3-outlined-button {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 10px 24px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
+            text-transform: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: var(--md-sys-elevation-level0);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-outlined-button:hover {
+            box-shadow: var(--md-sys-elevation-level1);
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .md3-text-button {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+            border: none;
+            border-radius: var(--md-sys-shape-corner-small);
+            padding: 10px 12px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            letter-spacing: var(--md-sys-typescale-label-large-letter-spacing);
+            text-transform: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-text-button:hover {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .md3-chip {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+            border-radius: var(--md-sys-shape-corner-small);
+            padding: 6px 16px;
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            letter-spacing: var(--md-sys-typescale-label-medium-letter-spacing);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .md3-chip.primary {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .md3-chip.secondary {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        .md3-chip.tertiary {
+            background-color: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+        }
+
+        .md3-chip.success {
+            background-color: #E8F5E8;
+            color: #1B5E20;
+        }
+
+        .md3-chip.warning {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .md3-chip.error {
+            background-color: #FFEBEE;
+            color: #B71C1C;
+        }
+
+        .md3-navigation-rail {
+            background-color: var(--md-sys-color-surface-container);
+            border-right: 1px solid var(--md-sys-color-outline-variant);
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 0;
+            gap: 8px;
+        }
+
+        .md3-navigation-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 8px;
+            border-radius: var(--md-sys-shape-corner-large);
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            color: var(--md-sys-color-on-surface-variant);
+            text-decoration: none;
+        }
+
+        .md3-navigation-item:hover {
+            background-color: var(--md-sys-color-surface-variant);
+        }
+
+        .md3-navigation-item.active {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        .md3-navigation-item .material-icons {
+            font-size: 24px;
+        }
+
+        .md3-navigation-item span {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Layout */
+        .app-bar {
+            background-color: var(--md-sys-color-surface-container);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background-color: rgba(255, 251, 254, 0.8);
+        }
+
+        .app-bar-title {
+            font-family: var(--md-sys-typescale-headline-medium-font);
+            font-size: var(--md-sys-typescale-headline-medium-size);
+            font-weight: var(--md-sys-typescale-headline-medium-weight);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);
+            border-radius: var(--md-sys-shape-corner-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-sys-color-on-primary);
+            font-weight: 700;
+        }
+
+        .main-layout {
+            display: flex;
+            min-height: calc(100vh - 73px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--md-sys-color-surface-container);
+            border-right: 1px solid var(--md-sys-color-outline-variant);
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 768px) {
+            .grid-cols-2 { grid-template-columns: 1fr; }
+            .grid-cols-3 { grid-template-columns: 1fr; }
+            .grid-cols-4 { grid-template-columns: 1fr; }
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
+            .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Typography */
+        .display-large {
+            font-family: var(--md-sys-typescale-display-large-font);
+            font-size: var(--md-sys-typescale-display-large-size);
+            font-weight: var(--md-sys-typescale-display-large-weight);
+            line-height: var(--md-sys-typescale-display-large-line-height);
+            letter-spacing: var(--md-sys-typescale-display-large-letter-spacing);
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 16px;
+        }
+
+        .headline-large {
+            font-family: var(--md-sys-typescale-headline-large-font);
+            font-size: var(--md-sys-typescale-headline-large-size);
+            font-weight: var(--md-sys-typescale-headline-large-weight);
+            line-height: var(--md-sys-typescale-headline-large-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-large-letter-spacing);
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 16px;
+        }
+
+        .headline-medium {
+            font-family: var(--md-sys-typescale-headline-medium-font);
+            font-size: var(--md-sys-typescale-headline-medium-size);
+            font-weight: var(--md-sys-typescale-headline-medium-weight);
+            line-height: var(--md-sys-typescale-headline-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-medium-letter-spacing);
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 12px;
+        }
+
+        .body-medium {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-letter-spacing);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--md-sys-shape-corner-large);
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: 500;
+        }
+
+        .status-indicator.online {
+            background-color: #E8F5E8;
+            color: #1B5E20;
+        }
+
+        .status-indicator.degraded {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .status-indicator.offline {
+            background-color: #FFEBEE;
+            color: #B71C1C;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Tool Cards */
+        .tool-card {
+            background-color: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-medium);
+            box-shadow: var(--md-sys-elevation-level1);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .tool-card:hover {
+            box-shadow: var(--md-sys-elevation-level2);
+            border-color: var(--md-sys-color-primary);
+            transform: translateY(-2px);
+        }
+
+        .tool-card.active {
+            background-color: var(--md-sys-color-primary-container);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);
+            border-radius: var(--md-sys-shape-corner-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-sys-color-on-primary);
+            margin-bottom: 12px;
+        }
+
+        .tool-icon .material-icons {
+            font-size: 24px;
+        }
+
+        /* Metrics */
+        .metric-card {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--md-sys-color-primary);
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-weight: 500;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .metric-change.positive {
+            color: #1B5E20;
+        }
+
+        .metric-change.negative {
+            color: #B71C1C;
+        }
+
+        /* Activity Feed */
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon .material-icons {
+            font-size: 16px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--md-sys-color-surface-variant);
+            border-radius: var(--md-sys-shape-corner-small);
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);
+            border-radius: var(--md-sys-shape-corner-small);
+            transition: width 0.3s ease-in-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-bar {
+                padding: 12px 16px;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+            
+            .display-large {
+                font-size: 36px;
+                line-height: 44px;
+            }
+            
+            .headline-large {
+                font-size: 28px;
+                line-height: 36px;
+            }
+            
+            .headline-medium {
+                font-size: 24px;
+                line-height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- App Bar -->
+    <header class="app-bar">
+        <div class="app-bar-title">
+            <div class="logo">M</div>
+            <span>MCP Server Dashboard</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="status-indicator online">
+                <span class="status-dot"></span>
+                <span>Server Online</span>
+            </div>
+            <button class="md3-outlined-button">
+                <span class="material-icons">settings</span>
+                Settings
+            </button>
+            <button class="md3-button">
+                <span class="material-icons">add</span>
+                New Tool
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3 class="headline-medium" style="margin-bottom: 20px;">Tools</h3>
+            
+            <div class="tool-card active" onclick="selectTool('repository')">
+                <div class="tool-icon">
+                    <span class="material-icons">folder</span>
+                </div>
+                <h4 class="headline-medium" style="font-size: 18px;">Repository</h4>
+                <p class="body-medium">Manage repositories and code</p>
+                <div style="margin-top: 12px;">
+                    <span class="md3-chip success">Active</span>
+                    <span class="md3-chip secondary">12 tools</span>
+                </div>
+            </div>
+
+            <div class="tool-card" onclick="selectTool('issues')">
+                <div class="tool-icon">
+                    <span class="material-icons">bug_report</span>
+                </div>
+                <h4 class="headline-medium" style="font-size: 18px;">Issues</h4>
+                <p class="body-medium">Track issues and pull requests</p>
+                <div style="margin-top: 12px;">
+                    <span class="md3-chip success">Active</span>
+                    <span class="md3-chip secondary">8 tools</span>
+                </div>
+            </div>
+
+            <div class="tool-card" onclick="selectTool('ci')">
+                <div class="tool-icon">
+                    <span class="material-icons">build</span>
+                </div>
+                <h4 class="headline-medium" style="font-size: 18px;">CI/CD</h4>
+                <p class="body-medium">Build and deployment workflows</p>
+                <div style="margin-top: 12px;">
+                    <span class="md3-chip success">Active</span>
+                    <span class="md3-chip secondary">6 tools</span>
+                </div>
+            </div>
+
+            <div class="tool-card" onclick="selectTool('security')">
+                <div class="tool-icon">
+                    <span class="material-icons">security</span>
+                </div>
+                <h4 class="headline-medium" style="font-size: 18px;">Security</h4>
+                <p class="body-medium">Security scanning and advisories</p>
+                <div style="margin-top: 12px;">
+                    <span class="md3-chip warning">Beta</span>
+                    <span class="md3-chip secondary">4 tools</span>
+                </div>
+            </div>
+
+            <div class="tool-card" onclick="selectTool('ai')">
+                <div class="tool-icon">
+                    <span class="material-icons">psychology</span>
+                </div>
+                <h4 class="headline-medium" style="font-size: 18px;">AI Services</h4>
+                <p class="body-medium">AI-powered development tools</p>
+                <div style="margin-top: 12px;">
+                    <span class="md3-chip primary">New</span>
+                    <span class="md3-chip secondary">3 tools</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <div class="container">
+                <!-- Overview Section -->
+                <section style="margin-bottom: 32px;">
+                    <h1 class="display-large">Server Overview</h1>
+                    <p class="body-medium" style="font-size: 18px; max-width: 600px; color: var(--md-sys-color-on-surface-variant);">
+                        Monitor and manage your MCP server tools, track performance, and optimize AI assistant integration.
+                    </p>
+                </section>
+
+                <!-- Metrics Grid -->
+                <section style="margin-bottom: 32px;">
+                    <div class="grid grid-cols-4">
+                        <div class="md3-card metric-card">
+                            <div class="metric-value">2,847</div>
+                            <div class="metric-label">Total Requests</div>
+                            <div class="metric-change positive">
+                                <span class="material-icons" style="font-size: 12px;">trending_up</span>
+                                <span>+12.5%</span>
+                            </div>
+                        </div>
+                        <div class="md3-card metric-card">
+                            <div class="metric-value">98.7%</div>
+                            <div class="metric-label">Success Rate</div>
+                            <div class="metric-change positive">
+                                <span class="material-icons" style="font-size: 12px;">trending_up</span>
+                                <span>+0.3%</span>
+                            </div>
+                        </div>
+                        <div class="md3-card metric-card">
+                            <div class="metric-value">142ms</div>
+                            <div class="metric-label">Avg Response</div>
+                            <div class="metric-change negative">
+                                <span class="material-icons" style="font-size: 12px;">trending_down</span>
+                                <span>+8ms</span>
+                            </div>
+                        </div>
+                        <div class="md3-card metric-card">
+                            <div class="metric-value">33</div>
+                            <div class="metric-label">Active Tools</div>
+                            <div class="metric-change positive">
+                                <span class="material-icons" style="font-size: 12px;">add</span>
+                                <span>+2 new</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Performance Chart -->
+                <section style="margin-bottom: 32px;">
+                    <div class="md3-elevated-card">
+                        <h3 class="headline-medium">Performance Overview</h3>
+                        <div style="height: 200px; display: flex; align-items: flex-end; gap: 8px; margin-top: 20px;">
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 60%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 75%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 85%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 70%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 90%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 95%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                            <div style="flex: 1; background: linear-gradient(to top, var(--md-sys-color-primary), var(--md-sys-color-primary-container)); height: 88%; border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--md-sys-color-on-surface-variant);">
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                            <span>Sun</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section style="margin-bottom: 32px;">
+                    <div class="md3-elevated-card">
+                        <h3 class="headline-medium">Recent Activity</h3>
+                        <div style="margin-top: 20px;">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <span class="material-icons">code</span>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Repository tool executed: list_repositories</div>
+                                    <div class="activity-time">2 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <span class="material-icons">bug_report</span>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Issue created: #1452 - Authentication bug fix</div>
+                                    <div class="activity-time">15 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <span class="material-icons">psychology</span>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">AI service called: code_completion</div>
+                                    <div class="activity-time">1 hour ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <span class="material-icons">security</span>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Security scan completed for repository:azorahub/ui</div>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <span class="material-icons">build</span>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">CI/CD workflow triggered: deploy-production</div>
+                                    <div class="activity-time">3 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tool Status -->
+                <section>
+                    <div class="grid grid-cols-2">
+                        <div class="md3-elevated-card">
+                            <h3 class="headline-medium">Tool Categories</h3>
+                            <div style="margin-top: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <span style="font-weight: 500;">Repository Tools</span>
+                                    <span class="md3-chip success">12 active</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 16px;">
+                                    <span style="font-weight: 500;">Issue Management</span>
+                                    <span class="md3-chip success">8 active</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 16px;">
+                                    <span style="font-weight: 500;">CI/CD Workflows</span>
+                                    <span class="md3-chip success">6 active</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 16px;">
+                                    <span style="font-weight: 500;">Security Tools</span>
+                                    <span class="md3-chip warning">4 beta</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                                    <span style="font-weight: 500;">AI Services</span>
+                                    <span class="md3-chip primary">3 new</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md3-elevated-card">
+                            <h3 class="headline-medium">Resource Usage</h3>
+                            <div style="margin-top: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <span style="font-weight: 500;">CPU Usage</span>
+                                    <span>42%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 42%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 16px;">
+                                    <span style="font-weight: 500;">Memory Usage</span>
+                                    <span>68%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 68%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 16px;">
+                                    <span style="font-weight: 500;">API Rate Limit</span>
+                                    <span>2,847 / 5,000</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 57%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 16px;">
+                                    <span style="font-weight: 500;">Storage</span>
+                                    <span>12.4 GB / 50 GB</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                                    <span style="font-weight: 500;">Network I/O</span>
+                                    <span>1.2 GB / 10 GB</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 12%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function selectTool(toolName) {
+            // Remove active class from all tool cards
+            const toolCards = document.querySelectorAll('.tool-card');
+            toolCards.forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to selected tool
+            event.currentTarget.classList.add('active');
+            
+            // Update content based on selected tool
+            console.log('Selected tool:', toolName);
+            
+            // Here you would typically load different content
+            // based on the selected tool
+        }
+
+        // Add interactive features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate metrics on load
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach((metric, index) => {
+                setTimeout(() => {
+                    metric.style.opacity = '0';
+                    metric.style.transform = 'translateY(20px)';
+                    metric.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    
+                    setTimeout(() => {
+                        metric.style.opacity = '1';
+                        metric.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                const requestCount = document.querySelector('.metric-value');
+                const currentCount = parseInt(requestCount.textContent.replace(',', ''));
+                const newCount = currentCount + Math.floor(Math.random() * 5);
+                requestCount.textContent = newCount.toLocaleString();
+            }, 5000);
+
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.md3-card, .md3-elevated-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

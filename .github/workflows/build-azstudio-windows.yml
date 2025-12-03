@@ -1,0 +1,52 @@
+name: Build AzStudio Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    env:
+      VSCODE_ARCH: x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Use Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          npm ci
+
+      - name: Prepare build
+        shell: pwsh
+        run: |
+          npm run gulp transpile-client-esbuild transpile-extensions
+
+      - name: Build and package Electron app (win32 x64)
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run gulp vscode-win32-${{ env.VSCODE_ARCH }}-min-ci
+          npm run gulp vscode-win32-${{ env.VSCODE_ARCH }}-inno-updater
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: azstudio-windows-exe
+          path: |
+            .build\win32-${{ env.VSCODE_ARCH }}\system-setup\VSCodeSetup.exe
+            .build\win32-${{ env.VSCODE_ARCH }}\user-setup\VSCodeUserSetup.exe
+            .build\win32-${{ env.VSCODE_ARCH }}\VSCode-win32-${{ env.VSCODE_ARCH }}.zip

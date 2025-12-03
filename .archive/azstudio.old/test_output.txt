@@ -1,0 +1,70 @@
+
+> azstudio@0.1.0 test
+> jest CodeInstrumentation
+
+FAIL src/main/services/backup/__tests__/CodeInstrumentation.test.ts (17.386 s)
+  CodeInstrumentation
+    instrumentService
+      √ should add logging to service functions (107 ms)
+      × should add metrics to Express routes (31 ms)
+      √ should add distributed tracing spans (34 ms)
+      × should add custom event tracking (30 ms)
+      √ should handle disabled instrumentation (7 ms)
+    generateMonitoringUtils
+      √ should generate logger utility (9 ms)
+      √ should generate metrics utility (4 ms)
+      √ should generate tracing utility (5 ms)
+      √ should generate analytics utility (4 ms)
+
+  ● CodeInstrumentation › instrumentService › should add metrics to Express routes
+
+    Attempted to get information from a node that was removed or forgotten.
+
+    Node text: getUsers()
+
+    [0m [90m 134 |[39m
+     [90m 135 |[39m     callExpressions[33m.[39mforEach(call [33m=>[39m {
+    [31m[1m>[22m[39m[90m 136 |[39m       [36mconst[39m expression [33m=[39m call[33m.[39mgetExpression()[33m;[39m
+     [90m     |[39m                               [31m[1m^[22m[39m
+     [90m 137 |[39m       [36mconst[39m expressionText [33m=[39m expression[33m.[39mgetText()[33m;[39m
+     [90m 138 |[39m
+     [90m 139 |[39m       [90m// Check if this is an Express route handler[39m[0m
+
+      at CallExpression.get compilerNode [as compilerNode] (node_modules/ts-morph/dist/ts-morph.js:3042:19)
+      at CallExpression.getExpression (node_modules/ts-morph/dist/ts-morph.js:10817:55)
+      at src/main/services/backup/CodeInstrumentation.ts:136:31
+          at Array.forEach (<anonymous>)
+      at CodeInstrumentation.addMetricsInstrumentation (src/main/services/backup/CodeInstrumentation.ts:135:21)
+      at CodeInstrumentation.instrumentService (src/main/services/backup/CodeInstrumentation.ts:64:12)
+      at Object.<anonymous> (src/main/services/backup/__tests__/CodeInstrumentation.test.ts:50:44)
+
+  ● CodeInstrumentation › instrumentService › should add custom event tracking
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "analytics.track"
+    Received string:    "
+            export function userSignup(email: string) {
+                const span = tracer.startSpan('AuthService.userSignup');
+                logger.info('[AuthService] Entering userSignup', { function: userSignup });
+              createUser(email);
+              span.end();
+                return { success: true };
+            }
+          "
+
+    [0m [90m 81 |[39m       [36mconst[39m result [33m=[39m [36mawait[39m instrumentation[33m.[39minstrumentService(code[33m,[39m [32m'AuthService'[39m)[33m;[39m
+     [90m 82 |[39m
+    [31m[1m>[22m[39m[90m 83 |[39m       expect(result[33m.[39minstrumentedCode)[33m.[39mtoContain([32m'analytics.track'[39m)[33m;[39m
+     [90m    |[39m                                       [31m[1m^[22m[39m
+     [90m 84 |[39m     })[33m;[39m
+     [90m 85 |[39m
+     [90m 86 |[39m     it([32m'should handle disabled instrumentation'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (src/main/services/backup/__tests__/CodeInstrumentation.test.ts:83:39)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 7 passed, 9 total
+Snapshots:   0 total
+Time:        18.695 s
+Ran all test suites matching CodeInstrumentation.

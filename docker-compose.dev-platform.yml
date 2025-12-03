@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Azora Forge Service
+  azora-forge:
+    build:
+      context: ./services/azora-forge
+      dockerfile: Dockerfile
+    container_name: azora-forge
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_forge
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-placeholder}
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # AI Orchestrator Service
+  ai-orchestrator:
+    build:
+      context: ./services/ai-orchestrator
+      dockerfile: Dockerfile
+    container_name: ai-orchestrator
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+      - PORT=3006
+      - DATABASE_URL=postgresql://azora:${POSTGRES_PASSWORD:-azoradev123}@database:5432/azora_orchestrator
+      - REDIS_URL=redis://redis:6379
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "node", "healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  azora-network:
+    external: true

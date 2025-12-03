@@ -1,0 +1,28 @@
+{
+  "name": "elara-content-generator",
+  "version": "1.0.0",
+  "description": "AI Content Generation Service for Azora OS",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "dev": "nodemon index.ts",
+    "test-course": "ts-node test-course.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "elevenlabs": "^1.59.0",
+    "express": "^4.18.2",
+    "openai": "^4.20.1",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
+  }
+}

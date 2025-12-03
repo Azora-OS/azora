@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  author      String
+  isbn        String?  @unique
+  description String?
+  content     String?  @db.Text
+  category    String
+  tags        String[]
+  price       Float    @default(0)
+  language    String   @default("en")
+  publisher   String?
+  publishYear Int?
+  pageCount   Int?
+  coverUrl    String?
+  fileUrl     String?
+  format      String   @default("digital")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  loans           Loan[]
+  reservations    Reservation[]
+  collections     CollectionBook[]
+  courseBooks     CourseBook[]
+  reviews         Review[]
+  agentCurations  AgentCuration[]
+  
+  @@map("books")
+  @@index([category])
+  @@index([author])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  loans        Loan[]
+  reservations Reservation[]
+  collections  Collection[]
+  reviews      Review[]
+  
+  @@map("users")
+}
+
+model Loan {
+  id         String    @id @default(cuid())
+  userId     String
+  bookId     String
+  borrowedAt DateTime  @default(now())
+  dueDate    DateTime
+  returnedAt DateTime?
+  
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+  
+  @@map("loans")
+  @@index([userId])
+  @@index([bookId])
+}
+
+model Reservation {
+  id         String   @id @default(cuid())
+  userId     String
+  bookId     String
+  reservedAt DateTime @default(now())
+  fulfilled  Boolean  @default(false)
+  
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+  
+  @@map("reservations")
+  @@index([userId])
+  @@index([bookId])
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user  User             @relation(fields: [userId], references: [id])
+  books CollectionBook[]
+  
+  @@map("collections")
+  @@index([userId])
+}
+
+model CollectionBook {
+  id           String   @id @default(cuid())
+  collectionId String
+  bookId       String
+  addedAt      DateTime @default(now())
+  
+  collection Collection @relation(fields: [collectionId], references: [id])
+  book       Book       @relation(fields: [bookId], references: [id])
+  
+  @@unique([collectionId, bookId])
+  @@map("collection_books")
+}
+
+model CourseBook {
+  id         String   @id @default(cuid())
+  courseId   String
+  bookId     String
+  required   Boolean  @default(false)
+  assignedAt DateTime @default(now())
+  
+  book Book @relation(fields: [bookId], references: [id])
+  
+  @@unique([courseId, bookId])
+  @@map("course_books")
+  @@index([courseId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+  
+  @@unique([userId, bookId])
+  @@map("reviews")
+}
+
+model AgentLibrarian {
+  id           String   @id @default(cuid())
+  name         String
+  specialty    String
+  description  String?
+  capabilities String[]
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  
+  curations AgentCuration[]
+  networks  NetworkAgent[]
+  
+  @@map("agent_librarians")
+}
+
+model AgentCuration {
+  id        String   @id @default(cuid())
+  agentId   String
+  bookId    String
+  reason    String?
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  agent AgentLibrarian @relation(fields: [agentId], references: [id])
+  book  Book            @relation(fields: [bookId], references: [id])
+  
+  @@map("agent_curations")
+  @@index([agentId])
+}
+
+model BookNetwork {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String
+  createdAt   DateTime @default(now())
+  
+  agents NetworkAgent[]
+  
+  @@map("book_networks")
+}
+
+model NetworkAgent {
+  id        String   @id @default(cuid())
+  networkId String
+  agentId   String
+  role      String
+  joinedAt  DateTime @default(now())
+  
+  network BookNetwork     @relation(fields: [networkId], references: [id])
+  agent   AgentLibrarian @relation(fields: [agentId], references: [id])
+  
+  @@unique([networkId, agentId])
+  @@map("network_agents")
+}

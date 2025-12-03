@@ -1,0 +1,9 @@
+[
+    "function balanceOf(address owner) view returns (uint256)",
+    "function transfer(address to, uint256 amount) returns (bool)",
+    "function burn(uint256 amount)",
+    "function ubuntuMine(address to, string memory knowledgeProof, uint256 knowledgeLevel)",
+    "function rewardUbuntuContribution(address contributor, uint256 amount, string memory action)",
+    "event UbuntuMining(address indexed miner, uint256 amount, string knowledgeProof)",
+    "event UbuntuContribution(address indexed contributor, uint256 amount, string action)"
+]

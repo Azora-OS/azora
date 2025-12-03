@@ -1,0 +1,33 @@
+{
+  "name": "@azora/test-utils",
+  "version": "1.0.0",
+  "description": "Shared testing utilities for Azora OS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "@prisma/client": "^7.0.1",
+    "csurf": "1.2.2",
+    "expo": "54.0.23",
+    "expo-notifications": "0.32.12",
+    "hardhat": "3.0.15",
+    "ioredis": "^5.3.2",
+    "lerna": "6.6.2",
+    "nodemailer": "7.0.10",
+    "react-native": "0.73.11",
+    "vite": "7.2.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.6",
+    "jest": "25.0.0",
+    "typescript": "5.4.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
+  }
+}

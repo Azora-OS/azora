@@ -1,0 +1,94 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum CaseStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  HEARING_SCHEDULED
+  DELIBERATION
+  RULING_ISSUED
+  APPEALED
+  CLOSED
+}
+
+enum CaseType {
+  DISPUTE
+  CONSTITUTIONAL_CHALLENGE
+  ETHICAL_VIOLATION
+  APPEAL
+}
+
+model Case {
+  id            String      @id @default(uuid())
+  title         String
+  description   String
+  plaintiffId   String
+  defendantId   String?
+  type          CaseType
+  status        CaseStatus  @default(SUBMITTED)
+  filedAt       DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  rulings       Ruling[]
+  appeals       Appeal[]
+  hearings      Hearing[]
+  
+  @@map("cases")
+}
+
+model Ruling {
+  id            String   @id @default(uuid())
+  caseId        String
+  justiceId     String
+  verdict       String
+  reasoning     String
+  issuedAt      DateTime @default(now())
+  
+  case          Case     @relation(fields: [caseId], references: [id])
+  justice       Justice  @relation(fields: [justiceId], references: [id])
+  
+  @@map("rulings")
+}
+
+model Justice {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  name          String
+  termStart     DateTime
+  termEnd       DateTime?
+  isActive      Boolean  @default(true)
+  
+  rulings       Ruling[]
+  
+  @@map("justices")
+}
+
+model Appeal {
+  id            String   @id @default(uuid())
+  caseId        String
+  reason        String
+  status        String   // PENDING, GRANTED, DENIED
+  filedAt       DateTime @default(now())
+  
+  case          Case     @relation(fields: [caseId], references: [id])
+  
+  @@map("appeals")
+}
+
+model Hearing {
+  id            String   @id @default(uuid())
+  caseId        String
+  scheduledFor  DateTime
+  status        String   // SCHEDULED, COMPLETED, CANCELLED
+  notes         String?
+  
+  case          Case     @relation(fields: [caseId], references: [id])
+  
+  @@map("hearings")
+}

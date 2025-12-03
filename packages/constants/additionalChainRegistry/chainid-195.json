@@ -1,0 +1,34 @@
+{
+  "name": "Azora Mainnet",
+  "chain": "AZORA",
+  "rpc": [
+    "https://rpc.azora.network"
+  ],
+  "faucets": [],
+  "nativeCurrency": {
+    "name": "Azora",
+    "symbol": "AZR",
+    "decimals": 18
+  },
+  "features": [
+    {
+      "name": "EIP155"
+    },
+    {
+      "name": "EIP1559"
+    }
+  ],
+  "infoURL": "https://azora.world",
+  "shortName": "azora",
+  "chainId": 195,
+  "networkId": 195,
+  "icon": "azora",
+  "explorers": [
+    {
+      "name": "Azora Explorer",
+      "url": "https://explorer.azora.network",
+      "icon": "azora",
+      "standard": "EIP3091"
+    }
+  ]
+}

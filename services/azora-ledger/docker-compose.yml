@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  ledger-db:
+    image: postgres:15
+    container_name: azora-ledger-db
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_password
+      POSTGRES_DB: azora_ledger
+    ports:
+      - "5440:5432"
+    volumes:
+      - ledger_db_data:/var/lib/postgresql/data
+    networks:
+      - ledger-network
+
+  ledger-service:
+    build: .
+    container_name: azora-ledger-service
+    ports:
+      - "3012:3012"
+    environment:
+      - DATABASE_URL=postgresql://azora:azora_password@ledger-db:5432/azora_ledger
+      - PORT=3012
+      - NODE_ENV=development
+    depends_on:
+      - ledger-db
+    networks:
+      - ledger-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  ledger_db_data:
+
+networks:
+  ledger-network:
+    driver: bridge

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is Azora OS? - Video</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: white;
+            overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+        }
+        
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .scene.active {
+            opacity: 1;
+        }
+        
+        /* Scene 1: Hook (0-3s) */
+        .scene1 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .logo-animation {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            animation: logoIntro 3s ease-out;
+        }
+        
+        @keyframes logoIntro {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(0deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        .logo-letter {
+            font-size: 200px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .logo-text {
+            font-size: 80px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 320px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scene 2: Problem (3-8s) */
+        .scene2 {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        .split-screen {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .split-left, .split-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .split-left {
+            background: rgba(239, 68, 68, 0.1);
+            border-right: 2px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .split-right {
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .problem-text {
+            font-size: 120px;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1.2;
+            animation: slideIn 1.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats-overlay {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            animation: fadeIn 2s ease-out;
+        }
+        
+        .stat-number {
+            font-size: 80px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+        }
+        
+        /* Scene 3: Pain Points (8-15s) */
+        .scene3 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .pain-points {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            width: 80%;
+            max-width: 1400px;
+        }
+        
+        .pain-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            animation: fadeInScale 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .pain-card:nth-child(1) { animation-delay: 0.2s; }
+        .pain-card:nth-child(2) { animation-delay: 0.4s; }
+        .pain-card:nth-child(3) { animation-delay: 0.6s; }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .pain-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .pain-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #ef4444;
+        }
+        
+        .pain-desc {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Scene 4: Solution Intro (15-18s) */
+        .scene4 {
+            background: #0f172a;
+        }
+        
+        .logo-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 60px rgba(139, 92, 246, 1));
+            }
+        }
+        
+        .solution-text {
+            font-size: 100px;
+            font-weight: 900;
+            margin-top: 50px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        /* Scene 5: Solution (18-30s) */
+        .scene5 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            width: 90%;
+            max-width: 1600px;
+        }
+        
+        .service-icon {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            animation: slideInFromBottom 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .service-icon:nth-child(1) { animation-delay: 0.1s; }
+        .service-icon:nth-child(2) { animation-delay: 0.2s; }
+        .service-icon:nth-child(3) { animation-delay: 0.3s; }
+        .service-icon:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .service-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline {
+            font-size: 64px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        /* Scene 6: Benefits (30-45s) */
+        .scene6 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .benefits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            width: 80%;
+            max-width: 1200px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid #8b5cf6;
+            border-radius: 10px;
+            animation: slideInLeft 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .benefit-item:nth-child(1) { animation-delay: 0.1s; }
+        .benefit-item:nth-child(2) { animation-delay: 0.3s; }
+        .benefit-item:nth-child(3) { animation-delay: 0.5s; }
+        .benefit-item:nth-child(4) { animation-delay: 0.7s; }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .benefit-icon {
+            font-size: 48px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .benefit-text {
+            font-size: 36px;
+            font-weight: 600;
+        }
+        
+        /* Scene 7: Reach (45-55s) */
+        .scene7 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .africa-outline {
+            width: 800px;
+            height: 800px;
+            position: relative;
+        }
+        
+        .country {
+            position: absolute;
+            background: rgba(6, 182, 212, 0.3);
+            border: 2px solid #06b6d4;
+            border-radius: 5px;
+            animation: lightUp 2s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        @keyframes lightUp {
+            from {
+                opacity: 0;
+                filter: brightness(0);
+            }
+            to {
+                opacity: 1;
+                filter: brightness(1);
+                box-shadow: 0 0 20px rgba(6, 182, 212, 0.8);
+            }
+        }
+        
+        .cities {
+            position: absolute;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fbbf24;
+            animation: cityAppear 1s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .lagos { top: 45%; left: 25%; animation-delay: 0.5s; }
+        .nairobi { top: 52%; left: 65%; animation-delay: 0.7s; }
+        .capetown { top: 85%; left: 35%; animation-delay: 0.9s; }
+        .cairo { top: 18%; left: 60%; animation-delay: 1.1s; }
+        
+        @keyframes cityAppear {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Scene 8: CTA (55-60s) */
+        .scene8 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .cta-container {
+            text-align: center;
+        }
+        
+        .cta-logo {
+            width: 400px;
+            height: 400px;
+            margin-bottom: 40px;
+            animation: finalGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes finalGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 80px rgba(139, 92, 246, 1));
+            }
+        }
+        
+        .cta-title {
+            font-size: 100px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .cta-tagline {
+            font-size: 48px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        .cta-url {
+            font-size: 56px;
+            font-weight: 700;
+            color: #06b6d4;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 25px 60px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            border-radius: 15px;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            animation: fadeInUp 1s ease-out 0.9s both;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+        }
+        
+        .text-overlay {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            font-weight: 700;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -30px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scene 1: Hook (0-3s) -->
+    <div class="scene scene1 active" id="scene1">
+        <div class="logo-animation">
+            <div class="logo-letter">A</div>
+        </div>
+        <div class="logo-text">zora OS</div>
+    </div>
+    
+    <!-- Scene 2: Problem (3-8s) -->
+    <div class="scene scene2" id="scene2">
+        <div class="stats-overlay">
+            <div class="stat-number">1.4B</div>
+            <div class="stat-label">Africans</div>
+        </div>
+        <div class="split-screen">
+            <div class="split-left">
+                <div class="problem-text" style="font-size: 80px;">Fragmented<br/>Technology</div>
+            </div>
+            <div class="split-right">
+                <div class="problem-text" style="font-size: 80px;">Limited<br/>Access</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 3: Pain Points (8-15s) -->
+    <div class="scene scene3" id="scene3">
+        <div class="text-overlay">Expensive Solutions Designed Elsewhere</div>
+        <div class="pain-points">
+            <div class="pain-card">
+                <div class="pain-icon">💸</div>
+                <div class="pain-title">Expensive</div>
+                <div class="pain-desc">Unaffordable for most</div>
+            </div>
+            <div class="pain-card">
+                <div class="pain-icon">🌍</div>
+                <div class="pain-title">Foreign</div>
+                <div class="pain-desc">Not built for Africa</div>
+            </div>
+            <div class="pain-card">
+                <div class="pain-icon">🔒</div>
+                <div class="pain-title">Limited</div>
+                <div class="pain-desc">Restricted access</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 4: Solution Intro (15-18s) -->
+    <div class="scene scene4" id="scene4">
+        <div class="logo-animation logo-glow">
+            <div class="logo-letter">A</div>
+        </div>
+        <div class="solution-text">Until now.</div>
+    </div>
+    
+    <!-- Scene 5: Solution (18-30s) -->
+    <div class="scene scene5" id="scene5">
+        <div class="tagline">Universal Human Infrastructure</div>
+        <div class="services-grid">
+            <div class="service-icon">
+                <div style="font-size: 60px; margin-bottom: 15px;">🎓</div>
+                <div class="service-name">Education</div>
+            </div>
+            <div class="service-icon">
+                <div style="font-size: 60px; margin-bottom: 15px;">💰</div>
+                <div class="service-name">Finance</div>
+            </div>
+            <div class="service-icon">
+                <div style="font-size: 60px; margin-bottom: 15px;">🛡️</div>
+                <div class="service-name">Security</div>
+            </div>
+            <div class="service-icon">
+                <div style="font-size: 60px; margin-bottom: 15px;">🧠</div>
+                <div class="service-name">AI</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 6: Benefits (30-45s) -->
+    <div class="scene scene6" id="scene6">
+        <div class="text-overlay" style="font-size: 64px; margin-bottom: 50px;">Built by Africans, for Africans</div>
+        <div class="benefits-list">
+            <div class="benefit-item">
+                <div class="benefit-icon">✨</div>
+                <div class="benefit-text">Powered by Elara AI</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🆓</div>
+                <div class="benefit-text">Free & Open-source</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🔒</div>
+                <div class="benefit-text">Quantum-secure</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">⚖️</div>
+                <div class="benefit-text">Constitutional AI</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 7: Reach (45-55s) -->
+    <div class="scene scene7" id="scene7">
+        <div class="text-overlay">From Lagos to Nairobi. Cape Town to Cairo.</div>
+        <div class="map-container">
+            <div class="africa-outline">
+                <div class="cities lagos">Lagos</div>
+                <div class="cities nairobi">Nairobi</div>
+                <div class="cities capetown">Cape Town</div>
+                <div class="cities cairo">Cairo</div>
+                <!-- Simplified Africa shape -->
+                <svg width="800" height="800" viewBox="0 0 800 800" style="opacity: 0.3;">
+                    <path d="M 400 100 Q 500 150 550 200 Q 580 250 600 300 Q 620 350 610 400 Q 600 450 580 500 Q 560 550 520 600 Q 480 650 420 700 Q 360 750 300 720 Q 240 690 200 640 Q 160 590 140 540 Q 120 490 130 440 Q 140 390 170 340 Q 200 290 250 250 Q 300 210 350 150 Q 380 120 400 100 Z" 
+                          fill="none" 
+                          stroke="#06b6d4" 
+                          stroke-width="4"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scene 8: CTA (55-60s) -->
+    <div class="scene scene8" id="scene8">
+        <div class="cta-container">
+            <div class="cta-logo">
+                <div class="logo-letter" style="font-size: 300px;">A</div>
+            </div>
+            <div class="cta-title">Azora OS</div>
+            <div class="cta-tagline">Universal Human Infrastructure</div>
+            <div class="cta-url">azora-os.ai</div>
+            <div class="cta-button">Start Free Today</div>
+        </div>
+    </div>
+    
+    <script>
+        // Scene timing based on script
+        const scenes = [
+            { id: 'scene1', start: 0, duration: 3000 },    // 0-3s
+            { id: 'scene2', start: 3000, duration: 5000 },  // 3-8s
+            { id: 'scene3', start: 8000, duration: 7000 }, // 8-15s
+            { id: 'scene4', start: 15000, duration: 3000 }, // 15-18s
+            { id: 'scene5', start: 18000, duration: 12000 }, // 18-30s
+            { id: 'scene6', start: 30000, duration: 15000 }, // 30-45s
+            { id: 'scene7', start: 45000, duration: 10000 }, // 45-55s
+            { id: 'scene8', start: 55000, duration: 5000 }, // 55-60s
+        ];
+        
+        let currentScene = 0;
+        let startTime = null;
+        
+        function animateScenes(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            
+            // Hide all scenes
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active');
+            });
+            
+            // Show current scene
+            if (currentScene < scenes.length) {
+                const scene = document.getElementById(scenes[currentScene].id);
+                if (scene) {
+                    scene.classList.add('active');
+                }
+            }
+            
+            // Move to next scene
+            if (currentScene < scenes.length - 1 && elapsed >= scenes[currentScene].start + scenes[currentScene].duration) {
+                currentScene++;
+            }
+            
+            // Loop or stop at end
+            if (elapsed < 60000) { // 60 seconds total
+                requestAnimationFrame(animateScenes);
+            } else {
+                // Loop or show final scene
+                document.getElementById('scene8').classList.add('active');
+            }
+        }
+        
+        // Start animation
+        requestAnimationFrame(animateScenes);
+        
+        // Keyboard controls for manual control
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ') {
+                // Reset animation
+                startTime = null;
+                currentScene = 0;
+                requestAnimationFrame(animateScenes);
+            }
+        });
+        
+        // Auto-play on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                requestAnimationFrame(animateScenes);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+
+

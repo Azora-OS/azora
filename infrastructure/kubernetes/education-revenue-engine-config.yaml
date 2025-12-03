@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: education-engine-config
+  namespace: default
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  PROMETHEUS_ENABLED: "true"
+  METRICS_PORT: "9090"
+  API_TIMEOUT: "30000"
+  CACHE_TTL: "3600"
+  MAX_CONCURRENT_REQUESTS: "100"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: education-engine-secrets
+  namespace: default
+type: Opaque
+stringData:
+  database-url: "postgresql://user:password@postgres-service:5432/education_db"
+  redis-url: "redis://redis-service:6379/0"
+  elara-api-key: "your-elara-api-key"
+  knowledge-ocean-api-key: "your-knowledge-ocean-api-key"
+  constitutional-ai-api-key: "your-constitutional-ai-api-key"
+  stripe-secret-key: "your-stripe-secret-key"

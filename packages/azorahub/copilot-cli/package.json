@@ -1,0 +1,133 @@
+{
+  "name": "@azorahub/copilot-cli",
+  "version": "1.0.0",
+  "description": "Azorahub Copilot CLI - AI-powered command-line interface for intelligent development",
+  "main": "dist/index.js",
+  "bin": {
+    "azorahub": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/cli.ts",
+    "start": "node dist/cli.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:e2e": "jest --config jest.e2e.config.js",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.ts",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "docker:build": "docker build -t azorahub/copilot-cli .",
+    "docker:run": "docker run -it --rm azorahub/copilot-cli",
+    "release": "semantic-release",
+    "docs:generate": "typedoc src/index.ts",
+    "benchmark": "node dist/benchmark.js",
+    "dev:setup": "npm run build && npm link",
+    "local:test": "node dist/cli.js test-command"
+  },
+  "keywords": [
+    "cli",
+    "copilot",
+    "ai",
+    "azorahub",
+    "terminal",
+    "development",
+    "automation",
+    "code-generation",
+    "git",
+    "repository"
+  ],
+  "author": "Azorahub Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azorahub/copilot-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/azorahub/copilot-cli/issues"
+  },
+  "homepage": "https://docs.azorahub.com/cli",
+  "dependencies": {
+    "@azorahub/api-client": "^1.0.0",
+    "@azorahub/ai-sdk": "^1.0.0",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "cli-table3": "^0.6.3",
+    "boxen": "^7.1.0",
+    "figlet": "^1.6.0",
+    "conf": "^11.0.2",
+    "update-notifier": "^7.0.0",
+    "axios": "^1.6.0",
+    "openai": "^4.14.0",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.3.0",
+    "winston": "^3.11.0",
+    "node-cache": "^5.1.2",
+    "glob": "^10.3.0",
+    "chokidar": "^3.5.3",
+    "simple-git": "^3.20.0",
+    "yaml": "^2.3.4",
+    "semver": "^7.5.4",
+    "joi": "^17.11.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1",
+    "crypto": "^1.0.1",
+    "fs-extra": "^11.1.1",
+    "path": "^0.12.7",
+    "os": "^0.1.2",
+    "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/jest": "^29.5.0",
+    "@types/inquirer": "^9.0.0",
+    "@types/figlet": "^1.5.0",
+    "@types/lodash": "^4.14.0",
+    "@types/uuid": "^9.0.0",
+    "@types/fs-extra": "^11.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.5",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "semantic-release": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typedoc": "^0.25.0",
+    "typescript": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "workflows",
+    "prompts",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": ["main"],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  },
+  "preferGlobal": true
+}

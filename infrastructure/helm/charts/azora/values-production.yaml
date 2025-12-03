@@ -1,0 +1,38 @@
+replicaCount: 3
+
+image:
+  tag: "production"
+
+services:
+  apiGateway:
+    replicas: 3
+  
+  auth:
+    replicas: 3
+  
+  education:
+    replicas: 3
+  
+  pay:
+    replicas: 3
+
+ingress:
+  hosts:
+    - host: api.azora.world
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: azora-production-tls
+      hosts:
+        - api.azora.world
+
+autoscaling:
+  minReplicas: 3
+  maxReplicas: 10
+
+postgresql:
+  host: postgres-production
+
+redis:
+  host: redis-production

@@ -1,0 +1,401 @@
+# Azora OS mTLS & Service Mesh Configuration
+# Implements Istio service mesh with mTLS enforcement
+# Ubuntu Philosophy: "My security ensures our freedom"
+
+---
+# Istio Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+  labels:
+    istio-injection: disabled
+
+---
+# Istio Control Plane
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: azora-istio
+  namespace: istio-system
+spec:
+  profile: default
+  values:
+    global:
+      mtls:
+        enabled: true
+    pilot:
+      autoscaleEnabled: true
+      replicaCount: 2
+    gateways:
+      istio-ingressgateway:
+        autoscaleEnabled: true
+        replicaCount: 2
+        type: LoadBalancer
+        ports:
+        - name: http2
+          port: 80
+          targetPort: 8080
+        - name: https
+          port: 443
+          targetPort: 8443
+        - name: tcp
+          port: 31400
+          targetPort: 31400
+    telemetry:
+      v2:
+        prometheus:
+          enabled: true
+        accessLogPolicy:
+          enabled: true
+
+---
+# Peer Authentication - Strict mTLS for Azora Services
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: azora-mtls-strict
+  namespace: azora-production
+spec:
+  mtls:
+    mode: STRICT
+  selector:
+    matchLabels:
+      security.istio.io/tlsMode: istio
+
+---
+# Authorization Policy - Service-to-Service Communication
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: azora-service-to-service
+  namespace: azora-production
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/azora-production/sa/auth-service"]
+        principals: ["cluster.local/ns/azora-production/sa/payment-service"]
+        principals: ["cluster.local/ns/azora-production/sa/marketplace-service"]
+        principals: ["cluster.local/ns/azora-production/sa/education-service"]
+  - to:
+    - operation:
+        methods: ["GET", "POST", "PUT", "DELETE"]
+
+---
+# Service Entry for External Services
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-apis
+  namespace: azora-production
+spec:
+  hosts:
+  - "*.stripe.com"
+  - "*.plaid.com"
+  - "*.twilio.com"
+  - "api.openai.com"
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+
+---
+# Gateway Configuration
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: azora-gateway
+  namespace: azora-production
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: azora-tls
+    hosts:
+    - "azora.world"
+    - "api.azora.world"
+    - "learn.azora.world"
+    - "business.azora.world"
+    - "work.azora.world"
+    - "pay.azora.world"
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "azora.world"
+    - "api.azora.world"
+    - "learn.azora.world"
+    - "business.azora.world"
+    - "work.azora.world"
+    - "pay.azora.world"
+    tls:
+      httpsRedirect: true
+
+---
+# Virtual Service for API Gateway
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-gateway-vs
+  namespace: azora-production
+spec:
+  hosts:
+  - "api.azora.world"
+  gateways:
+  - azora-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: api-gateway
+        port:
+          number: 4000
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+
+---
+# Destination Rule for API Gateway
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: api-gateway-dr
+  namespace: azora-production
+spec:
+  host: api-gateway
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        maxRequestsPerConnection: 10
+    loadBalancer:
+      simple: LEAST_CONN
+    circuitBreaker:
+      consecutiveErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100
+
+---
+# Service Mesh Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: istio-sidecar-injection
+  namespace: azora-production
+spec:
+  podSelector:
+    matchExpressions:
+    - key: istio-injection
+      operator: Exists
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+    - namespaceSelector:
+        matchLabels:
+          name: azora-production
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+    - namespaceSelector:
+        matchLabels:
+          name: azora-production
+
+---
+# mTLS Certificate Management
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: azora-mtls-certificate
+  namespace: istio-system
+spec:
+  secretName: azora-mtls-cert
+  dnsNames:
+  - "*.azora.world"
+  - "azora-world.local"
+  issuerRef:
+    name: azora-ca-issuer
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+
+---
+# CA Issuer for mTLS
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: azora-ca-issuer
+spec:
+  selfSigned:
+    crlDistributionPoints: []
+
+---
+# Service Account for API Gateway with mTLS
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api-gateway
+  namespace: azora-production
+  annotations:
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/role: "api-gateway"
+    vault.hashicorp.com/agent-inject-secret-config: "secret/azora/api-gateway"
+
+---
+# Role for Vault Integration
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: api-gateway-vault
+  namespace: azora-production
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+
+---
+# RoleBinding for Vault Integration
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: api-gateway-vault
+  namespace: azora-production
+subjects:
+- kind: ServiceAccount
+  name: api-gateway
+  namespace: azora-production
+roleRef:
+  kind: Role
+  name: api-gateway-vault
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Telemetry and Monitoring
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: azora-telemetry
+  namespace: azora-production
+spec:
+  metrics:
+    - providers:
+      - name: prometheus
+    overrides:
+    - match:
+        metric: ALL_METRICS
+      tagOverrides:
+        destination_service:
+          operation: REMOVE
+        source_app:
+          operation: REMOVE
+  accessLogging:
+    - providers:
+      - name: otel
+    filter:
+      expression: "request.protocol == 'http'"
+
+---
+# Security Policy - Rate Limiting
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: rate-limit-policy
+  namespace: azora-production
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  action: ALLOW
+  rules:
+  - when:
+    - key: request.headers["x-api-key"]
+      values: ["*"]
+  - when:
+    - key: source.ip
+      notValues: ["*"]
+  rateLimit:
+    requests: 100
+    window: 1m
+
+---
+# WAF Policy (Web Application Firewall)
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: waf-policy
+  namespace: azora-production
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  action: DENY
+  rules:
+  - when:
+    - key: request.headers["user-agent"]
+      values: ["sqlmap", "nikto", "nmap"]
+  - when:
+    - key: request.path
+      values: ["/admin", "/wp-admin", "/.env"]
+  - when:
+    - key: request.query_params
+      values: [".*<script.*", ".*union.*select.*"]
+
+---
+# Ubuntu Security Headers Policy
+apiVersion: networking.istio.io/v1beta1
+kind: EnvoyFilter
+metadata:
+  name: ubuntu-security-headers
+  namespace: azora-production
+spec:
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      type: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.lua
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inline_code: |
+            function envoy_on_request(request_handle)
+              request_handle:headers():add("X-Content-Type-Options", "nosniff")
+              request_handle:headers():add("X-Frame-Options", "DENY")
+              request_handle:headers():add("X-XSS-Protection", "1; mode=block")
+              request_handle:headers():add("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+              request_handle:headers():add("Referrer-Policy", "strict-origin-when-cross-origin")
+              request_handle:headers():add("X-Ubuntu-Security", "My security ensures our freedom")
+            end

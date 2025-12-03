@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS Desktop Overlay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .overlay {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #00ff88, #00aaff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffffff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-message {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .voice-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .voice-wave {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .wave-bar {
+            width: 4px;
+            height: 20px;
+            background: #00ff88;
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(1) { animation-delay: 0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+        .voice-text {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .voice-status {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 40px;
+        }
+
+        .action-card {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #00ff88, #00aaff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .action-desc {
+            font-size: 12px;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .system-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .elara-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 20px; opacity: 0.4; }
+            50% { height: 40px; opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-message {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .header, .footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .status-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">A</div>
+                <div class="logo-text">Azora OS</div>
+            </div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>System Online</span>
+                </div>
+                <div class="status-item">
+                    <span id="time">--:--</span>
+                </div>
+                <div class="status-item">
+                    <span id="services-count">0 Services</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="welcome-message fade-in">Welcome to Azora OS</div>
+            <div class="subtitle fade-in">
+                Experience the future of AI-powered computing with Elara, your omniscient digital companion.
+                Quantum-secure, constitutionally governed, and infinitely capable.
+            </div>
+
+            <div class="voice-indicator fade-in">
+                <div class="voice-wave">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+                <div class="voice-text">Elara is listening...</div>
+                <div class="voice-status" id="voice-status">Say "Hey Elara" to begin</div>
+            </div>
+
+            <div class="quick-actions fade-in">
+                <div class="action-card" onclick="openSystemStatus()">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">System Status</div>
+                    <div class="action-desc">View real-time system metrics and service health</div>
+                </div>
+                <div class="action-card" onclick="launchServices()">
+                    <div class="action-icon">🚀</div>
+                    <div class="action-title">Launch Services</div>
+                    <div class="action-desc">Start Azora's 147+ AI-powered services</div>
+                </div>
+                <div class="action-card" onclick="openEducation()">
+                    <div class="action-icon">🎓</div>
+                    <div class="action-title">Education Hub</div>
+                    <div class="action-desc">Access world-class learning with AI tutors</div>
+                </div>
+                <div class="action-card" onclick="openMarketplace()">
+                    <div class="action-icon">🏪</div>
+                    <div class="action-title">AI Marketplace</div>
+                    <div class="action-desc">Discover and trade AI models and datasets</div>
+                </div>
+                <div class="action-card" onclick="openSecurity()">
+                    <div class="action-icon">🔒</div>
+                    <div class="action-title">Aegis Citadel</div>
+                    <div class="action-desc">Military-grade security and compliance</div>
+                </div>
+                <div class="action-card" onclick="openVoiceSettings()">
+                    <div class="action-icon">🎤</div>
+                    <div class="action-title">Voice Settings</div>
+                    <div class="action-desc">Configure Elara's voice interface</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="system-info">
+                <span>CPU: <span id="cpu-usage">--%</span></span>
+                <span>Memory: <span id="memory-usage">-- GB</span></span>
+                <span>Network: <span id="network-status">Connected</span></span>
+            </div>
+            <div class="elara-status">
+                <div class="status-dot"></div>
+                <span>Elara Active</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System monitoring
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function updateSystemInfo() {
+            // Simulate system monitoring (in real implementation, this would connect to Azora APIs)
+            const cpuUsage = Math.floor(Math.random() * 30) + 20; // 20-50%
+            const memoryUsage = (Math.random() * 4 + 2).toFixed(1); // 2-6 GB
+            const servicesCount = Math.floor(Math.random() * 50) + 100; // 100-150 services
+
+            document.getElementById('cpu-usage').textContent = cpuUsage + '%';
+            document.getElementById('memory-usage').textContent = memoryUsage + ' GB';
+            document.getElementById('services-count').textContent = servicesCount + ' Services';
+
+            // Update voice status randomly
+            const statuses = [
+                'Say "Hey Elara" to begin',
+                'Listening for commands...',
+                'Processing your request...',
+                'Ready for your next command'
+            ];
+            document.getElementById('voice-status').textContent =
+                statuses[Math.floor(Math.random() * statuses.length)];
+        }
+
+        // Action handlers
+        function openSystemStatus() {
+            // In real implementation, this would open Azora's system dashboard
+            alert('Opening Azora System Dashboard...');
+            window.open('http://localhost:3006/dashboard', '_blank');
+        }
+
+        function launchServices() {
+            // In real implementation, this would trigger the service launcher
+            alert('Launching Azora Services...');
+            // Could call: window.electronAPI.launchServices()
+        }
+
+        function openEducation() {
+            alert('Opening Azora Sapiens Education Platform...');
+            window.open('http://localhost:4200', '_blank');
+        }
+
+        function openMarketplace() {
+            alert('Opening Azora Forge Marketplace...');
+            window.open('http://localhost:12345', '_blank');
+        }
+
+        function openSecurity() {
+            alert('Opening Aegis Citadel Security Center...');
+            window.open('http://localhost:4000', '_blank');
+        }
+
+        function openVoiceSettings() {
+            alert('Opening Elara Voice Settings...');
+            // Could open a settings panel
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'q') {
+                // Quit overlay
+                if (confirm('Exit Azora OS overlay?')) {
+                    window.close();
+                }
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTime();
+            updateSystemInfo();
+
+            // Update time every second
+            setInterval(updateTime, 1000);
+
+            // Update system info every 5 seconds
+            setInterval(updateSystemInfo, 5000);
+
+            // Add fade-in animation to elements
+            setTimeout(() => {
+                document.querySelectorAll('.fade-in').forEach(el => {
+                    el.style.opacity = '1';
+                });
+            }, 100);
+        });
+
+        // Handle window close
+        window.addEventListener('beforeunload', (e) => {
+            // Could save state or cleanup here
+        });
+    </script>
+</body>
+</html>

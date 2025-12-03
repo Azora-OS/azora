@@ -1,0 +1,57 @@
+<!-- Azora OS Square Icon - App Icon Format -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="512" height="512" fill="url(#grid)"/>
+  
+  <!-- Main "A" with glow -->
+  <g filter="url(#glow)">
+    <path d="M 180 400 L 230 200 L 270 200 L 220 400 Z" fill="white" opacity="0.95"/>
+    <path d="M 282 200 L 332 400 L 292 400 L 242 200 Z" fill="white" opacity="0.95"/>
+    <rect x="210" y="300" width="92" height="20" rx="10" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Neural network nodes -->
+  <circle cx="256" cy="160" r="14" fill="white" opacity="0.9"/>
+  <circle cx="200" cy="380" r="12" fill="white" opacity="0.85"/>
+  <circle cx="312" cy="380" r="12" fill="white" opacity="0.85"/>
+  
+  <!-- Connection lines -->
+  <line x1="256" y1="160" x2="240" y2="200" stroke="white" stroke-width="3" opacity="0.3"/>
+  <line x1="256" y1="160" x2="272" y2="200" stroke="white" stroke-width="3" opacity="0.3"/>
+  
+  <!-- Orbit ring -->
+  <circle cx="256" cy="256" r="210" stroke="white" stroke-width="3" fill="none" opacity="0.25"/>
+  
+  <!-- Corner accent dots -->
+  <circle cx="256" cy="80" r="8" fill="white" opacity="0.6"/>
+  <circle cx="432" cy="256" r="8" fill="white" opacity="0.6"/>
+  <circle cx="256" cy="432" r="8" fill="white" opacity="0.6"/>
+  <circle cx="80" cy="256" r="8" fill="white" opacity="0.6"/>
+</svg>
+

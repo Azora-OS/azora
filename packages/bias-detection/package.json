@@ -1,0 +1,12 @@
+{
+  "name": "bias-detection",
+  "version": "1.0.0",
+  "description": "A placeholder for the bias-detection package.",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build needed for placeholder package'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

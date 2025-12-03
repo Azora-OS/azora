@@ -1,0 +1,70 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Job {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  company     String
+  location    String?
+  salary      String?
+  type        String
+  skills      String[]
+  status      String   @default("active")
+  postedBy    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  applications Application[]
+  
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Application {
+  id          String   @id @default(uuid())
+  jobId       String
+  userId      String
+  status      String   @default("pending")
+  coverLetter String?
+  resume      String?
+  appliedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  job         Job      @relation(fields: [jobId], references: [id])
+  
+  @@index([jobId])
+  @@index([userId])
+  @@index([status])
+}
+
+model SkillProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  skills      String[]
+  experience  Int      @default(0)
+  education   String?
+  portfolio   String?
+  rating      Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+}
+
+model Escrow {
+  id          String   @id @default(uuid())
+  jobId       String
+  amount      Float
+  status      String   @default("pending")
+  releasedAt  DateTime?
+  createdAt   DateTime @default(now())
+  
+  @@index([jobId])
+  @@index([status])
+}

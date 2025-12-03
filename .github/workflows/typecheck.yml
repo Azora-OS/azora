@@ -1,0 +1,52 @@
+name: TypeScript Type Checking
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: typecheck-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    name: TypeScript Strict Mode Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run TypeScript compiler in strict mode
+        run: npm run typecheck
+      
+      - name: Verify no implicit any types
+        run: |
+          echo "Checking for implicit any types..."
+          npm run typecheck -- --noImplicitAny
+      
+      - name: Generate type checking report
+        if: always()
+        run: |
+          npm run typecheck -- --listFiles > typecheck-report.txt 2>&1 || true
+      
+      - name: Upload type checking report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-report
+          path: typecheck-report.txt
+          retention-days: 30
+      
+      - name: Fail if type checking failed
+        run: npm run typecheck

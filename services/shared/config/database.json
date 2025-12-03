@@ -1,0 +1,40 @@
+{
+    "development": {
+        "driver": "postgres",
+        "url": "${DATABASE_URL}",
+        "pool": {
+            "min": 2,
+            "max": 10
+        }
+    },
+    "test": {
+        "driver": "postgres",
+        "url": "${TEST_DATABASE_URL}",
+        "pool": {
+            "min": 1,
+            "max": 5
+        }
+    },
+    "production": {
+        "driver": "postgres",
+        "url": "${DATABASE_URL}",
+        "pool": {
+            "min": 5,
+            "max": 20
+        },
+        "ssl": {
+            "rejectUnauthorized": true
+        }
+    },
+    "services": {
+        "auth": {
+            "schema": "auth_service"
+        },
+        "marketplace": {
+            "schema": "marketplace_service"
+        },
+        "education": {
+            "schema": "education_service"
+        }
+    }
+}

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: education-postgres
+    environment:
+      POSTGRES_USER: education_user
+      POSTGRES_PASSWORD: education_password
+      POSTGRES_DB: education_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U education_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: education-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  education-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: education-revenue-engine
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://education_user:education_password@postgres:5432/education_db
+      REDIS_URL: redis://redis:6379/0
+      ELARA_API_KEY: ${ELARA_API_KEY:-test-key}
+      KNOWLEDGE_OCEAN_API_KEY: ${KNOWLEDGE_OCEAN_API_KEY:-test-key}
+      CONSTITUTIONAL_AI_API_KEY: ${CONSTITUTIONAL_AI_API_KEY:-test-key}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-test-key}
+      LOG_LEVEL: debug
+      PROMETHEUS_ENABLED: "true"
+    ports:
+      - "3000:3000"
+      - "9090:9090"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: education-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: education-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_USER: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  default:
+    name: education-network

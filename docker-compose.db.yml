@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: azora-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: azora_dev_2025
+      POSTGRES_DB: azora
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - azora-postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U azora" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - azora-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: azora-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - azora-redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - azora-network
+
+volumes:
+  azora-postgres-data:
+    driver: local
+  azora-redis-data:
+    driver: local
+
+networks:
+  azora-network:
+    driver: bridge

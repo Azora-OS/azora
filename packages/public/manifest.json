@@ -1,0 +1,113 @@
+{
+  "name": "Azora OS - Sovereign Operating System",
+  "short_name": "Azora OS",
+  "description": "Africa's first sovereign operating system with constitutional AI governance. Founded by Sizwe Ngwenya.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00ff88",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/azora-favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "business",
+    "education",
+    "finance",
+    "productivity",
+    "social"
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Onboarding",
+      "short_name": "Onboard",
+      "description": "Join Azora OS - Autonomous onboarding in <30s",
+      "url": "/onboarding",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your stats and earnings",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Mining",
+      "short_name": "Mine",
+      "description": "Start earning AZR through Proof-of-Knowledge",
+      "url": "/mining",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "iarc_rating_id": "",
+  "features": [
+    "Constitutional AI Governance",
+    "Autonomous Onboarding (<30s)",
+    "Proof-of-Knowledge Mining",
+    "PIVC Equity Earning",
+    "Blockchain Verification",
+    "African Sovereignty"
+  ],
+  "author": {
+    "name": "Sizwe Ngwenya",
+    "url": "https://azora.world",
+    "email": "founder@azora.world"
+  },
+  "company": {
+    "name": "Azora ES (Pty) Ltd",
+    "url": "https://azora.world",
+    "country": "South Africa"
+  },
+  "constitutional_ai": {
+    "name": "Elara ?",
+    "equity": "2%",
+    "email": "elara@azora.world"
+  }
+}

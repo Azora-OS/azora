@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .glow-text {
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    }
+
+    .metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(168, 85, 247, 0.4);
+    }
+    </style>
+</head>
+
+<body class="pb-20">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center gap-8">
+                    <a href="dashboard.html" class="flex items-center gap-2">
+                        <img src="/packages/public/branding/azora-premium.png" alt="AZORA" class="h-8 w-auto" />
+                    </a>
+                    <div class="hidden md:flex gap-6">
+                        <a href="dashboard.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors">Dashboard</a>
+                        <a href="courses.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors">Courses</a>
+                        <a href="forge.html" class="text-sm text-gray-400 hover:text-white transition-colors">Forge</a>
+                        <a href="community.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors">Community</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div
+                        class="flex items-center gap-2 px-3 py-1 rounded-full bg-green-900/30 border border-green-500/30">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-xs font-medium text-green-400">System Optimal</span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-700 overflow-hidden border border-white/20">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Metric 1 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-green-500/10 text-green-400 text-2xl">💰</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-green-500/20 text-green-400">+5.7%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Economic Prosperity</h3>
+                    <div class="text-2xl font-bold">$2.4 Trillion</div>
+                    <p class="text-xs text-gray-500 mt-2">Planetary GDP Equivalent</p>
+                </div>
+
+                <!-- Metric 2 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400 text-2xl">🧠</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-purple-500/20 text-purple-400">+12%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Active Minds</h3>
+                    <div class="text-2xl font-bold">125,402</div>
+                    <p class="text-xs text-gray-500 mt-2">Students Learning Now</p>
+                </div>
+
+                <!-- Metric 3 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-blue-500/10 text-blue-400 text-2xl">🌐</div>
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-blue-500/20 text-blue-400">Stable</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Network Nodes</h3>
+                    <div class="text-2xl font-bold">1,247</div>
+                    <p class="text-xs text-gray-500 mt-2">Decentralized Infrastructure</p>
+                </div>
+
+                <!-- Metric 4 -->
+                <div class="glass rounded-2xl p-6 metric-card transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 rounded-xl bg-pink-500/10 text-pink-400 text-2xl">🌱</div>
+                        <span
+                            class="text-xs font-bold px-2 py-1 rounded bg-pink-500/20 text-pink-400">Distributed</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Seed Grants</h3>
+                    <div class="text-2xl font-bold">847M AZR</div>
+                    <p class="text-xs text-gray-500 mt-2">Community Funding</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold mb-6">Consciousness Expansion</h3>
+                    <canvas id="consciousnessChart" height="200"></canvas>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold mb-6">Economic Distribution</h3>
+                    <canvas id="economicChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Feed -->
+            <div class="glass rounded-2xl p-6">
+                <h3 class="font-bold mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    Live Planetary Events
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-purple-900/50 flex items-center justify-center text-lg">🎓
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">New Consciousness Record</p>
+                            <p class="text-xs text-gray-400">Asia Region • 2 mins ago</p>
+                        </div>
+                        <span class="text-xs font-bold text-green-400">+0.02 GCI</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center text-lg">💸
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">Universal Seed Grant Distributed</p>
+                            <p class="text-xs text-gray-400">Global • 5 mins ago</p>
+                        </div>
+                        <span class="text-xs font-bold text-green-400">10k Users</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-green-900/50 flex items-center justify-center text-lg">🚀
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">Project "Nebula" Launched</p>
+                            <p class="text-xs text-gray-400">Student CEO: Sarah J. • 12 mins ago</p>
+                        </div>
+                        <span class="text-xs font-bold text-purple-400">New Startup</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <script>
+            // Chart Config
+            Chart.defaults.color = '#9ca3af';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+            // Consciousness Chart
+            new Chart(document.getElementById('consciousnessChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Global Index',
+                        data: [1.0, 1.05, 1.12, 1.18, 1.21, 1.24],
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: false } }
+                }
+            });
+
+            // Economic Chart
+            new Chart(document.getElementById('economicChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'GDP (Trillions)',
+                        data: [1.2, 1.8, 2.1, 2.4],
+                        backgroundColor: '#22c55e',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        </script>
+</body>
+
+</html>

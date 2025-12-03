@@ -1,0 +1,57 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model KYCVerification {
+  id            String   @id @default(uuid())
+  userId        String
+  documentType  String   // passport, drivers_license, national_id
+  documentData  Json?    // Encrypted document data
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  riskLevel     String   @default("LOW") // LOW, MEDIUM, HIGH, CRITICAL
+  reviewedBy    String?
+  reviewNotes   String?
+  submittedAt   DateTime @default(now())
+  reviewedAt    DateTime?
+  expiresAt     DateTime?
+  
+  @@map("kyc_verifications")
+  @@index([userId])
+  @@index([status])
+}
+
+model RiskAssessment {
+  id              String   @id @default(uuid())
+  userId          String
+  assessmentType  String   // AML, FRAUD, SANCTIONS
+  riskScore       Int      // 0-100
+  riskLevel       String   // LOW, MEDIUM, HIGH, CRITICAL
+  factors         Json     // Risk factors identified
+  recommendations String?
+  assessedAt      DateTime @default(now())
+  assessedBy      String?  // System or admin user
+  
+  @@map("risk_assessments")
+  @@index([userId])
+  @@index([riskLevel])
+}
+
+model ComplianceAudit {
+  id          String   @id @default(uuid())
+  userId      String
+  action      String   // VERIFICATION_SUBMITTED, RISK_ASSESSED, etc.
+  details     Json
+  performedBy String?
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime @default(now())
+  
+  @@map("compliance_audits")
+  @@index([userId])
+  @@index([timestamp])
+}

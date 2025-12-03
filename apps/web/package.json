@@ -1,0 +1,39 @@
+{
+    "name": "azora-os-web",
+    "version": "1.0.0",
+    "description": "Azora OS Web Interface - Cross-platform operating system for unified digital experiences",
+    "main": "index.html",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "deploy": "vercel --prod",
+        "start": "serve dist"
+    },
+    "keywords": [
+        "operating-system",
+        "cross-platform",
+        "web-app",
+        "azora",
+        "elazar",
+        "unified-experience"
+    ],
+    "author": "Azora OS Foundation",
+    "bugs": {
+        "url": "https://github.com/azora-os/azora-os/issues"
+    },
+    "homepage": "https://azora-os.vercel.app",
+    "azora": {
+        "platform": "web",
+        "constitutional_reference": "Article IV, Section 2",
+        "unity_features": [
+            "cross_platform_authentication",
+            "device_fingerprinting",
+            "real_time_sync",
+            "account_theft_protection"
+        ]
+    },
+    "devDependencies": {
+        "@vitejs/plugin-legacy": "^7.2.1"
+    }
+}
