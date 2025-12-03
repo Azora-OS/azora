@@ -1,0 +1,11 @@
+{
+  "name": "ai-routing",
+  "version": "1.0.0",
+  "dependencies": {
+    "vitest": "^1.0.4"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  }
+}
