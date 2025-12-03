@@ -1,5 +1,5 @@
 {
-  "name": "azora-mint",
+  "name": "@azora/azora-mint",
   "version": "1.0.0",
   "description": "Azora Mint - Proof-of-Knowledge Token System",
   "main": "index.js",
