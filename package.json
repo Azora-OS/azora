@@ -20,7 +20,31 @@
     "deploy:post-check": "ts-node scripts/post-deployment-check.ts",
     "optimize:production": "ts-node scripts/production-optimization.ts",
     "improve:continuous": "ts-node scripts/continuous-improvement.ts"
+    ,
+    "precommit:scan": "node ./scripts/prevent-secrets.js",
+    "hooks:install": "npx husky install",
+    "scan:todos": "node ./scripts/list-todos.js",
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "clean:node": "rimraf **/node_modules && rimraf node_modules",
+    "lint": "turbo run lint",
+    "turbo:inspect": "turbo inspect",
+    "ci": "npm ci && npm run build",
+    "workspace:info": "npm workspaces list --json"
   },
+  "workspaces": [
+    "apps/*",
+    "apps/**",
+    "services/*",
+    "services/**",
+    "packages/*",
+    "packages/**",
+    "azstudio",
+    "azstudio/**",
+    "web/**",
+    "infrastructure/**"
+  ],
   "devDependencies": {
     "@babel/preset-env": "7.28.5",
     "@babel/preset-typescript": "7.28.5",
@@ -29,5 +53,10 @@
     "jest": "30.2.0",
     "ts-jest": "29.4.5",
     "typescript": "5.9.3"
+    ,
+    "husky": "8.0.3"
+    ,
+    "turbo": "^1.6.5",
+    "rimraf": "^5.0.0"
   }
 }

@@ -56,6 +56,10 @@ temp/
 coverage/
 .nyc_output/
 
+# Turborepo
+.turbo/
+.turbo/**
+
 # Prisma
 prisma/.env
 prisma/migrations/
