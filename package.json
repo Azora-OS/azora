@@ -33,6 +33,10 @@
     "ci": "npm ci && npm run build",
     "workspace:info": "npm workspaces list --json"
   },
+  "engines": {
+    "node": ">=20"
+  },
+  "prepare": "npm run hooks:install",
   "workspaces": [
     "apps/*",
     "apps/**",
