@@ -42,4 +42,25 @@ export class BlockchainService {
       callback(from, to, ethers.utils.formatEther(amount));
     });
   }
+
+  // --- Reputation System (Simulated for now) ---
+
+  async getReputationScore(address: string): Promise<{ score: number; level: string }> {
+    // In a real app, this would call a Reputation Registry smart contract
+    // For now, we simulate a score based on the address hash
+    const hash = ethers.utils.keccak256(address);
+    const score = parseInt(hash.slice(-2), 16) % 100; // Random score 0-99
+
+    let level = 'Novice';
+    if (score > 80) level = 'Expert';
+    else if (score > 50) level = 'Intermediate';
+
+    return { score, level };
+  }
+
+  async updateReputation(address: string, change: number): Promise<boolean> {
+    // This would be an admin-only transaction to the smart contract
+    console.log(`[Blockchain] Updating reputation for ${address} by ${change}`);
+    return true;
+  }
 }
