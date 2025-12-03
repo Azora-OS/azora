@@ -2,6 +2,7 @@ import { ConstitutionalEngine } from '../services/constitutional-ai/src/constitu
 import { BlockchainService } from '../services/azora-blockchain/src/blockchain-service';
 import { TreasuryService } from '../services/azora-treasury/src/treasury-service';
 import { LLMService } from '../services/constitutional-ai/src/llm-service';
+import { FiatService } from '../services/azora-pay/src/fiat-service';
 
 /**
  * System-Wide Integration Test Suite
@@ -10,6 +11,7 @@ import { LLMService } from '../services/constitutional-ai/src/llm-service';
  * 1. AI Tutor (Brain)
  * 2. Reputation System (Meritocracy)
  * 3. Economic Flow (Circulatory System)
+ * 4. Fiat Gateway (Bridge)
  */
 async function runSystemTest() {
     console.log("🚀 Starting Azora OS System-Wide Verification...\n");
@@ -17,11 +19,9 @@ async function runSystemTest() {
     // 1. Initialize Core Services
     const llmService = new LLMService(); // Uses MockAdapter by default
     const engine = new ConstitutionalEngine();
-    // Inject the service we just created (since engine creates its own instance in constructor, 
-    // but we want to ensure it's working. In a real DI system we'd inject it.)
-
     const blockchain = new BlockchainService();
     const treasury = new TreasuryService();
+    const fiatService = new FiatService();
 
     // ---------------------------------------------------------
     // TEST 1: The Brain (AI Tutor)
@@ -59,6 +59,11 @@ async function runSystemTest() {
     } else {
         console.error("   ❌ FAIL: Invalid reputation score.");
     }
+
+    // Test Reputation Update
+    console.log("   ⭐ Testing Reputation Update...");
+    await blockchain.updateReputation(userAddress, 5);
+    console.log("   ✅ PASS: Reputation update transaction submitted.");
     console.log("");
 
     // ---------------------------------------------------------
@@ -68,14 +73,36 @@ async function runSystemTest() {
     const portfolio = await treasury.getPortfolio();
 
     console.log("   Treasury Portfolio:");
-    portfolio.forEach(asset => {
-        console.log(`   - ${asset.symbol}: ${asset.balance} (Value: $${asset.valueUsd})`);
+    portfolio.assets.forEach(asset => {
+        console.log(`   - ${asset.symbol}: ${asset.amount} (Value: $${asset.valueUsd})`);
     });
 
-    if (portfolio.length > 0) {
+    if (portfolio.assets.length > 0) {
         console.log("   ✅ PASS: Treasury is tracking assets.");
     } else {
         console.error("   ❌ FAIL: Treasury portfolio is empty.");
+    }
+    console.log("");
+
+    // ---------------------------------------------------------
+    // TEST 4: The Gateway (Fiat On/Off Ramp)
+    // ---------------------------------------------------------
+    console.log("💳 TEST 4: Fiat Gateway (Azora Pay)");
+
+    // Test Buy
+    const buyResult = await fiatService.buyAZR(150, 'card_test_123');
+    if (buyResult.success && buyResult.azrAmount === 100) {
+        console.log(`   ✅ PASS: Bought ${buyResult.azrAmount} AZR for $150 (Rate: 1.5).`);
+    } else {
+        console.error("   ❌ FAIL: Buy AZR failed.");
+    }
+
+    // Test Sell
+    const sellResult = await fiatService.sellAZR(100, 'bank_test_123');
+    if (sellResult.success && sellResult.usdAmount === 150) {
+        console.log(`   ✅ PASS: Sold 100 AZR for $${sellResult.usdAmount}.`);
+    } else {
+        console.error("   ❌ FAIL: Sell AZR failed.");
     }
     console.log("");
 
