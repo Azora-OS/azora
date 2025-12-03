@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+const routes = require('./dist/routes/index');
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -21,6 +23,7 @@ const ubuntuLimiter = rateLimit({
   max: 1000,
   message: { error: 'Ubuntu rate limit exceeded', ubuntu: 'Please slow down for community harmony' }
 });
+
 app.use(ubuntuLimiter);
 
 // Ubuntu Health Check
@@ -28,7 +31,7 @@ app.get('/health', (req, res) => {
   res.json({
     service: 'azora-api-gateway',
     status: 'healthy',
-    ubuntu: 'I serve because we prosper together',
+    ubuntu: 'Ubuntu service excellence',
     timestamp: new Date().toISOString(),
     port: PORT
   });
@@ -49,7 +52,8 @@ app.get('/api/ubuntu/philosophy', (req, res) => {
   });
 });
 
-// Service-specific routes
+// Mount TypeScript routes
+app.use('/', routes);
 
 // Default Ubuntu Routes
 app.get('/api/status', (req, res) => {
@@ -72,6 +76,7 @@ app.use((error, req, res, next) => {
 
 // Start Ubuntu Service
 app.listen(PORT, () => {
-  console.log(`🚀 ${serviceName} running on port ${PORT}`);
-  console.log('⚡ Ubuntu: "I serve because we prosper together!"');
+  console.log(`🚀 azora-api-gateway running on port ${PORT}`);
+  console.log(`🌍 Ubuntu Gateway: Service orchestration active`);
+  console.log(`🎯 Ubuntu Philosophy: Ngiyakwazi ngoba sikwazi`);
 });
