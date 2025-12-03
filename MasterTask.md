@@ -192,6 +192,7 @@ interface ProofOfValueEngine {
 - [ ] Integrate with AZR minting for rewards
 - [ ] Add anti-gaming protections
 - [ ] Create mining dashboard API
+- [ ] **Implement Deflationary Logic**: 200M cap, 1M/country pegging, burn mechanisms
 
 ### 2.3 Treasury-Blockchain Bridge
 **Location**: `services/azora-treasury/`

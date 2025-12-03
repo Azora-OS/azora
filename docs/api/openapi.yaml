@@ -1,397 +1,25 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: Azora OS API
-  description: |
-    Constitutional AI Operating System API
-    
-    **Ubuntu Principle:** "My API strengthens our foundation"
-    
-    Complete API documentation for all Azora OS services.
-  version: 3.0.0
+  title: Azora API
+  description: API for Azora ecosystem services including blockchain, minting, and constitutional AI
+  version: 1.0.0
   contact:
-    name: Azora OS Team
-    url: https://azora.world
-    email: api@azora.world
-  license:
-    name: Proprietary
-    url: https://azora.world/license
+    name: Azora Team
+    email: support@azora.os
 
 servers:
-  - url: http://localhost:4000/api
-    description: Local development
-  - url: https://api.azora.world
-    description: Production
-
-tags:
-  - name: Auth
-    description: Authentication and authorization
-  - name: Education
-    description: Courses and learning management
-  - name: Finance
-    description: Wallets and transactions
-  - name: Marketplace
-    description: Jobs and skills marketplace
-  - name: AI Family
-    description: AI family chat system
-  - name: Health
-    description: System health and monitoring
+  - url: http://localhost:3000/api
+    description: Local development server
 
 paths:
-  # Authentication Endpoints
-  /auth/register:
-    post:
-      tags: [Auth]
-      summary: Register new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [email, password, name]
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  minLength: 8
-                name:
-                  type: string
-                role:
-                  type: string
-                  enum: [student, educator, employer]
-                  default: student
-      responses:
-        '201':
-          description: User registered successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
-  /auth/login:
-    post:
-      tags: [Auth]
-      summary: Login user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [email, password]
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-      responses:
-        '200':
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
-  /auth/profile:
+  /blockchain/health:
     get:
-      tags: [Auth]
-      summary: Get user profile
-      security:
-        - bearerAuth: []
+      summary: Blockchain service health check
+      tags:
+        - Blockchain
       responses:
         '200':
-          description: User profile
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-
-  # Education Endpoints
-  /courses:
-    get:
-      tags: [Education]
-      summary: List all courses
-      parameters:
-        - name: category
-          in: query
-          schema:
-            type: string
-        - name: level
-          in: query
-          schema:
-            type: string
-            enum: [beginner, intermediate, advanced]
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: List of courses
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  courses:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Course'
-                  total:
-                    type: integer
-                  page:
-                    type: integer
-                  pages:
-                    type: integer
-
-    post:
-      tags: [Education]
-      summary: Create new course
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CourseInput'
-      responses:
-        '201':
-          description: Course created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Course'
-
-  /courses/{courseId}/enroll:
-    post:
-      tags: [Education]
-      summary: Enroll in course
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: courseId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '201':
-          description: Enrollment successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Enrollment'
-
-  # Finance Endpoints
-  /wallet/balance:
-    get:
-      tags: [Finance]
-      summary: Get wallet balance
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Wallet balance
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Wallet'
-
-  /transactions:
-    get:
-      tags: [Finance]
-      summary: Get transaction history
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: type
-          in: query
-          schema:
-            type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 50
-      responses:
-        '200':
-          description: Transaction list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
-
-  /mining/start:
-    post:
-      tags: [Finance]
-      summary: Start mining activity
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [activityId, activityType]
-              properties:
-                activityId:
-                  type: string
-                activityType:
-                  type: string
-                  enum: [course_completion, job_completion, skill_assessment]
-      responses:
-        '201':
-          description: Mining started
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MiningRecord'
-
-  # Marketplace Endpoints
-  /jobs:
-    get:
-      tags: [Marketplace]
-      summary: List available jobs
-      parameters:
-        - name: category
-          in: query
-          schema:
-            type: string
-        - name: skills
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: Job listings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Job'
-
-    post:
-      tags: [Marketplace]
-      summary: Create job posting
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/JobInput'
-      responses:
-        '201':
-          description: Job created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Job'
-
-  /jobs/{jobId}/apply:
-    post:
-      tags: [Marketplace]
-      summary: Apply for job
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: jobId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [proposal, bidAmount]
-              properties:
-                proposal:
-                  type: string
-                bidAmount:
-                  type: number
-      responses:
-        '201':
-          description: Application submitted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Application'
-
-  # AI Family Endpoints
-  /ai-family/members:
-    get:
-      tags: [AI Family]
-      summary: List AI family members
-      responses:
-        '200':
-          description: Family members
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FamilyMember'
-
-  /ai-family/chat:
-    post:
-      tags: [AI Family]
-      summary: Chat with AI family member
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [memberId, message]
-              properties:
-                memberId:
-                  type: string
-                message:
-                  type: string
-                conversationId:
-                  type: string
-      responses:
-        '200':
-          description: AI response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChatResponse'
-
-  # Health Endpoints
-  /health:
-    get:
-      tags: [Health]
-      summary: System health check
-      responses:
-        '200':
-          description: System healthy
+          description: Service is healthy
           content:
             application/json:
               schema:
@@ -399,272 +27,98 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: [healthy, degraded, unhealthy]
-                  services:
-                    type: object
-                  timestamp:
+                    example: OK
+
+  /mint/balance/{address}:
+    get:
+      summary: Get wallet balance
+      tags:
+        - Mint
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Wallet address
+      responses:
+        '200':
+          description: Balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    example: 1000
+
+  /mint/mint:
+    post:
+      summary: Mint new tokens
+      tags:
+        - Mint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 100
+      responses:
+        '200':
+          description: Tokens minted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+  /constitutional/validate:
+    post:
+      summary: Validate action against constitution
+      tags:
+        - Constitutional AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: post_job
+                payload:
+                  type: object
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isAllowed:
+                    type: boolean
+                    example: true
+                  critique:
                     type: string
-                    format: date-time
+                    example: Action aligns with constitutional principles
+                  score:
+                    type: number
+                    example: 95
 
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-        email:
-          type: string
-        name:
-          type: string
-        role:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-
-    AuthResponse:
-      type: object
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        token:
-          type: string
-        refreshToken:
-          type: string
-
-    Course:
-      type: object
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        instructorId:
-          type: string
-        price:
-          type: number
-        currency:
-          type: string
-        duration:
-          type: integer
-        level:
-          type: string
-        category:
-          type: string
-        published:
-          type: boolean
-
-    CourseInput:
-      type: object
-      required: [title, description, duration, level, category]
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        price:
-          type: number
-          default: 0
-        duration:
-          type: integer
-        level:
-          type: string
-        category:
-          type: string
-
-    Enrollment:
-      type: object
-      properties:
-        id:
-          type: string
-        studentId:
-          type: string
-        courseId:
-          type: string
-        status:
-          type: string
-        progress:
-          type: number
-        enrolledAt:
-          type: string
-          format: date-time
-
-    Wallet:
-      type: object
-      properties:
-        id:
-          type: string
-        userId:
-          type: string
-        balance:
-          type: number
-        staked:
-          type: number
-        earned:
-          type: number
-
-    Transaction:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        amount:
-          type: number
-        reason:
-          type: string
-        status:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-
-    MiningRecord:
-      type: object
-      properties:
-        id:
-          type: string
-        walletId:
-          type: string
-        activityId:
-          type: string
-        activityType:
-          type: string
-        tokensEarned:
-          type: number
-        minedAt:
-          type: string
-          format: date-time
-
-    Job:
-      type: object
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        employerId:
-          type: string
-        budget:
-          type: number
-        currency:
-          type: string
-        status:
-          type: string
-        skills:
-          type: array
-          items:
-            type: string
-        category:
-          type: string
-
-    JobInput:
-      type: object
-      required: [title, description, budget, skills, category]
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        budget:
-          type: number
-        skills:
-          type: array
-          items:
-            type: string
-        category:
-          type: string
-
-    Application:
-      type: object
-      properties:
-        id:
-          type: string
-        jobId:
-          type: string
-        freelancerId:
-          type: string
-        proposal:
-          type: string
-        bidAmount:
-          type: number
-        status:
-          type: string
-
-    FamilyMember:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        role:
-          type: string
-        traits:
-          type: array
-          items:
-            type: string
-        background:
-          type: string
-
-    ChatResponse:
-      type: object
-      properties:
-        conversationId:
-          type: string
-        message:
-          type: string
-        mood:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-
-  responses:
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              message:
-                type: string
-
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              message:
-                type: string
-
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              message:
-                type: string
+tags:
+  - name: Blockchain
+    description: Blockchain service operations
+  - name: Mint
+    description: Token minting and management
+  - name: Constitutional AI
+    description: Ethical validation and constitutional compliance

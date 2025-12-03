@@ -3,31 +3,38 @@ version: '3.8'
 services:
   prometheus:
     image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
+    container_name: azora-prometheus
     volumes:
-      - ./prometheus-config.yaml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    networks:
+      - azora-monitoring
 
   grafana:
     image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
+    container_name: azora-grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana-dashboard.json:/etc/grafana/provisioning/dashboards/azora.json
-
-  node-exporter:
-    image: prom/node-exporter:latest
     ports:
-      - "9100:9100"
+      - "3001:3000"
+    networks:
+      - azora-monitoring
+    depends_on:
+      - prometheus
 
 volumes:
   prometheus-data:
   grafana-data:
+
+
+networks:
+  azora-monitoring:
+    driver: bridge

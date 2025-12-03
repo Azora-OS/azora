@@ -2,40 +2,23 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
-rule_files:
-  - "alert_rules.yml"
-
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          - alertmanager:9093
-
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: 'azora-api-gateway'
     static_configs:
-      - targets: ['localhost:9090']
-
-  - job_name: 'azora-services'
-    static_configs:
-      - targets: 
-        - 'azora-api-gateway:4000'
-        - 'azora-auth:3001'
-        - 'azora-education:3010'
-        - 'azora-mint:3002'
-        - 'azora-studyspaces:3009'
-        - 'enterprise:3023'
+      - targets: ['azora-api-gateway:3000']
     metrics_path: '/metrics'
-    scrape_interval: 30s
 
-  - job_name: 'nginx'
+  - job_name: 'azora-blockchain'
     static_configs:
-      - targets: ['nginx:9113']
+      - targets: ['azora-blockchain:3001']
+    metrics_path: '/metrics'
 
-  - job_name: 'postgres'
+  - job_name: 'azora-mint'
     static_configs:
-      - targets: ['postgres-exporter:9187']
+      - targets: ['azora-mint:3002']
+    metrics_path: '/metrics'
 
-  - job_name: 'redis'
+  - job_name: 'constitutional-ai'
     static_configs:
-      - targets: ['redis-exporter:9121']
+      - targets: ['constitutional-ai:3003']
+    metrics_path: '/metrics'
