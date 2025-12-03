@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { JobService, Job } from '../services/job-service';
 import { EscrowService } from '../services/escrow-service';
+import { ReputationService, ReputationProfile } from '../services/reputation-service';
+import { ReputationBadge } from '../components/ReputationBadge';
+
+interface JobWithReputation extends Job {
+  clientReputation?: ReputationProfile;
+}
 
 export const JobListing: React.FC = () => {
-    const [jobs, setJobs] = useState<Job[]>([]);
+    const [jobs, setJobs] = useState<JobWithReputation[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('');
     const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
 
     const jobService = new JobService();
     const escrowService = new EscrowService();
+    const reputationService = new ReputationService();
 
     useEffect(() => {
         loadJobs();
@@ -23,7 +30,14 @@ export const JobListing: React.FC = () => {
             { id: '1', title: 'Smart Contract Developer', description: 'Build DeFi protocols', budget: 5000, skills: ['Solidity', 'React'], ethicalCheck: true },
             { id: '2', title: 'UI/UX Designer', description: 'Design Azora mobile app', budget: 3000, skills: ['Figma', 'Mobile'], ethicalCheck: true },
         ];
-        setJobs(mockJobs);
+
+        // Enrich with reputation data
+        const jobsWithRep = await Promise.all(mockJobs.map(async (job) => {
+            const rep = await reputationService.getReputation(job.id); // Mocking user ID as job ID for demo
+            return { ...job, clientReputation: rep };
+        }));
+
+        setJobs(jobsWithRep);
         setLoading(false);
     };
 
@@ -67,7 +81,17 @@ export const JobListing: React.FC = () => {
                     {filteredJobs.map(job => (
                         <div key={job.id} className="job-card">
                             <div className="job-header">
-                                <h3>{job.title}</h3>
+                                <div>
+                                    <h3>{job.title}</h3>
+                                    {job.clientReputation && (
+                                        <div style={{ marginTop: '8px' }}>
+                                            <ReputationBadge 
+                                                score={job.clientReputation.score} 
+                                                level={job.clientReputation.level} 
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                                 <span className="budget">{job.budget} AZR</span>
                             </div>
                             <p className="description">{job.description}</p>
