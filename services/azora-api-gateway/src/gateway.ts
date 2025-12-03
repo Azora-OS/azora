@@ -2,14 +2,40 @@ import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import cors from 'cors';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import Redis from 'ioredis';
+import { authMiddleware, optionalAuth } from './auth-middleware';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Redis client for rate limiting
+const redis = new Redis({
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT || '6379'),
+    retryStrategy: () => null, // Don't retry if Redis is down (graceful degradation)
+});
+
+// Rate limiter configuration
+const limiter = rateLimit({
+    store: new RedisStore({
+        // @ts-ignore - Type mismatch but works
+        client: redis,
+        prefix: 'rl:',
+    }),
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // Middleware
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(limiter);
 
 // Logging Middleware
 app.use((req, res, next) => {
@@ -17,25 +43,45 @@ app.use((req, res, next) => {
     next();
 });
 
-// Health Check
+// Health Check (public)
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', service: 'API Gateway' });
 });
 
+// Auth endpoint (public) - for generating tokens
+app.post('/api/auth/login', (req, res) => {
+    // Mock login - in production, validate credentials
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password required' });
+    }
+
+    // Mock user validation
+    const { generateToken } = require('./auth-middleware');
+    const token = generateToken('user-123', email, 'user');
+
+    res.json({ token, user: { id: 'user-123', email } });
+});
+
 // Service Routes Configuration
 const routes = {
-    '/api/blockchain': 'http://localhost:3001', // Placeholder for azora-blockchain
-    '/api/mint': 'http://localhost:3002',       // Placeholder for azora-mint
-    '/api/constitutional': 'http://localhost:3003', // Placeholder for constitutional-ai
+    '/api/blockchain': 'http://localhost:3001',
+    '/api/mint': 'http://localhost:3002',
+    '/api/constitutional': 'http://localhost:3003',
 };
 
-// Setup Proxy Routes
+// Protected routes - require authentication
 Object.entries(routes).forEach(([path, target]) => {
-    app.use(path, createProxyMiddleware({
+    app.use(path, authMiddleware, createProxyMiddleware({
         target,
         changeOrigin: true,
         pathRewrite: {
             [`^${path}`]: '',
+        },
+        onError: (err, req, res) => {
+            console.error(`[Gateway] Proxy error for ${path}:`, err.message);
+            res.status(503).json({ error: 'Service temporarily unavailable' });
         },
     }));
 });
@@ -47,5 +93,7 @@ export { app };
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`[Gateway] API Gateway running on port ${PORT}`);
+        console.log(`[Gateway] Rate limiting: 100 req/15min per IP`);
+        console.log(`[Gateway] JWT authentication: enabled`);
     });
 }

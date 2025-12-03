@@ -1,15 +1,15 @@
 import { ethers } from 'ethers';
 import { config } from './config';
+import AZRTokenABI from './abis/AZRToken.json';
+import NFTCertificateABI from './abis/NFTCertificate.json';
 
 export class BlockchainService {
-  private provider: ethers.JsonRpcProvider;
-  private wallet: ethers.Wallet | null = null;
+  private provider: ethers.providers.JsonRpcProvider;
+  private wallet: ethers.Wallet;
 
   constructor() {
-    this.provider = new ethers.JsonRpcProvider(config.rpcUrl);
-    if (config.privateKey) {
-      this.wallet = new ethers.Wallet(config.privateKey, this.provider);
-    }
+    this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
+    this.wallet = new ethers.Wallet(config.privateKey, this.provider);
   }
 
   async getBlockNumber(): Promise<number> {
@@ -18,24 +18,28 @@ export class BlockchainService {
 
   async getBalance(address: string): Promise<string> {
     const balance = await this.provider.getBalance(address);
-    return ethers.formatEther(balance);
+    return ethers.utils.formatEther(balance);
   }
 
-  getWallet(): ethers.Wallet {
-    if (!this.wallet) {
-      throw new Error('Wallet not initialized. Provide BLOCKCHAIN_PRIVATE_KEY in .env');
-    }
-    return this.wallet;
+  getContract(address: string, abi: any): ethers.Contract {
+    return new ethers.Contract(address, abi, this.wallet);
   }
 
-  getProvider(): ethers.JsonRpcProvider {
-    return this.provider;
+  // AZR Token Contract
+  getAZRContract(): ethers.Contract {
+    return this.getContract(config.contracts.azrToken, AZRTokenABI);
   }
 
-  async getContract(address: string, abi: any): Promise<ethers.Contract> {
-    if (this.wallet) {
-      return new ethers.Contract(address, abi, this.wallet);
-    }
-    return new ethers.Contract(address, abi, this.provider);
+  // NFT Certificate Contract
+  getNFTContract(): ethers.Contract {
+    return this.getContract(config.contracts.nftCertificate, NFTCertificateABI);
+  }
+
+  // Listen to contract events
+  async listenToTransfers(contractAddress: string, callback: (from: string, to: string, amount: string) => void) {
+    const contract = this.getAZRContract();
+    contract.on('Transfer', (from, to, amount) => {
+      callback(from, to, ethers.utils.formatEther(amount));
+    });
   }
 }
