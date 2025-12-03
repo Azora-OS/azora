@@ -2270,8 +2270,11 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
+        specifier: ^16.6.1
         version: 16.6.1
+      ethers:
+        specifier: 6.16.0
+        version: 6.16.0
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2525,6 +2528,12 @@ importers:
         specifier: ^6.3.4
         version: 6.3.4
 
+  services/azora-event-bus:
+    dependencies:
+      ioredis:
+        specifier: 5.8.2
+        version: 5.8.2
+
   services/azora-forge:
     dependencies:
       compression:
@@ -2662,6 +2671,8 @@ importers:
       prisma:
         specifier: ^5.7.0
         version: 5.22.0
+
+  services/azora-mint: {}
 
   services/azora-pay:
     dependencies:
@@ -3181,6 +3192,21 @@ importers:
         specifier: ^5.3.2
         version: 5.9.3
 
+  services/citadel-fund:
+    dependencies:
+      dotenv:
+        specifier: 17.2.3
+        version: 17.2.3
+      ethers:
+        specifier: 6.16.0
+        version: 6.16.0
+
+  services/constitutional-ai:
+    dependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+
   services/constitutional-court-service:
     dependencies:
       compression:
@@ -3205,6 +3231,9 @@ importers:
         specifier: ^3.10.0
         version: 3.18.3
     devDependencies:
+      '@types/uuid':
+        specifier: 11.0.0
+        version: 11.0.0
       jest:
         specifier: ^29.6.2
         version: 29.7.0(@types/node@20.19.25)(babel-plugin-macros@3.1.0)(node-notifier@6.0.0)(ts-node@10.9.2(@types/node@20.19.25)(typescript@5.9.3))
@@ -3974,6 +4003,15 @@ importers:
       supertest:
         specifier: ^6.3.4
         version: 6.3.4
+
+  services/proof-of-value:
+    dependencies:
+      dotenv:
+        specifier: 17.2.3
+        version: 17.2.3
+      ethers:
+        specifier: 6.16.0
+        version: 6.16.0
 
   services/prpeng-engine:
     dependencies:
@@ -8378,6 +8416,10 @@ packages:
 
   '@types/triple-beam@1.3.5':
     resolution: {integrity: sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==}
+
+  '@types/uuid@11.0.0':
+    resolution: {integrity: sha512-HVyk8nj2m+jcFRNazzqyVKiZezyhDKrGUA3jlEcg/nZ6Ms+qHwocba1Y/AaVaznJTAM9xpdFSh+ptbNrhOGvZA==}
+    deprecated: This is a stub types definition. uuid provides its own type definitions, so you do not need this installed.
 
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
@@ -24457,6 +24499,10 @@ snapshots:
 
   '@types/triple-beam@1.3.5': {}
 
+  '@types/uuid@11.0.0':
+    dependencies:
+      uuid: 9.0.1
+
   '@types/uuid@9.0.8': {}
 
   '@types/verror@1.10.11':
@@ -33332,7 +33378,7 @@ snapshots:
 
   nopt@3.0.6:
     dependencies:
-      abbrev: 1.0.9
+      abbrev: 1.1.1
 
   nopt@6.0.0:
     dependencies:

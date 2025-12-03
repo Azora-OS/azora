@@ -1,0 +1,19 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: azora-api-gateway.azora.svc.cluster.local
+  namespace: azora
+spec:
+  routes:
+    - name: GET /api/blockchain
+      condition:
+        method: GET
+        pathRegex: /api/blockchain.*
+    - name: POST /api/mint
+      condition:
+        method: POST
+        pathRegex: /api/mint.*
+    - name: GET /health
+      condition:
+        method: GET
+        pathRegex: /health

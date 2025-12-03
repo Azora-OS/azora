@@ -4,7 +4,7 @@
 
 <div align="center">
 
-**Version 3.0.0** | **Ratified: January 1, 2025** | **Status: Active**
+**Version 3.0.0** | **Ratified: December 1, 2025** | **Status: Active**
 
 *"Ngiyakwazi ngoba sikwazi" - "I can because we can"*
 
@@ -97,13 +97,14 @@ Developers have the right to:
 ## ARTICLE III: ECONOMIC CONSTITUTION
 
 ### Section 3.1: Token Economics
-The AZR token operates under constitutional principles:
+### Section 3.1: Token Economics
+The AZR coin operates under constitutional principles:
 
-1. **Fixed Supply** - Maximum 1 billion AZR tokens, immutable
-2. **Proof-of-Knowledge Mining** - Tokens earned through verified learning and contribution
-3. **Ubuntu Distribution** - Economic value distributed based on collective impact
-4. **No Inflation** - Supply cannot be increased beyond constitutional limit
-5. **Transparent Allocation** - All token movements publicly verifiable on blockchain
+1. **Fixed Supply** - Maximum 200 million AZR coins, immutable
+2. **Sovereign Allocation** - 1 million coins allocated to each recognized nation, initially pegged to national currency
+3. **Deflationary Mechanism** - Subject to continuous deflation to increase individual purchasing power
+4. **Development & Founders** - Remaining supply allocated to development fund and founders, pegged to best performing asset
+5. **Transparent Allocation** - All coin movements publicly verifiable on blockchain
 
 ### Section 3.2: Mining & Earning
 Constitutional mining principles:
