@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ioredis": "5.8.2"
+    "ioredis": "5.8.2",
+    "zod": "^3.23.8"
   }
 }
