@@ -361,4 +361,22 @@ Be part of building the future of education, development, and economic opportuni
 
 **Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.**
 
+## 🗂 Monorepo & Turborepo
+
+This repository is organized as a monorepo using npm workspaces and Turborepo. If you are a developer working locally, please follow the quick setup steps in `docs/TURBO-SETUP.md` to install dependencies and run parallel builds and tests.
+
+For a fast multi-package dev loop, use:
+
+```powershell
+npm ci
+npm run dev
+```
+
+For CI or full builds:
+
+```powershell
+npm ci
+npm run build
+```
+
 </div>
