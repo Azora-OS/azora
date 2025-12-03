@@ -3,7 +3,6 @@ packages:
   - 'services/*'
   - 'packages/*'
   - 'azstudio'
-  - 'apps/web'
   - 'infrastructure'
   - '!**/test/**'
   - '!**/tests/**'

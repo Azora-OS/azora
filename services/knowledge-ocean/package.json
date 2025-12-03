@@ -8,10 +8,6 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "test": "jest --runInBand",
     "test:e2e": "jest --runInBand test/e2e.roundtrip.test.ts",
-    "db:push": "cd ../../ && npx prisma@7.0.1 db push --config prisma.config.cjs --accept-data-loss --force-reset",
-    "prisma7:push": "npx prisma@7.0.1 db push --config prisma.config.cjs --accept-data-loss --force-reset",
-    "prisma7:generate": "npx prisma@7.0.1 generate --config prisma.config.cjs",
-    "postinstall": "npx prisma@7.0.1 generate --config prisma.config.cjs",
     "ci-roundtrip": "node ./test/roundtrip.js"
   },
   "dependencies": {
@@ -26,7 +22,6 @@
     "prisma": "^7.0.1"
   },
   "devDependencies": {
-    
     "@types/express": "^4.17.21",
     "@types/body-parser": "^1.19.2",
     "@types/jsonwebtoken": "^9.0.2",
@@ -37,8 +32,3 @@
     "@types/jest": "^29.0.0"
   }
 }
-
-
-
-
-
