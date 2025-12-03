@@ -1,97 +1,147 @@
 import React, { useEffect, useState } from 'react';
 import { WalletService, WalletBalance, Transaction } from '../services/wallet-service';
+import { FiatService } from '../../../services/azora-pay/src/fiat-service'; // Import FiatService
 import { SendReceive } from '../components/SendReceive';
 
 export const Dashboard: React.FC = () => {
-    const [balance, setBalance] = useState<WalletBalance>({ azr: 0, usd: 0, eth: 0 });
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [walletAddress, setWalletAddress] = useState('');
+  const [balance, setBalance] = useState<WalletBalance>({ azr: 0, usd: 0, eth: 0 });
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [processingFiat, setProcessingFiat] = useState(false);
 
-    const walletService = new WalletService();
+  const walletService = new WalletService();
+  const fiatService = new FiatService();
 
-    useEffect(() => {
+  useEffect(() => {
+    loadWalletData();
+  }, []);
+
+  const loadWalletData = async () => {
+    setLoading(true);
+    const address = await walletService.getWalletAddress();
+    setWalletAddress(address);
+
+    const bal = await walletService.getBalance(address);
+    setBalance(bal);
+
+    const txs = await walletService.getTransactionHistory(address);
+    setTransactions(txs);
+
+    setLoading(false);
+  };
+
+  const handleTransactionComplete = () => {
+    loadWalletData(); // Refresh data after transaction
+  };
+
+  const handleBuyAZR = async () => {
+    const amount = prompt("Enter amount in USD to buy AZR:");
+    if (!amount || isNaN(Number(amount))) return;
+
+    setProcessingFiat(true);
+    try {
+      const result = await fiatService.buyAZR(Number(amount), 'card_123');
+      if (result.success) {
+        alert(`Successfully bought ${result.azrAmount} AZR!`);
         loadWalletData();
-    }, []);
-
-    const loadWalletData = async () => {
-        setLoading(true);
-        const address = await walletService.getWalletAddress();
-        setWalletAddress(address);
-
-        const bal = await walletService.getBalance(address);
-        setBalance(bal);
-
-        const txs = await walletService.getTransactionHistory(address);
-        setTransactions(txs);
-
-        setLoading(false);
-    };
-
-    const handleTransactionComplete = () => {
-        loadWalletData(); // Refresh data after transaction
-    };
-
-    if (loading) {
-        return <div className="dashboard loading">Loading wallet...</div>;
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to buy AZR");
+    } finally {
+      setProcessingFiat(false);
     }
+  };
 
-    return (
-        <div className="dashboard">
-            <header className="dashboard-header">
-                <h1>Azora Pay Wallet</h1>
-                <p className="wallet-address">
-                    Address: {walletAddress.substring(0, 10)}...{walletAddress.substring(walletAddress.length - 8)}
-                </p>
-            </header>
+  const handleSellAZR = async () => {
+    const amount = prompt("Enter amount of AZR to sell:");
+    if (!amount || isNaN(Number(amount))) return;
 
-            <div className="balance-section">
-                <div className="balance-card primary">
-                    <span className="balance-label">AZR Balance</span>
-                    <span className="balance-amount">{balance.azr.toLocaleString()}</span>
-                    <span className="balance-currency">AZR</span>
+    setProcessingFiat(true);
+    try {
+      const result = await fiatService.sellAZR(Number(amount), 'bank_123');
+      if (result.success) {
+        alert(`Successfully sold AZR. You received $${result.usdAmount} USD.`);
+        loadWalletData();
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to sell AZR");
+    } finally {
+      setProcessingFiat(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="dashboard loading">Loading wallet...</div>;
+  }
+
+  return (
+    <div className="dashboard">
+      <header className="dashboard-header">
+        <h1>Azora Pay Wallet</h1>
+        <p className="wallet-address">
+          Address: {walletAddress.substring(0, 10)}...{walletAddress.substring(walletAddress.length - 8)}
+        </p>
+      </header>
+
+      <div className="balance-section">
+        <div className="balance-card primary">
+          <span className="balance-label">AZR Balance</span>
+          <span className="balance-amount">{balance.azr.toLocaleString()}</span>
+          <span className="balance-currency">AZR</span>
+        </div>
+        <div className="balance-card">
+          <span className="balance-label">USD Value</span>
+          <span className="balance-amount">${balance.usd.toLocaleString()}</span>
+        </div>
+        <div className="balance-card">
+          <span className="balance-label">ETH Value</span>
+          <span className="balance-amount">{balance.eth.toFixed(4)} ETH</span>
+        </div>
+      </div>
+
+      <div className="actions-section">
+        <button className="action-btn buy" onClick={handleBuyAZR} disabled={processingFiat}>
+          {processingFiat ? 'Processing...' : 'Buy AZR (USD)'}
+        </button>
+        <button className="action-btn sell" onClick={handleSellAZR} disabled={processingFiat}>
+          {processingFiat ? 'Processing...' : 'Sell AZR (USD)'}
+        </button>
+      </div>
+
+      <SendReceive onTransactionComplete={handleTransactionComplete} />
+
+      <div className="transactions-section">
+        <h2>Transaction History</h2>
+        {transactions.length === 0 ? (
+          <p className="no-transactions">No transactions yet</p>
+        ) : (
+          <div className="transactions-list">
+            {transactions.map(tx => (
+              <div key={tx.id} className={`transaction-item ${tx.type}`}>
+                <div className="tx-icon">{tx.type === 'send' ? '↑' : '↓'}</div>
+                <div className="tx-details">
+                  <span className="tx-type">{tx.type.toUpperCase()}</span>
+                  <span className="tx-address">
+                    {tx.type === 'send' ? `To: ${tx.to.substring(0, 10)}...` : `From: ${tx.from.substring(0, 10)}...`}
+                  </span>
+                  <span className="tx-time">{new Date(tx.timestamp).toLocaleString()}</span>
                 </div>
-                <div className="balance-card">
-                    <span className="balance-label">USD Value</span>
-                    <span className="balance-amount">${balance.usd.toLocaleString()}</span>
+                <div className="tx-amount">
+                  <span className={tx.type === 'send' ? 'negative' : 'positive'}>
+                    {tx.type === 'send' ? '-' : '+'}{tx.amount} AZR
+                  </span>
+                  <span className={`tx-status ${tx.status}`}>{tx.status}</span>
                 </div>
-                <div className="balance-card">
-                    <span className="balance-label">ETH Value</span>
-                    <span className="balance-amount">{balance.eth.toFixed(4)} ETH</span>
-                </div>
-            </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-            <SendReceive onTransactionComplete={handleTransactionComplete} />
-
-            <div className="transactions-section">
-                <h2>Transaction History</h2>
-                {transactions.length === 0 ? (
-                    <p className="no-transactions">No transactions yet</p>
-                ) : (
-                    <div className="transactions-list">
-                        {transactions.map(tx => (
-                            <div key={tx.id} className={`transaction-item ${tx.type}`}>
-                                <div className="tx-icon">{tx.type === 'send' ? '↑' : '↓'}</div>
-                                <div className="tx-details">
-                                    <span className="tx-type">{tx.type.toUpperCase()}</span>
-                                    <span className="tx-address">
-                                        {tx.type === 'send' ? `To: ${tx.to.substring(0, 10)}...` : `From: ${tx.from.substring(0, 10)}...`}
-                                    </span>
-                                    <span className="tx-time">{new Date(tx.timestamp).toLocaleString()}</span>
-                                </div>
-                                <div className="tx-amount">
-                                    <span className={tx.type === 'send' ? 'negative' : 'positive'}>
-                                        {tx.type === 'send' ? '-' : '+'}{tx.amount} AZR
-                                    </span>
-                                    <span className={`tx-status ${tx.status}`}>{tx.status}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            <style jsx>{`
+      <style jsx>{`
         .dashboard {
           max-width: 1200px;
           margin: 0 auto;
@@ -148,6 +198,42 @@ export const Dashboard: React.FC = () => {
         .balance-currency {
           font-size: 12px;
           opacity: 0.7;
+        }
+
+        .actions-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn.buy {
+            background-color: #48bb78;
+            color: white;
+        }
+
+        .action-btn.sell {
+            background-color: #f56565;
+            color: white;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         .transactions-section {
@@ -273,6 +359,6 @@ export const Dashboard: React.FC = () => {
           color: #666;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };

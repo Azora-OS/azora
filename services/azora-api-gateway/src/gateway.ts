@@ -6,9 +6,15 @@ import rateLimit from 'express-rate-limit';
 import RedisStore from 'rate-limit-redis';
 import Redis from 'ioredis';
 import { authMiddleware, optionalAuth } from './auth-middleware';
+import { BlockchainService } from '../../azora-blockchain/src/blockchain-service';
+import { ConstitutionalEngine } from '../../constitutional-ai/src/constitutional-engine';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize Services
+const blockchain = new BlockchainService();
+const engine = new ConstitutionalEngine();
 
 // Redis client for rate limiting
 const redis = new Redis({
@@ -46,6 +52,29 @@ app.use((req, res, next) => {
 // Health Check (public)
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', service: 'API Gateway' });
+});
+
+// --- Reputation Routes ---
+
+app.get('/api/reputation/:address', async (req, res) => {
+    try {
+        const { address } = req.params;
+        const reputation = await blockchain.getReputationScore(address);
+        res.json(reputation);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/reputation/update', async (req, res) => {
+    try {
+        const { address, change } = req.body;
+        // In a real app, we'd verify the caller has admin rights or it's a system event
+        const success = await blockchain.updateReputation(address, change);
+        res.json({ success });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // Auth endpoint (public) - for generating tokens
