@@ -13,6 +13,7 @@
     "build": "npm run build:main && npm run build:renderer",
     "build:main": "webpack --config webpack.main.config.js --mode production",
     "build:renderer": "webpack --config webpack.renderer.config.js --mode production",
+    "clean": "rimraf dist release build out .webpack",
     "start": "electron .",
     "package": "npm run build && electron-builder build --win --publish never",
     "package:nsis": "npm run build && electron-builder build --win nsis --publish never",
@@ -37,6 +38,10 @@
     "rollout:increase": "node scripts/deploy-updates.js rollout",
     "rollback": "node scripts/deploy-updates.js rollback",
     "analytics": "node scripts/deploy-updates.js analytics"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sizwe780/azora-os.git"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.17.1",
@@ -65,8 +70,8 @@
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
+    "@typescript-eslint/eslint-plugin": "8.45.0",
+    "@typescript-eslint/parser": "8.45.0",
     "axe-core": "^4.11.0",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
