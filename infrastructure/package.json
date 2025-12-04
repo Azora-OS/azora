@@ -1,0 +1,15 @@
+{
+    "name": "azora-infrastructure",
+    "version": "1.0.0",
+    "description": "Azora infrastructure tools and validators",
+    "main": "no-mock-validator.js",
+    "scripts": {
+        "validate": "node no-mock-validator.js"
+    },
+    "dependencies": {
+        "glob": "^10.3.10"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}
