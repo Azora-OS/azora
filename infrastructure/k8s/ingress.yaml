@@ -1,0 +1,77 @@
+# --- Ingress for Azora OS ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: azora-ingress
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/group.name: azora-api-gateway
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
+          - path: /user
+            pathType: Prefix
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 80
+          - path: /constitutional
+            pathType: Prefix
+            backend:
+              service:
+                name: constitutional-ai
+                port:
+                  number: 80
+          - path: /tutor
+            pathType: Prefix
+            backend:
+              service:
+                name: ai-tutor-service
+                port:
+                  number: 80
+          - path: /pay
+            pathType: Prefix
+            backend:
+              service:
+                name: azora-pay
+                port:
+                  number: 80
+          - path: /blockchain
+            pathType: Prefix
+            backend:
+              service:
+                name: azora-blockchain
+                port:
+                  number: 80
+          - path: /citadel
+            pathType: Prefix
+            backend:
+              service:
+                name: citadel-fund
+                port:
+                  number: 80
+          - path: /pov
+            pathType: Prefix
+            backend:
+              service:
+                name: proof-of-value
+                port:
+                  number: 80
+          - path: /reputation
+            pathType: Prefix
+            backend:
+              service:
+                name: reputation-service
+                port:
+                  number: 80
