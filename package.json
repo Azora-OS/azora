@@ -36,7 +36,7 @@
     "git:commit-push": "bash ./scripts/git-commit-push.sh"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "packageManager": "pnpm@9.0.0",
   "pnpm": {
