@@ -1,0 +1,57 @@
+# GitHub Secrets Configuration Guide
+
+This document lists all the secrets that need to be configured in your GitHub repository for the CI/CD workflows to function properly.
+
+## Required Secrets
+
+Navigate to: **Settings → Secrets and variables → Actions → New repository secret**
+
+### AWS Deployment Secrets
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `AWS_ACCESS_KEY_ID` | AWS IAM access key | Create in AWS IAM Console |
+| `AWS_SECRET_ACCESS_KEY` | AWS IAM secret key | Create in AWS IAM Console |
+
+**AWS IAM Setup:**
+1. Go to AWS IAM Console
+2. Create a new user for GitHub Actions
+3. Attach policies: `AmazonEKSFullAccess`, `AmazonEC2ContainerRegistryFullAccess`
+4. Generate access keys
+5. Copy the Access Key ID and Secret Access Key
+
+### Vercel Deployment Secrets (Optional)
+
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `VERCEL_TOKEN` | Vercel API token | Vercel Account Settings → Tokens |
+| `VERCEL_ORG_ID` | Vercel organization ID | Vercel Project Settings |
+| `VERCEL_PROJECT_ID` | Vercel project ID | Vercel Project Settings |
+
+**Vercel Setup:**
+1. Go to https://vercel.com/account/tokens
+2. Create a new token
+3. Get Org ID and Project ID from your Vercel project settings
+
+## Verification
+
+After adding secrets, you can verify they're set correctly by:
+
+1. Going to **Settings → Secrets and variables → Actions**
+2. You should see all required secrets listed (values are hidden)
+3. Run a workflow to test the secrets are working
+
+## Security Notes
+
+- ✅ Never commit secrets to the repository
+- ✅ Rotate secrets regularly (every 90 days recommended)
+- ✅ Use least-privilege IAM policies
+- ✅ Enable MFA on AWS account
+- ✅ Monitor CloudTrail for unauthorized access
+
+## Troubleshooting
+
+If workflows fail with "secret not found":
+1. Check secret name matches exactly (case-sensitive)
+2. Verify secret is set at repository level, not organization
+3. Re-run the workflow after adding secrets
