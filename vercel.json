@@ -1,6 +1,13 @@
 {
   "version": 2,
   "builds": [
+    { "src": "apps/azora-sapiens/package.json", "use": "@vercel/next" },
+    { "src": "apps/azora-buildspaces/package.json", "use": "@vercel/next" },
+    { "src": "apps/azora-oracle/package.json", "use": "@vercel/next" },
+    { "src": "apps/azora-compliance/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
+    { "src": "apps/azora-pay/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
+    { "src": "apps/azora-dev/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
+    { "src": "apps/azora-jobspaces/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } },
     {
       "src": "services/education-revenue-engine/package.json",
       "use": "@vercel/node"
@@ -75,6 +82,13 @@
     }
   ],
   "routes": [
+    { "src": "/apps/sapiens/(.*)", "dest": "/apps/azora-sapiens/$1" },
+    { "src": "/apps/build/(.*)", "dest": "/apps/azora-buildspaces/$1" },
+    { "src": "/apps/oracle/(.*)", "dest": "/apps/azora-oracle/$1" },
+    { "src": "/apps/compliance/(.*)", "dest": "/apps/azora-compliance/$1" },
+    { "src": "/apps/pay/(.*)", "dest": "/apps/azora-pay/$1" },
+    { "src": "/apps/dev/(.*)", "dest": "/apps/azora-dev/$1" },
+    { "src": "/apps/jobs/(.*)", "dest": "/apps/azora-jobspaces/$1" },
     {
       "src": "/api/education/(.*)",
       "dest": "services/education-revenue-engine/dist/index.js"

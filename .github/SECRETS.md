@@ -2,6 +2,10 @@
 
 This document lists all the secrets that need to be configured in your GitHub repository for the CI/CD workflows to function properly.
 
+## ✅ Already Configured
+
+Your GitHub secrets are already set up. This guide shows how they integrate with AWS.
+
 ## Required Secrets
 
 Navigate to: **Settings → Secrets and variables → Actions → New repository secret**
@@ -49,9 +53,31 @@ After adding secrets, you can verify they're set correctly by:
 - ✅ Enable MFA on AWS account
 - ✅ Monitor CloudTrail for unauthorized access
 
+## AWS Integration
+
+### Automatic Sync
+Secrets automatically sync from GitHub to AWS Secrets Manager via workflow:
+- File: `.github/workflows/aws-secrets-sync.yml`
+- Trigger: Manual or on push to main
+
+### Manual Setup
+```powershell
+# From project root
+.\scripts\setup-aws-secrets.ps1
+```
+
+### Backend Usage
+```typescript
+import { loadSecretsToEnv } from '@/infrastructure/aws/secrets-loader';
+
+await loadSecretsToEnv();
+// Secrets now in process.env
+```
+
 ## Troubleshooting
 
 If workflows fail with "secret not found":
 1. Check secret name matches exactly (case-sensitive)
 2. Verify secret is set at repository level, not organization
 3. Re-run the workflow after adding secrets
+4. Check AWS Secrets Manager console for synced secrets

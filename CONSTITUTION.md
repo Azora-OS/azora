@@ -97,7 +97,26 @@ Developers have the right to:
 ## ARTICLE III: ECONOMIC CONSTITUTION
 
 ### Section 3.1: Token Economics
-### Section 3.1: Token Economics
+### Section 3.1: Token Economics (Ubuntu Model)
+**Total Supply**: 1,000,000,000 (1 Billion) AZR
+
+The economic model is designed to ensure long-term sustainability and collective prosperity ("Ubuntu"):
+
+1.  **Citadel Fund (30%)**: 300,000,000 AZR - Deep reallocation for:
+    *   **The Azora Citadel**: Physical HQ and AI-integrated smart city.
+    *   **Physical BuildSpaces**: Coworking and maker spaces for learners/builders.
+    *   **Azora Sapiens Campuses**: Hybrid learning environments where AI lives alongside students.
+    *   **Public Goods**: Digital infrastructure and scholarships.
+    This is the "Endowment for Humanity" bridging the digital and physical worlds.
+2.  **Sovereign Allocation (20%)**: 200,000,000 AZR - Reserved for sovereign nations (1,000,000 AZR per recognized nation) to foster global cooperation.
+3.  **Community & Proof-of-Value (30%)**: 300,000,000 AZR - Mined by users through contribution (learning, teaching, coding).
+4.  **Builders & Team (10%)**: 100,000,000 AZR - Vested over 4 years to align long-term incentives.
+5.  **Ecosystem Growth (10%)**: 100,000,000 AZR - Partnerships, liquidity, and strategic expansion.
+
+**Principles**:
+*   **Deep Reallocation**: Significant resources are permanently dedicated to the Citadel Fund to ensure the system serves the collective.
+*   **Sovereignty**: Nations are respected stakeholders in the digital future.
+*   **Meritocracy**: 30% of the network is owned by those who add value to it.
 The AZR coin operates under constitutional principles:
 
 1. **Fixed Supply** - Maximum 200 million AZR coins, immutable

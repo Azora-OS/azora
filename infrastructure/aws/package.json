@@ -1,0 +1,16 @@
+{
+  "name": "@azora/aws-secrets",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "tsx secrets-setup.ts",
+    "load": "tsx secrets-loader.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.700.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

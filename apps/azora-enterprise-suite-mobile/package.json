@@ -10,6 +10,7 @@
                     "web":  "expo start --web"
                 },
     "dependencies":  {
+                         "@azora/shared-ai": "workspace:*",
                          "@react-native-async-storage/async-storage":  "1.21.0",
                          "@react-navigation/bottom-tabs":  "^6.5.11",
                          "@react-navigation/native":  "^6.1.9",
@@ -17,6 +18,8 @@
                          "axios":  "^1.6.2",
                          "csurf":  "1.2.2",
                          "expo":  "54.0.23",
+                         "expo-camera": "~13.4.4",
+                         "expo-av": "~13.4.1",
                          "expo-notifications":  "0.32.12",
                          "hardhat":  "3.0.15",
                          "lerna":  "6.6.2",

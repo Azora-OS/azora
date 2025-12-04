@@ -8,12 +8,12 @@
                     "build":  "vite build",
                     "preview":  "vite preview"
                 },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "@azora/shared-ai": "workspace:*"
+    },
     "devDependencies":  {
                             "vite":  "^7.2.4"
                         }
 }
-
-
-
-
-

@@ -34,12 +34,14 @@ export interface CachedResponse {
 export class AIOrchestrator {
   private openai: OpenAI | null = null;
   private anthropic: Anthropic | null = null;
+  private validator: ConstitutionalValidator;
   private cache: Map<string, CachedResponse> = new Map();
   private readonly CACHE_TTL = 3600000; // 1 hour
   private totalTokensUsed = 0;
   private totalCost = 0;
 
   constructor() {
+    this.validator = ConstitutionalValidator.getInstance();
     // Initialize clients if API keys are available
     if (process.env.OPENAI_API_KEY) {
       this.openai = new OpenAI({
@@ -80,6 +82,15 @@ export class AIOrchestrator {
       response = await this.generateWithOpenAI(fullPrompt, selectedModel);
     } else {
       response = await this.generateWithClaude(fullPrompt, selectedModel);
+    }
+
+    // CONSTITUTIONAL CHECK (The Conscience)
+    console.log('[AIOrchestrator] Validating generated code against Divine Law...');
+    const ethicalAnalysis = await this.validator.validateContent(response.content, prompt);
+
+    if (!ethicalAnalysis.approved) {
+      console.warn('[AIOrchestrator] Code generation VETOED by Constitution:', ethicalAnalysis.concerns);
+      throw new Error(`Constitutional Violation: ${ethicalAnalysis.concerns.join(', ')}`);
     }
 
     // Cache response
