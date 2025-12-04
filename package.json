@@ -41,7 +41,7 @@
   "packageManager": "pnpm@9.0.0",
   "pnpm": {
     "overrides": {
-      "esbuild": "^0.25.5"
+      "esbuild": "^0.21.5"
     }
   },
   "prepare": "npm run hooks:install",

@@ -23,7 +23,7 @@
         ],
         "paths": {
             "@/*": [
-                "./src/*"
+                "./*"
             ],
             "@azora/shared-ai": [
                 "../../packages/shared-ai/index.ts"

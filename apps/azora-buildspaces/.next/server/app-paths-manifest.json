@@ -1,8 +1,10 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/code-chamber/page": "app/code-chamber/page.js",
-  "/ai-lab/page": "app/ai-lab/page.js",
-  "/design-studio/page": "app/design-studio/page.js",
   "/page": "app/page.js",
-  "/data-forge/page": "app/data-forge/page.js"
+  "/code-chamber/page": "app/code-chamber/page.js",
+  "/data-forge/page": "app/data-forge/page.js",
+  "/ai-lab/page": "app/ai-lab/page.js",
+  "/docs/page": "app/docs/page.js",
+  "/design-studio/page": "app/design-studio/page.js",
+  "/settings/page": "app/settings/page.js"
 }
