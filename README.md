@@ -10,6 +10,8 @@
 [![Status](https://img.shields.io/badge/status-production-success.svg)](#)
 [![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Mobile%20%7C%20Desktop-blue.svg)](#platforms)
 
+[![CI/CD Pipeline](https://github.com/Azora-OS/azora/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Azora-OS/azora/actions/workflows/ci-cd.yml)
+
 ## 🌟 What is Azora?
 
 **Azora** is a revolutionary ecosystem that combines **education**, **development tools**, and **economic opportunity** into one seamless platform. Whether you're a student, developer, entrepreneur, or enterprise, Azora provides the tools and infrastructure to learn, build, and earn - all powered by Constitutional AI and blockchain technology.
