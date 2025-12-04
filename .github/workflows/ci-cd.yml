@@ -115,7 +115,7 @@ jobs:
           
       - name: Install Validator Dependencies
         run: |
-          npm install glob
+          npm install -g glob
           
       - name: Run No Mock Protocol Validator
         id: no-mock-check
