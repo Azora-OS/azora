@@ -138,51 +138,6 @@ export async function login(input: LoginInput): Promise<AuthResult> {
         accessToken,
         refreshToken
     };
-}
-
-/**
- * Refresh access token using refresh token
- */
-export async function refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
-    try {
-        // Verify refresh token
-        const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as { userId: string };
-
-        // Check if refresh token exists in database
-        const tokenRecord = await prisma.token.findFirst({
-            where: {
-                token: refreshToken,
-                type: 'REFRESH',
-                expiresAt: {
-                    gt: new Date()
-                }
-            },
-            include: {
-                user: true
-            }
-        });
-
-        if (!tokenRecord) {
-            throw new Error('Invalid or expired refresh token');
-        }
-
-        // Generate new access token
-        const accessToken = generateAccessToken(
-            tokenRecord.user.id,
-            tokenRecord.user.email,
-            tokenRecord.user.role
-        );
-
-        return { accessToken };
-    } catch (error) {
-        throw new Error('Invalid refresh token');
-    }
-}
-
-/**
- * Verify JWT access token
- */
-export function verifyAccessToken(token: string): { userId: string; email: string; role: string } {
     try {
         const payload = jwt.verify(token, JWT_SECRET) as {
             userId: string;
