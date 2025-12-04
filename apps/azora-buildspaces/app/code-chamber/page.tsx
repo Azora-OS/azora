@@ -4,6 +4,7 @@ import { AppLayout, GradientText, Button, AIFamilyChat } from "@azora/shared-des
 import { Play, Save, FolderOpen, Terminal, FileCode } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { PredAISensorOverlay } from "../components/PredAISensorOverlay";
 
 // Dynamically import Monaco Editor to avoid SSR issues
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
@@ -137,6 +138,8 @@ console.log(greet("Builder"));
                     </div>
                 </div>
             </div>
-        </AppLayout>
+            <PredAISensorOverlay />
+        </AppLayout >
     );
 }
+```

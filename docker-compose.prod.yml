@@ -72,6 +72,27 @@ services:
     networks:
       - azora-net
 
+  # 🔮 Citadel PredAISensor (Central Nervous System)
+  citadel-predai-sensor:
+    build: ./services/citadel-predai-sensor
+    ports:
+      - "3015:3015"
+    environment:
+      - PORT=3015
+      - NODE_ENV=production
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION}
+        awslogs-group: /azora/citadel-predai-sensor
+        awslogs-create-group: "true"
+    restart: always
+    networks:
+      - azora-net
+
 networks:
   azora-net:
     driver: bridge

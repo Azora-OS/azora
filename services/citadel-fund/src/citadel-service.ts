@@ -1,13 +1,14 @@
 import { ethers } from 'ethers';
 
 export class CitadelService {
-    private static readonly CITADEL_PERCENTAGE = 0.10; // 10%
-    private static readonly PROVIDER_PERCENTAGE = 0.90; // 90%
+    private static readonly CITADEL_PERCENTAGE = 0.30; // 30% (Deep Reallocation)
+    private static readonly PROVIDER_PERCENTAGE = 0.70; // 70%
 
     // Allocation percentages for the Citadel Fund
-    private static readonly ALLOCATION_SCHOLARSHIPS = 0.40;
-    private static readonly ALLOCATION_GRANTS = 0.30;
-    private static readonly ALLOCATION_PUBLIC_GOODS = 0.30;
+    private static readonly ALLOCATION_PHYSICAL_INFRA = 0.40; // Citadel, Campuses, BuildSpaces
+    private static readonly ALLOCATION_SCHOLARSHIPS = 0.30;
+    private static readonly ALLOCATION_PUBLIC_GOODS = 0.20;
+    private static readonly ALLOCATION_GRANTS = 0.10;
 
     constructor() { }
 

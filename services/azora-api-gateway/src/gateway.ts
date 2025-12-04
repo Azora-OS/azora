@@ -8,6 +8,7 @@ import Redis from 'ioredis';
 import { authMiddleware, optionalAuth } from './auth-middleware';
 import { BlockchainService } from '../../azora-blockchain/src/blockchain-service';
 import { ConstitutionalEngine } from '../../constitutional-ai/src/constitutional-engine';
+import { initializeSecrets } from './secrets-init';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -127,9 +128,12 @@ export { app };
 
 // Start Gateway only if run directly
 if (require.main === module) {
-    app.listen(PORT, () => {
-        console.log(`[Gateway] API Gateway running on port ${PORT}`);
-        console.log(`[Gateway] Rate limiting: 100 req/15min per IP`);
-        console.log(`[Gateway] JWT authentication: enabled`);
-    });
+    (async () => {
+        await initializeSecrets();
+        app.listen(PORT, () => {
+            console.log(`[Gateway] API Gateway running on port ${PORT}`);
+            console.log(`[Gateway] Rate limiting: 100 req/15min per IP`);
+            console.log(`[Gateway] JWT authentication: enabled`);
+        });
+    })();
 }

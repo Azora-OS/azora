@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 export class MiningEngine {
-    private static readonly MAX_SUPPLY = 200_000_000; // 200 Million AZR
+    private static readonly MAX_SUPPLY = 1_000_000_000; // 1 Billion AZR
     private static readonly SOVEREIGN_ALLOCATION_PER_NATION = 1_000_000; // 1 Million AZR
     private static readonly BURN_RATE = 0.01; // 1% burn on transactions/minting
 

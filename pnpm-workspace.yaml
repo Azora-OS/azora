@@ -4,6 +4,7 @@ packages:
   - 'packages/*'
   - 'azstudio'
   - 'infrastructure'
+  - '!archive/**'
   - '!**/test/**'
   - '!**/tests/**'
   - '!azstudio/build/**'

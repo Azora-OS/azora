@@ -73,6 +73,44 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
       noSyntaxValidation: false,
     });
 
+    // 🌟 CITADEL INTELLISENSE PROVIDER
+    // Adds autocomplete for Azora's physical/virtual building blocks
+    monaco.languages.registerCompletionItemProvider('typescript', {
+      provideCompletionItems: (model, position) => {
+        const suggestions = [
+          {
+            label: 'CitadelRoom',
+            kind: monaco.languages.CompletionItemKind.Class,
+            insertText: '<CitadelRoom name="${1:Nexus}" capacity={${2:50}} />',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'A physical/virtual room in the Citadel campus.'
+          },
+          {
+            label: 'HolographicDisplay',
+            kind: monaco.languages.CompletionItemKind.Component,
+            insertText: '<HolographicDisplay resolution="8k" interaction="gesture" />',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: '3D holographic projection surface.'
+          },
+          {
+            label: 'UbuntuSensor',
+            kind: monaco.languages.CompletionItemKind.Interface,
+            insertText: '<UbuntuSensor type="${1:presence}" network="${2:mesh}" />',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'IoT sensor for tracking collective presence.'
+          },
+          {
+            label: '@DivineLaw',
+            kind: monaco.languages.CompletionItemKind.Keyword,
+            insertText: '@DivineLaw(Principle.${1:UBUNTU})',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Decorator to bind code to Constitutional Principles.'
+          }
+        ];
+        return { suggestions };
+      }
+    });
+
     // Configure JavaScript defaults
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2020,
