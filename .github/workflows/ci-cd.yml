@@ -108,6 +108,13 @@ jobs:
             echo "⚠️ Kubernetes manifests not found"
           fi
           
+      - name: Run No Mock Protocol Validator
+        id: no-mock-check
+        run: |
+          echo "🛡️ Executing No Mock Protocol..."
+          node infrastructure/no-mock-validator.js
+          echo "✅ No Mock Protocol: PASSED"
+          
       - name: Genesis Event Status
         run: |
           echo "🌍 GENESIS EVENT STATUS"
