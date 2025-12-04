@@ -28,94 +28,33 @@ app.get('/api/health', (req, res) => {
         unity_features: [
             'cross_platform_authentication',
             'device_fingerprinting',
-            'account_theft_protection',
-            'real_time_sync'
-        ]
+        if(!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Missing or invalid authorization header' });
+    }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    const tokenData = authTokens.get(token);
+
+    if (!tokenData) {
+        return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+
+    // Check if token is expired
+    if (new Date() > new Date(tokenData.expiresAt)) {
+        authTokens.delete(token);
+        return res.status(401).json({ error: 'Token expired' });
+    }
+
+    res.json({
+        valid: true,
+        user: { username: tokenData.username },
+        deviceFingerprint: tokenData.deviceFingerprint,
+        platform: tokenData.platform
     });
-});
-
-// Authentication endpoints
-app.post('/api/auth/login', async (req, res) => {
-    try {
-        const { username, password, deviceFingerprint, platform, useBiometrics } = req.body;
-
-        // Validate input
-        if (!username || !password || !deviceFingerprint) {
-            return res.status(400).json({
-                error: 'Missing required fields',
-                required: ['username', 'password', 'deviceFingerprint']
-            });
-        }
-
-        // TODO: Replace with real authentication logic
-        // For now, this is a placeholder that should never work in production
-        // Real auth should query database and verify password hash
-        if (process.env.NODE_ENV === 'development' && username === 'demo' && password === 'demo') {
-            console.warn('⚠️  Using demo credentials - this should never work in production!');
-            const token = crypto.randomBytes(32).toString('hex');
-            const tokenData = {
-                token,
-                username,
-                deviceFingerprint,
-                platform: platform || 'web',
-                issuedAt: new Date().toISOString(),
-                expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
-                useBiometrics: useBiometrics || false
-            };
-
-            authTokens.set(token, tokenData);
-            deviceFingerprints.add(deviceFingerprint);
-
-            res.json({
-                success: true,
-                token,
-                user: { username },
-                deviceFingerprint,
-                platform: tokenData.platform,
-                expiresAt: tokenData.expiresAt
-            });
-        } else {
-            res.status(401).json({
-                error: 'Invalid credentials',
-                platform: platform || 'web'
-            });
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-app.get('/api/auth/validate', (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: 'Missing or invalid authorization header' });
-        }
-
-        const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-        const tokenData = authTokens.get(token);
-
-        if (!tokenData) {
-            return res.status(401).json({ error: 'Invalid or expired token' });
-        }
-
-        // Check if token is expired
-        if (new Date() > new Date(tokenData.expiresAt)) {
-            authTokens.delete(token);
-            return res.status(401).json({ error: 'Token expired' });
-        }
-
-        res.json({
-            valid: true,
-            user: { username: tokenData.username },
-            deviceFingerprint: tokenData.deviceFingerprint,
-            platform: tokenData.platform
-        });
-    } catch (error) {
-        console.error('Token validation error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+} catch (error) {
+    console.error('Token validation error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+}
 });
 
 app.post('/api/auth/sign', (req, res) => {
