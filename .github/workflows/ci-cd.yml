@@ -113,6 +113,10 @@ jobs:
             echo "⚠️ Kubernetes manifests not found"
           fi
           
+      - name: Install Validator Dependencies
+        run: |
+          npm install glob
+          
       - name: Run No Mock Protocol Validator
         id: no-mock-check
         run: |
