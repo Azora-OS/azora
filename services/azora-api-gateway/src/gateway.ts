@@ -77,20 +77,27 @@ app.post('/api/reputation/update', async (req, res) => {
     }
 });
 
-// Auth endpoint (public) - for generating tokens
-app.post('/api/auth/login', (req, res) => {
-    // Mock login - in production, validate credentials
+// Auth endpoint (public) - proxy to auth service
+app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Email and password required' });
     }
 
-    // Mock user validation
-    const { generateToken } = require('./auth-middleware');
-    const token = generateToken('user-123', email, 'user');
+    try {
+        // Call production auth service
+        const authService = require('../../azora-auth/src/auth-service');
+        const result = await authService.login({ email, password });
 
-    res.json({ token, user: { id: 'user-123', email } });
+        res.json({
+            token: result.accessToken,
+            refreshToken: result.refreshToken,
+            user: result.user
+        });
+    } catch (error: any) {
+        res.status(401).json({ error: error.message || 'Authentication failed' });
+    }
 });
 
 // Service Routes Configuration
