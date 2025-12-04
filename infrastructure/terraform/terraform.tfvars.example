@@ -1,0 +1,41 @@
+# Azora OS - AWS Terraform Variables
+# Store sensitive values in terraform.tfvars (gitignored)
+
+# AWS Configuration
+aws_region = "us-east-1"
+environment = "production"
+domain_name = "azora.io"
+
+# Database Configuration
+# db_password = "REPLACE_WITH_SECURE_PASSWORD" # Set via environment variable or AWS Secrets Manager
+
+# EKS Configuration
+cluster_name = "azora-production"
+cluster_version = "1.28"
+
+# Scaling Configuration
+min_nodes = 3
+max_nodes = 10
+desired_nodes = 5
+
+# Instance Types
+eks_instance_types = ["t3.large", "t3.xlarge"]
+rds_instance_class = "db.t3.medium"
+redis_node_type = "cache.t3.medium"
+
+# Storage
+rds_allocated_storage = 100
+rds_max_allocated_storage = 500
+
+# Backup Configuration
+rds_backup_retention_period = 7
+rds_backup_window = "03:00-04:00"
+rds_maintenance_window = "mon:04:00-mon:05:00"
+
+# Tags
+tags = {
+  Project     = "Azora OS"
+  ManagedBy   = "Terraform"
+  Environment = "production"
+  Constitution = "Active"
+}
