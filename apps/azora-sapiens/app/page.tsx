@@ -1,23 +1,18 @@
 "use client";
 
-import { AppLayout, AccessibleCard, GradientText, Button, FinanceDashboard, useWallet } from "@azora/shared-design";
+import { AppLayout, AccessibleCard, GradientText, Button, FinanceDashboard } from "@azora/shared-design";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
     const router = useRouter();
 
-    // Use live wallet data from azora-mint API
-    // TODO: Get real userId from auth context
-    const userId = "demo-student-001";
-    const { balance, loading, error } = useWallet(userId);
-
-    // Default balance while loading
-    const displayBalance = balance || {
-        learn: 0,
-        azr: 0,
-        staked: 0,
-        earned: 0,
-        converted: 0
+    // Static balance for UI testing
+    const displayBalance = {
+        learn: 1250,
+        azr: 500,
+        staked: 2000,
+        earned: 350,
+        converted: 180
     };
 
     return (
@@ -35,11 +30,6 @@ export default function Home() {
 
                 {/* Finance Dashboard */}
                 <div className="w-full max-w-6xl">
-                    {loading ? (
-                        <div className="text-gray-400">Loading wallet...</div>
-                    ) : error ? (
-                        <div className="text-red-400">Error loading wallet. Using offline mode.</div>
-                    ) : null}
                     <FinanceDashboard
                         balance={displayBalance}
                         miningActive={true}
