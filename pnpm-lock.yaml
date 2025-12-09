@@ -1991,8 +1991,8 @@ importers:
         specifier: ^8.3.1
         version: 8.4.1
       '@prisma/client':
-        specifier: ^5.8.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       csurf:
         specifier: 1.2.2
         version: 1.2.2
@@ -2078,7 +2078,7 @@ importers:
     dependencies:
       '@prisma/client':
         specifier: '*'
-        version: 5.22.0(prisma@5.22.0)
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       body-parser:
         specifier: ^1.20.0
         version: 1.20.4
@@ -2189,8 +2189,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared-auth
       '@prisma/client':
-        specifier: ^5.12.1
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -2220,8 +2220,8 @@ importers:
   services/ai-orchestrator:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       axios:
         specifier: ^1.6.0
         version: 1.13.2
@@ -2311,7 +2311,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared-api
       '@prisma/client':
-        specifier: ^7.0.1
+        specifier: ^7.1.0
         version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       ioredis:
         specifier: ^5.3.0
@@ -2559,8 +2559,8 @@ importers:
   services/azora-assessment:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -2656,8 +2656,8 @@ importers:
   services/azora-auth:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -2755,8 +2755,8 @@ importers:
   services/azora-classroom:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -2871,8 +2871,8 @@ importers:
   services/azora-education:
     dependencies:
       '@prisma/client':
-        specifier: ^5.7.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -3067,8 +3067,8 @@ importers:
   services/azora-marketplace:
     dependencies:
       '@prisma/client':
-        specifier: ^5.7.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -3119,8 +3119,8 @@ importers:
   services/azora-pricing:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -3204,8 +3204,8 @@ importers:
   services/azora-research-center:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -3395,8 +3395,8 @@ importers:
   services/azora-studyspaces:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -3630,8 +3630,8 @@ importers:
   services/citadel-predai-sensor:
     dependencies:
       '@prisma/client':
-        specifier: ^5.7.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -3782,8 +3782,8 @@ importers:
   services/elara-content-generator:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -3825,8 +3825,8 @@ importers:
   services/elara-incubator:
     dependencies:
       '@prisma/client':
-        specifier: ^5.6.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -3941,8 +3941,8 @@ importers:
   services/enrollment-service:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.1.0
+        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -4038,7 +4038,7 @@ importers:
   services/enterprise:
     dependencies:
       '@prisma/client':
-        specifier: ^7.0.1
+        specifier: ^7.1.0
         version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
@@ -4206,7 +4206,7 @@ importers:
   services/knowledge-ocean:
     dependencies:
       '@prisma/client':
-        specifier: ^7.0.1
+        specifier: ^7.1.0
         version: 7.1.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
       axios:
         specifier: ^1.5.0
@@ -4489,7 +4489,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared-api
       '@prisma/client':
-        specifier: ^7.0.1
+        specifier: ^7.1.0
         version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
       express:
         specifier: ^4.18.2
@@ -4625,7 +4625,7 @@ importers:
   services/subscription:
     dependencies:
       '@prisma/client':
-        specifier: ^7.0.1
+        specifier: ^7.1.0
         version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
@@ -5994,7 +5994,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.10.17':
     resolution: {integrity: sha512-HkHDvHPzq4M244hIerwnsw2IdjOo7RSsMYWGhc7ZY7DQWIMUC88b7f5+0RtD4JQfXQrgKS5Tvqm/5E6kAH0rIA==}
@@ -8113,15 +8113,6 @@ packages:
 
   '@prisma/client-runtime-utils@7.1.0':
     resolution: {integrity: sha512-39xmeBrNTN40FzF34aJMjfX1PowVCqoT3UKUWBBSP3aXV05NRqGBC3x2wCDs96ti6ZgdiVzqnRDHtbzU8X+lPQ==}
-
-  '@prisma/client@5.22.0':
-    resolution: {integrity: sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA==}
-    engines: {node: '>=16.13'}
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
 
   '@prisma/client@7.1.0':
     resolution: {integrity: sha512-qf7GPYHmS/xybNiSOpzv9wBo+UwqfL2PeyX+08v+KVHDI0AlSCQIh5bBySkH3alu06NX9wy98JEnckhMHoMFfA==}
@@ -25800,10 +25791,6 @@ snapshots:
   '@popperjs/core@2.11.8': {}
 
   '@prisma/client-runtime-utils@7.1.0': {}
-
-  '@prisma/client@5.22.0(prisma@5.22.0)':
-    optionalDependencies:
-      prisma: 5.22.0
 
   '@prisma/client@7.1.0(prisma@5.22.0)(typescript@5.4.5)':
     dependencies:
