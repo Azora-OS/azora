@@ -26,7 +26,13 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
       return res.status(401).json({ success: false, error: 'No token provided' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error('JWT_SECRET is not configured');
+      return res.status(500).json({ success: false, error: 'Server configuration error' });
+    }
+
+    const decoded = jwt.verify(token, secret);
     req.userId = (decoded as any).userId;
     req.user = decoded;
     next();
@@ -44,9 +50,12 @@ export const optionalAuthMiddleware = (req: AuthRequest, res: Response, next: Ne
     const token = req.headers.authorization?.split(' ')[1];
     
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-      req.userId = (decoded as any).userId;
-      req.user = decoded;
+      const secret = process.env.JWT_SECRET;
+      if (secret) {
+        const decoded = jwt.verify(token, secret);
+        req.userId = (decoded as any).userId;
+        req.user = decoded;
+      }
     }
     next();
   } catch (error) {
@@ -67,7 +76,13 @@ export async function authenticateSession(req: AuthRequest): Promise<string | nu
       return null;
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as any;
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error('JWT_SECRET is not configured');
+      return null;
+    }
+
+    const decoded = jwt.verify(token, secret) as any;
     return decoded.userId || null;
   } catch (error) {
     return null;
