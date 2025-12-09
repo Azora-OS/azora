@@ -1,0 +1,4 @@
+[
+  "**/legacy/**",
+  "**/third-party/**"
+]

@@ -1,0 +1,33 @@
+name: Nightly No Mock Audit
+on:
+  schedule:
+    - cron: '0 2 * * *' # Run nightly at 02:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  nightly-audit:
+    name: Nightly No Mock Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Validator Dependencies
+        run: |
+          cd infrastructure
+          npm ci || npm install
+          cd ..
+
+      - name: Run No Mock Protocol Validator (including tests)
+        run: |
+          echo "🔎 Running No Mock Protocol Validator (including test files)"
+          cd infrastructure
+          SET "ALLOW_MOCKS_IN_TESTS=1"; node no-mock-validator.js
+        env:
+          # Optional: allow secrets if needed for adapters; none by default
+          CI: true

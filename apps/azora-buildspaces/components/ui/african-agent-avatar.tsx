@@ -1,0 +1,291 @@
+"use client"
+
+import { useState, useEffect, useRef } from "react"
+import Image from "next/image"
+
+import { AgentAvatarProps, agentStyles } from "./agent-styles"
+
+const sizes = {
+  sm: { container: 40, image: 36 },
+  md: { container: 56, image: 48 },
+  lg: { container: 80, image: 72 },
+  xl: { container: 112, image: 100 },
+  "2xl": { container: 160, image: 144 },
+  hero: { container: 320, image: 300 },
+}
+
+export function AfricanAgentAvatar({
+  agent,
+  size = "md",
+  showGlow = true,
+  showAura = true,
+  trackMouse = false,
+  className = "",
+}: AgentAvatarProps) {
+  const style = agentStyles[agent]
+  const s = sizes[size]
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (!trackMouse) return
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return
+
+      const rect = containerRef.current.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+
+      const deltaX = e.clientX - centerX
+      const deltaY = e.clientY - centerY
+
+      const maxOffset = size === "hero" ? 15 : 10
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+      const normalizedX = distance > 0 ? (deltaX / distance) * Math.min(distance / 20, maxOffset) : 0
+      const normalizedY = distance > 0 ? (deltaY / distance) * Math.min(distance / 20, maxOffset) : 0
+
+      setEyeOffset({ x: normalizedX, y: normalizedY })
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
+  }, [trackMouse, size])
+
+  return (
+    <div
+      ref={containerRef}
+      className={`relative inline-flex items-center justify-center ${className}`}
+      style={{ width: s.container, height: s.container }}
+    >
+      {/* Outer aura glow - pulsing with Aether energy */}
+      {showAura && (
+        <>
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${style.auraColors[0]}40 0%, ${style.auraColors[1]}25 40%, transparent 70%)`,
+              transform: "scale(1.8)",
+              animation: "aether-pulse 3s ease-in-out infinite",
+            }}
+          />
+          {/* Secondary rotating aura ring */}
+          <div
+            className="absolute inset-0 rounded-full opacity-40"
+            style={{
+              background: `conic-gradient(from 0deg, ${style.auraColors[0]}30, transparent, ${style.auraColors[1]}30, transparent, ${style.auraColors[2]}30, transparent)`,
+              transform: "scale(1.5)",
+              animation: "spin 10s linear infinite",
+            }}
+          />
+          {/* Inner energy pulse */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${style.auraColors[0]}20 0%, transparent 60%)`,
+              transform: "scale(1.3)",
+              animation: "aether-glow 2s ease-in-out infinite alternate",
+            }}
+          />
+        </>
+      )}
+
+      {/* Glow ring */}
+      {showGlow && (
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            boxShadow: `
+              0 0 ${s.container / 3}px ${style.glowColor}, 
+              0 0 ${s.container / 1.5}px ${style.auraColors[1]}30,
+              inset 0 0 ${s.container / 4}px ${style.auraColors[0]}20
+            `,
+            animation: "aether-glow 2s ease-in-out infinite",
+          }}
+        />
+      )}
+
+      {/* Main avatar image with gradient border */}
+      <div
+        className="relative rounded-full overflow-hidden"
+        style={{
+          width: s.image,
+          height: s.image,
+          background: `linear-gradient(135deg, ${style.auraColors[0]}, ${style.auraColors[1]}, ${style.auraColors[2]})`,
+          padding: size === "hero" ? 5 : size === "2xl" ? 4 : size === "xl" ? 3 : 2,
+        }}
+      >
+        <div
+          className="relative w-full h-full rounded-full overflow-hidden bg-[#0a0a0f]"
+          style={{
+            transform: trackMouse ? `translate(${eyeOffset.x}px, ${eyeOffset.y}px)` : undefined,
+            transition: "transform 0.1s ease-out",
+          }}
+        >
+          <Image
+            src={style.imageUrl || "/placeholder.svg"}
+            alt={style.name}
+            fill
+            className="object-cover object-top"
+            style={{ objectPosition: "center 20%" }}
+            sizes={`${s.image}px`}
+          />
+          {/* Subtle overlay for theme tinting */}
+          <div
+            className="absolute inset-0 mix-blend-soft-light opacity-10"
+            style={{
+              background: `linear-gradient(135deg, ${style.auraColors[0]}, transparent)`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Animated energy particles */}
+      {showAura && size !== "sm" && size !== "md" && (
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                width: size === "hero" ? 8 : size === "2xl" ? 6 : 4,
+                height: size === "hero" ? 8 : size === "2xl" ? 6 : 4,
+                background: style.auraColors[i % 3],
+                left: "50%",
+                top: "50%",
+                boxShadow: `0 0 12px ${style.auraColors[i % 3]}`,
+                animation: `orbit-${i} ${4 + i * 0.4}s linear infinite`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes orbit-0 {
+          from { transform: rotate(0deg) translateX(${s.container / 2 + 15}px) rotate(0deg); }
+          to { transform: rotate(360deg) translateX(${s.container / 2 + 15}px) rotate(-360deg); }
+        }
+        @keyframes orbit-1 {
+          from { transform: rotate(45deg) translateX(${s.container / 2 + 12}px) rotate(-45deg); }
+          to { transform: rotate(405deg) translateX(${s.container / 2 + 12}px) rotate(-405deg); }
+        }
+        @keyframes orbit-2 {
+          from { transform: rotate(90deg) translateX(${s.container / 2 + 18}px) rotate(-90deg); }
+          to { transform: rotate(450deg) translateX(${s.container / 2 + 18}px) rotate(-450deg); }
+        }
+        @keyframes orbit-3 {
+          from { transform: rotate(135deg) translateX(${s.container / 2 + 10}px) rotate(-135deg); }
+          to { transform: rotate(495deg) translateX(${s.container / 2 + 10}px) rotate(-495deg); }
+        }
+        @keyframes orbit-4 {
+          from { transform: rotate(180deg) translateX(${s.container / 2 + 20}px) rotate(-180deg); }
+          to { transform: rotate(540deg) translateX(${s.container / 2 + 20}px) rotate(-540deg); }
+        }
+        @keyframes orbit-5 {
+          from { transform: rotate(225deg) translateX(${s.container / 2 + 14}px) rotate(-225deg); }
+          to { transform: rotate(585deg) translateX(${s.container / 2 + 14}px) rotate(-585deg); }
+        }
+        @keyframes orbit-6 {
+          from { transform: rotate(270deg) translateX(${s.container / 2 + 16}px) rotate(-270deg); }
+          to { transform: rotate(630deg) translateX(${s.container / 2 + 16}px) rotate(-630deg); }
+        }
+        @keyframes orbit-7 {
+          from { transform: rotate(315deg) translateX(${s.container / 2 + 12}px) rotate(-315deg); }
+          to { transform: rotate(675deg) translateX(${s.container / 2 + 12}px) rotate(-675deg); }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+export function AgentFamilyTree({ className = "" }: { className?: string }) {
+  return (
+    <div className={`relative ${className}`}>
+      {/* Sankofa - Grandfather at top */}
+      <div className="flex justify-center mb-8">
+        <div className="text-center">
+          <AfricanAgentAvatar agent="sankofa" size="xl" trackMouse showAura />
+          <p className="mt-2 text-lg font-bold text-slate-200">Sankofa</p>
+          <p className="text-sm text-slate-400">The Elder • Wisdom Keeper</p>
+        </div>
+      </div>
+
+      {/* Connection line */}
+      <div className="w-0.5 h-8 bg-gradient-to-b from-slate-400 to-amber-400 mx-auto" />
+
+      {/* Elara - Mother in center */}
+      <div className="flex justify-center mb-8">
+        <div className="text-center">
+          <AfricanAgentAvatar agent="elara" size="2xl" trackMouse showAura />
+          <p className="mt-2 text-xl font-bold text-amber-200">Elara</p>
+          <p className="text-sm text-cyan-400">The Orchestrator • XO Architect</p>
+        </div>
+      </div>
+
+      {/* Connection lines to children */}
+      <div className="flex justify-center mb-4">
+        <div className="w-[400px] h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+      </div>
+
+      {/* Children row */}
+      <div className="flex justify-center gap-12">
+        <div className="text-center">
+          <AfricanAgentAvatar agent="themba" size="lg" trackMouse />
+          <p className="mt-2 font-semibold text-yellow-200">Themba</p>
+          <p className="text-xs text-yellow-400">The Builder</p>
+        </div>
+        <div className="text-center">
+          <AfricanAgentAvatar agent="jabari" size="lg" trackMouse />
+          <p className="mt-2 font-semibold text-orange-200">Jabari</p>
+          <p className="text-xs text-orange-400">The Guardian</p>
+        </div>
+        <div className="text-center">
+          <AfricanAgentAvatar agent="nia" size="lg" trackMouse />
+          <p className="mt-2 font-semibold text-cyan-200">Nia</p>
+          <p className="text-xs text-cyan-400">The Analyst</p>
+        </div>
+        <div className="text-center">
+          <AfricanAgentAvatar agent="imani" size="lg" trackMouse />
+          <p className="mt-2 font-semibold text-pink-200">Imani</p>
+          <p className="text-xs text-pink-400">The Artist</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function AgentAvatarWithInfo({
+  agent,
+  size = "md",
+  showGlow = true,
+  trackMouse = false,
+  className = "",
+}: AgentAvatarProps) {
+  const style = agentStyles[agent]
+
+  return (
+    <div className={`flex items-center gap-3 ${className}`}>
+      <AfricanAgentAvatar agent={agent} size={size} showGlow={showGlow} trackMouse={trackMouse} />
+      <div>
+        <p className="font-semibold text-white">{style.name}</p>
+        <p className={`text-sm bg-gradient-to-r ${style.gradient} bg-clip-text text-transparent`}>
+          {style.description}
+        </p>
+        <p className="text-xs text-white/50">{style.title}</p>
+      </div>
+    </div>
+  )
+}
+
+export function AgentShowcase({ className = "" }: { className?: string }) {
+  const agents: (keyof typeof agentStyles)[] = ["sankofa", "elara", "themba", "jabari", "nia", "imani", "zuri"]
+
+  return (
+    <div className={`flex flex-wrap gap-8 justify-center ${className}`}>
+      {agents.map((agent) => (
+        <AgentAvatarWithInfo key={agent} agent={agent} size="lg" trackMouse />
+      ))}
+    </div>
+  )
+}

@@ -1,0 +1,449 @@
+/* =============================================================================
+   AETHER AURA DESIGN SYSTEM
+   BuildSpaces sovereign visual language
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   CSS Custom Properties (Tokens)
+   ----------------------------------------------------------------------------- */
+:root {
+  /* Aether Background */
+  --aether-bg: #0c0f14;
+  --aether-bg-elevated: #111419;
+  --aether-bg-surface: #161a21;
+
+  /* Aether Accent Colors */
+  --aether-teal: #21d4b3;
+  --aether-teal-dim: rgba(33, 212, 179, 0.12);
+  --aether-teal-glow: rgba(33, 212, 179, 0.28);
+
+  --aether-gold: #f5c349;
+  --aether-gold-dim: rgba(245, 195, 73, 0.12);
+  --aether-gold-glow: rgba(245, 195, 73, 0.24);
+
+  --aether-violet: #8a66ff;
+  --aether-violet-dim: rgba(138, 102, 255, 0.12);
+  --aether-violet-glow: rgba(138, 102, 255, 0.28);
+
+  /* Text */
+  --aether-text: #e8edf4;
+  --aether-text-muted: #8b95a5;
+  --aether-text-dim: #5c6370;
+
+  /* Borders */
+  --aether-border: rgba(255, 255, 255, 0.08);
+  --aether-border-active: rgba(33, 212, 179, 0.4);
+
+  /* Gradients */
+  --aether-gradient-radial: radial-gradient(
+    1200px 600px at 70% 20%,
+    var(--aether-teal-dim),
+    transparent
+  ),
+  radial-gradient(
+    800px 400px at 20% 80%,
+    var(--aether-violet-dim),
+    transparent
+  ),
+  var(--aether-bg);
+}
+
+/* -----------------------------------------------------------------------------
+   Aether Background Utilities
+   ----------------------------------------------------------------------------- */
+.aether-bg {
+  background: var(--aether-gradient-radial);
+  color: var(--aether-text);
+}
+
+.aether-bg-elevated {
+  background: var(--aether-bg-elevated);
+}
+
+.aether-bg-surface {
+  background: var(--aether-bg-surface);
+}
+
+/* -----------------------------------------------------------------------------
+   Avatar Aura System
+   ----------------------------------------------------------------------------- */
+.aether-aura {
+  position: relative;
+}
+
+.aether-aura .aura-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 180deg,
+    var(--aether-teal-glow),
+    var(--aether-gold-glow),
+    var(--aether-violet-glow),
+    var(--aether-teal-glow)
+  );
+  filter: blur(6px);
+  opacity: 0.6;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  z-index: 0;
+}
+
+/* Elara-specific aura (more teal/gold) */
+.avatar-elara .aura-ring {
+  background: conic-gradient(
+    from 180deg,
+    var(--aether-teal-glow),
+    var(--aether-gold-glow),
+    rgba(33, 212, 179, 0.15),
+    var(--aether-teal-glow)
+  );
+}
+
+/* Themba-specific aura (more gold/violet) */
+.avatar-themba .aura-ring {
+  background: conic-gradient(
+    from 180deg,
+    var(--aether-gold-glow),
+    var(--aether-violet-glow),
+    rgba(245, 195, 73, 0.15),
+    var(--aether-gold-glow)
+  );
+}
+
+/* -----------------------------------------------------------------------------
+   Avatar State Animations
+   ----------------------------------------------------------------------------- */
+
+/* Idle - subtle presence */
+.state-idle .aura-ring {
+  opacity: 0.4;
+}
+
+/* Thinking - pulsing aura */
+.state-thinking .aura-ring {
+  animation: auraPulse 1.8s ease-in-out infinite;
+}
+
+/* Guiding - expanded, bright aura */
+.state-guiding .aura-ring {
+  opacity: 0.9;
+  inset: -10px;
+  filter: blur(10px);
+}
+
+/* Verifying - teal glow ring */
+.state-verifying .aura-ring {
+  opacity: 1;
+  box-shadow: 0 0 0 4px var(--aether-teal-glow), 0 0 20px var(--aether-teal-glow);
+}
+
+/* Reviewing - violet accent */
+.state-reviewing .aura-ring {
+  opacity: 0.85;
+  background: conic-gradient(
+    from 180deg,
+    var(--aether-violet-glow),
+    var(--aether-gold-glow),
+    var(--aether-violet-glow)
+  );
+}
+
+@keyframes auraPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes auraRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Assistant Dock
+   ----------------------------------------------------------------------------- */
+.assistant-dock {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.assistant-dock .panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--aether-bg-elevated);
+  border: 1px solid var(--aether-border);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.assistant-dock .panel button {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  background: var(--aether-bg-surface);
+  border: 1px solid var(--aether-border);
+  border-radius: 8px;
+  color: var(--aether-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.assistant-dock .panel button:hover {
+  background: var(--aether-teal-dim);
+  border-color: var(--aether-border-active);
+}
+
+/* Cursor glow effect */
+.cursor-glow {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--aether-teal-glow), transparent 60%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.assistant-dock:hover ~ .cursor-glow,
+.cursor-glow.active {
+  opacity: 1;
+}
+
+/* -----------------------------------------------------------------------------
+   Ascend Orchestration Stream
+   ----------------------------------------------------------------------------- */
+.ascend-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--aether-bg-elevated);
+  border: 1px solid var(--aether-border);
+  border-radius: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.ascend-stream .event {
+  padding: 8px 12px;
+  border-left: 2px solid var(--aether-teal);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0 6px 6px 0;
+  animation: eventSlideIn 0.3s ease-out;
+}
+
+.ascend-stream .event.agent-elara {
+  border-color: var(--aether-teal);
+}
+
+.ascend-stream .event.agent-themba {
+  border-color: var(--aether-gold);
+}
+
+.ascend-stream .event.agent-governance {
+  border-color: var(--aether-violet);
+}
+
+.ascend-stream .event.agent-code {
+  border-color: #60a5fa;
+}
+
+.ascend-stream .event.agent-design {
+  border-color: #f472b6;
+}
+
+.ascend-stream .action {
+  color: var(--aether-text);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ascend-stream .code {
+  margin: 8px 0 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  overflow-x: auto;
+  color: var(--aether-text-muted);
+}
+
+.ascend-stream .verdict {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.ascend-stream .verdict.pass {
+  background: var(--aether-teal-dim);
+  color: var(--aether-teal);
+}
+
+.ascend-stream .verdict.block {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+}
+
+@keyframes eventSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Hero Section
+   ----------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 48px;
+  overflow: hidden;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #fff, var(--aether-teal), var(--aether-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero > p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--aether-text-muted);
+  max-width: 720px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.hero .cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.hero .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.hero .btn-primary {
+  background: var(--aether-teal);
+  color: #000;
+  border: none;
+}
+
+.hero .btn-primary:hover {
+  background: #1bc9a9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--aether-teal-glow);
+}
+
+.hero .btn-outline {
+  background: transparent;
+  color: var(--aether-text);
+  border: 1px solid var(--aether-border);
+}
+
+.hero .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--aether-text-muted);
+}
+
+.hero .stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--aether-text-muted);
+  padding-top: 32px;
+  border-top: 1px solid var(--aether-border);
+}
+
+.hero .stats span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero .stats span::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--aether-teal);
+}
+
+.hero .personas {
+  display: flex;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+/* -----------------------------------------------------------------------------
+   Utility Classes
+   ----------------------------------------------------------------------------- */
+.text-aether-teal { color: var(--aether-teal); }
+.text-aether-gold { color: var(--aether-gold); }
+.text-aether-violet { color: var(--aether-violet); }
+
+.bg-aether-teal { background-color: var(--aether-teal); }
+.bg-aether-gold { background-color: var(--aether-gold); }
+.bg-aether-violet { background-color: var(--aether-violet); }
+
+.glow-teal { box-shadow: 0 0 20px var(--aether-teal-glow); }
+.glow-gold { box-shadow: 0 0 20px var(--aether-gold-glow); }
+.glow-violet { box-shadow: 0 0 20px var(--aether-violet-glow); }

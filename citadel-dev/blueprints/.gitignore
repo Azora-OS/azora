@@ -1,0 +1,16 @@
+# Local scratch and experiments for blueprints
+**/scratch/**
+**/notes-local/**
+
+# Large generated artifacts or exports
+**/exports/**
+**/tmp/**
+*.log
+*.csv
+*.parquet
+
+# Editor/OS noise
+*~
+*.swp
+.DS_Store
+Thumbs.db

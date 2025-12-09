@@ -1,0 +1,86 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useFileSystem } from "@/lib/stores/file-system"
+import { WorkbenchLayout } from "./layout/workbench-layout"
+import { useWorkbench } from "@/lib/stores/workbench-store"
+import { ExplorerView } from "./views/explorer-view"
+import { SearchView } from "./views/search-view"
+import { SourceControlView } from "./views/source-control-view"
+import { ExtensionsView } from "./views/extensions-view"
+import { OutputView } from "./panels/output-view"
+import { ProblemsView } from "./panels/problems-view"
+import { DebugView } from "./panels/debug-view"
+import { CommandDesk } from "./command-desk"
+import { EditorPanel } from "./editor-panel"
+import { TerminalPanel } from "./terminal-panel"
+
+interface CodeChamberProps {
+    id: string
+}
+
+export function CodeChamber({ id }: CodeChamberProps) {
+    const {
+        activeFileId,
+        openFiles,
+        setActiveFile,
+        closeFile,
+        createFile,
+        openFile,
+        fileMap,
+        loadProject
+    } = useFileSystem()
+
+    // Initialize project files
+    useEffect(() => {
+        if (id) {
+            loadProject(id)
+        }
+    }, [id])
+
+    const handleFileSelect = (fileId: string) => {
+        setActiveFile(fileId)
+    }
+
+    const handleCloseFile = (fileId: string) => {
+        closeFile(fileId)
+    }
+
+    const { activeSidebarView, activePanelView } = useWorkbench()
+
+    const renderSidebar = () => {
+        switch (activeSidebarView) {
+            case 'explorer': return <ExplorerView />
+            case 'search': return <SearchView />
+            case 'git': return <SourceControlView />
+            case 'extensions': return <ExtensionsView />
+            case 'chat': return <CommandDesk onSwitchToKnowledge={() => { }} />
+            default: return <ExplorerView />
+        }
+    }
+
+    const renderPanel = () => {
+        switch (activePanelView) {
+            case 'terminal': return <TerminalPanel onClose={() => { }} />
+            case 'output': return <OutputView />
+            case 'problems': return <ProblemsView />
+            case 'debug': return <DebugView />
+            default: return <TerminalPanel onClose={() => { }} />
+        }
+    }
+
+    return (
+        <WorkbenchLayout
+            sidebarContent={renderSidebar()}
+            editorContent={
+                <EditorPanel
+                    activeFile={activeFileId || ""}
+                    openFiles={openFiles}
+                    onFileSelect={handleFileSelect}
+                    onCloseFile={handleCloseFile}
+                />
+            }
+            panelContent={renderPanel()}
+        />
+    )
+}
