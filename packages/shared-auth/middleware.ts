@@ -7,11 +7,15 @@ Express middleware for authentication and authorization
 */
 
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
   userId?: string;
-  user?: any;
+  user?: JwtPayload;
+}
+
+interface AzoraJwtPayload extends JwtPayload {
+  userId: string;
 }
 
 /**
@@ -32,8 +36,8 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
       return res.status(500).json({ success: false, error: 'Server configuration error' });
     }
 
-    const decoded = jwt.verify(token, secret);
-    req.userId = (decoded as any).userId;
+    const decoded = jwt.verify(token, secret) as AzoraJwtPayload;
+    req.userId = decoded.userId;
     req.user = decoded;
     next();
   } catch (error) {
@@ -52,8 +56,8 @@ export const optionalAuthMiddleware = (req: AuthRequest, res: Response, next: Ne
     if (token) {
       const secret = process.env.JWT_SECRET;
       if (secret) {
-        const decoded = jwt.verify(token, secret);
-        req.userId = (decoded as any).userId;
+        const decoded = jwt.verify(token, secret) as AzoraJwtPayload;
+        req.userId = decoded.userId;
         req.user = decoded;
       }
     }
@@ -82,7 +86,7 @@ export async function authenticateSession(req: AuthRequest): Promise<string | nu
       return null;
     }
 
-    const decoded = jwt.verify(token, secret) as any;
+    const decoded = jwt.verify(token, secret) as AzoraJwtPayload;
     return decoded.userId || null;
   } catch (error) {
     return null;
