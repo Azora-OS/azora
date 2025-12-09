@@ -1809,8 +1809,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.0.0
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.0
         version: 4.22.1
@@ -2127,8 +2127,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2158,8 +2158,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2235,8 +2235,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -2345,8 +2345,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2379,8 +2379,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2416,8 +2416,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2435,8 +2435,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2460,8 +2460,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2488,8 +2488,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2519,8 +2519,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2571,8 +2571,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -2665,8 +2665,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2693,8 +2693,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.6.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       ethers:
         specifier: 6.16.0
         version: 6.16.0
@@ -2727,8 +2727,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2767,8 +2767,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -2852,8 +2852,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2877,8 +2877,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2923,8 +2923,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2969,8 +2969,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -2990,8 +2990,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3030,8 +3030,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3073,8 +3073,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3131,8 +3131,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -3216,8 +3216,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -3307,8 +3307,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -3407,8 +3407,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -3504,8 +3504,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3538,8 +3538,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3569,8 +3569,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3636,8 +3636,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3686,8 +3686,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3742,8 +3742,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3788,8 +3788,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       elevenlabs:
         specifier: ^1.59.0
         version: 1.59.0(encoding@0.1.13)
@@ -3834,8 +3834,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3901,8 +3901,8 @@ importers:
   services/elara-onboarding:
     dependencies:
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -3953,8 +3953,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       expo:
         specifier: 54.0.23
         version: 54.0.23(@babel/core@7.28.5)(graphql@15.8.0)(react-native@0.73.11(@babel/core@7.28.5)(@babel/preset-env@7.28.5(@babel/core@7.28.5))(encoding@0.1.13)(react@19.2.0))(react@19.2.0)
@@ -4047,8 +4047,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4111,8 +4111,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4142,8 +4142,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.0.3
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4157,8 +4157,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4194,8 +4194,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4267,8 +4267,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4307,8 +4307,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4338,8 +4338,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4375,8 +4375,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4409,8 +4409,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4446,8 +4446,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4532,8 +4532,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4560,8 +4560,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4606,8 +4606,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4634,8 +4634,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -4704,8 +4704,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       dotenv:
-        specifier: ^16.3.1
-        version: 16.6.1
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -5994,7 +5994,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.10.17':
     resolution: {integrity: sha512-HkHDvHPzq4M244hIerwnsw2IdjOo7RSsMYWGhc7ZY7DQWIMUC88b7f5+0RtD4JQfXQrgKS5Tvqm/5E6kAH0rIA==}
