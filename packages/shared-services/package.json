@@ -2,5 +2,16 @@
   "name": "@azora/shared-services",
   "version": "1.0.0",
   "main": "index.js",
-  "dependencies": {}
+  "exports": {
+    ".": "./index.js",
+    "./event-bus": "./event-bus.ts"
+  },
+  "dependencies": {
+    "@azora/event-bus": "workspace:*",
+    "ioredis": "^5.8.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20"
+  }
 }
