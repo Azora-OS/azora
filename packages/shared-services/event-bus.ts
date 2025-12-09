@@ -6,7 +6,7 @@ SHARED EVENT BUS
 Event bus integration for shared services
 */
 
-import { EventBus as EventBusClass } from '../../../services/azora-event-bus/src/event-bus';
+import { EventBus as EventBusClass } from '@azora/event-bus';
 
 /**
  * Shared event bus instance
