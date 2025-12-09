@@ -1,3 +1,0 @@
-module.exports=[64433,a=>{a.v({className:"inter_5972bc34-module__OU16Qa__className"})},94203,a=>{"use strict";var b=a.i(80711),c=a.i(64433);let d={className:c.default.className,style:{fontFamily:"'Inter', 'Inter Fallback'",fontStyle:"normal"}};null!=c.default.variable&&(d.variable=c.default.variable);let e=Error("Cannot find module '@azora/shared-design/theme/azora-theme.css'");throw e.code="MODULE_NOT_FOUND",e}];
-
-//# sourceMappingURL=%5Broot-of-the-server%5D__93b775c3._.js.map
