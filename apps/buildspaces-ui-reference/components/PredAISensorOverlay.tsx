@@ -21,8 +21,11 @@ export function PredAISensorOverlay() {
     useEffect(() => {
         const fetchPredictions = async () => {
             try {
+                // Use environment variable for API URL, fallback to localhost for development
+                const apiUrl = process.env.NEXT_PUBLIC_PREDAI_API_URL || 'http://localhost:3015';
+                
                 // In a real app, we'd send the actual context (code, activity)
-                const response = await fetch('http://localhost:3015/predict/resources', {
+                const response = await fetch(`${apiUrl}/predict/resources`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
