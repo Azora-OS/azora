@@ -1,31 +1,79 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import type React from "react"
+import type { Metadata, Viewport } from "next"
+import { Geist, Geist_Mono } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] });
+const _geist = Geist({ subsets: ["latin"] })
+const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-    title: "Azora BuildSpaces | The Citadel",
-    description: "Professional building environment for the Azora Nation",
-};
+  title: "Citadel BuildSpaces | AI-Powered Development Environment",
+  description:
+    "Build with AI Agents. Elara orchestrates specialized AI agents to transform your vision into production-ready code. From concept to deployment in minutes.",
+  keywords: ["AI development", "code generation", "buildspaces", "azora", "ai agents", "cloud IDE", "pair programming"],
+  authors: [{ name: "Azora" }],
+  creator: "Azora",
+  publisher: "Azora",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://buildspaces.azora.dev",
+    siteName: "Citadel BuildSpaces",
+    title: "Citadel BuildSpaces | Build with AI Agents",
+    description:
+      "Elara orchestrates specialized AI agents to transform your vision into production-ready code. From concept to deployment in minutes.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Citadel BuildSpaces - AI-Powered Development",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Citadel BuildSpaces | Build with AI Agents",
+    description: "Transform your vision into production-ready code with AI agents.",
+    images: ["/og-image.png"],
+    creator: "@azora",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  generator: "Azora BuildSpaces",
+  icons: {
+    icon: [
+      { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
+      { url: "/icon-dark-32x32.png", media: "(prefers-color-scheme: dark)" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-icon.png",
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0d1117" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d1117" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+}
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-    return (
-        <html lang="en" className="dark" suppressHydrationWarning>
-            <body className={`${inter.className} bg-background text-foreground`}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="dark"
-                    enableSystem={false}
-                >
-                    {children}
-                </ThemeProvider>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="font-sans antialiased bg-[#0d1117] text-white">
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  )
 }
