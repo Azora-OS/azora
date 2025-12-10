@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  generator: "v0.app",
+  generator: "Azora BuildSpaces",
   icons: {
     icon: [
       { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },

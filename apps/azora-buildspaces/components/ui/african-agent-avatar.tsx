@@ -83,7 +83,7 @@ export const agentStyles = {
     description: "Creative Director",
     title: "The Artist",
     theme: "rose-creative",
-    imageUrl: "/images/agent-elara.png", // Using Elara as base for now
+    imageUrl: "/images/agent-imani.svg", // Unique Imani avatar (rose gradient)
   },
   // Zuri - Youngest - Titanium/silver
   zuri: {
