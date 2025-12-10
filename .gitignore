@@ -21,6 +21,15 @@ azstudio/out-build/
 azstudio/.build/
 azstudio/extensions/
 apps/**/.next/
+# Explicit BuildSpaces ignores
+apps/azora-buildspaces/node_modules/
+apps/azora-buildspaces/.next/
+apps/azora-buildspaces/out/
+apps/azora-buildspaces/dist/
+apps/azora-buildspaces/build/
+apps/azora-buildspaces/*.zip
+apps/azora-buildspaces/*.log
+apps/azora-buildspaces/*.txt
 
 # Environment files
 .env
