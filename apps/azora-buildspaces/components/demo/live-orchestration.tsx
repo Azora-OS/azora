@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { AfricanAgentAvatar } from "@/components/ui/african-agent-avatar"
-import { agentStyles } from "@/components/ui/agent-styles"
+import { AfricanAgentAvatar, agentStyles } from "@/components/ui/african-agent-avatar"
 import { Button } from "@/components/ui/button"
 import { Play, Eye, Check, Loader2, ExternalLink, RotateCcw } from "lucide-react"
 
@@ -163,12 +162,13 @@ export function LiveOrchestrationDemo() {
               return (
                 <div
                   key={task.id}
-                  className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 ${task.status === "in-progress"
+                  className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 ${
+                    task.status === "in-progress"
                       ? "bg-emerald-500/10 border border-emerald-500/30 shadow-lg shadow-emerald-500/10"
                       : task.status === "complete"
                         ? "bg-white/5 border border-white/10"
                         : "bg-white/[0.02] border border-transparent"
-                    }`}
+                  }`}
                 >
                   {/* Status indicator */}
                   <div className="flex-shrink-0">
