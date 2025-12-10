@@ -94,7 +94,7 @@ The governance and economic heart of the ecosystem.
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/Sizwe780/azora-os.git
+    git clone https://github.com/Azora-OS/azora.git
     cd azora-os
     ```
 
