@@ -12,6 +12,8 @@ We discovered multiple references to "v0" across documentation, lockfiles, and b
 
 Scope & Recommendations:
 - Keep historical mentions in docs as a reference (e.g. "Draft v0.1"). These are useful for archival and change history.
+
+See `docs/V0_AUDIT_REPORT.md` for the full v0 audit report, classification, and recommended remediation steps.
 - Replace or rename active metadata, package names, and generator strings with the preferred naming (e.g. `azora-buildspaces`) if they cause confusion in the CI/CD pipeline or are reused between packages.
 - Avoid changing published package names until a migration and a clear deprecation policy are in place.
 - Once the list of candidate files is created, open a PR per grouping (docs vs build/package metadata) and schedule for review.

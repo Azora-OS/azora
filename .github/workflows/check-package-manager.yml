@@ -1,0 +1,31 @@
+name: 'Check package manager / package-lock presence'
+
+on: [pull_request, push]
+
+jobs:
+  check-lockfiles:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find package-lock files in active directories
+        id: find
+        run: |
+          set -euo pipefail
+          echo "Searching for package-lock.json in apps, packages, services (excluding archives)"
+          found=$(git ls-files -- 'apps/**/package-lock.json' 'packages/**/package-lock.json' 'services/**/package-lock.json' || true)
+          if [[ -n "$found" ]]; then
+            echo "found=true" >> $GITHUB_OUTPUT
+            echo "$found" > lock-files.txt
+            echo "package-lock.json files detected in active directories:"; echo "$found";
+            cat lock-files.txt
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fail if package-lock files exist
+        if: steps.find.outputs.found == 'true'
+        run: |
+          echo "package-lock.json files found in active directories. This repo prefers 'pnpm' as the package manager.\nPlease remove package-lock.json files and use 'pnpm install'.";
+          exit 1

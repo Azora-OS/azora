@@ -166,3 +166,523 @@ model StudentProfile {
 
   @@map("student_profiles")
 }
+
+// ============================================================================
+// Curriculum Graph (SAP-1.1, SAP-1.2)
+// ============================================================================
+
+model Skill {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String?
+  domain          String   // e.g., "mathematics", "language", "science"
+  level           String   // e.g., "foundational", "intermediate", "advanced"
+  bloomLevel      String?  // "remember", "understand", "apply", "analyze", "evaluate", "create"
+  icon            String?
+  isPublished     Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  predecessors    CurriculumEdge[] @relation("SkillPredecessor")
+  successors      CurriculumEdge[] @relation("SkillSuccessor")
+  learningObjectives LearningObjective[]
+  assessments     Assessment[]
+  skillProgress   SkillProgress[]
+
+  @@index([domain])
+  @@index([level])
+  @@index([bloomLevel])
+  @@map("skills")
+}
+
+model CurriculumEdge {
+  id              String   @id @default(uuid())
+  predecessorId   String
+  successorId     String
+  prerequisite    Boolean  @default(true) // must complete predecessor before successor
+  weight          Float    @default(1.0)  // importance multiplier
+  description     String?
+  evidence        String?  // e.g., "assessment_score >= 80"
+  createdAt       DateTime @default(now())
+
+  predecessor     Skill    @relation("SkillPredecessor", fields: [predecessorId], references: [id], onDelete: Cascade)
+  successor       Skill    @relation("SkillSuccessor", fields: [successorId], references: [id], onDelete: Cascade)
+
+  @@unique([predecessorId, successorId])
+  @@index([predecessorId])
+  @@index([successorId])
+  @@map("curriculum_edges")
+}
+
+model LearningObjective {
+  id              String   @id @default(uuid())
+  skillId         String
+  courseId        String?
+  objective       String
+  assessmentCriteria Json?  // { "minScore": 70, "attempts": 3 }
+  description     String?
+  bloomLevel      String?
+  createdAt       DateTime @default(now())
+
+  skill           Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@index([skillId])
+  @@index([courseId])
+  @@map("learning_objectives")
+}
+
+model SkillProgress {
+  id              String   @id @default(uuid())
+  studentId       String
+  skillId         String
+  proficiencyLevel Float    @default(0.0)  // 0-1 scale
+  evidenceScore   Float    @default(0.0)
+  lastAssessmentId String?
+  lastAssessedAt  DateTime?
+  masteredAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  skill           Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, skillId])
+  @@index([studentId])
+  @@index([skillId])
+  @@index([proficiencyLevel])
+  @@map("skill_progress")
+}
+
+// ============================================================================
+// Course & Lesson Management
+// ============================================================================
+
+model Course {
+  id              String   @id @default(uuid())
+  title           String
+  description     String?
+  pathway         String   // "k12", "university", "phd"
+  category        String
+  difficulty      String   // "beginner", "intermediate", "advanced", "expert"
+  durationHours   Int      @default(0)
+  tokenReward     Int      @default(0)
+  instructorId    String?
+  rating          Float?
+  isFeatured      Boolean  @default(false)
+  thumbnail       String?
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  instructor      User?    @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+  lessons         Lesson[]
+  enrollments     Enrollment[]
+  cohorts         Cohort[]
+  skills          Skill[]
+  credentials     Credential[]
+
+  @@index([pathway])
+  @@index([category])
+  @@index([difficulty])
+  @@index([instructorId])
+  @@map("courses")
+}
+
+model Lesson {
+  id              String   @id @default(uuid())
+  courseId        String
+  title           String
+  description     String?
+  order           Int
+  contentType     String   // "video", "text", "code", "quiz"
+  content         String   // markdown or HTML
+  videoUrl        String?
+  durationMinutes Int?
+  tokenReward     Int      @default(0)
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  tutorSessions   TutorSession[]
+  tutorMessages   TutorMessage[]
+
+  @@index([courseId])
+  @@index([order])
+  @@map("lessons")
+}
+
+model Enrollment {
+  id              String   @id @default(uuid())
+  userEmail       String
+  courseId        String
+  progressPercent Float    @default(0)
+  completedLessons String? // JSON array of lesson IDs
+  status          String   @default("active") // "active", "completed", "paused"
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  certificateIssued Boolean @default(false)
+
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user            User?    @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+
+  @@unique([userEmail, courseId])
+  @@index([userEmail])
+  @@index([courseId])
+  @@index([status])
+  @@map("enrollments")
+}
+
+// ============================================================================
+// Assessment Banking & Integrity (SAP-3.1, SAP-3.2)
+// ============================================================================
+
+model Assessment {
+  id              String   @id @default(uuid())
+  skillId         String
+  courseId        String?
+  title           String
+  description     String?
+  type            String   // "formative", "summative", "placement"
+  difficulty      String
+  timeMinutes     Int      @default(60)
+  passingScore    Int      @default(70)
+  maxScore        Int      @default(100)
+  questions       Json     // array of question objects
+  rubric          Json?    // grading rubric
+  integrityLevel  String   @default("medium") // "low", "medium", "high"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  skill           Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  attempts        AssessmentAttempt[]
+
+  @@index([skillId])
+  @@index([courseId])
+  @@index([type])
+  @@map("assessments")
+}
+
+model AssessmentAttempt {
+  id              String   @id @default(uuid())
+  assessmentId    String
+  learnerEmail    String
+  score           Int?
+  maxScore        Int
+  passed          Boolean  @default(false)
+  responses       String?  // JSON of answers
+  feedback        String?
+  integrityLevel  String   @default("medium")
+  integrityFlagged Boolean @default(false)
+  integrityReview String?
+  tokensEarned    Int      @default(0)
+  auditLogId      String?
+  status          String   @default("in_progress") // "in_progress", "completed", "flagged"
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  assessment      Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([assessmentId])
+  @@index([learnerEmail])
+  @@index([status])
+  @@map("assessment_attempts")
+}
+
+// ============================================================================
+// Achievement & Token System
+// ============================================================================
+
+model Achievement {
+  id              String   @id @default(uuid())
+  userEmail       String
+  type            String   // "skill_mastery", "course_complete", "streak", etc
+  title           String
+  description     String
+  courseId        String?
+  icon            String?
+  earnedAt        DateTime @default(now())
+
+  user            User?    @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+
+  @@index([userEmail])
+  @@index([type])
+  @@map("achievements")
+}
+
+model TokenTransaction {
+  id              String   @id @default(uuid())
+  userEmail       String
+  amount          Int
+  type            String   // "earned", "spent", "bonus"
+  source          String   // "lesson_complete", "achievement", "assessment_pass"
+  referenceId     String?
+  description     String?
+  createdDate     DateTime @default(now())
+
+  user            User?    @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+
+  @@index([userEmail])
+  @@index([type])
+  @@index([createdDate])
+  @@map("token_transactions")
+}
+
+// ============================================================================
+// Credentials & Certificates (SAP-4.1)
+// ============================================================================
+
+model Credential {
+  id              String   @id @default(uuid())
+  userId          String
+  courseId        String?
+  type            String   // "certificate", "badge", "microcredential"
+  title           String
+  issuedBy        String   // email of issuer
+  issuedDate      DateTime @default(now())
+  evidence        String?  // JSON of supporting evidence
+  credentialJson  String?  // W3C Verifiable Credential JSON-LD
+  blockchainAnchored Boolean @default(false)
+  blockchainHash  String?
+  verificationUrl String?
+  status          String   @default("issued") // "draft", "issued", "revoked"
+
+  course          Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([courseId])
+  @@index([type])
+  @@index([status])
+  @@map("credentials")
+}
+
+// ============================================================================
+// Cohorts & Classroom Management (SAP-5.1)
+// ============================================================================
+
+model Cohort {
+  id              String   @id @default(uuid())
+  courseId        String
+  name            String
+  instructorEmail String
+  startDate       DateTime
+  endDate         DateTime
+  status          String   @default("forming") // "forming", "active", "completed"
+  maxLearners     Int      @default(30)
+  enrollmentUrl   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  learners        User[]   @relation("CohortLearners")
+  sessions        ClassSession[]
+  attendance      Attendance[]
+
+  @@index([courseId])
+  @@index([instructorEmail])
+  @@index([status])
+  @@map("cohorts")
+}
+
+model ClassSession {
+  id              String   @id @default(uuid())
+  cohortId        String
+  sessionType     String   // "lecture", "lab", "discussion", "office_hours"
+  title           String
+  instructorEmail String?
+  scheduledStart  DateTime
+  scheduledEnd    DateTime
+  buildspacesRoomId String?
+  buildspacesRoomUrl String?
+  recordingUrl    String?
+  status          String   @default("scheduled") // "scheduled", "in_progress", "completed"
+  createdAt       DateTime @default(now())
+
+  cohort          Cohort   @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  attendance      Attendance[]
+
+  @@index([cohortId])
+  @@index([scheduledStart])
+  @@map("class_sessions")
+}
+
+model Attendance {
+  id              String   @id @default(uuid())
+  sessionId       String
+  cohortId        String
+  learnerEmail    String
+  joinedAt        DateTime
+  leftAt          DateTime?
+  durationMinutes Int      @default(0)
+  attended        Boolean  @default(true)
+
+  session         ClassSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  cohort          Cohort   @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, learnerEmail])
+  @@index([sessionId])
+  @@index([learnerEmail])
+  @@map("attendance")
+}
+
+// ============================================================================
+// Tutoring Sessions (Enhanced)
+// ============================================================================
+
+model TutorSession {
+  id              String   @id @default(uuid())
+  courseId        String?
+  lessonId        String?
+  userEmail       String
+  status          String   @default("active") // "active", "completed"
+  startedAt       DateTime @default(now())
+  endedAt         DateTime?
+
+  lesson          Lesson?  @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  messages        TutorMessage[]
+
+  @@index([userEmail])
+  @@index([lessonId])
+  @@map("tutor_sessions")
+}
+
+model TutorMessage {
+  id              String   @id @default(uuid())
+  sessionId       String
+  lessonId        String?
+  role            String   // "user", "tutor"
+  content         String
+  groundedIn      String?  // lesson or resource ID
+  timestamp       DateTime @default(now())
+
+  session         TutorSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  lesson          Lesson?  @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@map("tutor_messages")
+}
+
+// ============================================================================
+// Research Projects (SAP-6.1)
+// ============================================================================
+
+model ResearchProject {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  instructorEmail String
+  cohortId        String?
+  status          String   @default("active") // "planning", "active", "completed", "archived"
+  researchArea    String   // e.g., "education_tech", "learning_science"
+  objectives      Json     // array of research objectives
+  methodology     String?
+  dataCollection  Json?    // data collection protocol
+  ethicsApproved  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  cohort          Cohort?  @relation(fields: [cohortId], references: [id], onDelete: SetNull)
+  teams           ResearchTeam[]
+  submissions     ResearchSubmission[]
+
+  @@index([instructorEmail])
+  @@index([status])
+  @@map("research_projects")
+}
+
+model ResearchTeam {
+  id              String   @id @default(uuid())
+  projectId       String
+  name            String
+  description     String?
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+
+  project         ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  members         ResearchMember[]
+
+  @@index([projectId])
+  @@map("research_teams")
+}
+
+model ResearchMember {
+  id              String   @id @default(uuid())
+  teamId          String
+  memberEmail     String
+  role            String   // "researcher", "data_analyst", "contributor"
+  joinedAt        DateTime @default(now())
+
+  team            ResearchTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, memberEmail])
+  @@index([teamId])
+  @@map("research_members")
+}
+
+model ResearchSubmission {
+  id              String   @id @default(uuid())
+  projectId       String
+  teamId          String?
+  submissionType  String   // "preliminary", "final"
+  title           String
+  documentUrl     String?
+  submittedAt     DateTime @default(now())
+  status          String   @default("pending") // "pending", "approved", "revision_requested", "rejected"
+  feedback        String?
+
+  project         ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("research_submissions")
+}
+
+// ============================================================================
+// Constitutional Audit Logging (SAP-8.1, SAP-8.2)
+// ============================================================================
+
+model ConstitutionalAuditLog {
+  id              String   @id @default(uuid())
+  action          String   // "ENROLLMENT_CREATE", "ASSESSMENT_SUBMIT", "CREDENTIAL_ISSUE"
+  entityType      String   // "Enrollment", "AssessmentAttempt", "Credential"
+  entityId        String
+  userEmail       String
+  preChecksPassed Boolean  @default(true)
+  postChecksPassed Boolean @default(true)
+  constitutionalConcern Boolean @default(false)
+  evidence        String?  // JSON of supporting data
+  auditDetails    Json?
+  createdAt       DateTime @default(now())
+
+  @@index([action])
+  @@index([entityType])
+  @@index([userEmail])
+  @@index([createdAt])
+  @@map("constitutional_audit_logs")
+}
+
+model ConsentRecord {
+  id              String   @id @default(uuid())
+  userEmail       String
+  consentType     String   // "data_processing", "research_participation", "video_recording"
+  consentGiven    Boolean  @default(false)
+  parentConsentRequired Boolean @default(false)
+  parentConsentGiven Boolean?
+  timestamp       DateTime @default(now())
+
+  user            User?    @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+
+  @@index([userEmail])
+  @@map("consent_records")
+}
+
+model CompliancePolicy {
+  id              String   @id @default(uuid())
+  policyType      String   // "FERPA", "GDPR", "POPIA"
+  jurisdiction    String
+  content         String   // Full policy text
+  effectiveDate   DateTime
+  deprecatedAt    DateTime?
+  createdAt       DateTime @default(now())
+
+  @@unique([policyType, jurisdiction])
+  @@map("compliance_policies")
+}

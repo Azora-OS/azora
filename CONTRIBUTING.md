@@ -33,6 +33,11 @@ See [CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) for details.
 
 - **Node.js**: 20.x or higher
 - **npm**: 9.x or higher
+ - **pnpm (recommended)**: 9.x or higher — this monorepo prefers pnpm for workspace installs. Enable using Corepack:
+```
+corepack enable pnpm
+npm install -g pnpm@9
+```
 - **PostgreSQL**: 14.x or higher
 - **Docker**: 24.x or higher (optional, for containerized development)
 - **Git**: 2.40.x or higher
@@ -61,6 +66,24 @@ npm install
 cd services/ai-orchestrator
 npm install
 ```
+
+### v0 references
+
+If you encounter `v0` references in the repository, please consult `docs/V0_AUDIT_REPORT.md` first. The report explains which `v0` occurrences are historical (blueprints, archives) and which may require renaming (active CI workflows, scripts). Avoid renaming archival or historical `v0` mentions without confirming they are not referenced by active CI jobs or scripts.
+
+### Package Manager Alignment - pnpm checks
+
+We prefer `pnpm` as the canonical package manager for this monorepo. The repository includes a CI check that fails if `package-lock.json` is introduced in the active directories (`apps`, `packages`, `services`). To align your environment use the helper script:
+
+```bash
+# Find/remove package-locks (dry-run without `--delete-lockfiles`):
+scripts/pnpm-align.sh --delete-lockfiles
+
+# Ensure pnpm install
+scripts/pnpm-align.sh --install
+```
+
+If you need `pnpm` for development, enable it via Corepack (`corepack enable`) or install pnpm globally (`npm i -g pnpm`).
 
 ### Environment Configuration
 
