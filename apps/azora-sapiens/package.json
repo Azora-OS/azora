@@ -23,6 +23,7 @@
         "tailwind-merge": "^2.2.1",
         "@azora/shared-design": "workspace:*",
         "@azora/shared-ai": "workspace:*",
+        "@azora/sapiens-api-client": "workspace:*",
         "@stripe/stripe-js": "8.5.2"
     },
     "devDependencies": {

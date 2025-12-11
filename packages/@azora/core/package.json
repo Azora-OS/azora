@@ -1,5 +1,24 @@
 {
 	"name": "@azora/core",
 	"version": "0.0.0",
-	"private": true
+	"private": true,
+	"description": "Core utilities, shared types, and foundational helpers used across Azora monorepo.",
+	"main": "dist/index.cjs.js",
+	"module": "dist/index.esm.js",
+	"types": "dist/index.d.ts",
+	"files": ["dist", "src"],
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"clean": "rm -rf dist",
+		"test": "echo \"No tests for @azora/core yet\" && exit 0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Azora-OS/azora.git"
+	},
+	"author": "Azora",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18"
+	}
 }
