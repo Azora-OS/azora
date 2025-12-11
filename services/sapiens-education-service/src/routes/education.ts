@@ -15,10 +15,12 @@ import { PrismaClient } from '@prisma/client';
 import { authenticateToken } from '../middleware/auth';
 import { constitutionalCheck } from '../middleware/constitutional';
 import { logAudit } from '../middleware/audit';
+import { ConstitutionalEngine } from '../../../constitutional-ai/src/constitutional-engine';
 
 // Initialize Prisma & router
 const prisma = new PrismaClient();
 const router = Router();
+const constitutionalEngine = new ConstitutionalEngine();
 
 // ============================================================================
 // Middleware
@@ -460,16 +462,31 @@ router.post(
   logAudit('TUTOR_ASK'),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { prompt, context } = req.body;
+      const { prompt, context, courseId, lessonId } = req.body;
       const userEmail = req.user?.email;
 
       if (!prompt) {
         return res.status(400).json({ error: { code: 'INVALID_REQUEST', message: 'Missing prompt' } });
       }
 
-      // TODO: Integrate with ElaraAgent and ConstitutionalEngine for reasoning
-      // For now, return a basic stubbed reply using grounding if possible
-      const tutorMessage = `Elara (quick reply): ${prompt.slice(0, 200)}...`;
+
+      // Resolve course and lesson titles for better grounding
+      let courseName = 'General';
+      let lessonTitle = '';
+      if (courseId) {
+        const course = await prisma.course.findUnique({ where: { id: courseId } });
+        if (course) courseName = course.title;
+      }
+      if (lessonId) {
+        const lesson = await prisma.lesson.findUnique({ where: { id: lessonId } });
+        if (lesson) lessonTitle = lesson.title;
+      }
+
+      // Use the Constitutional Engine to generate a grounded response
+      const responseText = await constitutionalEngine.processTutorRequest(courseName, lessonTitle, prompt);
+      const critique = await constitutionalEngine.generateConstitutionalCritique(responseText);
+
+      const tutorMessage = responseText;
 
       const auditLog = await prisma.constitutionalAuditLog.create({
         data: {
@@ -529,19 +546,12 @@ router.post(
           .json({ error: { code: 'UNAUTHORIZED', message: 'Session not found or unauthorized' } });
       }
 
-      // TODO: Call ElaraAgent from @azora/shared-ai
-      // const elaraAgent = new ElaraAgent();
-      // const pattern = elaraAgent.recognizePatterns({
-      //   lesson: session.lesson,
-      //   userMessage,
-      //   enrollmentDuration: enrollment.startedAt
-      // });
-      // const reasoning = elaraAgent.reason(pattern, { ... });
-      // const validation = elaraAgent.validate(proposed_action);
-      // const tutorResponse = elaraAgent.act(validated_action);
-
-      // Placeholder response
-      const tutorResponse = `That's a great question about ${session.lesson.title}! Let me explain...`;
+      // Use the Constitutional Engine to generate the tutor response
+      const courseName = session.course?.title || 'Course';
+      const lessonTitle = session.lesson?.title || '';
+      const responseText = await constitutionalEngine.processTutorRequest(courseName, lessonTitle, userMessage);
+      const critique = await constitutionalEngine.generateConstitutionalCritique(responseText);
+      const tutorResponse = responseText;
 
       // Create message record
       const message = await prisma.tutorMessage.create({
@@ -565,7 +575,8 @@ router.post(
           evidence: JSON.stringify({
             lessonId: session.lesson.id,
             messageLength: tutorResponse.length,
-            groundedInContent: true
+            groundedInContent: true,
+            constitutionalCritique: critique
           })
         }
       });

@@ -2765,7 +2765,9 @@ Guidelines:
 - Never fabricate citations or data`,
       });
 
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      // Normalize response: API client returns TutorSession
+      const responseText = (response && typeof response === 'object' && 'tutorMessage' in response) ? response.tutorMessage : String(response);
+      setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
