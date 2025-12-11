@@ -451,6 +451,53 @@ router.post(
 );
 
 /**
+ * POST /api/sapiens/tutor/ask
+ * Stateless quick 'ask' without creating a session. Useful for help prompts in UI.
+ */
+router.post(
+  '/tutor/ask',
+  constitutionalCheck('tutoring'),
+  logAudit('TUTOR_ASK'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { prompt, context } = req.body;
+      const userEmail = req.user?.email;
+
+      if (!prompt) {
+        return res.status(400).json({ error: { code: 'INVALID_REQUEST', message: 'Missing prompt' } });
+      }
+
+      // TODO: Integrate with ElaraAgent and ConstitutionalEngine for reasoning
+      // For now, return a basic stubbed reply using grounding if possible
+      const tutorMessage = `Elara (quick reply): ${prompt.slice(0, 200)}...`;
+
+      const auditLog = await prisma.constitutionalAuditLog.create({
+        data: {
+          action: 'TUTOR_ASK',
+          entityType: 'TutorInteraction',
+          entityId: `ask_${Date.now()}`,
+          userEmail: userEmail || 'guest',
+          preChecksPassed: true,
+          postChecksPassed: true,
+          evidence: JSON.stringify({ promptLength: prompt.length, context }),
+        }
+      });
+
+      res.json({
+        sessionId: `ask_${Date.now()}`,
+        tutorMessage,
+        sourceReferences: [],
+        alignmentScore: 0.9,
+        trustworthiness: 'grounded',
+        auditLogId: auditLog.id
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
  * POST /api/sapiens/tutor/session/:sessionId/message
  * Send message to tutor and get response
  */

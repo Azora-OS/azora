@@ -1,0 +1,14 @@
+{
+  "name": "@azorahub/ai-sdk",
+  "version": "1.0.0",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "description": "Minimal stub for internal ai-sdk used during development (replace with real implementation).",
+  "license": "MIT",
+  "scripts": {
+    "build": "echo 'stub: no build'",
+    "prepublishOnly": "echo 'stub package'"
+  }
+}

@@ -394,6 +394,19 @@ export class SapiensApiClient {
     }
   }
 
+  // Stateless tutoring / quick ask endpoint (no session)
+  async askTutor(prompt: string, context?: string): Promise<TutorSession> {
+    try {
+      const response = await this.axiosInstance.post<TutorSession>('/api/sapiens/tutor/ask', {
+        prompt,
+        context
+      });
+      return response.data;
+    } catch (error) {
+      throw this.formatError('TUTOR_ASK_FAILED', 'Failed to ask tutor', error, true);
+    }
+  }
+
   // ============================================================================
   // Assessments & Exams
   // ============================================================================
