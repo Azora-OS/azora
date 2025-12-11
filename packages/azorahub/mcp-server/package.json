@@ -50,7 +50,7 @@
   "homepage": "https://docs.azorahub.com/mcp-server",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "@azorahub/api-client": "^1.0.0",
+    "@azorahub/api-client": "workspace:*",
     "axios": "^1.6.0",
     "commander": "^11.0.0",
     "dotenv": "^16.3.0",
