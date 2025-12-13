@@ -1,5 +1,5 @@
 {
-  "name": "@azora/ai-routing",
+  "name": "@azora/ai-routing-cloud",
   "version": "1.0.0",
   "dependencies": {
     "vitest": "^1.0.4"
