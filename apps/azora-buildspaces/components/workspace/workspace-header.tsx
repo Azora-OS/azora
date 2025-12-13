@@ -33,6 +33,8 @@ interface WorkspaceHeaderProps {
   previewOpen: boolean
   knowledgeOceanOpen: boolean
   agentActivity?: { agent: string; action: string; time: string }[]
+  currentProject?: string | null
+  activeRoom?: string
 }
 
 export function WorkspaceHeader({
@@ -44,6 +46,8 @@ export function WorkspaceHeader({
   previewOpen,
   knowledgeOceanOpen,
   agentActivity = [],
+  currentProject,
+  activeRoom,
 }: WorkspaceHeaderProps) {
   return (
     <header className="h-12 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-2 shrink-0">
@@ -57,7 +61,13 @@ export function WorkspaceHeader({
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-muted text-sm transition-colors">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="font-medium">azora-buildspaces</span>
+              <span className="font-medium">
+                {currentProject ? `${currentProject}` : 'No Project'}
+              </span>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-muted-foreground capitalize">
+                {activeRoom?.replace('-', ' ') || 'Code Chamber'}
+              </span>
               <ChevronDown className="w-3 h-3 text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>
