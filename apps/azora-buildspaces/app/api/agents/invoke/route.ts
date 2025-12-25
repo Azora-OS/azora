@@ -44,22 +44,37 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Agent Routing] Action: ${action} → Agent: ${agent}`)
 
-    // TODO: Implement actual agent execution
-    // This would call the Elara orchestrator service which routes to specific agents
-    // via LangChain integration (see BUILDSPACES_CRITICAL_REPOS #18)
+    // Forward the request to the local Elara orchestrator service if available
+    try {
+      const orchestratorUrl = process.env.ELARA_ORCHESTRATOR_URL || 'http://localhost:4000/invoke'
+      const resp = await fetch(orchestratorUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent, action, context, code, language }),
+      })
 
-    const mockResponse: AgentResponse = {
-      agent,
-      action,
-      result: `${agent} processed your request: ${action}`,
-      suggestions: [
-        'Consider adding error handling',
-        'Add unit tests for edge cases',
-        'Review security implications',
-      ],
+      if (!resp.ok) {
+        console.warn('[Agent Routing] Orchestrator returned non-OK:', resp.status)
+      }
+
+      const data = await resp.json()
+      return NextResponse.json(data)
+    } catch (err) {
+      console.error('[Agent Routing] Orchestrator call failed, falling back to mock. Error:', err)
+
+      const mockResponse: AgentResponse = {
+        agent,
+        action,
+        result: `${agent} processed your request: ${action}`,
+        suggestions: [
+          'Consider adding error handling',
+          'Add unit tests for edge cases',
+          'Review security implications',
+        ],
+      }
+
+      return NextResponse.json(mockResponse)
     }
-
-    return NextResponse.json(mockResponse)
   } catch (error) {
     console.error('[Agent Routing] Error:', error)
     return NextResponse.json(

@@ -46,6 +46,7 @@ model User {
   queryClassifications QueryClassification[] @relation("QueryClassifications")
   scholarships Scholarship[]
   proofsOfValue ProofOfValue[]
+  buildspacesProjects BuildSpaceProject[]
 
   @@index([role])
   @@index([createdAt])
@@ -1626,4 +1627,60 @@ model CitadelFundAllocation {
   @@index([sourceType])
   @@index([transactionId])
   @@map("citadel_fund_allocations")
+}
+
+
+// BuildSpaces models: projects, specs, and agent executions
+model BuildSpaceProject {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  ownerId     String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  specs BuildSpaceSpec[]
+  executions BuildSpaceExecution[]
+
+  @@index([ownerId])
+  @@map("buildspaces_projects")
+}
+
+model BuildSpaceSpec {
+  id        String   @id @default(cuid())
+  projectId String
+  title     String
+  content   String   // spec content (yaml/json/etc)
+  format    String   @default("yaml")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project BuildSpaceProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  executions BuildSpaceExecution[]
+
+  @@index([projectId])
+  @@map("buildspaces_specs")
+}
+
+model BuildSpaceExecution {
+  id         String   @id @default(cuid())
+  projectId  String?
+  specId     String?
+  agentName  String
+  status     String   @default("pending")
+  input      Json
+  output     Json?
+  tokensUsed Int?     @default(0)
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime @default(now())
+
+  project BuildSpaceProject? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  spec    BuildSpaceSpec?    @relation(fields: [specId], references: [id], onDelete: Cascade)
+
+  @@index([agentName])
+  @@index([status])
+  @@map("buildspaces_executions")
 }
