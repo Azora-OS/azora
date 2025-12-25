@@ -1,8 +1,11 @@
 "use client"
-import { useState, useEffect } from "react"
-import { X, FileCode, ChevronRight, Bot } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { X, FileCode, ChevronRight, Bot, Users, Wifi, WifiOff } from "lucide-react"
 import dynamic from "next/dynamic"
 import { motion, AnimatePresence } from "framer-motion"
+import * as Y from "yjs"
+import { WebsocketProvider } from "y-websocket"
+import { MonacoBinding } from "y-monaco"
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false })
 
@@ -135,6 +138,12 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
   const [code, setCode] = useState(fileContents[activeFile] || "// Empty file")
   const [isAiTyping, setIsAiTyping] = useState(false)
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null)
+  const [isConnected, setIsConnected] = useState(false)
+  const [collaborators, setCollaborators] = useState<string[]>([])
+
+  const ydocRef = useRef<Y.Doc | null>(null)
+  const providerRef = useRef<WebsocketProvider | null>(null)
+  const bindingRef = useRef<MonacoBinding | null>(null)
 
   useEffect(() => {
     setCode(fileContents[activeFile] || "// Empty file")
@@ -154,6 +163,47 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
     return () => clearTimeout(timer)
   }, [activeFile])
 
+  // Initialize Yjs for real-time collaboration
+  useEffect(() => {
+    if (!activeFile) return
+
+    // Clean up previous collaboration session
+    if (bindingRef.current) {
+      bindingRef.current.destroy()
+      bindingRef.current = null
+    }
+    if (providerRef.current) {
+      providerRef.current.destroy()
+      providerRef.current = null
+    }
+    if (ydocRef.current) {
+      ydocRef.current.destroy()
+      ydocRef.current = null
+    }
+
+    // Initialize new collaboration session
+    const ydoc = new Y.Doc()
+    ydocRef.current = ydoc
+
+    // Connect to WebSocket server (you'll need to set up a Yjs WebSocket server)
+    const provider = new WebsocketProvider('ws://localhost:1234', `buildspaces-${activeFile}`, ydoc)
+    providerRef.current = provider
+
+    provider.on('status', (event: any) => {
+      setIsConnected(event.status === 'connected')
+    })
+
+    provider.on('peers', (peers: any) => {
+      setCollaborators(Object.keys(peers))
+    })
+
+    return () => {
+      if (bindingRef.current) bindingRef.current.destroy()
+      if (providerRef.current) providerRef.current.destroy()
+      if (ydocRef.current) ydocRef.current.destroy()
+    }
+  }, [activeFile])
+
   const getFileIcon = (name: string) => {
     if (name.endsWith(".tsx")) return "text-blue-400"
     if (name.endsWith(".ts")) return "text-blue-500"
@@ -164,10 +214,26 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-background">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-1 px-4 py-1 text-xs text-muted-foreground border-b border-border bg-muted/20">
-        <span>app</span>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-foreground">{activeFile}</span>
+      <div className="flex items-center justify-between px-4 py-1 text-xs text-muted-foreground border-b border-border bg-muted/20">
+        <div className="flex items-center gap-1">
+          <span>app</span>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-foreground">{activeFile}</span>
+        </div>
+        
+        {/* Collaboration Status */}
+        <div className="flex items-center gap-2">
+          {collaborators.length > 0 && (
+            <div className="flex items-center gap-1 text-green-400">
+              <Users className="w-3 h-3" />
+              <span>{collaborators.length + 1}</span>
+            </div>
+          )}
+          <div className={`flex items-center gap-1 ${isConnected ? 'text-green-400' : 'text-yellow-400'}`}>
+            {isConnected ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+            <span>{isConnected ? 'Connected' : 'Offline'}</span>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -254,6 +320,14 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
           theme="vs-dark"
           value={code}
           onChange={(value) => setCode(value || "")}
+          onMount={(editor, monaco) => {
+            // Initialize Yjs binding for real-time collaboration
+            if (ydocRef.current && providerRef.current) {
+              const ytext = ydocRef.current.getText('monaco')
+              const binding = new MonacoBinding(ytext, editor.getModel()!, new Set([editor]), providerRef.current.awareness)
+              bindingRef.current = binding
+            }
+          }}
           options={{
             minimap: { enabled: false },
             fontSize: 13,

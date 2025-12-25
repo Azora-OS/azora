@@ -51,6 +51,13 @@ const features = [
     color: "cyan",
     href: "/features/collaboration-pod",
   },
+  {
+    icon: Sparkles,
+    title: "Knowledge Ocean",
+    desc: "AI-powered search & insights",
+    color: "indigo",
+    href: "/features/knowledge-ocean",
+  },
 ]
 
 const stats = [
@@ -87,13 +94,12 @@ export default function HomePage() {
               </h1>
 
               <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8 text-pretty">
-                Elara orchestrates specialized AI agents to transform your vision into production-ready code. From
-                concept to deployment in minutes, not months.
+                Elara orchestrates specialized AI agents across 8 interconnected rooms to transform your vision into production-ready code. From concept to deployment in minutes, not months.
               </p>
 
               <div className="flex flex-wrap justify-center gap-4 mb-12">
                 <Button asChild className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 text-lg">
-                  <Link href="/features/code-chamber">
+                  <Link href="/workspace">
                     Start Building <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>

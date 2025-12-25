@@ -1,0 +1,127 @@
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Video, Palette, MessageSquare, CheckSquare, Share2, Users, Settings, Bell } from "lucide-react";
+import VideoConference from "./VideoConference";
+import Whiteboard from "./Whiteboard";
+import Chat from "./Chat";
+import TaskBoard from "./TaskBoard";
+
+export default function CollaborationPod() {
+    const [activeTab, setActiveTab] = useState("video");
+    const [notifications, setNotifications] = useState(5);
+
+    const tabs = [
+        { id: "video", label: "Video Call", icon: Video, component: VideoConference },
+        { id: "whiteboard", label: "Whiteboard", icon: Palette, component: Whiteboard },
+        { id: "chat", label: "Team Chat", icon: MessageSquare, component: Chat },
+        { id: "tasks", label: "Task Board", icon: CheckSquare, component: TaskBoard },
+    ];
+
+    return (
+        <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+                <div>
+                    <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+                        Collaboration Pod
+                        <Badge variant="secondary" className="bg-green-600">4 Active</Badge>
+                    </h1>
+                    <p className="text-slate-400">Real-time team collaboration and project management</p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <Users className="w-4 h-4" />
+                        <span>Alice, Bob, Carol, David</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" className="relative">
+                            <Bell className="w-4 h-4" />
+                            {notifications > 0 && (
+                                <Badge className="absolute -top-2 -right-2 w-5 h-5 p-0 flex items-center justify-center text-xs">
+                                    {notifications}
+                                </Badge>
+                            )}
+                        </Button>
+                        <Button variant="outline" size="sm">
+                            <Share2 className="w-4 h-4 mr-2" />
+                            Invite
+                        </Button>
+                        <Button variant="outline" size="sm">
+                            <Settings className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+                    <TabsList className="grid w-full grid-cols-4 m-6 mb-0 bg-slate-800/50 border border-white/10">
+                        {tabs.map((tab) => (
+                            <TabsTrigger
+                                key={tab.id}
+                                value={tab.id}
+                                className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                            >
+                                <tab.icon className="w-4 h-4" />
+                                <span className="hidden sm:inline">{tab.label}</span>
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+
+                    <div className="flex-1 mx-6 mb-6 mt-4">
+                        {tabs.map((tab) => (
+                            <TabsContent key={tab.id} value={tab.id} className="h-full m-0">
+                                <Card className="h-full bg-slate-800/50 border-white/10 overflow-hidden">
+                                    <CardContent className="p-0 h-full">
+                                        <tab.component />
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        ))}
+                    </div>
+                </Tabs>
+            </div>
+
+            {/* Quick Actions Footer */}
+            <div className="mx-6 mb-6">
+                <Card className="bg-slate-900/50 border-white/10">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="text-center">
+                                    <div className="text-lg font-semibold text-white">12</div>
+                                    <div className="text-xs text-slate-400">Tasks Done</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-lg font-semibold text-white">4</div>
+                                    <div className="text-xs text-slate-400">Active Sessions</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-lg font-semibold text-white">98%</div>
+                                    <div className="text-xs text-slate-400">Team Productivity</div>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button variant="outline" size="sm">
+                                    Schedule Meeting
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                    Export Session
+                                </Button>
+                                <Button size="sm">
+                                    End Session
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+}

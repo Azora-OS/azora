@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -30,6 +31,12 @@ model User {
   chatSessions     ChatSession[]
   notifications    Notification[]
   consentRecords   ConsentRecord[]
+  skillProgresses  SkillProgress[]
+  assessmentAttempts AssessmentAttempt[]
+  credentials      Credential[]
+  tutorSessions    TutorSession[]
+  attendance       Attendance[]
+  constitutionalAuditLogs ConstitutionalAuditLog[]
   aiFamilyInteractions AIFamilyInteraction[]
   aiFamilyConsultations AIFamilyConsultation[]
   subscription     Subscription?
@@ -37,6 +44,8 @@ model User {
   courseReviews    CourseReview[] @relation("CourseReviews")
   coursePurchases  CoursePurchase[] @relation("CoursePurchases")
   instructorEarnings InstructorEarnings[] @relation("InstructorEarnings")
+  classSessionsInstructed ClassSession[]
+  cohortsInstructed Cohort[]
   tokenBalance     TokenBalance?
   tokenTransactions TokenTransaction[]
   leaderboardEntries LeaderboardEntry[]
@@ -93,6 +102,8 @@ model Course {
   purchases       CoursePurchase[]
   earnings        InstructorEarnings[]
   payments        Payment[]       @relation("CoursePayments")
+  cohorts         Cohort[]
+  credentials     Credential[]
 
   @@index([instructorId])
   @@index([status])
@@ -621,6 +632,10 @@ model Skill {
 
   userSkills UserSkill[]
   jobSkills  JobSkill[]
+  predecessors    CurriculumEdge[] @relation("SkillPredecessor")
+  successors      CurriculumEdge[] @relation("SkillSuccessor")
+  learningObjectives LearningObjective[]
+  skillProgress   SkillProgress[]
 
   @@map("skills")
 }
@@ -700,6 +715,7 @@ model Assessment {
   createdAt   DateTime         @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempts AssessmentAttempt[]
 
   @@index([userId])
   @@map("assessments")
@@ -719,6 +735,8 @@ model LearningPath {
   @@map("learning_paths")
 }
 
+// Sapiens models moved to service-level schemas (services/azora-sapiens/prisma/schema.prisma)
+
 enum AssessmentType {
   QUIZ
   EXAM
@@ -732,6 +750,270 @@ enum AssessmentStatus {
   IN_PROGRESS
   SUBMITTED
   GRADED
+}
+
+// ============================================
+// SAPIENS EDUCATION DOMAIN EXTENSIONS
+// ============================================
+
+model CurriculumEdge {
+  id            String   @id @default(cuid())
+  predecessorId String
+  successorId   String
+  prerequisite  Boolean  @default(true)
+  weight        Float    @default(1.0)
+  description   String?
+  evidence      String?
+  createdAt     DateTime @default(now())
+
+  predecessor   Skill    @relation("SkillPredecessor", fields: [predecessorId], references: [id], onDelete: Cascade)
+  successor     Skill    @relation("SkillSuccessor", fields: [successorId], references: [id], onDelete: Cascade)
+
+  @@unique([predecessorId, successorId])
+  @@index([predecessorId])
+  @@index([successorId])
+  @@map("curriculum_edges")
+}
+
+model LearningObjective {
+  id                 String   @id @default(cuid())
+  skillId            String
+  courseId           String?
+  objective          String
+  assessmentCriteria Json?
+  description        String?
+  bloomLevel         String?
+  createdAt          DateTime @default(now())
+
+  skill              Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@index([skillId])
+  @@index([courseId])
+  @@map("learning_objectives")
+}
+
+model SkillProgress {
+  id               String   @id @default(cuid())
+  userId           String
+  skillId          String
+  proficiencyLevel Float    @default(0.0)
+  evidenceScore    Float    @default(0.0)
+  lastAssessmentId String?
+  lastAssessedAt   DateTime?
+  masteredAt       DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+  @@map("skill_progress")
+}
+
+model AssessmentAttempt {
+  id               String   @id @default(cuid())
+  assessmentId     String
+  learnerId        String
+  score            Int?
+  maxScore         Int
+  passed           Boolean  @default(false)
+  responses        Json?
+  feedback         String?
+  integrityLevel   String   @default("medium")
+  integrityFlagged Boolean  @default(false)
+  integrityReview  String?
+  tokensEarned     Int      @default(0)
+  auditLogId       String?
+  status           String   @default("in_progress")
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([assessmentId])
+  @@index([learnerId])
+  @@index([status])
+  @@map("assessment_attempts")
+}
+
+model Credential {
+  id                 String   @id @default(cuid())
+  userId             String
+  courseId           String?
+  type               String
+  title              String
+  issuedBy           String
+  issuedDate         DateTime @default(now())
+  evidence           Json?
+  credentialJson     Json?
+  blockchainAnchored Boolean  @default(false)
+  blockchainHash     String?
+  verificationUrl    String?
+  status             String   @default("issued")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([courseId])
+  @@index([type])
+  @@map("credentials")
+}
+
+model Cohort {
+  id              String   @id @default(cuid())
+  courseId        String
+  name            String
+  instructorId    String
+  startDate       DateTime
+  endDate         DateTime
+  status          String   @default("forming")
+  maxLearners     Int      @default(30)
+  enrollmentUrl   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor   User     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  sessions     ClassSession[]
+  attendance    Attendance[]
+
+  @@index([courseId])
+  @@index([instructorId])
+  @@map("cohorts")
+}
+
+model ClassSession {
+  id               String   @id @default(cuid())
+  cohortId         String
+  sessionType      String
+  title            String
+  instructorId     String?
+  scheduledStart   DateTime
+  scheduledEnd     DateTime
+  buildspacesRoomId String?
+  buildspacesRoomUrl String?
+  recordingUrl     String?
+  status           String   @default("scheduled")
+  createdAt        DateTime @default(now())
+
+  cohort    Cohort     @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  instructor User?     @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+  attendance Attendance[]
+
+  @@index([cohortId])
+  @@index([scheduledStart])
+  @@map("class_sessions")
+}
+
+model Attendance {
+  id              String   @id @default(cuid())
+  sessionId       String
+  cohortId        String
+  learnerId       String
+  joinedAt        DateTime
+  leftAt          DateTime?
+  durationMinutes Int      @default(0)
+  attended        Boolean  @default(true)
+
+  session ClassSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  cohort  Cohort       @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  learner User         @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, learnerId])
+  @@index([sessionId])
+  @@index([learnerId])
+  @@map("attendance")
+}
+
+model TutorSession {
+  id         String   @id @default(cuid())
+  courseId   String?
+  lessonId   String?
+  userId     String
+  status     String   @default("active")
+  startedAt  DateTime @default(now())
+  endedAt    DateTime?
+
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages TutorMessage[]
+
+  @@index([userId])
+  @@map("tutor_sessions")
+}
+
+model TutorMessage {
+  id         String   @id @default(cuid())
+  sessionId  String
+  lessonId   String?
+  role       String
+  content    String
+  groundedIn String?
+  timestamp  DateTime @default(now())
+
+  session TutorSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("tutor_messages")
+}
+
+model ConstitutionalAuditLog {
+  id                    String   @id @default(cuid())
+  action                String
+  entityType            String
+  entityId              String
+  userId                String
+  preChecksPassed       Boolean  @default(true)
+  postChecksPassed      Boolean  @default(true)
+  constitutionalConcern Boolean  @default(false)
+  evidence              Json?
+  auditDetails          Json?
+  createdAt             DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([action])
+  @@index([entityType])
+  @@index([userId])
+  @@map("constitutional_audit_logs")
+}
+
+model ConsentRecord {
+  id                   String   @id @default(cuid())
+  userId               String
+  consentType          String
+  consentGiven         Boolean  @default(false)
+  parentConsentRequired Boolean @default(false)
+  parentConsentGiven   Boolean?
+  timestamp            DateTime @default(now())
+
+  ipAddress            String?
+  userAgent            String?
+  createdAt            DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, consentType])
+  @@index([timestamp])
+  @@map("consent_records")
+}
+
+model CompliancePolicy {
+  id            String   @id @default(cuid())
+  policyType    String
+  jurisdiction  String
+  content       String
+  effectiveDate DateTime
+  deprecatedAt  DateTime?
+  createdAt     DateTime @default(now())
+
+  @@unique([policyType, jurisdiction])
+  @@map("compliance_policies")
 }
 
 // ============================================
@@ -1135,27 +1417,6 @@ model EnterpriseCustomization {
 // PRIVACY & GDPR
 // ============================================
 
-model ConsentRecord {
-  id        String   @id @default(cuid())
-  userId    String
-  consentType String
-  granted   Boolean
-  timestamp DateTime @default(now())
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, consentType])
-  @@index([timestamp])
-  @@map("consent_records")
-}
-
-// ============================================
-// TOKEN BURN SYSTEM (Phase 2)
-// ============================================
-
 model TokenSupply {
   id                    String   @id @default(cuid())
   totalSupply           Decimal  @db.Decimal(20, 8)
@@ -1408,7 +1669,7 @@ model KnowledgeNode {
   content   String
   // embedding: will use Postgres `vector` type via pgvector; Prisma doesn't support it natively.
   // Use Unsupported("vector")? so Prisma will accept the DB type while allowing raw SQL operations.
-  embedding Unsupported("vector")?
+  // embedding Unsupported("vector")? // pgvector extension not enabled in local DB
   embeddingJson Json? @map("embedding_json")
   metadata  Json?
   createdAt DateTime @default(now())

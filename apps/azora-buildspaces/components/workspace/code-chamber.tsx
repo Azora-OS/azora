@@ -14,6 +14,7 @@ import { DebugView } from "./panels/debug-view"
 import { CommandDesk } from "./command-desk"
 import { EditorPanel } from "./editor-panel"
 import { TerminalPanel } from "./terminal-panel"
+import { ProjectWelcome } from "./project-welcome"
 
 interface CodeChamberProps {
     id: string
@@ -73,12 +74,16 @@ export function CodeChamber({ id }: CodeChamberProps) {
         <WorkbenchLayout
             sidebarContent={renderSidebar()}
             editorContent={
-                <EditorPanel
-                    activeFile={activeFileId || ""}
-                    openFiles={openFiles}
-                    onFileSelect={handleFileSelect}
-                    onCloseFile={handleCloseFile}
-                />
+                rootId ? (
+                    <EditorPanel
+                        activeFile={activeFileId || ""}
+                        openFiles={openFiles}
+                        onFileSelect={handleFileSelect}
+                        onCloseFile={handleCloseFile}
+                    />
+                ) : (
+                    <ProjectWelcome onProjectSelect={(projectId) => loadProject(projectId)} />
+                )
             }
             panelContent={renderPanel()}
         />
