@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Navbar } from '@/components/features/navbar'
 import { Footer } from '@/components/features/footer'
 import { CodeEditor } from '@/components/features/code-chamber/editor'

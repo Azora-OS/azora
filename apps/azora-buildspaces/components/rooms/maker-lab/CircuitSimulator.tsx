@@ -59,7 +59,13 @@ const componentTypes = [
 ]
 
 // Custom node component
-function ComponentNode({ data }: { data: any }) {
+interface ComponentNodeData {
+    type: string
+    label: string
+    inputs?: number
+}
+
+function ComponentNode({ data }: { data: ComponentNodeData }) {
     const component = componentTypes.find(c => c.id === data.type);
 
     return (

@@ -10,10 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Cpu, Lightbulb, Thermometer, Wifi, Battery, Camera, Speaker, Mic, Zap } from "lucide-react";
 
+import React from 'react'
+
 interface Component3D {
     id: string;
     name: string;
-    icon: any;
+    icon: React.ComponentType<any>;
     description: string;
     specs: string[];
     price: string;
@@ -390,44 +392,5 @@ export default function ComponentViewer() {
 }
 
 
-export default function ComponentViewer() {
-    return (
-        <div className="h-full w-full bg-gradient-to-b from-slate-900 to-slate-950 relative">
-            <div className="absolute top-4 left-4 z-10">
-                <h3 className="text-white font-semibold bg-black/50 px-3 py-1 rounded-full backdrop-blur text-sm border border-white/10">
-                    3D Component Viewer
-                </h3>
-            </div>
-
-            <Canvas shadows camera={{ position: [4, 4, 4], fov: 50 }}>
-                <ambientLight intensity={0.5} />
-                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-                <pointLight position={[-10, -10, -10]} />
-
-                <Stage environment="city" intensity={0.6}>
-                    <ESP32Board position={[0, 0, 0]} />
-                </Stage>
-
-                <Grid
-                    renderOrder={-1}
-                    position={[0, -0.5, 0]}
-                    infiniteGrid
-                    cellSize={0.5}
-                    sectionSize={3}
-                    fadeDistance={30}
-                    sectionColor="#ea580c"
-                    cellColor="#6b7280"
-                />
-
-                <OrbitControls autoRotate autoRotateSpeed={0.5} />
-                <Environment preset="city" />
-            </Canvas>
-
-            <div className="absolute bottom-4 left-4 z-10 text-xs text-slate-400 font-mono">
-                <p>Model: ESP32-WROOM-32</p>
-                <p>Status: Rendering</p>
-                <p>Controls: Left Click (Rotate), Right Click (Pan), Scroll (Zoom)</p>
-            </div>
-        </div>
-    );
-}
+// The main ComponentViewer is declared above and exported as default earlier.
+// The block below was a duplicate simplified viewer and has been removed to avoid duplicate default exports.

@@ -1,26 +1,33 @@
-import { PrismaClient } from '@prisma/client'
+let PrismaClient: any
+try {
+  // Try to load generated client; if it doesn't exist, we'll fallback to proxy implementation
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  PrismaClient = require('@prisma/client').PrismaClient
+} catch (e) {
+  PrismaClient = undefined
+}
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const globalForPrisma = global as unknown as { prisma: any }
 
 /**
  * Prisma Client - Real Implementation
  * 
- * Requires DATABASE_URL environment variable to be set.
- * If not set, logs warning and returns null-safe proxy for development.
- * 
- * To configure:
- * 1. Set DATABASE_URL in .env (copy from .env.example)
- * 2. Run: npx prisma generate --schema=../../prisma/unified-schema.prisma
- * 3. Run: npx prisma db push (for development)
+ * Requires DATABASE_URL environment variable to be set and a generated client.
+ * If not set or client not generated, logs warning and returns null-safe proxy for development.
+ *
+ * To configure (production):
+ * 1. Set DATABASE_URL in .env
+ * 2. Run: npx prisma generate --schema=../../prisma/schema.prisma
+ * 3. Run migrations or `prisma db push` against your database
  */
 
-function createPrismaClient(): PrismaClient {
-    if (!process.env.DATABASE_URL) {
-        console.warn('[Prisma] DATABASE_URL not set. Database features will not work.');
-        console.warn('[Prisma] To configure: Set DATABASE_URL in .env and run prisma generate');
+function createPrismaClient() {
+    if (!process.env.DATABASE_URL || !PrismaClient) {
+        console.warn('[Prisma] DATABASE_URL not set or @prisma/client not generated. Database features will not work.');
+        console.warn('[Prisma] To configure: Set DATABASE_URL and run prisma generate');
 
         // Return a proxy that throws helpful errors instead of crashing
-        return new Proxy({} as PrismaClient, {
+        return new Proxy({} as any, {
             get: (target, prop) => {
                 if (prop === '$connect' || prop === '$disconnect') {
                     return async () => {
@@ -57,6 +64,7 @@ function createPrismaClient(): PrismaClient {
 }
 
 export const prisma = globalForPrisma.prisma || createPrismaClient();
+export const PRISMA_AVAILABLE = Boolean(process.env.DATABASE_URL && PrismaClient)
 
 if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.prisma = prisma;
