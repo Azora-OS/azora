@@ -51,16 +51,24 @@ export function LiveOrchestrationDemo() {
   const [codeLines, setCodeLines] = useState<string[]>([])
   const [activeTypingLine, setActiveTypingLine] = useState("")
   const codeRef = useRef<HTMLDivElement>(null)
+  const tasksRef = useRef(tasks.length)
+
+  useEffect(() => {
+    tasksRef.current = tasks.length
+  }, [tasks.length])
 
   useEffect(() => {
     if (!isRunning) return
-    if (currentTaskIndex >= tasks.length) {
-      setIsRunning(false)
-      return
+    if (currentTaskIndex >= tasksRef.current) {
+      const id = requestAnimationFrame(() => setIsRunning(false))
+      return () => cancelAnimationFrame(id)
     }
 
     // Mark current task as in-progress
-    setTasks((prev) => prev.map((t, i) => (i === currentTaskIndex ? { ...t, status: "in-progress" } : t)))
+    const rafId = requestAnimationFrame(() => setTasks((prev) => prev.map((t, i) => (i === currentTaskIndex ? { ...t, status: "in-progress" } : t))))
+
+    // Ensure we cancel the rAF if effect cleans up early
+    const cleanupRaf = () => cancelAnimationFrame(rafId)
 
     // Type out code for first task
     if (currentTaskIndex === 0 && codeLines.length < codeSnippets.length) {
@@ -91,8 +99,11 @@ export function LiveOrchestrationDemo() {
       currentTaskIndex === 0 ? 4000 : 2000,
     )
 
-    return () => clearTimeout(timer)
-  }, [isRunning, currentTaskIndex, codeLines.length, tasks.length])
+    return () => {
+      clearTimeout(timer)
+      cleanupRaf()
+    }
+  }, [isRunning, currentTaskIndex, codeLines.length])
 
   const startDemo = () => {
     setTasks(demoTasks.map((t) => ({ ...t, status: "pending" })))

@@ -2,6 +2,8 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
+
+const makeId = () => Math.random().toString(36).slice(2, 9) // deterministic helper for IDs (avoids Date.now in render)
 import {
   Send,
   Sparkles,
@@ -261,7 +263,7 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
 
       // Add new tasks
       const newTasks: AgentTask[] = specs.map((spec, i) => ({
-        id: `new-${Date.now()}-${i}`,
+        id: `new-${makeId()}-${i}`,
         agentId: spec.agentId,
         agentName: spec.agentName,
         agentColor: agents.find((a) => a.id === spec.agentId)?.color || "from-gray-500 to-gray-400",
@@ -285,7 +287,7 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
     if (!agent) return
 
     const newTask: AgentTask = {
-      id: `direct-${Date.now()}`,
+      id: `direct-${makeId()}`,
       agentId: agent.id,
       agentName: agent.name,
       agentColor: agent.color,

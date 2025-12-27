@@ -15,7 +15,14 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
-const FrameNode = ({ data, selected }: any) => {
+type FrameNodeData = {
+    label: string
+    width: number
+    height: number
+    content: React.ReactNode
+}
+
+const FrameNode = ({ data, selected }: { data: FrameNodeData; selected: boolean }) => {
     return (
         <div className={`bg-white dark:bg-slate-900 border-2 ${selected ? 'border-blue-500' : 'border-slate-200 dark:border-slate-700'} rounded-lg shadow-sm min-w-[200px] min-h-[100px] relative group`}>
             <NodeResizer minWidth={100} minHeight={50} isVisible={selected} />

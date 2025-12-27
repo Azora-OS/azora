@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Minimal BuildSpaces models for local development
+model BuildSpaceProject {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  ownerId     String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BuildSpaceSpec {
+  id        String   @id @default(cuid())
+  projectId String
+  title     String
+  content   String
+  format    String   @default("yaml")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BuildSpaceExecution {
+  id         String   @id @default(cuid())
+  projectId  String?
+  specId     String?
+  agentName  String
+  status     String   @default("pending")
+  input      String
+  output     String?
+  tokensUsed Int?     @default(0)
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime @default(now())
+}

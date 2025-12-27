@@ -15,24 +15,28 @@ export function useVoice(): UseVoiceReturn {
     const [isListening, setIsListening] = useState(false)
     const [transcript, setTranscript] = useState('')
     const [isSupported, setIsSupported] = useState(false)
-    const [recognition, setRecognition] = useState<any>(null)
+    const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && (window as any).webkitSpeechRecognition) {
-            setIsSupported(true)
-            const recognitionInstance = new (window as any).webkitSpeechRecognition()
-            recognitionInstance.continuous = true
-            recognitionInstance.interimResults = true
-            recognitionInstance.lang = 'en-US'
+        if (typeof window !== 'undefined') {
+            const globalWin = window as unknown as { webkitSpeechRecognition?: { new(): SpeechRecognition } }
+            if (globalWin.webkitSpeechRecognition) {
+                const RecognitionClass = globalWin.webkitSpeechRecognition
+                const recognitionInstance = new RecognitionClass()
+                recognitionInstance.continuous = true
+                recognitionInstance.interimResults = true
+                recognitionInstance.lang = 'en-US'
+                const raf = requestAnimationFrame(() => {
+                    setIsSupported(true)
+                    setRecognition(recognitionInstance)
+                })
 
-            recognitionInstance.onresult = (event: any) => {
-                // let currentTranscript = ''
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcriptPart = event.results[i][0].transcript
-                    if (event.results[i].isFinal) {
+            recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
+                const results = event.results as SpeechRecognitionResultList
+                for (let i = event.resultIndex; i < results.length; i++) {
+                    const transcriptPart = results[i][0].transcript
+                    if (results[i].isFinal) {
                         setTranscript((prev) => prev + transcriptPart + ' ')
-                    } else {
-                        // currentTranscript += transcriptPart
                     }
                 }
             }
@@ -41,7 +45,19 @@ export function useVoice(): UseVoiceReturn {
                 setIsListening(false)
             }
 
-            setRecognition(recognitionInstance)
+            return () => {
+                cancelAnimationFrame(raf)
+                try {
+                    // cleanup
+                    recognitionInstance.onresult = null as unknown as (event: SpeechRecognitionEvent) => void
+                    recognitionInstance.onend = null as unknown as () => void
+                    recognitionInstance.stop()
+                } catch (e) {
+                    // ignore
+                }
+                setRecognition(null)
+            }
+            }
         }
     }, [])
 

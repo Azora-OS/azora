@@ -28,7 +28,8 @@ export function CollaborativeEditor({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
   }, [])
 
   const handleEditorMount = async (editor: monacoEditor.IStandaloneCodeEditor) => {

@@ -326,50 +326,6 @@ export default function GeneratedComponent() {
                     </TabsContent>
                 </Tabs>
             </div>
-                        <AnimatePresence>
-                            {annotations.map((ann, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    className="absolute w-8 h-8 rounded-full bg-purple-500 border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs cursor-pointer hover:scale-110 transition-transform"
-                                    style={{ left: ann.x - 16, top: ann.y - 16 }}
-                                >
-                                    {i + 1}
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
-                    </div>
-                </div>
-
-                {/* Properties Panel */}
-                <div className="w-72 border-l border-white/5 bg-white/5 backdrop-blur-md p-6">
-                    <h3 className="text-sm font-medium text-zinc-400 mb-6 uppercase tracking-wider">Properties</h3>
-
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-xs text-zinc-500">Selection</label>
-                            <div className="p-3 rounded-lg bg-zinc-900/50 border border-white/5 text-sm">
-                                {selectedTool === "select" ? "Canvas Root" : selectedTool}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-xs text-zinc-500">Dimensions</label>
-                            <div className="grid grid-cols-2 gap-2">
-                                <div className="p-2 rounded bg-zinc-900/50 border border-white/5 text-xs flex justify-between">
-                                    <span className="text-zinc-500">W</span>
-                                    <span>800</span>
-                                </div>
-                                <div className="p-2 rounded bg-zinc-900/50 border border-white/5 text-xs flex justify-between">
-                                    <span className="text-zinc-500">H</span>
-                                    <span>600</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     )
 }

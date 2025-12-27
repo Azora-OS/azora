@@ -201,13 +201,16 @@ export default function FirmwareEditor() {
     useEffect(() => {
         // Load appropriate code template based on board
         const board = BOARD_TYPES.find(b => b.id === boardType);
-        if (board?.framework === 'micropython') {
-            setLanguage('python');
-            setCode(DEFAULT_MICROPYTHON_CODE);
-        } else {
-            setLanguage('cpp');
-            setCode(DEFAULT_ARDUINO_CODE);
-        }
+        const raf = requestAnimationFrame(() => {
+            if (board?.framework === 'micropython') {
+                setLanguage('python');
+                setCode(DEFAULT_MICROPYTHON_CODE);
+            } else {
+                setLanguage('cpp');
+                setCode(DEFAULT_ARDUINO_CODE);
+            }
+        });
+        return () => cancelAnimationFrame(raf);
     }, [boardType]);
 
     const addLog = (message: string, type: 'info' | 'success' | 'error' = 'info') => {
@@ -587,67 +590,3 @@ export default function FirmwareEditor() {
     );
 }
 
-                    <Button
-                        size="sm"
-                        onClick={handleFlash}
-                        disabled={isFlashing}
-                        className="bg-orange-500 hover:bg-orange-600 text-white gap-2"
-                    >
-                        {isFlashing ? <Cpu className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
-                        {isFlashing ? "Flashing..." : "Flash Firmware"}
-                    </Button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <Button size="sm" variant="ghost" title="Save">
-                        <Save className="w-4 h-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" title="Download .bin">
-                        <Download className="w-4 h-4" />
-                    </Button>
-                </div>
-            </div>
-
-            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-                <div className="flex-1 border-r border-border">
-                    <MonacoEditor
-                        height="100%"
-                        language={language}
-                        theme="vs-dark"
-                        value={code}
-                        onChange={(value) => setCode(value || "")}
-                        options={{
-                            minimap: { enabled: false },
-                            fontSize: 14,
-                            scrollBeyondLastLine: false,
-                            automaticLayout: true,
-                        }}
-                    />
-                </div>
-
-                {/* Serial Monitor */}
-                <div className="w-full md:w-80 bg-black text-green-500 font-mono text-xs flex flex-col border-t md:border-t-0">
-                    <div className="p-2 border-b border-white/10 flex items-center gap-2 bg-white/5">
-                        <Terminal className="w-3 h-3" />
-                        <span>Serial Monitor (115200 baud)</span>
-                    </div>
-                    <div className="flex-1 p-2 overflow-y-auto space-y-1">
-                        {logs.map((log, i) => (
-                            <div key={i} className="break-all">
-                                <span className="opacity-50 mr-2">[{new Date().toLocaleTimeString()}]</span>
-                                {log}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="p-2 border-t border-white/10">
-                        <input
-                            type="text"
-                            placeholder="Send command..."
-                            className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/30"
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}

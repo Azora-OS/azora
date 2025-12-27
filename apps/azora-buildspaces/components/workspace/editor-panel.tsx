@@ -146,7 +146,10 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
   const bindingRef = useRef<MonacoBinding | null>(null)
 
   useEffect(() => {
-    setCode(fileContents[activeFile] || "// Empty file")
+    const id = requestAnimationFrame(() => {
+      setCode(fileContents[activeFile] || "// Empty file")
+    })
+    return () => cancelAnimationFrame(id)
   }, [activeFile])
 
   // Simulate AI typing suggestion

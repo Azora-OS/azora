@@ -5,14 +5,14 @@ import { useState } from 'react'
 interface UseBrainReturn {
     isLoading: boolean
     response: string | null
-    askAgent: (message: string, context?: any) => Promise<void>
+    askAgent: (message: string, context?: Record<string, unknown>) => Promise<void>
 }
 
 export function useBrain(): UseBrainReturn {
     const [isLoading, setIsLoading] = useState(false)
     const [response, setResponse] = useState<string | null>(null)
 
-    const askAgent = async (message: string, context: any = {}) => {
+    const askAgent = async (message: string, context: Record<string, unknown> = {}) => {
         setIsLoading(true)
         try {
             const res = await fetch('/api/agent', {
