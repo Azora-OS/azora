@@ -394,41 +394,6 @@ export default ${name}Workflow`
                         </TabsContent>
                     </Tabs>
                 </div>
-            </div>}
-                                <span className={`font-medium ${validationResult.valid ? "text-emerald-400" : "text-red-400"
-                                    }`}>
-                                    {validationResult.valid ? "Valid Spec" : "Validation Failed"}
-                                </span>
-                            </div>
-
-                            {!validationResult.valid && validationResult.errors && (
-                                <div className="text-xs text-red-300 space-y-1 mt-2">
-                                    {validationResult.errors.map((err, i) => (
-                                        <div key={i}>{err.message || "Unknown error"}</div>
-                                    ))}
-                                </div>
-                            )}
-                        </motion.div>
-                    )}
-                </div>
-
-                {/* Editor */}
-                <div className="flex-1 flex flex-col">
-                    <Editor
-                        height="100%"
-                        defaultLanguage="yaml"
-                        value={content}
-                        onChange={(val) => setContent(val || "")}
-                        theme="vs-dark"
-                        options={{
-                            minimap: { enabled: false },
-                            fontSize: 14,
-                            fontFamily: "'JetBrains Mono', monospace",
-                            padding: { top: 20 },
-                            scrollBeyondLastLine: false,
-                        }}
-                    />
-                </div>
             </div>
         </div>
     )

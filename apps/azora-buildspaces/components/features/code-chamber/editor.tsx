@@ -23,7 +23,8 @@ export function CodeEditor({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
   }, [])
 
   const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {

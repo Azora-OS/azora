@@ -70,43 +70,6 @@ export function useElaraAmbient(config: ElaraAmbientConfig = {}) {
     const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
     const synthRef = useRef<SpeechSynthesis | null>(null);
 
-    // Initialize Speech Recognition
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-            if (SpeechRecognitionAPI) {
-                const recognition = new SpeechRecognitionAPI() as SpeechRecognitionInstance;
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = "en-US";
-
-                recognition.onresult = (event: SpeechRecognitionEvent) => {
-                    let finalTranscript = "";
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const result = event.results[i];
-                        if (result.isFinal) {
-                            finalTranscript += result[0].transcript;
-                        }
-                    }
-                    if (finalTranscript) {
-                        setTranscript(finalTranscript);
-                        handleDirective(finalTranscript);
-                    }
-                };
-
-                recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-                    setError(`Speech recognition error: ${event.error}`);
-                    setState("error");
-                };
-
-                recognitionRef.current = recognition;
-            }
-
-            synthRef.current = window.speechSynthesis;
-        }
-    }, []);
-
     // Parse directive and route to appropriate agent
     const parseDirective = useCallback((speech: string): { intent: string; agent: AscendAgent } => {
         const lower = speech.toLowerCase();
@@ -193,6 +156,43 @@ export function useElaraAmbient(config: ElaraAmbientConfig = {}) {
 
         setState("idle");
     }, [parseDirective, roomContext, enableAuditLog, voiceFeedback]);
+
+    // Initialize Speech Recognition
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+            if (SpeechRecognitionAPI) {
+                const recognition = new SpeechRecognitionAPI() as SpeechRecognitionInstance;
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = "en-US";
+
+                recognition.onresult = (event: SpeechRecognitionEvent) => {
+                    let finalTranscript = "";
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const result = event.results[i];
+                        if (result.isFinal) {
+                            finalTranscript += result[0].transcript;
+                        }
+                    }
+                    if (finalTranscript) {
+                        setTranscript(finalTranscript);
+                        handleDirective(finalTranscript);
+                    }
+                };
+
+                recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+                    setError(`Speech recognition error: ${event.error}`);
+                    setState("error");
+                };
+
+                recognitionRef.current = recognition;
+            }
+
+            synthRef.current = window.speechSynthesis;
+        }
+    }, []);
 
     // Start listening
     const startListening = useCallback(async () => {

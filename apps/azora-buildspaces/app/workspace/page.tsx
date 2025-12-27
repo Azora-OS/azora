@@ -61,11 +61,14 @@ export default function WorkspacePage() {
 
   // Show onboarding on first visit
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('buildspaces-onboarding-seen')
-    if (!hasSeenOnboarding && !currentProject) {
-      setShowOnboarding(true)
-      localStorage.setItem('buildspaces-onboarding-seen', 'true')
-    }
+    const id = requestAnimationFrame(() => {
+      const hasSeenOnboarding = localStorage.getItem('buildspaces-onboarding-seen')
+      if (!hasSeenOnboarding && !currentProject) {
+        setShowOnboarding(true)
+        localStorage.setItem('buildspaces-onboarding-seen', 'true')
+      }
+    })
+    return () => cancelAnimationFrame(id)
   }, [currentProject])
 
   const renderActiveRoom = () => {

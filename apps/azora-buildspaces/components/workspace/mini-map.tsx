@@ -28,7 +28,7 @@ export function MiniMap({ code }: MiniMapProps) {
         {/* Generate more visual lines for longer code representation */}
         {Array.from({ length: 50 }).map((_, i) => (
           <div key={`extra-${i}`} className="flex gap-[1px] h-[3px]">
-            {Array.from({ length: Math.random() * 30 + 5 }).map((_, j) => (
+            {Array.from({ length: (i % 30) + 5 }).map((_, j) => (
               <span key={j} className="inline-block w-[1px] h-[2px] bg-muted-foreground/20" />
             ))}
           </div>

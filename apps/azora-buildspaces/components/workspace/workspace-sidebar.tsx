@@ -129,11 +129,11 @@ const searchResults = [
 ]
 
 const getFileIcon = (name: string) => {
-  if (name.endsWith(".tsx") || name.endsWith(".ts")) return FileCode
-  if (name.endsWith(".json")) return FileJson
-  if (name.endsWith(".css")) return FileCog
-  if (name.endsWith(".svg") || name.endsWith(".ico") || name.endsWith(".png")) return ImageIcon
-  return FileText
+  if (name.endsWith(".tsx") || name.endsWith(".ts")) return <FileCode className={`w-4 h-4 shrink-0 ${getFileIconColor(name)}`} />
+  if (name.endsWith(".json")) return <FileJson className={`w-4 h-4 shrink-0 ${getFileIconColor(name)}`} />
+  if (name.endsWith(".css")) return <FileCog className={`w-4 h-4 shrink-0 ${getFileIconColor(name)}`} />
+  if (name.endsWith(".svg") || name.endsWith(".ico") || name.endsWith(".png")) return <ImageIcon className={`w-4 h-4 shrink-0 ${getFileIconColor(name)}`} />
+  return <FileText className={`w-4 h-4 shrink-0 ${getFileIconColor(name)}`} />
 }
 
 const getFileIconColor = (name: string) => {
@@ -155,8 +155,6 @@ function FileNode({ node, depth, activeFile, onFileSelect }: FileNodeProps) {
   const [isOpen, setIsOpen] = useState(depth < 2)
   const isFolder = node.type === "folder"
   const isActive = node.name === activeFile
-  const FileIcon = getFileIcon(node.name)
-
   return (
     <div>
       <button
@@ -182,7 +180,7 @@ function FileNode({ node, depth, activeFile, onFileSelect }: FileNodeProps) {
         ) : (
           <>
             <span className="w-3 shrink-0" />
-            <FileIcon className={`w-4 h-4 shrink-0 ${getFileIconColor(node.name)}`} />
+            {getFileIcon(node.name)}
           </>
         )}
         <span className="truncate flex-1 text-left text-xs">{node.name}</span>

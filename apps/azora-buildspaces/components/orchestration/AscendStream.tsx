@@ -35,8 +35,8 @@ export function AscendStream({
 
     useEffect(() => {
         if (externalEvents) {
-            setEvents(externalEvents.slice(-maxEvents));
-            return;
+            const id = requestAnimationFrame(() => setEvents(externalEvents.slice(-maxEvents)));
+            return () => cancelAnimationFrame(id);
         }
 
         // Demo seed events for showcase
@@ -77,7 +77,8 @@ export function AscendStream({
             }
         ];
 
-        setEvents(seedEvents);
+        const id2 = requestAnimationFrame(() => setEvents(seedEvents));
+        return () => cancelAnimationFrame(id2);
     }, [externalEvents, maxEvents]);
 
     // Auto-scroll to bottom on new events

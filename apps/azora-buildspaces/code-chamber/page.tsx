@@ -139,7 +139,6 @@ console.log(greet("Builder"));
                 </div>
             </div>
             <PredAISensorOverlay />
-        </AppLayout >
+        </AppLayout>
     );
 }
-\`\`\`

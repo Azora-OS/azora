@@ -47,6 +47,7 @@ const steps = [
 export function Onboarding({ onComplete }: OnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
+  const CurrentIcon = steps[currentStep].icon
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -81,7 +82,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           <Card className="relative">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 w-fit">
-                <steps[currentStep].icon className="w-6 h-6 text-primary" />
+                <CurrentIcon className="w-6 h-6 text-primary" />
               </div>
               <CardTitle className="text-xl">{steps[currentStep].title}</CardTitle>
               <CardDescription className="text-base">

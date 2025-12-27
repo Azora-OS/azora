@@ -388,10 +388,7 @@ export default function ComponentViewer() {
         </div>
     );
 }
-            ))}
-        </group>
-    );
-}
+
 
 export default function ComponentViewer() {
     return (

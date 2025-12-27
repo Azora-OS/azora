@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
+
+const makeId = () => Math.random().toString(36).slice(2, 9) // helper to generate ids without Date.now during render
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -30,7 +32,7 @@ export function ProjectWelcome({ onProjectSelect }: ProjectWelcomeProps) {
   const handleTemplateSelect = (template: ProjectTemplate) => {
     // For now, just load a mock project. In a real implementation,
     // this would create a new project with the template files
-    onProjectSelect(`project-${template.id}-${Date.now()}`)
+    onProjectSelect(`project-${template.id}-${makeId()}`)
   }
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import ReactFlow, {
     MiniMap,
     Controls,
@@ -113,6 +113,7 @@ export default function CircuitSimulator() {
     const [isSimulating, setIsSimulating] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [simulationLogs, setSimulationLogs] = useState<string[]>(['Circuit simulator ready.']);
+    const nextIdRef = useRef(initialNodes.length + 1);
 
     const onConnect = useCallback(
         (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -123,9 +124,16 @@ export default function CircuitSimulator() {
         const component = componentTypes.find(c => c.id === componentType);
         if (!component) return;
 
+        const idNumber = nextIdRef.current++;
+        const id = `${idNumber}`;
+        const position = {
+            x: 100 + ((idNumber * 97) % 400),
+            y: 100 + ((idNumber * 61) % 300)
+        };
+
         const newNode: Node = {
-            id: `${Date.now()}`,
-            position: { x: Math.random() * 300 + 100, y: Math.random() * 200 + 100 },
+            id,
+            position,
             data: {
                 label: component.name,
                 type: componentType,
@@ -296,65 +304,6 @@ export default function CircuitSimulator() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    );
-}
-
-    return (
-        <div className="h-full flex flex-col">
-            <div className="p-2 border-b flex items-center justify-between bg-card">
-                <div className="flex items-center gap-2">
-                    <Button size="sm" variant={isSimulating ? "destructive" : "default"} onClick={toggleSimulation} className="gap-2">
-                        {isSimulating ? <RotateCcw className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                        {isSimulating ? "Stop Simulation" : "Simulate Circuit"}
-                    </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline" className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add Component
-                    </Button>
-                </div>
-            </div>
-
-            <div className="flex-1 bg-background relative">
-                <ReactFlow
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                    fitView
-                    className="bg-slate-50 dark:bg-slate-900"
-                >
-                    <Controls />
-                    <MiniMap />
-                    <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-                </ReactFlow>
-
-                {isSimulating && (
-                    <Card className="absolute bottom-4 right-4 p-4 w-64 bg-background/90 backdrop-blur border-green-500/50">
-                        <div className="flex items-center gap-2 text-green-500 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <span className="font-semibold text-sm">Simulation Active</span>
-                        </div>
-                        <div className="space-y-1 text-xs font-mono">
-                            <div className="flex justify-between">
-                                <span>Voltage:</span>
-                                <span>3.3V</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span>Current:</span>
-                                <span>120mA</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span>Uptime:</span>
-                                <span>00:00:12</span>
-                            </div>
-                        </div>
-                    </Card>
-                )}
             </div>
         </div>
     );

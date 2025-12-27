@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Send, Loader2, Sparkles, Bot } from 'lucide-react'
 
 interface Message {
@@ -12,15 +12,24 @@ interface Message {
 }
 
 export function AIStudio() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'agent',
-      agent: 'Elara',
-      content: '👋 Welcome to AI Studio! I\'m Elara, your AI orchestrator. I can route your requests to specialized agents:\n\n• Sankofa - Code review & generation\n• Themba - Testing & test generation\n• Jabari - Security analysis\n• Nia - Performance optimization\n• Imani - Documentation\n\nWhat would you like help with?',
-      timestamp: new Date(Date.now() - 5000),
-    },
-  ])
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const now = Date.now()
+      setMessages([
+        {
+          id: '1',
+          role: 'agent',
+          agent: 'Elara',
+          content: '👋 Welcome to AI Studio! I\'m Elara, your AI orchestrator. I can route your requests to specialized agents:\n\n• Sankofa - Code review & generation\n• Themba - Testing & test generation\n• Jabari - Security analysis\n• Nia - Performance optimization\n• Imani - Documentation\n\nWhat would you like help with?',
+          timestamp: new Date(now - 5000),
+        },
+      ])
+    })
+
+    return () => cancelAnimationFrame(id)
+  }, [])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [selectedAgent, setSelectedAgent] = useState<string>('auto')

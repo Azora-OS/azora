@@ -23,7 +23,10 @@ export function CitadelLogo({ size = "md", className }: CitadelLogoProps) {
     const numericSize = typeof size === "number" ? size : sizeMap[size];
     const [mounted, setMounted] = useState(false);
 
-    useEffect(() => setMounted(true), []);
+    useEffect(() => {
+        const id = requestAnimationFrame(() => setMounted(true));
+        return () => cancelAnimationFrame(id);
+    }, []);
 
     return (
         <div

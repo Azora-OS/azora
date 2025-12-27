@@ -16,7 +16,13 @@ export default function CodeChamberPage() {
   const [editorMode, setEditorMode] = useState<EditorMode>('single')
   const [activeTab, setActiveTab] = useState<TabType>('editor')
   const [code, setCode] = useState('// Welcome to BuildSpaces Code Chamber\n// Start coding with AI-powered assistance\n\nfunction helloWorld() {\n  console.log("🚀 BuildSpaces Ready!");\n}\n\nhelloWorld();')
-  const [userId] = useState('user-' + Math.random().toString(36).substr(2, 9))
+  const [userId, setUserId] = useState<string>('')
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setUserId('user-' + Math.random().toString(36).substr(2, 9))
+    })
+    return () => cancelAnimationFrame(id)
+  }, [])
   const [projectId] = useState('demo-project-001')
 
   const handleAIAssist = useCallback(() => {
