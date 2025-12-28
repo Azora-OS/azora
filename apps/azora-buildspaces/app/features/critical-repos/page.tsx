@@ -6,12 +6,24 @@ import { Footer } from '@/components/features/footer'
 import { GitBranch } from 'lucide-react'
 
 export default async function CriticalReposPage() {
-  const repoPath = path.resolve(process.cwd(), '../../..', 'BUILDSPACES_CRITICAL_REPOS.md')
+  // Prefer canonical docs location, fall back to legacy root file for backward compatibility
+  const candidatePaths = [
+    path.resolve(process.cwd(), '../../..', 'docs', 'buildspaces', 'BUILDSPACES_CRITICAL_REPOS.md'),
+    path.resolve(process.cwd(), '../../..', 'BUILDSPACES_CRITICAL_REPOS.md')
+  ]
   let md = ''
+  let foundPath: string | null = null
+  for (const p of candidatePaths) {
+    if (fs.existsSync(p)) {
+      foundPath = p
+      break
+    }
+  }
   try {
-    md = fs.readFileSync(repoPath, 'utf-8')
+    if (foundPath) md = fs.readFileSync(foundPath, 'utf-8')
+    else md = 'Could not find BUILDSPACES_CRITICAL_REPOS.md; expected at docs/buildspaces/BUILDSPACES_CRITICAL_REPOS.md'
   } catch (err) {
-    md = 'Could not read BUILDSPACES_CRITICAL_REPOS.md'
+    md = `Failed to read ${foundPath ?? 'BUILDSPACES_CRITICAL_REPOS.md'}`
   }
 
   // Simple parser: find lines that start with "###" followed by a numeric index and bold repo name
@@ -78,7 +90,7 @@ export default async function CriticalReposPage() {
           </div>
 
           <div className="mt-6 text-sm text-gray-400">
-            <p>Note: This page surfaces the canonical list at the repository root <code>BUILDSPACES_CRITICAL_REPOS.md</code> and provides quick actions to review and clone repositories. For programmatic integration (Prisma, YJS, OpenAI, etc.), add configuration in <code>apps/azora-buildspaces</code> and create services under <code>services/</code>.</p>
+            <p>Note: This page surfaces the canonical list at <code>docs/buildspaces/BUILDSPACES_CRITICAL_REPOS.md</code> (or the legacy root file if present) and provides quick actions to review and clone repositories. For programmatic integration (Prisma, YJS, OpenAI, etc.), add configuration in <code>apps/azora-buildspaces</code> and create services under <code>services/</code>.</p>
           </div>
         </div>
       </main>
