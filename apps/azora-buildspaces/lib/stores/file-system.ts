@@ -49,25 +49,20 @@ export const useFileSystem = create<FileSystemState>((set, get) => ({
     loadProject: async (_projectId) => {
         set({ isLoading: true })
         try {
-            // In a real implementation, this would fetch from S3/Redis via API
-            // For now, we simulate a file tree structure
-            const mockFiles: Record<string, FileNode> = {
-                'root': { id: 'root', name: 'root', type: 'directory', children: ['src', 'package.json', 'README.md'], path: '/' },
-                'src': { id: 'src', name: 'src', type: 'directory', children: ['app', 'components', 'lib'], parentId: 'root', path: '/src' },
-                'app': { id: 'app', name: 'app', type: 'directory', children: ['page.tsx', 'layout.tsx', 'globals.css'], parentId: 'src', path: '/src/app' },
-                'components': { id: 'components', name: 'components', type: 'directory', children: [], parentId: 'src', path: '/src/components' },
-                'lib': { id: 'lib', name: 'lib', type: 'directory', children: [], parentId: 'src', path: '/src/lib' },
-                'page.tsx': { id: 'page.tsx', name: 'page.tsx', type: 'file', content: '// Page content', parentId: 'app', path: '/src/app/page.tsx' },
-                'layout.tsx': { id: 'layout.tsx', name: 'layout.tsx', type: 'file', content: '// Layout content', parentId: 'app', path: '/src/app/layout.tsx' },
-                'globals.css': { id: 'globals.css', name: 'globals.css', type: 'file', content: '/* Global styles */', parentId: 'app', path: '/src/app/globals.css' },
-                'package.json': { id: 'package.json', name: 'package.json', type: 'file', content: '{}', parentId: 'root', path: '/package.json' },
-                'README.md': { id: 'README.md', name: 'README.md', type: 'file', content: '# Project', parentId: 'root', path: '/README.md' }
-            }
+            // Fetch real file tree from orchestrator
+            const res = await fetch('http://localhost:3001/fs/tree');
+            if (!res.ok) throw new Error('Failed to load project');
 
-            set({ fileMap: mockFiles, rootId: 'root', isLoading: false })
+            const fileMap = await res.json();
+            set({ fileMap, rootId: 'root', isLoading: false })
         } catch (error) {
-            console.error(error)
+            console.error("Failed to load project from orchestrator:", error)
             set({ isLoading: false })
+
+            // Fallback for demo if orchestrator is down (optional, but good for UX)
+            // For "No Mock" compliance, we should probably show an error instead of falling back to mocks
+            // But for stability during dev, maybe keep a minimal fallback or just error.
+            // Let's stick to "No Mock" and leave it empty/error state if backend fails.
         }
     },
 
@@ -130,16 +125,59 @@ export const useFileSystem = create<FileSystemState>((set, get) => ({
         return id
     },
 
-    readFile: (id) => get().fileMap[id]?.content,
+    readFile: (id) => {
+        const node = get().fileMap[id];
+        // If content is missing, we should fetch it (async) but this is a sync selector.
+        // For now, assume content is loaded or we trigger a load.
+        // In a real app, we'd have `fetchContent(id)` action.
+        // Let's add a quick fetch if content is undefined? 
+        // No, that causes side effects in render.
+        // We'll rely on loadProject loading tree, but content might be lazy.
+        // For this prototype, we'll assume content is in the map or we need to add a `fetchFileContent` action.
+        return node?.content;
+    },
+
+    fetchFileContent: async (id: string) => {
+        const node = get().fileMap[id];
+        if (!node || node.type !== 'file') return;
+
+        try {
+            const res = await fetch(`http://localhost:3001/fs/content?path=${encodeURIComponent(node.path)}`);
+            if (res.ok) {
+                const { content } = await res.json();
+                set(state => ({
+                    fileMap: {
+                        ...state.fileMap,
+                        [id]: { ...state.fileMap[id], content }
+                    }
+                }));
+            }
+        } catch (e) {
+            console.error("Failed to fetch content:", e);
+        }
+    },
 
     writeFile: async (id, content) => {
+        const node = get().fileMap[id];
+        if (!node) return;
+
         set(state => ({
             fileMap: {
                 ...state.fileMap,
                 [id]: { ...state.fileMap[id], content }
             }
         }))
-        // Debounced save to backend would happen here
+
+        // Sync to backend
+        try {
+            await fetch('http://localhost:3001/fs/write', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: node.path, content })
+            });
+        } catch (e) {
+            console.error("Failed to save file:", e);
+        }
     },
 
     deleteNode: async (id) => {
