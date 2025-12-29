@@ -49,6 +49,7 @@ import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { AIAssistantPanel } from "./ai-assistant-panel"
 import { AgentActivityFeed } from "./agent-activity-feed"
+import { ConstitutionalDashboard } from "@/components/constitutional/ConstitutionalDashboard"
 
 interface Model {
     id: string
@@ -136,6 +137,30 @@ export function AIStudio() {
     const [activeTab, setActiveTab] = useState("overview")
     const [selectedModel, setSelectedModel] = useState<Model | null>(null)
     const [trainingInProgress, setTrainingInProgress] = useState(false)
+    const [activeAgentsCount, setActiveAgentsCount] = useState(0)
+    const [pilotStatus, setPilotStatus] = useState<"online" | "offline">("offline")
+
+    // Fetch Azora Pilot Status
+    useState(() => {
+        const fetchStatus = async () => {
+            try {
+                const res = await fetch('http://localhost:8000/health');
+                if (res.ok) {
+                    const data = await res.json();
+                    setActiveAgentsCount(data.agents_loaded.length);
+                    setPilotStatus("online");
+                } else {
+                    setPilotStatus("offline");
+                }
+            } catch (e) {
+                setPilotStatus("offline");
+            }
+        };
+        fetchStatus();
+        // Poll every 30s
+        const interval = setInterval(fetchStatus, 30000);
+        return () => clearInterval(interval);
+    });
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -211,6 +236,10 @@ export function AIStudio() {
                                 <Bot className="w-4 h-4" />
                                 AI Agents
                             </TabsTrigger>
+                            <TabsTrigger value="constitutional" className="gap-2">
+                                <Settings className="w-4 h-4" />
+                                Constitutional AI
+                            </TabsTrigger>
                         </TabsList>
                     </div>
 
@@ -222,8 +251,10 @@ export function AIStudio() {
                                     <CardTitle className="text-sm font-medium text-zinc-400">Active Models</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold">12</div>
-                                    <p className="text-xs text-zinc-500">+2 from last month</p>
+                                    <div className="text-2xl font-bold">{activeAgentsCount}</div>
+                                    <p className="text-xs text-zinc-500">
+                                        {pilotStatus === "online" ? "System Online" : "System Offline"}
+                                    </p>
                                 </CardContent>
                             </Card>
 
@@ -573,6 +604,10 @@ export function AIStudio() {
                                 <AgentActivityFeed />
                             </div>
                         </div>
+                    </TabsContent>
+
+                    <TabsContent value="constitutional" className="flex-1 m-0 p-6">
+                        <ConstitutionalDashboard />
                     </TabsContent>
                 </Tabs>
             </div>

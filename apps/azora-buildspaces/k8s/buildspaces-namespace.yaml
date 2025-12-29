@@ -1,0 +1,53 @@
+# Kubernetes Namespace for Azora Buildspaces
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: buildspaces
+  labels:
+    name: buildspaces
+    environment: production
+    app: azora-buildspaces
+---
+# ResourceQuota for buildspaces namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: buildspaces-quota
+  namespace: buildspaces
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    persistentvolumeclaims: "10"
+    pods: "20"
+    services: "10"
+---
+# LimitRange for buildspaces namespace
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: buildspaces-limits
+  namespace: buildspaces
+spec:
+  limits:
+  - default:
+      cpu: 500m
+      memory: 1Gi
+    defaultRequest:
+      cpu: 100m
+      memory: 256Mi
+    type: Container
+  - max:
+      cpu: 2
+      memory: 4Gi
+    min:
+      cpu: 50m
+      memory: 128Mi
+    type: Container
+  - type: PersistentVolumeClaim
+    max:
+      storage: 100Gi
+    min:
+      storage: 1Gi

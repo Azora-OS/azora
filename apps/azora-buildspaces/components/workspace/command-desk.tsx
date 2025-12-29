@@ -215,6 +215,88 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
     return () => clearInterval(interval)
   }, [])
 
+  // Slash command definitions
+  const slashCommands = {
+    '/generate': {
+      description: 'Generate code/components',
+      handler: async (args: string) => {
+        const [type, ...rest] = args.split(' ')
+        const target = rest.join(' ')
+
+        const specs: AgentSpec[] = [
+          { agentId: "sankofa", agentName: "Sankofa", task: `Generate ${type}: ${target}`, status: "active" }
+        ]
+
+        return {
+          content: `**Generating ${type}:** ${target}\n\nI'll create the ${type} with proper structure and styling.`,
+          specs
+        }
+      }
+    },
+    '/test': {
+      description: 'Run tests on files',
+      handler: async (args: string) => {
+        const specs: AgentSpec[] = [
+          { agentId: "sankofa", agentName: "Sankofa", task: `Test: ${args}`, status: "active" }
+        ]
+
+        return {
+          content: `**Running tests for:** ${args}\n\nExecuting test suite and checking for issues.`,
+          specs
+        }
+      }
+    },
+    '/deploy': {
+      description: 'Deploy application',
+      handler: async (args: string) => {
+        const specs: AgentSpec[] = [
+          { agentId: "themba", agentName: "Themba", task: `Deploy: ${args}`, status: "active" },
+          { agentId: "naledi", agentName: "Naledi", task: "Environment setup", status: "pending" }
+        ]
+
+        return {
+          content: `**Deploying application:** ${args}\n\nPreparing deployment pipeline and environment configuration.`,
+          specs
+        }
+      }
+    },
+    '/explain': {
+      description: 'Explain code/concepts',
+      handler: async (args: string) => {
+        return {
+          content: `**Explanation:** ${args}\n\nLet me break this down for you in detail...`,
+          specs: []
+        }
+      }
+    },
+    '/security': {
+      description: 'Security audit',
+      handler: async (args: string) => {
+        const specs: AgentSpec[] = [
+          { agentId: "sankofa", agentName: "Sankofa", task: "Security audit", status: "active" }
+        ]
+
+        return {
+          content: `**Running security audit...**\n\nScanning for vulnerabilities and compliance issues.`,
+          specs
+        }
+      }
+    },
+    '/help': {
+      description: 'Show available commands',
+      handler: async (): Promise<{ content: string; specs: AgentSpec[] }> => {
+        const commandsList = Object.entries(slashCommands)
+          .map(([cmd, info]) => `• **${cmd}** - ${info.description}`)
+          .join('\n')
+
+        return {
+          content: `**Available Slash Commands:**\n\n${commandsList}\n\nType any command followed by arguments to execute.`,
+          specs: []
+        }
+      }
+    }
+  }
+
   const handleSend = async () => {
     if (!input.trim()) return
 
@@ -240,44 +322,46 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
     }
     setMessages((prev) => [...prev, thinkingMessage])
 
-    // Simulate Elara's response with specs
-    setTimeout(() => {
-      const specs: AgentSpec[] = [
-        { agentId: "sankofa", agentName: "Sankofa", task: "Component architecture", status: "active" },
-        { agentId: "naledi", agentName: "Naledi", task: "UI/UX styling", status: "pending" },
-        { agentId: "themba", agentName: "Themba", task: "Backend integration", status: "pending" },
-      ]
+    try {
+      // Call Azora Pilot API
+      const response = await fetch('http://localhost:8000/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: input,
+          agent_name: "ELARA",
+          use_tools: true
+        })
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch from Azora Pilot");
+
+      const data = await response.json();
 
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `I've analyzed your request and created a build specification.\n\n**Build Plan:**\n1. **Sankofa** will scaffold the component structure\n2. **Naledi** will apply styling and ensure responsive design\n3. **Themba** will connect to backend services\n\nI'm delegating tasks now. You can monitor progress in the Agent Tasks tab.`,
-        agent: "Elara",
+        content: data.answer,
+        agent: data.agent_used,
         timestamp: new Date(),
-        specs,
+        specs: [] // TODO: Parse specs from Pilot response if needed
       }
 
-      // Remove thinking message and add real response
       setMessages((prev) => prev.filter((m) => !m.thinking).concat(aiResponse))
+    } catch (error) {
+      console.error("Azora Pilot Error:", error);
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I'm having trouble connecting to my brain (Azora Pilot). Please ensure the service is running on port 8000.",
+        agent: "System",
+        timestamp: new Date(),
+        specs: []
+      }
+      setMessages((prev) => prev.filter((m) => !m.thinking).concat(errorResponse))
+    } finally {
       setIsTyping(false)
-
-      // Add new tasks
-      const newTasks: AgentTask[] = specs.map((spec, i) => ({
-        id: `new-${makeId()}-${i}`,
-        agentId: spec.agentId,
-        agentName: spec.agentName,
-        agentColor: agents.find((a) => a.id === spec.agentId)?.color || "from-gray-500 to-gray-400",
-        icon: agents.find((a) => a.id === spec.agentId)?.icon || Code2,
-        task: spec.task,
-        description: `Working on ${spec.task.toLowerCase()} based on your request...`,
-        status: spec.status,
-        progress: spec.status === "active" ? 10 : 0,
-        canModify: true,
-        estimatedTime: spec.status === "active" ? "~4 min remaining" : "Queued",
-      }))
-
-      setTasks((prev) => [...newTasks, ...prev])
-    }, 3000)
+    }
   }
 
   const handleDirectAgent = (agentId: string, instruction: string) => {
@@ -372,9 +456,8 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
                     className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                        message.role === "user" ? "bg-muted" : "bg-gradient-to-br from-primary to-accent"
-                      }`}
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${message.role === "user" ? "bg-muted" : "bg-gradient-to-br from-primary to-accent"
+                        }`}
                     >
                       {message.role === "user" ? (
                         <User className="w-4 h-4 text-foreground" />
@@ -404,11 +487,10 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
                         </div>
                       ) : (
                         <div
-                          className={`mt-1 p-3 rounded-xl text-sm ${
-                            message.role === "user"
+                          className={`mt-1 p-3 rounded-xl text-sm ${message.role === "user"
                               ? "bg-primary text-primary-foreground ml-auto"
                               : "bg-muted text-foreground"
-                          }`}
+                            }`}
                         >
                           <p className="whitespace-pre-wrap">{message.content}</p>
 
@@ -419,9 +501,8 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
                               {message.specs.map((spec, i) => (
                                 <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-background/50">
                                   <div
-                                    className={`w-6 h-6 rounded bg-gradient-to-br ${
-                                      agents.find((a) => a.id === spec.agentId)?.color
-                                    } flex items-center justify-center`}
+                                    className={`w-6 h-6 rounded bg-gradient-to-br ${agents.find((a) => a.id === spec.agentId)?.color
+                                      } flex items-center justify-center`}
                                   >
                                     <span className="text-[10px] font-bold text-background">{spec.agentName[0]}</span>
                                   </div>
@@ -459,7 +540,7 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
                       handleSend()
                     }
                   }}
-                  placeholder="Describe your vision to Elara..."
+                  placeholder="Type /help for commands or describe your vision to Elara..."
                   className="min-h-[44px] max-h-32 resize-none bg-muted border-border"
                   rows={1}
                 />
@@ -538,11 +619,10 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
                   <motion.div
                     key={agent.id}
                     layout
-                    className={`rounded-xl border transition-all ${
-                      selectedAgent === agent.id
+                    className={`rounded-xl border transition-all ${selectedAgent === agent.id
                         ? "border-primary bg-primary/5"
                         : "border-border bg-card/50 hover:border-primary/50"
-                    }`}
+                      }`}
                   >
                     <button
                       onClick={() => setSelectedAgent(selectedAgent === agent.id ? null : agent.id)}
@@ -614,9 +694,8 @@ function TaskCard({ task, onModify, compact }: TaskCardProps) {
   return (
     <motion.div
       layout
-      className={`rounded-xl border border-border bg-card/50 overflow-hidden ${
-        task.status === "active" ? "ring-1 ring-primary/30" : ""
-      }`}
+      className={`rounded-xl border border-border bg-card/50 overflow-hidden ${task.status === "active" ? "ring-1 ring-primary/30" : ""
+        }`}
     >
       <div className="p-3">
         <div className="flex items-start gap-3">
