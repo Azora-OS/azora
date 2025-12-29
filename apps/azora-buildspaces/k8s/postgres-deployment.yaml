@@ -1,0 +1,159 @@
+# PostgreSQL Deployment for Buildspaces
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: buildspaces
+  labels:
+    app: postgres
+    component: database
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres
+      component: database
+  template:
+    metadata:
+      labels:
+        app: postgres
+        component: database
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: buildspaces_prod
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: buildspaces-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: buildspaces-secrets
+              key: postgres-password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - $(POSTGRES_USER)
+            - -d
+            - $(POSTGRES_DB)
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - $(POSTGRES_USER)
+            - -d
+            - $(POSTGRES_DB)
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+      - name: init-scripts
+        configMap:
+          name: postgres-init-scripts
+---
+# PostgreSQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: buildspaces
+  labels:
+    app: postgres
+    component: database
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    app: postgres
+    component: database
+---
+# PostgreSQL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: buildspaces
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: fast-ssd
+---
+# PostgreSQL ConfigMap for init scripts
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: buildspaces
+data:
+  init.sql: |
+    -- Initialize Buildspaces database
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+    
+    -- Create additional indexes for performance
+    CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users(email);
+    CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_projects_owner ON projects(owner_id);
+    CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_executions_project ON executions(project_id);
+    CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_collaborations_project_user ON collaborations(project_id, user_id);
+    CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_model_versions_project ON model_versions(project_id);
+    CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_performance_metrics_endpoint ON performance_metrics(endpoint_id);
+    
+    -- Performance monitoring function
+    CREATE OR REPLACE FUNCTION log_execution_metrics()
+    RETURNS TRIGGER AS $$
+    BEGIN
+      IF NEW.status = 'completed' AND OLD.status != 'completed' THEN
+        INSERT INTO system_logs (level, service, message, metadata)
+        VALUES ('info', 'execution', 'Execution completed', json_build_object(
+          'execution_id', NEW.id,
+          'project_id', NEW.project_id,
+          'agent_name', NEW.agent_name,
+          'duration_ms', EXTRACT(EPOCH FROM (NEW.finished_at - NEW.started_at)) * 1000
+        ));
+      END IF;
+      RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    CREATE TRIGGER execution_metrics_trigger
+      AFTER UPDATE ON executions
+      FOR EACH ROW
+      EXECUTE FUNCTION log_execution_metrics();
