@@ -79,15 +79,15 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
           <p className="text-sm text-gray-500">© 2025 Azora. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="https://twitter.com" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="https://azora.world" className="text-gray-400 hover:text-white transition-colors">
               <Twitter className="h-5 w-5" />
               <span className="sr-only">Twitter</span>
             </Link>
-            <Link href="https://github.com" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="https://github.com/azora-world" className="text-gray-400 hover:text-white transition-colors">
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </Link>
-            <Link href="https://discord.com" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="https://buildspaces.azora.world/chat" className="text-gray-400 hover:text-white transition-colors">
               <MessageCircle className="h-5 w-5" />
               <span className="sr-only">Discord</span>
             </Link>
